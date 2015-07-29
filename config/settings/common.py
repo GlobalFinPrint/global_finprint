@@ -44,7 +44,9 @@ THIRD_PARTY_APPS = (
 # Apps specific for this project go here.
 LOCAL_APPS = (
     'global_finprint.users',  # custom users app
-    # Your stuff: custom apps go here
+    'global_finprint.benthos',
+    'global_finprint.cruise',
+    'global_finprint.bruv',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
