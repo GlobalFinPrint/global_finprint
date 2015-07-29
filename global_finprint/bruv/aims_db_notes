@@ -1,0 +1,331 @@
+
+SQL> describe CRUISE38.SYNONYMS;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ SPCODE                                             NUMBER(8)
+ FAMILY                                             VARCHAR2(255)
+ GENUS                                              VARCHAR2(255)
+ SPECIES                                            VARCHAR2(255)
+ NOTES                                              VARCHAR2(50)
+
+SQL> describe CRUISE38.PHOTOMEASURE;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ NAME                                      NOT NULL VARCHAR2(200)
+ LENGTH                                    NOT NULL NUMBER(8,4)
+ PERCISION                                 NOT NULL NUMBER(7,4)
+ RMS_PT1                                   NOT NULL NUMBER(8,4)
+ RMS_PT2                                            NUMBER(8,4)
+ RANGE                                     NOT NULL NUMBER(9,4)
+ DIRECTION                                 NOT NULL NUMBER(7,4)
+ HORZ_DIR                                  NOT NULL NUMBER(7,4)
+ VERT_DIR                                  NOT NULL NUMBER(7,4)
+ MID_POINT_X                               NOT NULL NUMBER(9,4)
+ MID_POINT_Y                               NOT NULL NUMBER(9,4)
+ TIME                                      NOT NULL NUMBER(7,4)
+ TYPE                                      NOT NULL VARCHAR2(50)
+ COMMENTS                                           VARCHAR2(2000)
+ ORIGINAL_FILENAME                         NOT NULL VARCHAR2(50)
+ ORIGINAL_FRAME_NO                         NOT NULL NUMBER(6)
+ OCCURRENCE                                NOT NULL NUMBER(2)
+ FISHID                                    NOT NULL NUMBER(6)
+ TAPEREADER                                NOT NULL VARCHAR2(50)
+ RECORDCREATED                                      DATE
+ READING                                            VARCHAR2(50)
+ OWNER                                     NOT NULL VARCHAR2(20)
+ LENGTHREADER                                       VARCHAR2(50)
+ MID_POINT_Z                                        NUMBER(9,4)
+
+SQL> describe CRUISE38.REFIMAGES;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ REFIMAGESID                               NOT NULL NUMBER(5)
+ IMAGENAME                                 NOT NULL VARCHAR2(255)
+ FAMILY                                             VARCHAR2(50)
+ GENUS                                              VARCHAR2(50)
+ SPECIES                                            VARCHAR2(50)
+ STAGE                                              VARCHAR2(20)
+ CAABCODE                                           NUMBER(8)
+ QMCODE                                             VARCHAR2(8)
+ ALTERNATESPELLING                                  VARCHAR2(150)
+ NOTES                                              VARCHAR2(255)
+ LABWEIGHT                                          NUMBER(6,1)
+ LABCOUNT                                           NUMBER(5)
+ OPCODE                                             VARCHAR2(50)
+ CAMERA                                             NUMBER(3)
+ RECORDCREATED                                      DATE
+ IDCONFIRMEDBY                                      VARCHAR2(50)
+ OWNER                                              VARCHAR2(20)
+
+SQL> describe CRUISE38.REFVIDEO;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ VIDEONAME                                 NOT NULL VARCHAR2(255)
+ FAMILY                                             VARCHAR2(50)
+ GENUS                                              VARCHAR2(50)
+ SPECIES                                            VARCHAR2(50)
+ STAGE                                              VARCHAR2(20)
+ CAABCODE                                           NUMBER(8)
+ NOTES                                              VARCHAR2(255)
+ OPCODE                                             VARCHAR2(50)
+ CAMERA                                             NUMBER(3)
+ RECORDCREATED                                      DATE
+ IDCONFIRMEDBY                                      VARCHAR2(50)
+ OWNER                                     NOT NULL VARCHAR2(20)
+
+SQL> describe CRUISE38.STEREOCALIBRATION;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ OPCODE                                    NOT NULL VARCHAR2(50)
+ CAMERA                                    NOT NULL NUMBER(3)
+ SIDE                                      NOT NULL VARCHAR2(1)
+ PATH                                      NOT NULL VARCHAR2(250)
+ CAMFILE                                   NOT NULL VARCHAR2(50)
+ RIG                                                VARCHAR2(20)
+
+SQL> describe CRUISE38.MPEGMANAGER;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ OPCODE                                    NOT NULL VARCHAR2(50)
+ CAMERA                                    NOT NULL NUMBER(3)
+ ORDERED                                   NOT NULL NUMBER(3)
+ PATH                                               VARCHAR2(250)
+ FILENAME                                           VARCHAR2(50)
+ STARTDATE                                          DATE
+ ENDDATE                                            DATE
+ ELAPSETIMESECONDS                                  NUMBER(10)
+ OWNER                                     NOT NULL VARCHAR2(20)
+
+SQL> describe CRUISE38.MASTEROPS;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ MASTEROPSID                               NOT NULL NUMBER(5)
+ CRUISENUM                                          NUMBER(5)
+ GEAR                                      NOT NULL VARCHAR2(25)
+ OPCODE                                             VARCHAR2(50)
+ LOCATION                                           VARCHAR2(255)
+ NUMSETS                                            NUMBER(2)
+ FUNDEDBY                                           VARCHAR2(50)
+ OWNER                                     NOT NULL VARCHAR2(20)
+
+SQL> describe CRUISE38.BRUVSVIDEO;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ BRUVSID                                            NUMBER(5)
+ VIDEOTIMESTART                                     NUMBER(8,5)
+ VIDEOTIMEFINISH                                    NUMBER(8,5)
+ TAPEREADER                                         VARCHAR2(50)
+ COMMENTS                                           VARCHAR2(255)
+ RECORDCREATION                                     DATE
+ OWNER                                     NOT NULL VARCHAR2(20)
+
+SQL> describe CRUISE38.CAABCODES;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ SPCODE                                    NOT NULL NUMBER(8)
+ COMMON_NAME                                        VARCHAR2(255)
+ SCIENTIFIC_NAME                                    VARCHAR2(255)
+ AUTHORITY                                          VARCHAR2(255)
+ FAMILY                                             VARCHAR2(255)
+ FAMILY_SEQUENCE                                    NUMBER(2)
+ ASSIGNED_FAMILY_CODE                               VARCHAR2(50)
+ ASSIGNED_FAMILY_SEQUENCE                           VARCHAR2(50)
+ RECENT_SYNONYMS                                    VARCHAR2(255)
+ COMMON_NAMES_LIST                                  VARCHAR2(255)
+ GENUS                                              VARCHAR2(255)
+ SPECIES                                            VARCHAR2(255)
+ SCINAME_INFORMAL                                   VARCHAR2(255)
+ DATE_LAST_MODIFIED                                 DATE
+ SUBSPECIES                                         VARCHAR2(50)
+ UNDESCRIBED_SP_FLAG                                VARCHAR2(1)
+ VARIETY                                            VARCHAR2(50)
+ HABITAT_CODE                                       VARCHAR2(50)
+ OBIS_CLASSIFICATION_CODE                           VARCHAR2(20)
+ KINGDOM                                            VARCHAR2(50)
+ SUBGENUS                                           VARCHAR2(50)
+ PHYLUM                                             VARCHAR2(50)
+ SUBPHYLUM                                          VARCHAR2(50)
+ ORDER_NAME                                         VARCHAR2(50)
+ SUBCLASS                                           VARCHAR2(50)
+ INFRAORDER                                         VARCHAR2(50)
+ SUBORDER                                           VARCHAR2(50)
+ DATE_EXTRACTED                                     DATE
+ ITIS_IDENTIFIER                                    NUMBER(12)
+ LIST_STATUS_CODE                                   VARCHAR2(1)
+ DISPLAY_NAME                                       VARCHAR2(100)
+ PARENT_ID                                          NUMBER(8)
+ NON_CURRENT_FLAG                                   VARCHAR2(1)
+ RANK                                               VARCHAR2(20)
+ ID                                                 NUMBER(6)
+ SUPERSEDED_BY                                      NUMBER(8)
+ CLASS                                              VARCHAR2(50)
+
+SQL> describe CRUISE38.CRUISES;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ CRUISENUM                                 NOT NULL NUMBER(5)
+ GEAR                                      NOT NULL VARCHAR2(50)
+ DESTINATION                                        VARCHAR2(255)
+ STARTDATE                                          DATE
+ ENDDATE                                            DATE
+ TYPE                                               VARCHAR2(255)
+ NUMSETS                                            NUMBER(4)
+ NUMRECORDS                                         NUMBER(5)
+ BOAT                                               VARCHAR2(255)
+ MAXSEAFILE                                         VARCHAR2(255)
+ DATAFILE                                           VARCHAR2(255)
+ OWNER                                     NOT NULL VARCHAR2(20)
+ LOGREQ                                             NUMBER(5)
+ DATA_ACCESS                                        VARCHAR2(50)
+ FUNDED_BY                                          VARCHAR2(50)
+ FUNDING_APP                                        NUMBER(6)
+ AIMS_TASKCODE                                      VARCHAR2(255)
+ COMMENTS                                           VARCHAR2(255)
+ BENTHIC_SCHEMA                                     VARCHAR2(255)
+ CONTRACTS                                          VARCHAR2(100)
+ DATACONSTRAINTS                                    VARCHAR2(100)
+
+SQL> describe CRUISE38.IMAGESDIR;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ IMAGETYPE                                 NOT NULL VARCHAR2(50)
+ IMAGEPATH                                          VARCHAR2(255)
+ COMMENTS                                           VARCHAR2(100)
+ TABLENAME                                          VARCHAR2(20)
+
+SQL> describe CRUISE38.LOCALCAABCODES;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ CAABCODE                                  NOT NULL NUMBER(8)
+ FAMILY                                             VARCHAR2(50)
+ GENUS                                              VARCHAR2(50)
+ SPECIES                                            VARCHAR2(50)
+ DESCRIPTION                                        VARCHAR2(200)
+ NOTES                                              VARCHAR2(200)
+ RECORDCREATED                                      DATE
+ CREATEDBY                                          VARCHAR2(50)
+
+SQL> describe CRUISE38.BENTHIC;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ OPCODE                                    NOT NULL VARCHAR2(50)
+ CAMERA                                    NOT NULL NUMBER(3)
+ SUBSTRATECATEGORY                                  VARCHAR2(50)
+ BENTHICFORMCATEGORY                                VARCHAR2(50)
+ BENTHICCATEGORY                                    VARCHAR2(255)
+ BENTHICSCHEMA                                      VARCHAR2(50)
+ OWNER                                     NOT NULL VARCHAR2(20)
+ RECORDCREATED                                      DATE
+
+SQL> describe CRUISE38.BENTHICCATEGORIES;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ SCHEMA                                    NOT NULL VARCHAR2(50)
+ CATEGORY                                  NOT NULL VARCHAR2(50)
+ VAL                                       NOT NULL VARCHAR2(100)
+ ORDERED                                            NUMBER(2)
+
+SQL> describe CRUISE38.BENTHICCOMMUNITIES;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ OPCODE                                    NOT NULL VARCHAR2(50)
+ CAMERA                                    NOT NULL NUMBER(3)
+ COMPONENT                                 NOT NULL VARCHAR2(100)
+ PERC                                               NUMBER(3)
+ OWNER                                     NOT NULL VARCHAR2(20)
+ RECORDCREATED                                      DATE
+ BENTHICSCHEAMA                                     VARCHAR2(50)
+
+SQL> describe CRUISE38.BENTHICSUBSTRATE;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ OPCODE                                    NOT NULL VARCHAR2(50)
+ CAMERA                                    NOT NULL NUMBER(3)
+ COMPONENT                                 NOT NULL VARCHAR2(100)
+ PERC                                               NUMBER(3)
+ OWNER                                     NOT NULL VARCHAR2(20)
+ RECORDCREATED                                      DATE
+ BENTHICSCHEAM                                      VARCHAR2(50)
+
+SQL> describe CRUISE38.BRUVSMAXNUM;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ FISHID                                    NOT NULL NUMBER(6)
+ TAPEREADER                                NOT NULL VARCHAR2(50)
+ MAXNUM                                    NOT NULL NUMBER(7)
+ TIMEMAXNUMSEEN                            NOT NULL NUMBER(8,5)
+ RECORDCREATED                                      DATE
+ OWNER                                     NOT NULL VARCHAR2(20)
+
+SQL> describe CRUISE38.BRUVSOPS;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ BRUVSID                                   NOT NULL NUMBER(5)
+ TAPEREADER                                NOT NULL VARCHAR2(50)
+ MASTEROPSID                                        NUMBER(5)
+ GEAR                                               VARCHAR2(50)
+ OPCODE                                             VARCHAR2(50)
+ CAMERA                                             NUMBER(3)
+ DEPTH                                              NUMBER(5,1)
+ TIMEIN                                             DATE
+ TIMEOUT                                            DATE
+ LAT                                                NUMBER(8,6)
+ LON                                                NUMBER(9,6)
+ COMMENTS                                           VARCHAR2(255)
+ WPT_OPNUM                                          VARCHAR2(50)
+ GEOID                                              VARCHAR2(5)
+ OPDATE_TIME                                        DATE
+ TIMEONSEABED                                       NUMBER(8,5)
+ ENDSAMPLINGTIME                                    NUMBER(8,5)
+ BENTHOSCLASS                                       VARCHAR2(50)
+ BENTHOSNOTES                                       VARCHAR2(255)
+ TIMEBAITGONE                                       NUMBER(8,5)
+ RECORDCREATED                                      DATE
+ TIMEOFTIMEONSEABED                                 DATE
+ TIMEOFENDSAMPLINGTIME                              DATE
+ CAMERAMODEL                                        VARCHAR2(255)
+ STEREO                                             VARCHAR2(1)
+ OWNER                                              VARCHAR2(20)
+ VISIBILITY                                         NUMBER(2)
+ CHECK_BY                                           VARCHAR2(50)
+
+SQL> describe CRUISE38.BRUVSSITEIMAGES;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ BRUVSID                                            NUMBER(5)
+ IMAGENAME                                 NOT NULL VARCHAR2(50)
+ IMAGETIME                                          NUMBER(8,5)
+ TAPEREADER                                         VARCHAR2(50)
+ RECORDCREATED                                      DATE
+ OWNER                                     NOT NULL VARCHAR2(20)
+
+SQL> describe CRUISE38.BRUVSSPECIES;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ BRUVSID                                            NUMBER(5)
+ FISHID                                    NOT NULL NUMBER(6)
+ TAPEREADER                                NOT NULL VARCHAR2(50)
+ FAMILY                                             VARCHAR2(50)
+ GENUS                                              VARCHAR2(50)
+ SPECIES                                            VARCHAR2(50)
+ TIMEFIRSTSEEN                                      NUMBER(8,5)
+ STAGE                                              VARCHAR2(3)
+ ACTIVITY                                           VARCHAR2(10)
+ TIMEFIRSTFEED                                      NUMBER(8,5)
+ MAXNUM                                             NUMBER(7)
+ TIMEMAXNUMSEEN                                     NUMBER(8,5)
+ CAABCODE                                           NUMBER(8)
+ RECORDCREATED                                      DATE
+ OWNER                                     NOT NULL VARCHAR2(20)
+
+SQL> describe CRUISE38.BRUVSSPIMAGES;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ FISHID                                             NUMBER(5)
+ TAPEREADER                                         VARCHAR2(50)
+ IMAGENAME                                 NOT NULL VARCHAR2(50)
+ IMAGETIME                                          NUMBER(8,5)
+ MARK                                               VARCHAR2(1)
+ RECORDCREATED                                      DATE
+ IDCONFIRMEDBY                                      VARCHAR2(50)
+ OWNER                                     NOT NULL VARCHAR2(20)
