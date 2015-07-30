@@ -12,7 +12,12 @@ class Equipment(models.Model):
 
 
 class Video(models.Model):
-    # todo:  placeholder!
+    # todo:  placeholder!  this should be filesystem / S3 ...
+    name = models.CharField(max_length=100, unique=True)
+
+
+class Observer(models.Model):
+    # todo:  placeholder for "tape reader"  create a real name list.
     name = models.CharField(max_length=100, unique=True)
 
 
@@ -62,9 +67,30 @@ class EnvironmentMeasure(models.Model):
 
 
 class Observation(models.Model):
-    measurement_time = models.DateTimeField()
-    water_tmperature = models.FloatField()
-    salinity = models.FloatField()
-    conductivity = models.FloatField()
-    dissolved_oxygen = models.FloatField()
-    current_flow = models.FloatField()
+    initial_observation_time = models.DateTimeField()
+    fish = models.ForeignKey(Fish)
+    maximum_number_observed = models.IntegerField()
+    maximum_number_observed_time = models.DateTimeField()
+
+    deployment = models.ForeignKey(Deployment)
+    observer = models.ForeignKey(Observer)
+
+
+class Image(models.Model):
+    # todo:  placeholder!  this should be filesystem / S3 ...
+    name = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        abstract = True
+
+
+class ObservationImage(Image):
+    # todo:  placeholder!
+    video = models.ForeignKey(Video)
+    observation = models.ForeignKey(Observation)
+
+
+class SiteImage(Image):
+    # todo:  placeholder!
+    video = models.ForeignKey(Video)
+    site = models.ForeignKey(Site)
