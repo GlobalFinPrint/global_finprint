@@ -1,7 +1,7 @@
 from django.contrib.gis.db import models
 
 from global_finprint.cruise.models import Cruise
-from global_finprint.benthos.models import BenthicCategory
+from global_finprint.benthos.models import Benthic
 
 
 class Equipment(models.Model):
@@ -9,11 +9,7 @@ class Equipment(models.Model):
     name = models.CharField(max_length=100, unique=True)
     # todo:  should be a controlled list
     camera = models.CharField(max_length=100, unique=True)
-
-
-class Video(models.Model):
-    # todo:  placeholder!  this should be filesystem / S3 ...
-    name = models.CharField(max_length=100, unique=True)
+    stereo = models.BooleanField(default=False)
 
 
 class Observer(models.Model):
@@ -31,7 +27,7 @@ class Fish(models.Model):
 class Site(models.Model):
     name = models.CharField(max_length=100, unique=True)
     location = models.PointField()
-    benthic_category = models.ForeignKey(BenthicCategory)
+    benthic = models.ForeignKey(Benthic)
     description = models.CharField(max_length=4000, null=True, blank=True)
 
     cruises = models.ManyToManyField(Cruise, through='Deployment')
@@ -44,24 +40,23 @@ class Site(models.Model):
 
 class Deployment(models.Model):
     drop_time = models.DateTimeField()
-    collection_time = models.DateTimeField()
-    time_bait_gone = models.DateTimeField()
+    collection_time = models.DateTimeField(null=True)
+    time_bait_gone = models.DateTimeField(null=True)
 
     equipment = models.ForeignKey(Equipment)
-    depth = models.FloatField()
+    depth = models.FloatField(null=True)
 
-    video = models.ForeignKey(Video)
     site = models.ForeignKey(Site)
     cruise = models.ForeignKey(Cruise)
 
 
 class EnvironmentMeasure(models.Model):
     measurement_time = models.DateTimeField()
-    water_tmperature = models.FloatField()
-    salinity = models.FloatField()
-    conductivity = models.FloatField()
-    dissolved_oxygen = models.FloatField()
-    current_flow = models.FloatField()
+    water_tmperature = models.FloatField(null=True)
+    salinity = models.FloatField(null=True)
+    conductivity = models.FloatField(null=True)
+    dissolved_oxygen = models.FloatField(null=True)
+    current_flow = models.FloatField(null=True)
 
     deployment = models.ForeignKey(Deployment)
 
@@ -69,11 +64,20 @@ class EnvironmentMeasure(models.Model):
 class Observation(models.Model):
     initial_observation_time = models.DateTimeField()
     fish = models.ForeignKey(Fish)
-    maximum_number_observed = models.IntegerField()
-    maximum_number_observed_time = models.DateTimeField()
+
+    maximum_number_observed = models.IntegerField(null=True)
+    maximum_number_observed_time = models.DateTimeField(null=True)
+    stage = models.TextField(max_length=10, null=True)
+    activity = models.TextField(max_length=10, null=True)
 
     deployment = models.ForeignKey(Deployment)
     observer = models.ForeignKey(Observer)
+
+
+class Video(models.Model):
+    # todo:  placeholder!  this should be filesystem / S3 ...
+    name = models.CharField(max_length=100, unique=True)
+    deployment = models.ForeignKey(Deployment)
 
 
 class Image(models.Model):

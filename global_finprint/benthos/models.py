@@ -1,12 +1,17 @@
 from django.contrib.gis.db import models
 
 
-class BenthicCategory(models.Model):
+class Category(models.Model):
     # todo:  placeholder
     name = models.CharField(max_length=100, unique=True)
 
 
-class BenthicCommunity(models.Model):
+class Form(models.Model):
+    # todo:  placeholder
+    name = models.CharField(max_length=100, unique=True)
+
+
+class Community(models.Model):
     # todo:  placeholder
     name = models.CharField(max_length=100, unique=True)
 
@@ -18,11 +23,11 @@ class Substrate(models.Model):
 
 class Benthic(models.Model):
     # todo:  placeholder
-    name = models.CharField(max_length=100, unique=True)
-    category = models.ForeignKey(to=BenthicCategory)
-    community = models.ForeignKey(to=BenthicCommunity)
     substrate = models.ForeignKey(to=Substrate)
-
+    category = models.ForeignKey(to=Category, null=True)
+    community = models.ForeignKey(to=Community, null=True)
+    form = models.ForeignKey(to=Form, null=True)
+    comment = models.TextField(max_length=500, null=True)
 
 
 
