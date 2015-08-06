@@ -1,15 +1,8 @@
 from django.contrib.gis.db import models
 
-from global_finprint.cruise.models import Cruise
-from global_finprint.benthos.models import Benthic
-
-
-class Equipment(models.Model):
-    # todo:  placeholder!
-    name = models.CharField(max_length=100, unique=True)
-    # todo:  should be a controlled list
-    camera = models.CharField(max_length=100, unique=True)
-    stereo = models.BooleanField(default=False)
+from global_finprint.core.models import AuditableModel
+from global_finprint.trip.models import Trip, Reef
+from global_finprint.habitat.models import Benthic
 
 
 class Observer(models.Model):
@@ -21,36 +14,57 @@ class Fish(models.Model):
     family = models.CharField(max_length=100, unique=True)
     genus = models.CharField(max_length=100, unique=True)
     species = models.CharField(max_length=100, unique=True)
-    # todo:  external ids?  e.g., FishBase key, CAAB code?
+    fishbase_key = models.IntegerField()
 
 
-class Site(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+FISH_SEX_CHOICES = {
+    ('M', 'Male'),
+    ('F', 'Female'),
+    ('U', 'Unknown'),
+}
+FISH_STAGE_CHOICES = {
+    ('AD', 'Adult'),
+    ('JU', 'Juvenile'),
+    ('U', 'Unknown'),
+}
+
+
+class ObservedFish(models.Model):
+    fish = models.ForeignKey(Fish)
+    sex = models.CharField(max_length=1, choices=FISH_SEX_CHOICES)
+    stage = models.TextField(max_length=2, choices=FISH_STAGE_CHOICES)
+    # todo:  controlled lists
+    size = models.TextField(max_length=10, null=True)
+    activity = models.TextField(max_length=10, null=True)
+    behavior = models.TextField(max_length=50, null=True)
+    # todo:  ...
+
+
+class Equipment(AuditableModel):
+    # todo:  should be a controlled list
+    camera = models.CharField(max_length=100)
+    stereo = models.BooleanField(default=False)
+    # todo:  should be a controlled list ... get pictures, etc.
+    bruv_frame = models.CharField(max_length=100)
+    # todo:  should be a controlled list
+    bait = models.CharField(max_length=100)
+
+
+class Set(AuditableModel):
     location = models.PointField()
-    benthic = models.ForeignKey(Benthic)
-    description = models.CharField(max_length=4000, null=True, blank=True)
-
-    cruises = models.ManyToManyField(Cruise, through='Deployment')
-
-    objects = models.GeoManager()
-
-    def __str__(self):
-        return u"{0}".format(self.name)
-
-
-class Deployment(models.Model):
     drop_time = models.DateTimeField()
     collection_time = models.DateTimeField(null=True)
     time_bait_gone = models.DateTimeField(null=True)
 
     equipment = models.ForeignKey(Equipment)
     depth = models.FloatField(null=True)
+    benthic = models.ForeignKey(Benthic)
 
-    site = models.ForeignKey(Site)
-    cruise = models.ForeignKey(Cruise)
+    reef = models.ForeignKey(Reef)
+    trip = models.ForeignKey(Trip)
 
 
-class EnvironmentMeasure(models.Model):
+class EnvironmentMeasure(AuditableModel):
     measurement_time = models.DateTimeField()
     water_tmperature = models.FloatField(null=True)
     salinity = models.FloatField(null=True)
@@ -58,31 +72,30 @@ class EnvironmentMeasure(models.Model):
     dissolved_oxygen = models.FloatField(null=True)
     current_flow = models.FloatField(null=True)
 
-    deployment = models.ForeignKey(Deployment)
+    set = models.ForeignKey(Set)
 
 
-class Observation(models.Model):
+class Observation(AuditableModel):
     initial_observation_time = models.DateTimeField()
-    fish = models.ForeignKey(Fish)
+    observed_fish = models.ForeignKey(ObservedFish)
 
     maximum_number_observed = models.IntegerField(null=True)
     maximum_number_observed_time = models.DateTimeField(null=True)
-    stage = models.TextField(max_length=10, null=True)
-    activity = models.TextField(max_length=10, null=True)
 
-    deployment = models.ForeignKey(Deployment)
+    set = models.ForeignKey(Set)
     observer = models.ForeignKey(Observer)
 
 
-class Video(models.Model):
+class Video(AuditableModel):
     # todo:  placeholder!  this should be filesystem / S3 ...
-    name = models.CharField(max_length=100, unique=True)
-    deployment = models.ForeignKey(Deployment)
+    name = models.FileField()
+    length = models.FloatField()
+    set = models.ForeignKey(Set)
 
 
-class Image(models.Model):
+class Image(AuditableModel):
     # todo:  placeholder!  this should be filesystem / S3 ...
-    name = models.CharField(max_length=100, unique=True)
+    name = models.FileField()
 
     class Meta:
         abstract = True
@@ -97,4 +110,4 @@ class ObservationImage(Image):
 class SiteImage(Image):
     # todo:  placeholder!
     video = models.ForeignKey(Video)
-    site = models.ForeignKey(Site)
+    set = models.ForeignKey(Set)
