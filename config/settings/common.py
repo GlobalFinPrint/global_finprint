@@ -43,9 +43,10 @@ THIRD_PARTY_APPS = (
 
 # Apps specific for this project go here.
 LOCAL_APPS = (
+    'global_finprint.core',  # abstract models, etc.
     'global_finprint.users',  # custom users app
-    'global_finprint.benthos',
-    'global_finprint.cruise',
+    'global_finprint.habitat',
+    'global_finprint.trip',
     'global_finprint.bruv',
 )
 
