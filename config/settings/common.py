@@ -92,6 +92,7 @@ EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.s
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#admins
 ADMINS = (
     ("""kirkl""", 'kirkl@vulcan.com'),
+    ("""stuartg""", 'stuartg@vulcan.com'),
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
@@ -183,6 +184,7 @@ STATICFILES_DIRS = (
     str(APPS_DIR.path('static')),
 )
 
+
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -265,4 +267,3 @@ INSTALLED_APPS += ('kombu.transport.django',)
 BROKER_URL = env("CELERY_BROKER_URL", default='django://')
 ########## END CELERY
 
-# Your common stuff: Below this line define 3rd party library settings
