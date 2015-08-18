@@ -52,7 +52,7 @@
         
           <ul class="nav navbar-nav navbar-right">
             {% if request.user.is_authenticated %}
-              <li> {{ request.user.username   }} </li>
+              <li><a href="{% url 'home' %}" {{ request.user.username   }} </li>
               <li><a href="{% url 'finprint_logout' %}">{% trans "Logout" %}</a></li>
             {% else %}
               <li><a href="{% url 'finprint_login' %}">{% trans "Log In" %}</a></li>
