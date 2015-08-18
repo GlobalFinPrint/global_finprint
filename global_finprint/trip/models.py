@@ -61,7 +61,7 @@ class Trip(AuditableModel):
 
     def __str__(self):
         # todo:  whatever is most usefully readable ...
-        return u"{0} ({2} - {3})".format(self.team,
+        return u"{0} ({1} - {2})".format(self.team,
                                          self.start_datetime.date().isoformat(),
                                          self.end_datetime.date().isoformat()
                                          )
