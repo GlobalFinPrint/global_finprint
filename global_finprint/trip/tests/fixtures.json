@@ -1,0 +1,77 @@
+[
+  {
+    "fields": {
+      "boundary": null,
+      "name": "Armit Island"
+    },
+    "model": "trip.location",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "boundary": null,
+      "name": "Barcoo Bank"
+    },
+    "model": "trip.location",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "boundary": null,
+      "name": "East Warregoes"
+    },
+    "model": "trip.location",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "boundary": null,
+      "name": "Holbourne Island"
+    },
+    "model": "trip.location",
+    "pk": 4
+  },
+  {
+    "fields": {
+      "boundary": null,
+      "name": "Karamea Bank"
+    },
+    "model": "trip.location",
+    "pk": 5
+  },
+  {
+    "fields": {
+      "boundary": null,
+      "name": "West Warregoes"
+    },
+    "model": "trip.location",
+    "pk": 6
+  },
+  {
+    "fields": {
+      "user": 1,
+      "lead": "Mike Heithaus",
+      "last_modified_datetime": "2015-08-12T18:06:32.221Z",
+      "association": "FIU",
+      "create_datetime": "2015-08-12T18:06:32.221Z"
+    },
+    "model": "trip.team",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "team": 3,
+      "boat": "minnow",
+      "location": 1,
+      "type": "BPositive",
+      "create_datetime": "2015-08-17T15:00:09.943Z",
+      "user": 2,
+      "last_modified_datetime": "2015-08-17T22:06:48.047Z",
+      "end_datetime": "2015-08-17T14:57:57Z",
+      "name": "Test1",
+      "start_datetime": "2015-08-17T14:57:55Z"
+    },
+    "model": "trip.trip",
+    "pk": 2
+  }
+]
