@@ -6,6 +6,7 @@ module.exports = function (grunt) {
   // see: https://github.com/sindresorhus/load-grunt-tasks
   require('load-grunt-tasks')(grunt);
 
+  grunt.file.setBase(process.cwd());
   // Time how long tasks take. Can help when optimizing build times
   // see: https://npmjs.org/package/time-grunt
   require('time-grunt')(grunt);
@@ -83,6 +84,7 @@ module.exports = function (grunt) {
       },
       runDjango: {
         cmd: 'python <%= paths.manageScript %> runserver'
+        //cmd: 'echo %cd% '
       },
       
     }

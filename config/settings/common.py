@@ -35,16 +35,17 @@ DJANGO_APPS = (
     'django.contrib.admin',
 )
 THIRD_PARTY_APPS = (
-    'crispy_forms',  # Form layouts
-    'allauth',  # registration
-    'allauth.account',  # registration
-    'allauth.socialaccount',  # registration
+    #'c_forms',  # Form layouts
+    'crispy_forms',
+    #'allauth',  # registration
+    #'allauth.account',  # registration
+    #'allauth.socialaccount',  # registration
 )
 
 # Apps specific for this project go here.
 LOCAL_APPS = (
     'global_finprint.core',  # abstract models, etc.
-    'global_finprint.users',  # custom users app
+    #'global_finprint.users',  # custom users app
     'global_finprint.habitat',
     'global_finprint.trip',
     'global_finprint.bruv',
@@ -63,6 +64,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'config.current_user.CurrentUserMiddleware',
 )
 
 # MIGRATIONS CONFIGURATION
@@ -204,21 +206,22 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # AUTHENTICATION CONFIGURATION
 # ------------------------------------------------------------------------------
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
-)
+# AUTHENTICATION_BACKENDS = (
+#     'django.contrib.auth.backends.ModelBackend',
+#     'allauth.account.auth_backends.AuthenticationBackend',
+# )
 
 # Some really nice defaults
-ACCOUNT_AUTHENTICATION_METHOD = 'username'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-
-# Custom user app defaults
-# Select the correct user model
-AUTH_USER_MODEL = 'users.User'
-LOGIN_REDIRECT_URL = 'users:redirect'
-LOGIN_URL = 'account_login'
+# ACCOUNT_AUTHENTICATION_METHOD = 'username'
+# ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+#
+# # Custom user app defaults
+# # Select the correct user model
+# AUTH_USER_MODEL = 'users.User'
+# LOGIN_REDIRECT_URL = 'users:redirect'
+# LOGIN_URL = 'account_login'
+LOGIN_URL = 'finprint_login'
 
 # SLUGLIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'

@@ -54,3 +54,5 @@ node_modules/
 
 # virtual environments
 .env
+
+global_finprint/static/bower_components
