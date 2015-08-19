@@ -1,8 +1,17 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 
-    <div style="width:800px">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="well">
+                {% crispy form %}
+            </div>
+        </div>
+    </div>
+<!--
+
         <form action="{{ action }}" method="post" role="form">
             <div>{% csrf_token %}</div>
             {% if form.non_field_errors %}
@@ -12,8 +21,7 @@
                 {% endfor %}
                 </ul>
             {% endif %}
-            {{ form.as_p }}
-<!--
+            {{ form | crispy }}
             <div class="form-group">
                 <label for="name" >Trip Name:</label>
                 <input type="text" class="form-control" id="name" name="name" value="{{ trip.name }}"/>
@@ -30,8 +38,8 @@
                 <label for="end_date">End Date:</label>
                 <input type="datetime" class="form-control" id="end_date" name="end_date" value="{{ trip.end_datetime }}"/>
             </div>
--->
             <input id="save_trip" type="submit" value="Save" class="btn btn-default btn-sm"/>
         </form>
     </div>
+-->
 {% endblock %}

@@ -16,7 +16,7 @@ from global_finprint.trip import views
 urlpatterns = [
     url(r"^$", TemplateView.as_view(template_name='pages/home.html'), name="home"),
 
-    url(r"^trips/$", views.TripListView.as_view(), name='trips'),
+    url(r"^trips/$", views.TripListView.as_view(), name='trip_list'),
     url(r"^trips/create/$", views.TripCreateView.as_view(), name='trip_create'),
     url(r"^trips/(?P<pk>\d+)/$", views.TripUpdateView.as_view(), name='trip_update'),
 
