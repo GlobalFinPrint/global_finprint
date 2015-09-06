@@ -19,6 +19,10 @@ urlpatterns = [
     url(r"^trips/$", views.TripListView.as_view(), name='trip_list'),
     url(r"^trips/create/$", views.TripCreateView.as_view(), name='trip_create'),
     url(r"^trips/(?P<pk>\d+)/$", views.TripUpdateView.as_view(), name='trip_update'),
+    url(r"^api/trips/(?P<pk>\d+)/$", views.trip_detail, name='api_trip_detail'),
+
+    url(r"^sets/(?P<pk>\d+)/$", views.TripUpdateView.as_view(), name='trip_set_list'),
+
 
     url(r"^about/$", TemplateView.as_view(template_name='pages/about.html'), name="about"),
 
