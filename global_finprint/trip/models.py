@@ -49,19 +49,17 @@ class Team(AuditableModel):
 
 
 class Trip(AuditableModel):
-    # todo:  what is the expectaion of name?
-    name = models.CharField(max_length=100)
     team = models.ForeignKey(Team)
     location = models.ForeignKey(Location)
     boat = models.CharField(max_length=100)
-    start_datetime = models.DateTimeField()
-    end_datetime = models.DateTimeField()
+    start_date = models.DateField()
+    end_date = models.DateField()
     # todo:  what is this for?
     type = models.CharField(max_length=100)
 
     def __str__(self):
         # todo:  whatever is most usefully readable ...
         return u"{0} ({1} - {2})".format(self.team,
-                                         self.start_datetime.date().isoformat(),
-                                         self.end_datetime.date().isoformat()
+                                         self.start_date.isoformat(),
+                                         self.end_date.isoformat()
                                          )
