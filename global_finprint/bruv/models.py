@@ -58,10 +58,13 @@ class Set(AuditableModel):
 
     equipment = models.ForeignKey(Equipment)
     depth = models.FloatField(null=True)
-    benthic = models.ForeignKey(Benthic)
+    #benthic = models.ForeignKey(Benthic, null=True, default=None)
 
-    reef = models.ForeignKey(Reef)
+    reef = models.ForeignKey(Reef, null=True)
     trip = models.ForeignKey(Trip)
+
+    def __str__(self):
+        return u"{0}".format(self.drop_time)
 
 
 class EnvironmentMeasure(AuditableModel):
