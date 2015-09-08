@@ -10,19 +10,24 @@ from django.contrib.auth.views import login, logout, password_change, password_c
 from django.contrib.auth.forms import PasswordChangeForm
 from global_finprint.core.views import UrlRedirect
 
-from global_finprint.trip import views
+from global_finprint.trip.views import TripListView, TripDetailView, TripCreateView, TripUpdateView, trip_detail
+from global_finprint.bruv.views import SetListView, SetCreateView, SetUpdateView, set_detail, ObservationListView
 
 
 urlpatterns = [
     url(r"^$", TemplateView.as_view(template_name='pages/home.html'), name="home"),
 
-    url(r"^trips/$", views.TripListView.as_view(), name='trip_list'),
-    url(r"^trips/create/$", views.TripCreateView.as_view(), name='trip_create'),
-    url(r"^trips/(?P<pk>\d+)/$", views.TripUpdateView.as_view(), name='trip_update'),
-    url(r"^api/trips/(?P<pk>\d+)/$", views.trip_detail, name='api_trip_detail'),
+    url(r"^trips/$", TripListView.as_view(), name='trip_list'),
+    url(r"^trips/create/$", TripCreateView.as_view(), name='trip_create'),
+    url(r"^trips/(?P<pk>\d+)/$", TripUpdateView.as_view(), name='trip_update'),
+    url(r"^api/trips/(?P<pk>\d+)/$", trip_detail, name='api_trip_detail'),
 
-    url(r"^sets/(?P<pk>\d+)/$", views.TripUpdateView.as_view(), name='trip_set_list'),
+    url(r"^trips/(?P<trip_pk>\d+)/sets/$", SetListView.as_view(), name='trip_set_list'),
+    url(r"^sets/create/$", SetCreateView.as_view(), name='set_create'),
+    url(r"^sets/(?P<pk>\d+)/$", SetUpdateView.as_view(), name='set_update'),
+    url(r"^api/sets/(?P<pk>\d+)/$", set_detail, name='api_set_detail'),
 
+    url(r"^sets/(?P<set_pk>\d+)/observations/$", ObservationListView.as_view(), name='set_observations_list'),
 
     url(r"^about/$", TemplateView.as_view(template_name='pages/about.html'), name="about"),
 
