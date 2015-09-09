@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="col-md-11">
+    <div class="row">
+        <legend class="pull-left">Sets
+            <a role="button" href="{% url 'set_create' %}" class="btn btn-sm pull-right" title="Create Set" style="background: none;" aria-label="Left Align">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            </a>
+        </legend>
+        <br>
+    </div>
+    <div class ="row">
+        <div class = "col-md-6">
+            <div class="list-group generic-list">
+            {% for set in sets %}
+                <li class="list-group-item generic-list-item" data-pk-id="{{ set.id }}">
+                    <span> {{ set }} </span>
+                    <div class="pull-right">
+                        <a href="{% url 'set_update' set.id %}">Edit</a>
+                        <a href="{% url 'set_observations_list' set.id %}">Observations</a>
+                    </div>
+                </li>
+            {% endfor %}
+            </div>
+        </div>
+        <div class = "col-md-6">
+            <div class="well" id="set_detail_panel">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
