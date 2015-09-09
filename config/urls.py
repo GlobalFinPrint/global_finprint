@@ -15,7 +15,8 @@ from global_finprint.bruv.views import SetListView, SetCreateView, SetUpdateView
 
 
 urlpatterns = [
-    url(r"^$", TemplateView.as_view(template_name='pages/home.html'), name="home"),
+    #url(r"^$", TemplateView.as_view(template_name='pages/home.html'), name="home"),
+    url(r"^$", TripListView.as_view(), name="home"),
 
     url(r"^trips/$", TripListView.as_view(), name='trip_list'),
     url(r"^trips/create/$", TripCreateView.as_view(), name='trip_create'),
