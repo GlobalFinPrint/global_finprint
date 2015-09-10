@@ -9,7 +9,13 @@ from django.core.urlresolvers import reverse_lazy
 
 def set_detail(request, pk):
     s = Set.objects.get(pk=pk)
-    data = {'name': str(s)}
+    data = {'name': str(s),
+            'drop-time': s.drop_time.isoformat(),
+            'collection-time': s.collection_time.isoformat(),
+            'bait-gone': s.time_bait_gone.isoformat(),
+            'equipment': str(s.equipment),
+            'depth': s.depth,
+            'reef': str(s.reef)}
     return JsonResponse(data)
 
 
