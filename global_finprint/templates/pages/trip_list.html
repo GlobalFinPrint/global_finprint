@@ -14,7 +14,7 @@
         <div class = "col-md-6">
             <div class="list-group generic-list">
             {% for trip in trips %}
-                <li class="list-group-item generic-list-item" data-pk-id="{{ trip.id }}">
+                <li class="list-group-item generic-list-item" data-pk-id="{{ trip.id }} " data-type="trip">
                     <span> {{ trip }} </span>
                     <div class="pull-right">
                         <a href="{% url 'trip_update' trip.id %}">Edit</a>
@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class = "col-md-6">
-            <div class="well" id="trip_detail_panel">
+            <div class="well" id="detail_panel">
 
             </div>
         </div>
