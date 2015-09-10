@@ -49,6 +49,9 @@ class Equipment(AuditableModel):
     # todo:  should be a controlled list
     bait = models.CharField(max_length=100)
 
+    def __str__(self):
+        return u"{0}".format(self.camera)
+
 
 class Set(AuditableModel):
     location = models.PointField()
