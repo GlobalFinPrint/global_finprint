@@ -61,9 +61,10 @@ var finprint = finprint || {};  //namespace if necessary...
         var get = function(){
             $.get('/api/sets/' + id, function (data) {
                 $containerEl.empty()
-                        .append($('<h4>' + moment(data.name).format() + '</h4><dl><dt>drop time:</dt><dd>' + moment(data.drop_time).format("H mm:ss") +
-                                '</dd><dt>Collection Time</dt><dd>' + moment(data.collection_time).format("H mm:ss") +
-                                '</dd><dt>Bait Gone</dt><dd> '+ moment(data.time_bait_gone).format("H mm:ss") +
+                        .append($('<h4>' + moment(data.drop_time).format("dddd, MMMM Do YYYY, h:mm a") +
+                                '</h4><dl><dt>drop time:</dt><dd>' + moment(data.drop_time).format("H:mm:ss") +
+                                '</dd><dt>Collection Time</dt><dd>' + moment(data.collection_time).format("H:mm:ss") +
+                                '</dd><dt>Bait Gone</dt><dd> '+ moment(data.time_bait_gone).format("H:mm:ss") +
                                 '</dd><dt>Equipment</dt><dd> ' + data.equipment +
                                 '</dd><dt>Depth</dt><dd> ' + data.depth +
                                 '</dd><dt>Reef</dt><dd> ' + data.reef + '</dd></dl>'));
