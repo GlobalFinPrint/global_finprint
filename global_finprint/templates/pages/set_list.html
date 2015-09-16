@@ -1,7 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+
 <div class="col-md-11">
+    <div class="row">
+        <div class="well trail">
+            <a href="{% url 'trip_list' %}">Trips</a>
+        </div>
+    </div>
     <div class="row">
         <legend class="pull-left">Sets
             <a role="button" href="{% url 'set_create' %}" class="btn btn-sm pull-right" title="Create Set" style="background: none;" aria-label="Left Align">

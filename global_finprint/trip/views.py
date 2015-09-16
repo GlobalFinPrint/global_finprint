@@ -1,7 +1,6 @@
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, View
 from django.contrib import messages
 from django.http.response import HttpResponse, JsonResponse, DjangoJSONEncoder
-from django.core import serializers
 from braces.views import LoginRequiredMixin
 from global_finprint.trip.forms import TripForm
 from global_finprint.trip.models import Trip
