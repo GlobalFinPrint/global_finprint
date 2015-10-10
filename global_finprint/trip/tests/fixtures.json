@@ -65,11 +65,10 @@
       "location": 1,
       "type": "BPositive",
       "create_datetime": "2015-08-17T15:00:09.943Z",
-      "user": 2,
+      "user": 1,
       "last_modified_datetime": "2015-08-17T22:06:48.047Z",
-      "end_datetime": "2015-08-17T14:57:57Z",
-      "name": "Test1",
-      "start_datetime": "2015-08-17T14:57:55Z"
+      "end_date": "2015-08-17",
+      "start_date": "2015-08-17"
     },
     "model": "trip.trip",
     "pk": 2

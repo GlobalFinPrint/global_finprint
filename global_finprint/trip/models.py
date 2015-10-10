@@ -44,6 +44,7 @@ class Team(AuditableModel):
     # todo:  person's name.  add to controlled list
     lead = models.CharField(max_length=100)
     # todo:  some other people ...
+
     def __str__(self):
         return u"{0}-{1}".format(self.association, self.lead)
 
