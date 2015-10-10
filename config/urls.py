@@ -6,11 +6,10 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
-from django.contrib.auth.views import login, logout, password_change, password_change_done
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.views import login, logout
 from global_finprint.core.views import UrlRedirect
 
-from global_finprint.trip.views import TripListView, TripDetailView, TripCreateView, TripUpdateView, trip_detail
+from global_finprint.trip.views import TripListView, TripCreateView, TripUpdateView, trip_detail
 from global_finprint.bruv.views import SetListView, SetCreateView, SetUpdateView, set_detail, ObservationListView
 
 
@@ -19,16 +18,20 @@ urlpatterns = [
     url(r"^$", TripListView.as_view(), name="home"),
 
     url(r"^trips/$", TripListView.as_view(), name='trip_list'),
+
     url(r"^trips/create/$", TripCreateView.as_view(), name='trip_create'),
     url(r"^trips/(?P<pk>\d+)/$", TripUpdateView.as_view(), name='trip_update'),
-    url(r"^api/trips/(?P<pk>\d+)/$", trip_detail, name='api_trip_detail'),
 
     url(r"^trips/(?P<trip_pk>\d+)/sets/$", SetListView.as_view(), name='trip_set_list'),
-    url(r"^sets/create/$", SetCreateView.as_view(), name='set_create'),
-    url(r"^sets/(?P<pk>\d+)/$", SetUpdateView.as_view(), name='set_update'),
+
+    url(r"^api/trips/(?P<pk>\d+)/$", trip_detail, name='api_trip_detail'),
     url(r"^api/sets/(?P<pk>\d+)/$", set_detail, name='api_set_detail'),
 
+    url(r"^sets/create/$", SetCreateView.as_view(), name='set_create'),
+    url(r"^sets/(?P<pk>\d+)/$", SetUpdateView.as_view(), name='set_update'),
+
     url(r"^sets/(?P<set_pk>\d+)/observations/$", ObservationListView.as_view(), name='set_observations_list'),
+
 
     url(r"^about/$", TemplateView.as_view(template_name='pages/about.html'), name="about"),
 
@@ -39,7 +42,7 @@ urlpatterns = [
     #url(r"^users/", include("global_finprint.users.urls", namespace="users")),
     #url(r"^accounts/", include('allauth.urls')),
     url(r'^accounts/login/$', login, {'template_name': 'registration/login.html'}, name='finprint_login'),
-    url(r'^accounts/logout/$', logout, {'template_name': 'registration/logout.html'}, name='finprint_logout'),
+    url(r'^accounts/logout/$', logout, {'template_name': 'registration/logged_out.html'}, name='finprint_logout'),
     url(r'^accounts/profile/$', UrlRedirect.as_view()),
 
     # Your stuff: custom urls includes go here

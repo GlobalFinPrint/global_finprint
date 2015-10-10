@@ -60,3 +60,4 @@ INSTALLED_APPS += ('django_extensions', )
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 # Your local stuff: Below this line define 3rd party library settings
+# psql://finprint:finprint@finprint-dev-01.ciwsmpi9dnsp.us-west-2.rds.amazonaws.com:5432/global_finprint
