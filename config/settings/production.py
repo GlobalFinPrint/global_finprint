@@ -91,13 +91,13 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 # EMAIL
 # ------------------------------------------------------------------------------
-DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL',
-                         default='global_finprint <noreply@globalfinprint.org>')
-EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
-MAILGUN_ACCESS_KEY = env('DJANGO_MAILGUN_API_KEY')
-MAILGUN_SERVER_NAME = env('DJANGO_MAILGUN_SERVER_NAME')
-EMAIL_SUBJECT_PREFIX = env("DJANGO_EMAIL_SUBJECT_PREFIX", default='[global_finprint] ')
-SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
+# DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL',
+#                          default='global_finprint <noreply@globalfinprint.org>')
+# EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
+# MAILGUN_ACCESS_KEY = env('DJANGO_MAILGUN_API_KEY')
+# MAILGUN_SERVER_NAME = env('DJANGO_MAILGUN_SERVER_NAME')
+# EMAIL_SUBJECT_PREFIX = env("DJANGO_EMAIL_SUBJECT_PREFIX", default='[global_finprint] ')
+# SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 
 # TEMPLATE CONFIGURATION
 # ------------------------------------------------------------------------------
