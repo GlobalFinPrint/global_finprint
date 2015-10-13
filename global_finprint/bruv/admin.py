@@ -8,6 +8,6 @@ admin.site.register(models.Observer)
 admin.site.register(models.Observation)
 admin.site.register(models.EnvironmentMeasure)
 admin.site.register(models.Equipment)
-admin.site.register(models.Fish)
-admin.site.register(models.ObservedFish)
+admin.site.register(models.Animal)
+admin.site.register(models.ObservedAnimal)
 

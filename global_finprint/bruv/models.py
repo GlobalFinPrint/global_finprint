@@ -10,11 +10,12 @@ class Observer(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
 
-class Fish(models.Model):
+class Animal(models.Model):
     family = models.CharField(max_length=100, unique=True)
     genus = models.CharField(max_length=100, unique=True)
     species = models.CharField(max_length=100, unique=True)
-    fishbase_key = models.IntegerField()
+    fishbase_key = models.IntegerField(null=True)
+    sealifebase_key = models.IntegerField(null=True)
 
 
 FISH_SEX_CHOICES = {
@@ -29,15 +30,17 @@ FISH_STAGE_CHOICES = {
 }
 
 
-class ObservedFish(models.Model):
-    fish = models.ForeignKey(Fish)
+class ObservedAnimal(models.Model):
+    animal = models.ForeignKey(Animal)
     sex = models.CharField(max_length=1, choices=FISH_SEX_CHOICES)
     stage = models.TextField(max_length=2, choices=FISH_STAGE_CHOICES)
-    # todo:  controlled lists
-    size = models.TextField(max_length=10, null=True)
-    activity = models.TextField(max_length=10, null=True)
+
+    # length in cm
+    length = models.IntegerField(null=True, help_text='centimeters')
+
+    # todo:  ... controlled vocabularies?
+    activity = models.TextField(max_length=25, null=True)
     behavior = models.TextField(max_length=50, null=True)
-    # todo:  ...
 
 
 class Equipment(AuditableModel):
@@ -83,7 +86,7 @@ class EnvironmentMeasure(AuditableModel):
 
 class Observation(AuditableModel):
     initial_observation_time = models.DateTimeField()
-    observed_fish = models.ForeignKey(ObservedFish)
+    observed_fish = models.ForeignKey(ObservedAnimal)
 
     maximum_number_observed = models.IntegerField(null=True)
     maximum_number_observed_time = models.DateTimeField(null=True)

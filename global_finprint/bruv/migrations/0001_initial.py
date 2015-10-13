@@ -4,38 +4,32 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 from django.conf import settings
 import django.contrib.gis.db.models.fields
+import config.current_user
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('habitat', '0001_initial'),
         ('trip', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Drop',
+            name='Animal',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
-                ('create_datetime', models.DateTimeField(auto_now_add=True)),
-                ('last_modified_datetime', models.DateTimeField(auto_now=True)),
-                ('location', django.contrib.gis.db.models.fields.PointField(srid=4326)),
-                ('drop_time', models.DateTimeField()),
-                ('collection_time', models.DateTimeField(null=True)),
-                ('time_bait_gone', models.DateTimeField(null=True)),
-                ('depth', models.FloatField(null=True)),
-                ('benthic', models.ForeignKey(to='habitat.Benthic')),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('family', models.CharField(unique=True, max_length=100)),
+                ('genus', models.CharField(unique=True, max_length=100)),
+                ('species', models.CharField(unique=True, max_length=100)),
+                ('fishbase_key', models.IntegerField(null=True)),
+                ('sealifebase_key', models.IntegerField(null=True)),
             ],
-            options={
-                'abstract': False,
-            },
         ),
         migrations.CreateModel(
             name='EnvironmentMeasure',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('create_datetime', models.DateTimeField(auto_now_add=True)),
                 ('last_modified_datetime', models.DateTimeField(auto_now=True)),
                 ('measurement_time', models.DateTimeField()),
@@ -44,8 +38,6 @@ class Migration(migrations.Migration):
                 ('conductivity', models.FloatField(null=True)),
                 ('dissolved_oxygen', models.FloatField(null=True)),
                 ('current_flow', models.FloatField(null=True)),
-                ('deployment', models.ForeignKey(to='bruv.Drop')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'abstract': False,
@@ -54,38 +46,28 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Equipment',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('create_datetime', models.DateTimeField(auto_now_add=True)),
                 ('last_modified_datetime', models.DateTimeField(auto_now=True)),
-                ('camera', models.CharField(max_length=100, unique=True)),
+                ('camera', models.CharField(max_length=100)),
                 ('stereo', models.BooleanField(default=False)),
-                ('bruv', models.CharField(max_length=100, unique=True)),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('bruv_frame', models.CharField(max_length=100)),
+                ('bait', models.CharField(max_length=100)),
+                ('user', models.ForeignKey(default=config.current_user.get_current_user, to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'abstract': False,
             },
         ),
         migrations.CreateModel(
-            name='Fish',
-            fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
-                ('family', models.CharField(max_length=100, unique=True)),
-                ('genus', models.CharField(max_length=100, unique=True)),
-                ('species', models.CharField(max_length=100, unique=True)),
-                ('fishbase_key', models.IntegerField()),
-            ],
-        ),
-        migrations.CreateModel(
             name='Observation',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('create_datetime', models.DateTimeField(auto_now_add=True)),
                 ('last_modified_datetime', models.DateTimeField(auto_now=True)),
                 ('initial_observation_time', models.DateTimeField()),
                 ('maximum_number_observed', models.IntegerField(null=True)),
                 ('maximum_number_observed_time', models.DateTimeField(null=True)),
-                ('deployment', models.ForeignKey(to='bruv.Drop')),
             ],
             options={
                 'abstract': False,
@@ -94,45 +76,65 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ObservationImage',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('create_datetime', models.DateTimeField(auto_now_add=True)),
                 ('last_modified_datetime', models.DateTimeField(auto_now=True)),
-                ('name', models.CharField(max_length=100, unique=True)),
+                ('name', models.FileField(upload_to='')),
                 ('observation', models.ForeignKey(to='bruv.Observation')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(default=config.current_user.get_current_user, to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'abstract': False,
             },
         ),
         migrations.CreateModel(
-            name='ObservedFish',
+            name='ObservedAnimal',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
-                ('sex', models.CharField(max_length=1, choices=[('U', 'Unknown'), ('F', 'Female'), ('M', 'Male')])),
-                ('size', models.TextField(null=True, max_length=10)),
-                ('stage', models.TextField(null=True, max_length=10)),
-                ('activity', models.TextField(null=True, max_length=10)),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('sex', models.CharField(choices=[('M', 'Male'), ('F', 'Female'), ('U', 'Unknown')], max_length=1)),
+                ('stage', models.TextField(choices=[('JU', 'Juvenile'), ('AD', 'Adult'), ('U', 'Unknown')], max_length=2)),
+                ('length', models.IntegerField(null=True, help_text='centimeters')),
+                ('activity', models.TextField(null=True, max_length=25)),
                 ('behavior', models.TextField(null=True, max_length=50)),
-                ('fish', models.ForeignKey(to='bruv.Fish')),
+                ('animal', models.ForeignKey(to='bruv.Animal')),
             ],
         ),
         migrations.CreateModel(
             name='Observer',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=100, unique=True)),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('name', models.CharField(unique=True, max_length=100)),
             ],
+        ),
+        migrations.CreateModel(
+            name='Set',
+            fields=[
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('create_datetime', models.DateTimeField(auto_now_add=True)),
+                ('last_modified_datetime', models.DateTimeField(auto_now=True)),
+                ('location', django.contrib.gis.db.models.fields.PointField(srid=4326)),
+                ('drop_time', models.DateTimeField()),
+                ('collection_time', models.DateTimeField(null=True)),
+                ('time_bait_gone', models.DateTimeField(null=True)),
+                ('depth', models.FloatField(null=True)),
+                ('equipment', models.ForeignKey(to='bruv.Equipment')),
+                ('reef', models.ForeignKey(null=True, to='trip.Reef')),
+                ('trip', models.ForeignKey(to='trip.Trip')),
+                ('user', models.ForeignKey(default=config.current_user.get_current_user, to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'abstract': False,
+            },
         ),
         migrations.CreateModel(
             name='SiteImage',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('create_datetime', models.DateTimeField(auto_now_add=True)),
                 ('last_modified_datetime', models.DateTimeField(auto_now=True)),
-                ('name', models.CharField(max_length=100, unique=True)),
-                ('site', models.ForeignKey(to='bruv.Drop')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('name', models.FileField(upload_to='')),
+                ('set', models.ForeignKey(to='bruv.Set')),
+                ('user', models.ForeignKey(default=config.current_user.get_current_user, to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'abstract': False,
@@ -141,12 +143,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Video',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('create_datetime', models.DateTimeField(auto_now_add=True)),
                 ('last_modified_datetime', models.DateTimeField(auto_now=True)),
-                ('name', models.CharField(max_length=100, unique=True)),
-                ('deployment', models.ForeignKey(to='bruv.Drop')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('name', models.FileField(upload_to='')),
+                ('length', models.FloatField()),
+                ('set', models.ForeignKey(to='bruv.Set')),
+                ('user', models.ForeignKey(default=config.current_user.get_current_user, to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'abstract': False,
@@ -165,7 +168,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='observation',
             name='observed_fish',
-            field=models.ForeignKey(to='bruv.ObservedFish'),
+            field=models.ForeignKey(to='bruv.ObservedAnimal'),
         ),
         migrations.AddField(
             model_name='observation',
@@ -174,27 +177,22 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='observation',
+            name='set',
+            field=models.ForeignKey(to='bruv.Set'),
+        ),
+        migrations.AddField(
+            model_name='observation',
             name='user',
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(default=config.current_user.get_current_user, to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
-            model_name='drop',
-            name='equipment',
-            field=models.ForeignKey(to='bruv.Equipment'),
+            model_name='environmentmeasure',
+            name='set',
+            field=models.ForeignKey(to='bruv.Set'),
         ),
         migrations.AddField(
-            model_name='drop',
-            name='reef',
-            field=models.ForeignKey(to='trip.Reef'),
-        ),
-        migrations.AddField(
-            model_name='drop',
-            name='trip',
-            field=models.ForeignKey(to='trip.Trip'),
-        ),
-        migrations.AddField(
-            model_name='drop',
+            model_name='environmentmeasure',
             name='user',
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(default=config.current_user.get_current_user, to=settings.AUTH_USER_MODEL),
         ),
     ]
