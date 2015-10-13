@@ -1,0 +1,79 @@
+[
+  {
+    "fields": {
+      "common_name": "Lollipop cat shark",
+      "family": "Scyliorhinidae",
+      "genus": "Cephalurus",
+      "species": "cephalus",
+      "fishbase_key": "803"
+    },
+    "model": "bruv.animal",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "common_name": "Common hammerhead shark",
+      "family": "Sphyrnidae",
+      "genus": "Sphyrna",
+      "species": "zygaena",
+      "fishbase_key": "917"
+    },
+    "model": "bruv.animal",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "common_name": "Sand tiger shark",
+      "family": "Odontaspididae",
+      "genus": "Carcharias",
+      "species": "taurus",
+      "fishbase_key": "747"
+    },
+    "model": "bruv.animal",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "common_name": "Rusty carpetshark",
+      "family": "Parascylliidae",
+      "genus": "Parascyllium",
+      "species": "ferrugineum",
+      "fishbase_key": "5915"
+    },
+    "model": "bruv.animal",
+    "pk": 4
+  },
+  {
+    "fields": {
+      "common_name": "Kemp's ridley turtle",
+      "family": "Cheloniidae",
+      "genus": "Lepidochelys",
+      "species": "kempii",
+      "sealifebase_key": "67114"
+    },
+    "model": "bruv.animal",
+    "pk": 5
+  },
+  {
+    "fields": {
+      "common_name": "Lesser devil ray",
+      "family": "Myliobatidae",
+      "genus": "Mobula",
+      "species": "hypostoma",
+      "fishbase_key": "2586"
+    },
+    "model": "bruv.animal",
+    "pk": 6
+  },
+  {
+    "fields": {
+      "common_name": "Witch guitarfish",
+      "family": "Rhinobatidae",
+      "genus": "Zapteryx",
+      "species": "xyster",
+      "fishbase_key": "52476"
+    },
+    "model": "bruv.animal",
+    "pk": 7
+  }
+]

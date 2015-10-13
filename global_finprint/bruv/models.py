@@ -11,11 +11,15 @@ class Observer(models.Model):
 
 
 class Animal(models.Model):
+    common_name = models.CharField(max_length=100)
     family = models.CharField(max_length=100, unique=True)
     genus = models.CharField(max_length=100, unique=True)
     species = models.CharField(max_length=100, unique=True)
     fishbase_key = models.IntegerField(null=True)
     sealifebase_key = models.IntegerField(null=True)
+
+    def __str__(self):
+        return u"{0} {1} ({2})".format(self.genus, self.species, self.common_name)
 
 
 FISH_SEX_CHOICES = {
