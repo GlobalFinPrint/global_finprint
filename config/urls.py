@@ -18,8 +18,10 @@ urlpatterns = [
 
     # Django Admin
     url(r"^admin/", include(admin.site.urls)),
-    url(r'^sets/', include('global_finprint.bruv.urls')),
+    url(r'^sets/', include('global_finprint.bruv.urls.sets')),
+    url(r'^observations/', include('global_finprint.bruv.urls.observations')),
     url(r'^trips/', include('global_finprint.trip.urls')),
+    url(r'^reports/', include('global_finprint.report.urls')),
 
     url(r"^api/trips/(?P<pk>\d+)/$", trip_detail, name='api_trip_detail'),
     url(r"^api/sets/(?P<pk>\d+)/$", set_detail, name='api_set_detail'),

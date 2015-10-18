@@ -1,5 +1,5 @@
-from django.conf.urls import patterns, url
-from .views import *
+from django.conf.urls import url
+from global_finprint.bruv.views import *
 
 urlpatterns = [
     url(r"^create/$", SetCreateView.as_view(), name='set_create'),

@@ -237,7 +237,7 @@ AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 # more details on how to customize your logging configuration
 
 # don't go to prod with this...
-DEBUG_LOG_DIR = '/var/log/app_logs/debug.log'
+DEBUG_LOG_DIR = '/var/log/global_finprint/debug.log'
 
 LOGGING = {
     'version': 1,
