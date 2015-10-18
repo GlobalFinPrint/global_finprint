@@ -1,10 +1,12 @@
-from django.views.generic import ListView, DetailView, UpdateView, CreateView, View
+from django.views.generic import ListView, UpdateView, CreateView
 from django.contrib import messages
-from django.http.response import HttpResponse, JsonResponse, DjangoJSONEncoder
+from django.http.response import JsonResponse
+from django.core.urlresolvers import reverse_lazy
+
 from braces.views import LoginRequiredMixin
+
 from global_finprint.bruv.models import Set, Observation
 from global_finprint.bruv.forms import SetForm
-from django.core.urlresolvers import reverse_lazy
 
 
 def set_detail(request, pk):
