@@ -1,4 +1,5 @@
 from django.contrib.gis.db import models
+from django.core.urlresolvers import reverse
 
 from global_finprint.core.models import AuditableModel
 from global_finprint.trip.models import Trip, Reef
@@ -53,25 +54,27 @@ class Equipment(AuditableModel):
     stereo = models.BooleanField(default=False)
     # todo:  should be a controlled list ... get pictures, etc.
     bruv_frame = models.CharField(max_length=100)
-    # todo:  should be a controlled list
-    bait = models.CharField(max_length=100)
 
     def __str__(self):
-        return u"{0}".format(self.camera)
+        return u"{0}: {1}".format(self.bruv_frame, self.camera)
 
 
 class Set(AuditableModel):
-    location = models.PointField()
+    location = models.PointField(null=True)
     drop_time = models.DateTimeField()
-    collection_time = models.DateTimeField(null=True)
-    time_bait_gone = models.DateTimeField(null=True)
+    collection_time = models.DateTimeField(null=True, blank=True)
+    time_bait_gone = models.DateTimeField(null=True, blank=True)
 
     equipment = models.ForeignKey(Equipment)
     depth = models.FloatField(null=True)
-    #benthic = models.ForeignKey(Benthic, null=True, default=None)
+    # todo:  should be a controlled list
+    bait = models.CharField(max_length=100)
 
     reef = models.ForeignKey(Reef, null=True)
     trip = models.ForeignKey(Trip)
+
+    def get_absolute_url(self):
+        return reverse('set_update', args=[str(self.id)])
 
     def __str__(self):
         return u"{0}".format(self.drop_time)

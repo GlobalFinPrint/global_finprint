@@ -5,8 +5,8 @@ from django.core.urlresolvers import reverse_lazy
 
 from braces.views import LoginRequiredMixin
 
-from global_finprint.trip.forms import TripForm
-from global_finprint.trip.models import Trip
+from .forms import TripForm
+from .models import Trip
 
 
 class TripActionMixin(object):

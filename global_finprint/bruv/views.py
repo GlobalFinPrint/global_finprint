@@ -2,11 +2,13 @@ from django.views.generic import ListView, UpdateView, CreateView
 from django.contrib import messages
 from django.http.response import JsonResponse
 from django.core.urlresolvers import reverse_lazy
+from django.shortcuts import render
+from django.http import HttpResponseRedirect
 
 from braces.views import LoginRequiredMixin
 
-from global_finprint.bruv.models import Set, Observation
-from global_finprint.bruv.forms import SetForm
+from .models import Set, Observation
+from .forms import SetForm
 
 
 def set_detail(request, pk):
@@ -35,40 +37,35 @@ class SetListView(ListView):
         return context
 
 
-class SetActionMixin(object):
-    form_class = SetForm
+# todo:  should these use a formset?
+class SetCreateView(LoginRequiredMixin, CreateView):
+    success_msg = 'Set Created!'
     model = Set
-    context_object_name = 'set'
-    #success_url = reverse_lazy('trip_list')
-    #cancel_url = reverse_lazy('trip_list')
+    form_class = SetForm
     template_name = 'pages/set_detail.html'
 
-    @property
-    def success_msg(self):
-        return NotImplemented
-
-    def get_success_url(self):
-        return reverse_lazy('trip_list', kwargs={'trip_pk': self.kwargs['trip_pk']})
-
-    def get_cancel_url(self):
-        return reverse_lazy('trip_list', kwargs={'trip_pk': self.kwargs['trip_pk']})
-
-
-class SetCreateView(LoginRequiredMixin, SetActionMixin, CreateView):
-    success_msg = 'Set Created!'
     context_object_name = 'set'
 
     def form_valid(self, form):
         messages.info(self.request, self.success_msg)
-        return super(SetActionMixin, self).form_valid(form)
+        return super(SetCreateView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('trip_set_list', args=[self.request.POST['trip']])
 
 
-class SetUpdateView(LoginRequiredMixin, SetActionMixin, UpdateView):
+class SetUpdateView(LoginRequiredMixin, UpdateView):
     success_msg = 'Set Updated'
+    model = Set
+    form_class = SetForm
+    template_name = 'pages/set_detail.html'
 
     def form_valid(self, form):
         messages.info(self.request, self.success_msg)
-        return super(SetActionMixin, self).form_valid(form)
+        return super(SetUpdateView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('trip_set_list', args=[self.request.POST['trip']])
 
 
 class ObservationListView(ListView):
