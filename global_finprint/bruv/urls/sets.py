@@ -1,9 +1,11 @@
-from django.conf.urls import url
+from django.conf.urls import include, url
 from global_finprint.bruv.views import *
 
 urlpatterns = [
-    url(r"^create/$", SetCreateView.as_view(), name='set_create'),
+    url(r"^(?P<set_pk>\d+)/observations/", include('global_finprint.bruv.urls.observations')),
 
-    url(r"^(?P<set_pk>\d+)/observations/$", ObservationListView.as_view(), name='set_observations_list'),
+    url(r"^create/$", SetCreateView.as_view(), name='set_create'),
     url(r"^(?P<pk>\d+)/$", SetUpdateView.as_view(), name='set_update'),
+
+    url(r"", SetListView.as_view(), name='trip_set_list'),
 ]

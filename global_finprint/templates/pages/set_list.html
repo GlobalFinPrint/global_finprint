@@ -11,7 +11,7 @@
     </div>
     <div class="row">
         <legend class="pull-left">Sets
-            <a role="button" href="{% url 'set_create' %}" class="btn btn-sm pull-right" title="Create Set" style="background: none;" aria-label="Left Align">
+            <a role="button" href="{% url 'set_create' trip_pk=trip_pk %}" class="btn btn-sm pull-right" title="Create Set" style="background: none;" aria-label="Left Align">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
             </a>
         </legend>
@@ -24,8 +24,8 @@
                 <li class="list-group-item generic-list-item" data-pk-id="{{ set.id }}" data-type="set">
                     <span> {{ set }} </span>
                     <div class="pull-right">
-                        <a href="{% url 'set_update' set.id %}">Edit</a>
-                        <a href="{% url 'set_observations_list' set.id %}">Observations</a>
+                        <a href="{% url 'set_update' trip_pk=set.trip.id pk=set.id %}">Edit</a>
+                        <a href="{% url 'set_observations_list' trip_pk=set.trip.id set_pk=set.id %}">Observations</a>
                     </div>
                 </li>
             {% endfor %}

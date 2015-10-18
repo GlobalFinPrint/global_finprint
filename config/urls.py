@@ -2,14 +2,14 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
-from django.conf.urls import include, patterns, url
+from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
 from django.contrib.auth.views import login, logout
 
 from global_finprint.core.views import UrlRedirect
-from global_finprint.trip.views import TripListView, trip_detail
+from global_finprint.trip.views import trip_detail
 from global_finprint.bruv.views import set_detail
 
 
@@ -18,8 +18,6 @@ urlpatterns = [
 
     # Django Admin
     url(r"^admin/", include(admin.site.urls)),
-    url(r'^sets/', include('global_finprint.bruv.urls.sets')),
-    url(r'^observations/', include('global_finprint.bruv.urls.observations')),
     url(r'^trips/', include('global_finprint.trip.urls')),
     url(r'^reports/', include('global_finprint.report.urls')),
 
