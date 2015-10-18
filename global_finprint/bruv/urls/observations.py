@@ -2,7 +2,8 @@ from django.conf.urls import url
 from global_finprint.bruv.views import *
 
 urlpatterns = [
-    # url(r"^(?P<set_pk>\d+)/observations/$", ObservationListView.as_view(), name='set_observations_list'),
+    url(r"^create/$", ObservationCreateView.as_view(), name='observation_create'),
+    url(r"^(?P<pk>\d+)/$", ObservationUpdateView.as_view(), name='observation_update'),
 
-    url(r"", ObservationListView.as_view(), name='set_observations_list'),
+    url(r"", ObservationListView.as_view(), name='set_observation_list'),
 ]

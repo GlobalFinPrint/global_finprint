@@ -10,7 +10,7 @@ from .models import Trip
 
 
 class TripActionMixin(object):
-    template_name = 'pages/trip_detail.html'
+    template_name = 'pages/trips/trip_detail.html'
 
     @property
     def success_msg(self):
@@ -19,7 +19,7 @@ class TripActionMixin(object):
 
 class TripListView(ListView):
     model = Trip
-    template_name = 'pages/trip_list.html'
+    template_name = 'pages/trips/trip_list.html'
     context_object_name = 'trips'
 
     def get_queryset(self):
@@ -29,7 +29,7 @@ class TripListView(ListView):
 class TripDetailView(DetailView):
     form_class = TripForm
     model = Trip
-    template_name = 'pages/trip_detail.html'
+    template_name = 'pages/trips/trip_detail.html'
 
 
 def trip_detail(request, pk):

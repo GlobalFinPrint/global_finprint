@@ -93,7 +93,7 @@ class EnvironmentMeasure(AuditableModel):
 
 class Observation(AuditableModel):
     initial_observation_time = models.DateTimeField()
-    observed_fish = models.ForeignKey(ObservedAnimal)
+    observed_animal = models.ForeignKey(ObservedAnimal)
 
     maximum_number_observed = models.IntegerField(null=True)
     maximum_number_observed_time = models.DateTimeField(null=True)
