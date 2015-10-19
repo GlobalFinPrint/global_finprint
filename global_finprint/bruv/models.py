@@ -10,6 +10,9 @@ class Observer(models.Model):
     # todo:  placeholder for "tape reader"  create a real name list.
     name = models.CharField(max_length=100, unique=True)
 
+    def __str__(self):
+        return u"{0}".format(self.name)
+
 
 class Animal(models.Model):
     common_name = models.CharField(max_length=100)
@@ -23,29 +26,29 @@ class Animal(models.Model):
         return u"{0} {1} ({2})".format(self.genus, self.species, self.common_name)
 
 
-FISH_SEX_CHOICES = {
+ANIMAL_SEX_CHOICES = {
     ('M', 'Male'),
     ('F', 'Female'),
     ('U', 'Unknown'),
 }
-FISH_STAGE_CHOICES = {
+ANIMAL_STAGE_CHOICES = {
     ('AD', 'Adult'),
     ('JU', 'Juvenile'),
     ('U', 'Unknown'),
 }
 
 
-class ObservedAnimal(models.Model):
-    animal = models.ForeignKey(Animal)
-    sex = models.CharField(max_length=1, choices=FISH_SEX_CHOICES)
-    stage = models.TextField(max_length=2, choices=FISH_STAGE_CHOICES)
-
-    # length in cm
-    length = models.IntegerField(null=True, help_text='centimeters')
-
-    # todo:  ... controlled vocabularies?
-    activity = models.TextField(max_length=25, null=True)
-    behavior = models.TextField(max_length=50, null=True)
+# class ObservedAnimal(models.Model):
+#     animal = models.ForeignKey(Animal)
+#     sex = models.CharField(max_length=1, choices=ANIMAL_SEX_CHOICES)
+#     stage = models.TextField(max_length=2, choices=ANIMAL_STAGE_CHOICES)
+#
+#     # length in cm
+#     length = models.IntegerField(null=True, help_text='centimeters')
+#
+#     # todo:  ... controlled vocabularies?
+#     activity = models.TextField(max_length=25, null=True)
+#     behavior = models.TextField(max_length=50, null=True)
 
 
 class Equipment(AuditableModel):
@@ -93,13 +96,28 @@ class EnvironmentMeasure(AuditableModel):
 
 class Observation(AuditableModel):
     initial_observation_time = models.DateTimeField()
-    observed_animal = models.ForeignKey(ObservedAnimal)
+
+    # observed_animal = models.ForeignKey(ObservedAnimal)
+    animal = models.ForeignKey(Animal)
+    sex = models.CharField(max_length=1, choices=ANIMAL_SEX_CHOICES, default='U')
+    stage = models.CharField(max_length=2, choices=ANIMAL_STAGE_CHOICES, default='U')
+
+    # length in cm
+    length = models.IntegerField(null=True, help_text='centimeters')
+
+    # todo:  ... controlled vocabularies?
+    activity = models.CharField(max_length=25, null=True, blank=True)
+    behavior = models.CharField(max_length=50, null=True, blank=True)
 
     maximum_number_observed = models.IntegerField(null=True)
     maximum_number_observed_time = models.DateTimeField(null=True)
+    # todo:  duration?
 
     set = models.ForeignKey(Set)
     observer = models.ForeignKey(Observer)
+
+    def __str__(self):
+        return u"{0}".format(self.initial_observation_time)
 
 
 class Video(AuditableModel):

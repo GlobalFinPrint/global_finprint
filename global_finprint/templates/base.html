@@ -19,7 +19,18 @@
         <!-- This file store project specific CSS -->
         <link href="{% static 'css/project.css' %}" rel="stylesheet"/>
     {% endblock %}
+    {% block javascript %}
+        <script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'bower_components/moment/min/moment.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'bower_components/moment-timezone/builds/moment-timezone.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js' %}"></script>
 
+        <!-- Your stuff: Third-party javascript libraries go here -->
+
+        <!-- place project specific Javascript in this file -->
+        <script src="{% static 'js/finprint.js' %}"></script>
+    {% endblock javascript %}
     {% block angular %}
         <script src="{% static 'bower_components/angular/angular.min.js' %}"></script>
     {% endblock %}
@@ -89,16 +100,7 @@
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-{% block javascript %}
-    <script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bower_components/moment/min/moment.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
 
-    <!-- Your stuff: Third-party javascript libraries go here -->
-
-    <!-- place project specific Javascript in this file -->
-    <script src="{% static 'js/finprint.js' %}"></script>
-{% endblock javascript %}
 </body>
 </html>
  

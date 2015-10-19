@@ -94,7 +94,7 @@ class ObservationCreateView(LoginRequiredMixin, CreateView):
         return super(ObservationCreateView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('set_observation_list', args=[self.request.POST['set']['trip'], self.request.POST['set']])
+        return reverse_lazy('set_observation_list', args=[self.kwargs['trip_pk'], self.kwargs['set_pk']])
 
 
 class ObservationUpdateView(LoginRequiredMixin, UpdateView):
@@ -108,4 +108,4 @@ class ObservationUpdateView(LoginRequiredMixin, UpdateView):
         return super(ObservationUpdateView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('set_observation_list', args=[self.request.POST['set']['trip'], self.request.POST['set']])
+        return reverse_lazy('set_observation_list', args=[self.kwargs['trip_pk'], self.kwargs['set_pk']])
