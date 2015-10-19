@@ -1,6 +1,6 @@
 from django.conf.urls import include, url
-from django.views.generic import TemplateView
-from global_finprint.bruv.views import *
+from ..views.sets import *
+
 
 urlpatterns = [
     url(r"^(?P<set_pk>\d+)/observations/", include('global_finprint.bruv.urls.observations')),

@@ -5,8 +5,8 @@ from django.core.urlresolvers import reverse_lazy
 
 from braces.views import LoginRequiredMixin
 
-from .models import Set, Observation
-from .forms import SetForm, ObservationForm
+from ..models import Set
+from ..forms import SetForm
 
 
 def set_detail(request, pk):
@@ -64,48 +64,3 @@ class SetUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('trip_set_list', args=[self.request.POST['trip']])
-
-
-class ObservationListView(ListView):
-    model = Observation
-    context_object_name = 'observations'
-    template_name = 'pages/observations/observation_list.html'
-
-    def get_queryset(self):
-        return Observation.objects.filter(set=self.kwargs['set_pk'])
-
-    def get_context_data(self, **kwargs):
-        context = super(ObservationListView, self).get_context_data(**kwargs)
-        context['trip_pk'] = self.kwargs['trip_pk']
-        context['set_pk'] = self.kwargs['set_pk']
-        return context
-
-
-class ObservationCreateView(LoginRequiredMixin, CreateView):
-    success_msg = 'Observation Created!'
-    model = Observation
-    form_class = ObservationForm
-    template_name = 'pages/observations/observation_detail.html'
-
-    context_object_name = 'observation'
-
-    def form_valid(self, form):
-        messages.info(self.request, self.success_msg)
-        return super(ObservationCreateView, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy('set_observation_list', args=[self.kwargs['trip_pk'], self.kwargs['set_pk']])
-
-
-class ObservationUpdateView(LoginRequiredMixin, UpdateView):
-    success_msg = 'Observation Updated'
-    model = Observation
-    form_class = ObservationForm
-    template_name = 'pages/observations/observation_detail.html'
-
-    def form_valid(self, form):
-        messages.info(self.request, self.success_msg)
-        return super(ObservationUpdateView, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy('set_observation_list', args=[self.kwargs['trip_pk'], self.kwargs['set_pk']])
