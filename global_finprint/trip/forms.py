@@ -1,15 +1,24 @@
 from django.forms import ModelForm
-from django.forms.formsets import formset_factory
-from global_finprint.trip import models
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, HTML, Layout, Fieldset
+from crispy_forms.layout import Submit, HTML
 from crispy_forms.bootstrap import FormActions
+from bootstrap3_datetime.widgets import DateTimePicker
+
+from global_finprint.trip import models
 
 
 class TripForm(ModelForm):
     class Meta:
         model = models.Trip
         fields = ['team', 'start_date', 'end_date', 'location', 'boat', 'type']
+        widgets = {
+            'start_date': DateTimePicker(options={
+                "format": "YYYY-MM-DD",
+                "pickTime": False}),
+            'end_date': DateTimePicker(options={
+                "format": "YYYY-MM-DD",
+                "pickTime": False}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
