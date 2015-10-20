@@ -1,7 +1,7 @@
 from django.views.generic.base import View
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 
-# Create your views here.
+
 class UrlRedirect(View):
     @staticmethod
     def get(request, *args, **kwargs):

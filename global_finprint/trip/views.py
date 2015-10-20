@@ -35,7 +35,8 @@ class TripDetailView(DetailView):
 def trip_detail(request, pk):
     t = Trip.objects.get(pk=pk)
 #    data = serializers.serialize('json', t._meta.__dict__)
-    data = {'name': str(t),
+    data = {'id': str(t.id),
+            'name': str(t),
             'start_date': t.start_date,
             'end_date':t.end_date,
             'location': str(t.location),

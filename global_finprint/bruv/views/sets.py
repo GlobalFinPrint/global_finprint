@@ -11,7 +11,8 @@ from ..forms import SetForm
 
 def set_detail(request, pk):
     s = Set.objects.get(pk=pk)
-    data = {'name': str(s),
+    data = {'id': str(s.id),
+            'name': str(s),
             'drop_time': s.drop_time.isoformat(),
             'collection_time': s.collection_time.isoformat(),
             'time_bait_gone': s.time_bait_gone.isoformat(),

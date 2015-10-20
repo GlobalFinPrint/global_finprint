@@ -11,7 +11,9 @@ from ..forms import ObservationForm
 
 def observation_detail(request, pk):
     observation = Observation.objects.get(pk=pk)
-    data = {'initial_observation_time': observation.initial_observation_time.isoformat(),
+    data = {
+            'id': str(observation.id),
+            'initial_observation_time': observation.initial_observation_time.isoformat(),
             'animal': str(observation.animal),
             'sex': observation.sex,
             'stage': observation.stage,

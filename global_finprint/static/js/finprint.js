@@ -16,6 +16,8 @@ var finprint = finprint || {};  //namespace if necessary...
                 detail_obj = Trip();
             } else if (type === "set") {
                 detail_obj = Set();
+            } else if (type === "observation") {
+                detail_obj = Observation();
             }
             else {
                 detail_obj = unknownType();
@@ -125,5 +127,47 @@ var finprint = finprint || {};  //namespace if necessary...
                 "display": display};
     }
 
+    function Observation(){
+        var _fields = {
+            "drop_time": null,
+            "collection_time": null,
+            "time_bait_gone": null,
+            "equipment":"",
+            "depth": "",
+            "reef": "",
+            "pk":0
+        };
+
+        var get = function(id, cb){
+            $.get('/api/observations/' + id, function (data) {
+                $.extend(true, _fields, data);
+                if (cb){
+                    cb();
+                }
+            });
+        };
+
+        var display = function($containerEl){
+            $containerEl.empty()
+                        .append($('<h4>' + moment(_fields.drop_time).format("dddd, MMMM Do YYYY, h:mm a") +
+                                '</h4><dl><dt>drop time:</dt><dd>' + moment(_fields.drop_time).format("H:mm:ss") +
+                                '</dd><dt>Collection Time</dt><dd>' + moment(_fields.collection_time).format("H:mm:ss") +
+                                '</dd><dt>Bait Gone</dt><dd> '+ moment(_fields.time_bait_gone).format("H:mm:ss") +
+                                '</dd><dt>Equipment</dt><dd> ' + _fields.equipment +
+                                '</dd><dt>Depth</dt><dd> ' + _fields.depth +
+                                '</dd><dt>Reef</dt><dd> ' + _fields.reef + '</dd></dl>'));
+
+        };
+
+        return {"drop_time": _fields.drop_time,
+                "collection_time": _fields.collection_time,
+                "time_bait_gone": _fields.time_bait_gone,
+                "equipment": _fields.equipment,
+                "depth": _fields.depth,
+                "reef": _fields.reef,
+                "pk": _fields.pk,
+                "get": get,
+                "display": display};
+    }
 
 })(jQuery);
