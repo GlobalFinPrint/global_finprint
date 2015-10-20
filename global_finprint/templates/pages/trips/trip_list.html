@@ -1,34 +1,41 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="col-md-11">
-    <div class="row">
-        <legend class="pull-left">Global FinPrint Trips
-            <a role="button" href="{% url 'trip_create' %}" class="btn btn-sm pull-right" title="Create Trip" style="background: none;" aria-label="Left Align">
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-            </a>
-        </legend>
-        <br>
-    </div>
-    <div class ="row">
-        <div class = "col-md-6">
-            <div class="list-group generic-list">
-            {% for trip in trips %}
-                <li class="list-group-item generic-list-item" data-pk-id="{{ trip.id }} " data-type="trip">
-                    <span> {{ trip }} </span>
-                    <div class="pull-right">
-                        <a href="{% url 'trip_update' trip.id %}">Edit</a>
-                        <a href="{% url 'trip_set_list' trip.id %}">Sets</a>
-                    </div>
-                </li>
-            {% endfor %}
+    <div class="col-md-11">
+        <div class="row">
+            <div class="well trail">
+                Global FinPrint
             </div>
         </div>
-        <div class = "col-md-6">
-            <div class="well" id="detail_panel">
+        <div class="row">
+            <legend class="pull-left">Trips
+                <a role="button" href="{% url 'trip_create' %}" class="btn btn-sm pull-right" title="Create Trip"
+                   style="background: none;" aria-label="Left Align">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                </a>
+            </legend>
+            <br>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="list-group generic-list">
+                    {% for trip in trips %}
+                        <li class="list-group-item generic-list-item" data-pk-id="{{ trip.id }} " data-type="trip">
+                            <span> {{ trip }} </span>
 
+                            <div class="pull-right">
+                                <a href="{% url 'trip_update' trip.id %}">Edit</a>
+                                <a href="{% url 'trip_set_list' trip.id %}">Sets</a>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="well" id="detail_panel">
+
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}

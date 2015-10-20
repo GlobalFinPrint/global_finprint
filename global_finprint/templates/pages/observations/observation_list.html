@@ -6,7 +6,7 @@
 <div class="col-md-11">
     <div class="row">
         <div class="well trail">
-            <a href="{% url 'trip_set_list' trip_pk %}">Sets</a>
+            <a href="{% url 'trip_list' %}">Trips</a> | <a href="{% url 'trip_set_list' trip_pk %}">Sets</a>
         </div>
     </div>
     <div class="row">
@@ -21,7 +21,7 @@
         <div class = "col-md-6">
             <div class="list-group generic-list">
             {% for observation in observations %}
-                <li class="list-group-item generic-list-item" data-pk-id="{{ observation.id }}" data-type="set">
+                <li class="list-group-item generic-list-item" data-pk-id="{{ observation.id }}" data-type="observation">
                     <span> {{ observation }} </span>
                     <div class="pull-right">
                         <a href="{% url 'observation_update' trip_pk=observation.set.trip.id set_pk=observation.set.id pk=observation.id %}">Edit</a>
