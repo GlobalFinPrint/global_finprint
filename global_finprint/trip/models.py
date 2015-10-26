@@ -5,7 +5,6 @@ from global_finprint.core.models import AuditableModel
 
 class Location(models.Model):
     name = models.CharField(max_length=100)
-    boundary = models.MultiPolygonField(srid=4326, null=True)
 
     objects = models.GeoManager()
 
@@ -17,6 +16,8 @@ class Site(models.Model):
     location = models.ForeignKey(Location)
     name = models.CharField(max_length=100)
     boundary = models.MultiPolygonField(srid=4326, null=True)
+    # todo type:
+    #     continental, island, atoll
 
     objects = models.GeoManager()
 
@@ -27,10 +28,23 @@ class Site(models.Model):
 class Reef(models.Model):
     site = models.ForeignKey(Site)
     name = models.CharField(max_length=100, null=True)
-    # todo:  assign a contorlled vocabulary (e.g., forereef, reef flat, pass,
-    #   lagoon, inner slope, etc.)
+
+    # todo:  assign a contorlled vocabulary (e.g., slope, crest, flat, back reef, lagoon)
     type = models.CharField(max_length=100)
     boundary = models.MultiPolygonField(srid=4326, null=True)
+
+    # todo:  protection status [1]
+    #     openly fished, restricted, unfished, remote
+    # todo:  dominant gear in use (shark fishing) [0/1]
+    #     gillnet, spear, longline, seine, rod and reel, poly ball / highflyer, drumline
+    # todo:  restrictions [0-oo]
+    #     gear, species, effort, size
+    # todo:  MPA size km^2
+    # todo:  MPA age
+    # todo:  MPA compliance  (see Edgar)
+    #     low ("paper park"), medium ("some poaching"), high (well enforced)
+    # todo:  MPA physical isolation  (see Edgar)
+    #     continuous, <20m to next reef, >20m to next reef
 
     objects = models.GeoManager()
 

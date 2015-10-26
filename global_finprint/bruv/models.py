@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 
 from global_finprint.core.models import AuditableModel
 from global_finprint.trip.models import Trip, Reef
-from global_finprint.habitat.models import Benthic
+# from global_finprint.habitat.models import Benthic
 
 
 class Observer(models.Model):
@@ -49,28 +49,47 @@ ANIMAL_STAGE_CHOICES = {
 #     # todo:  ... controlled vocabularies?
 #     activity = models.TextField(max_length=25, null=True)
 #     behavior = models.TextField(max_length=50, null=True)
-
+#
+# ANIMAL_STAGE_CHOICES = {
+#     ('AD', 'Adult'),
+#     ('JU', 'Juvenile'),
+#     ('U', 'Unknown'),
+# }
 
 class Equipment(AuditableModel):
     # todo:  should be a controlled list
     camera = models.CharField(max_length=100)
     stereo = models.BooleanField(default=False)
-    # todo:  should be a controlled list ... get pictures, etc.
-    bruv_frame = models.CharField(max_length=100)
+    # todo:  bag, cage
+
+    # todo:  should be a controlled list
+    #      rebar, stainless rebar, PVC, mixed
+    frame_type = models.CharField(max_length=100)
+
+    # todo:  arm_length
+    # todo:  camera_height
+
 
     def __str__(self):
         return u"{0}: {1}".format(self.bruv_frame, self.camera)
 
 
 class Set(AuditableModel):
-    location = models.PointField(null=True)
+    # location used elsewhere ...
+    coordinates = models.PointField(null=True)
     drop_time = models.DateTimeField()
     collection_time = models.DateTimeField(null=True, blank=True)
-    time_bait_gone = models.DateTimeField(null=True, blank=True)
+
+    # time_bait_gone = models.DateTimeField(null=True, blank=True)
+
+    # todo:  tide_state
+
+    # todo:  visibility (meters 1,2,3 ... 15, >15) if different from daily
 
     equipment = models.ForeignKey(Equipment)
+
     depth = models.FloatField(null=True)
-    # todo:  should be a controlled list
+    # todo:  should be a controlled list ... add +- menhedden oil, add 1kg / 20ml
     bait = models.CharField(max_length=100)
 
     reef = models.ForeignKey(Reef, null=True)
@@ -85,11 +104,12 @@ class Set(AuditableModel):
 
 class EnvironmentMeasure(AuditableModel):
     measurement_time = models.DateTimeField()
-    water_tmperature = models.FloatField(null=True)
-    salinity = models.FloatField(null=True)
-    conductivity = models.FloatField(null=True)
-    dissolved_oxygen = models.FloatField(null=True)
-    current_flow = models.FloatField(null=True)
+    water_temperature = models.IntegerField(null=True)  # C
+    salinity = models.FloatField(null=True)  # ppt .0
+    conductivity = models.FloatField(null=True)  # S/m .00
+    dissolved_oxygen = models.FloatField(null=True)  # % .0
+    current_flow = models.FloatField(null=True)  # m/s .00
+    current_direction = models.FloatField(null=True)  # eight point compass
 
     set = models.ForeignKey(Set)
 
@@ -106,12 +126,13 @@ class Observation(AuditableModel):
     length = models.IntegerField(null=True, help_text='centimeters')
 
     # todo:  ... controlled vocabularies?
-    activity = models.CharField(max_length=25, null=True, blank=True)
+    #    swim by, stimulated, interaction
     behavior = models.CharField(max_length=50, null=True, blank=True)
 
-    maximum_number_observed = models.IntegerField(null=True)
-    maximum_number_observed_time = models.DateTimeField(null=True)
-    # todo:  duration?
+    # maximum_number_observed = models.IntegerField(null=True)
+    # maximum_number_observed_time = models.DateTimeField(null=True)
+
+    # todo:  duration in seconds
 
     set = models.ForeignKey(Set)
     observer = models.ForeignKey(Observer)
