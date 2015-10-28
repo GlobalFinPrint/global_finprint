@@ -1,0 +1,34 @@
+[
+  {
+    "fields": {
+      "image": "",
+      "type": "rebar"
+    },
+    "model": "bruv.frametype",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "image": "",
+      "type": "stainless rebar"
+    },
+    "model": "bruv.frametype",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "image": "",
+      "type": "PVC"
+    },
+    "model": "bruv.frametype",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "image": "",
+      "type": "mixed"
+    },
+    "model": "bruv.frametype",
+    "pk": 4
+  }
+]
