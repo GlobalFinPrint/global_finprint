@@ -1,0 +1,187 @@
+[
+  {
+    "fields": {
+      "description": "paper park",
+      "type": "low"
+    },
+    "model": "trip.mpacompliance",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "description": "some poaching",
+      "type": "medium"
+    },
+    "model": "trip.mpacompliance",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "description": "well enforced",
+      "type": "high"
+    },
+    "model": "trip.mpacompliance",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "type": "continuous,  "
+    },
+    "model": "trip.mpaisolation",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "type": "<20km to next reef"
+    },
+    "model": "trip.mpaisolation",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "type": ">20km to next reef"
+    },
+    "model": "trip.mpaisolation",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "type": "slope"
+    },
+    "model": "trip.reeftype",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "type": "crest"
+    },
+    "model": "trip.reeftype",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "type": "flat"
+    },
+    "model": "trip.reeftype",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "type": "back reef"
+    },
+    "model": "trip.reeftype",
+    "pk": 4
+  },
+  {
+    "fields": {
+      "type": "lagoon"
+    },
+    "model": "trip.reeftype",
+    "pk": 5
+  },
+  {
+    "fields": {
+      "type": "openly fished"
+    },
+    "model": "trip.protectionstatus",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "type": "restricted"
+    },
+    "model": "trip.protectionstatus",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "type": "unfished"
+    },
+    "model": "trip.protectionstatus",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "type": "remote"
+    },
+    "model": "trip.protectionstatus",
+    "pk": 4
+  },
+  {
+    "fields": {
+      "type": "gillnet"
+    },
+    "model": "trip.sharkgearinuse",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "type": "spear"
+    },
+    "model": "trip.sharkgearinuse",
+    "pk": 6
+  },
+  {
+    "fields": {
+      "type": "longline"
+    },
+    "model": "trip.sharkgearinuse",
+    "pk": 7
+  },
+  {
+    "fields": {
+      "type": "seine"
+    },
+    "model": "trip.sharkgearinuse",
+    "pk": 8
+  },
+  {
+    "fields": {
+      "type": "rod and reel"
+    },
+    "model": "trip.sharkgearinuse",
+    "pk": 9
+  },
+  {
+    "fields": {
+      "type": "poly ball / highflyer"
+    },
+    "model": "trip.sharkgearinuse",
+    "pk": 10
+  },
+  {
+    "fields": {
+      "type": "drumline"
+    },
+    "model": "trip.sharkgearinuse",
+    "pk": 11
+  },
+  {
+    "fields": {
+      "type": "gear"
+    },
+    "model": "trip.fishingrestrictions",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "type": "species"
+    },
+    "model": "trip.fishingrestrictions",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "type": "effort"
+    },
+    "model": "trip.fishingrestrictions",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "type": "size"
+    },
+    "model": "trip.fishingrestrictions",
+    "pk": 4
+  }
+]
