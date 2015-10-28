@@ -10,7 +10,7 @@ from global_finprint.trip import models
 class TripForm(ModelForm):
     class Meta:
         model = models.Trip
-        fields = ['team', 'start_date', 'end_date', 'location', 'boat', 'type']
+        fields = ['team', 'start_date', 'end_date', 'location', 'boat',]
         widgets = {
             'start_date': DateTimePicker(options={
                 "format": "YYYY-MM-DD",

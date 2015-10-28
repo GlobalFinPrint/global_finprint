@@ -41,8 +41,7 @@ def trip_detail(request, pk):
             'end_date':t.end_date,
             'location': str(t.location),
             'team': str(t.team),
-            'boat': t.boat,
-            'type': t.type}
+            'boat': t.boat,}
     return JsonResponse(data)
 
 

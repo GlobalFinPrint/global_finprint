@@ -3,21 +3,33 @@ from django.contrib.gis.db import models
 from global_finprint.core.models import AuditableModel
 
 
-class Location(models.Model):
+class Region(models.Model):
     name = models.CharField(max_length=100)
-
-    objects = models.GeoManager()
 
     def __str__(self):
         return u"{0}".format(self.name)
+
+
+class Location(models.Model):
+    name = models.CharField(max_length=100)
+    region = models.ForeignKey(to=Region)
+
+    def __str__(self):
+        return u"{0}".format(self.name)
+
+
+SITE_TYPE_CHOICES = {
+    ('C', 'Continental'),
+    ('I', 'Island'),
+    ('A', 'Atoll'),
+}
 
 
 class Site(models.Model):
     location = models.ForeignKey(Location)
     name = models.CharField(max_length=100)
     boundary = models.MultiPolygonField(srid=4326, null=True)
-    # todo type:
-    #     continental, island, atoll
+    type = models.CharField(max_length=16, choices=SITE_TYPE_CHOICES)
 
     objects = models.GeoManager()
 
@@ -25,26 +37,124 @@ class Site(models.Model):
         return u"{0}".format(self.name)
 
 
+class MPACompliance(models.Model):
+    """
+        see Edgar, G., et al.  Nature 506, 216-220 (13 Feb 2014)
+        doi:10.1038/nature13022
+        values:  low ("paper park"), medium ("some poaching"), high (well enforced)
+    """
+    type = models.CharField(max_length=16)
+    description = models.CharField(max_length=24)
+
+    def __str__(self):
+            return u"{0} ({1})".format(self.type, self.description)
+
+    class Meta:
+        verbose_name = "MPA compliance"
+        verbose_name_plural = "MPA compliance"
+
+
+class MPAIsolation(models.Model):
+    """
+        see Edgar, G., et al.  Nature 506, 216-220 (13 Feb 2014)
+        doi:10.1038/nature13022
+        values:  continuous, <20m to next reef, >20m to next reef
+    """
+    type = models.CharField(max_length=24)
+
+    def __str__(self):
+            return u"{0}".format(self.type)
+
+    class Meta:
+        verbose_name = "MPA isolation"
+        verbose_name_plural = "MPA isolation"
+
+
+class MPA(models.Model):
+    name = models.CharField(max_length=100)
+    boundary = models.MultiPolygonField(srid=4326, null=True)
+    # todo:  create property that takes area from polygon first then area field if no poly
+    area = models.PositiveIntegerField(help_text='km^2')
+    founded = models.PositiveIntegerField()
+
+    mpa_compliance = models.ForeignKey(to=MPACompliance)
+    mpa_isolation = models.ForeignKey(to=MPAIsolation)
+
+    objects = models.GeoManager()
+
+    def __str__(self):
+        return u"{0}".format(self.name)
+
+    class Meta:
+        verbose_name = "MPA"
+        verbose_name_plural = "MPAs"
+
+
+class ReefType(models.Model):
+    """
+        part of reef
+        values:  slope, crest, flat, back reef, lagoon
+    """
+    type = models.CharField(max_length=16)
+
+    def __str__(self):
+            return u"{0}".format(self.type)
+
+
+class ProtectionStatus(models.Model):
+    """
+        protection status is a required attribute of a reef
+        values:  openly fished, restricted, unfished, remote
+    """
+    type = models.CharField(max_length=16)
+
+    def __str__(self):
+            return u"{0}".format(self.type)
+
+    class Meta:
+        verbose_name_plural = "Protection status"
+
+
+class SharkGearInUse(models.Model):
+    """
+        dominant gear in use for shark fishing
+        values:  gillnet, spear, longline, seine, rod and reel, poly ball / highflyer, drumline
+    """
+    type = models.CharField(max_length=24)
+
+    def __str__(self):
+            return u"{0}".format(self.type)
+
+    class Meta:
+        verbose_name_plural = "Shark gear in use"
+
+
+class FishingRestrictions(models.Model):
+    """
+        restrictions on shark fishing gear
+        values:  gear, species, effort, size
+    """
+    type = models.CharField(max_length=16)
+
+    def __str__(self):
+            return u"{0}".format(self.type)
+
+    class Meta:
+        verbose_name_plural = "Fishing restrictions"
+
+
 class Reef(models.Model):
     site = models.ForeignKey(Site)
-    name = models.CharField(max_length=100, null=True)
+    name = models.CharField(max_length=100)
 
-    # todo:  assign a contorlled vocabulary (e.g., slope, crest, flat, back reef, lagoon)
-    type = models.CharField(max_length=100)
     boundary = models.MultiPolygonField(srid=4326, null=True)
 
-    # todo:  protection status [1]
-    #     openly fished, restricted, unfished, remote
-    # todo:  dominant gear in use (shark fishing) [0/1]
-    #     gillnet, spear, longline, seine, rod and reel, poly ball / highflyer, drumline
+    type = models.ForeignKey(to=ReefType)
+    protection_status = models.ForeignKey(to=ProtectionStatus)
+    shark_gear_in_use = models.ForeignKey(to=SharkGearInUse, null=True)
     # todo:  restrictions [0-oo]
-    #     gear, species, effort, size
-    # todo:  MPA size km^2
-    # todo:  MPA age
-    # todo:  MPA compliance  (see Edgar)
-    #     low ("paper park"), medium ("some poaching"), high (well enforced)
-    # todo:  MPA physical isolation  (see Edgar)
-    #     continuous, <20m to next reef, >20m to next reef
+
+    mpa = models.ForeignKey(to=MPA, null=True)
 
     objects = models.GeoManager()
 
@@ -69,8 +179,6 @@ class Trip(AuditableModel):
     boat = models.CharField(max_length=100)
     start_date = models.DateField()
     end_date = models.DateField()
-    # todo:  what is this for?
-    type = models.CharField(max_length=100)
 
     def __str__(self):
         # todo:  whatever is most usefully readable ...

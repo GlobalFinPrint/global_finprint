@@ -15,7 +15,6 @@ def set_detail(request, pk):
             'name': str(s),
             'drop_time': s.drop_time.isoformat(),
             'collection_time': s.collection_time.isoformat() if s.collection_time else None,
-            'time_bait_gone': s.time_bait_gone.isoformat() if s.time_bait_gone else None,
             'equipment': str(s.equipment),
             'depth': s.depth,
             'reef': str(s.reef)}

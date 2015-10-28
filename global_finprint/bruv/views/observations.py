@@ -18,10 +18,7 @@ def observation_detail(request, pk):
             'sex': observation.sex,
             'stage': observation.stage,
             'length': str(observation.length),
-            'activity': observation.activity,
             'behavior': observation.behavior,
-            'maximum_number_observed': str(observation.maximum_number_observed),
-            'maximum_number_observed_time': observation.maximum_number_observed_time.isoformat(),
             'set': str(observation.set),
             'observer': str(observation.observer),
             }

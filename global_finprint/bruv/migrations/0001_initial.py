@@ -2,9 +2,9 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-from django.conf import settings
-import django.contrib.gis.db.models.fields
 import config.current_user
+import django.contrib.gis.db.models.fields
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
@@ -18,7 +18,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Animal',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('common_name', models.CharField(max_length=100)),
                 ('family', models.CharField(unique=True, max_length=100)),
                 ('genus', models.CharField(unique=True, max_length=100)),
                 ('species', models.CharField(unique=True, max_length=100)),
@@ -29,15 +30,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='EnvironmentMeasure',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('create_datetime', models.DateTimeField(auto_now_add=True)),
                 ('last_modified_datetime', models.DateTimeField(auto_now=True)),
                 ('measurement_time', models.DateTimeField()),
-                ('water_tmperature', models.FloatField(null=True)),
+                ('water_temperature', models.IntegerField(null=True)),
                 ('salinity', models.FloatField(null=True)),
                 ('conductivity', models.FloatField(null=True)),
                 ('dissolved_oxygen', models.FloatField(null=True)),
                 ('current_flow', models.FloatField(null=True)),
+                ('current_direction', models.FloatField(null=True)),
             ],
             options={
                 'abstract': False,
@@ -46,13 +48,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Equipment',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('create_datetime', models.DateTimeField(auto_now_add=True)),
                 ('last_modified_datetime', models.DateTimeField(auto_now=True)),
                 ('camera', models.CharField(max_length=100)),
                 ('stereo', models.BooleanField(default=False)),
-                ('bruv_frame', models.CharField(max_length=100)),
-                ('bait', models.CharField(max_length=100)),
+                ('frame_type', models.CharField(max_length=100)),
                 ('user', models.ForeignKey(default=config.current_user.get_current_user, to=settings.AUTH_USER_MODEL)),
             ],
             options={
@@ -62,12 +63,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Observation',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('create_datetime', models.DateTimeField(auto_now_add=True)),
                 ('last_modified_datetime', models.DateTimeField(auto_now=True)),
                 ('initial_observation_time', models.DateTimeField()),
-                ('maximum_number_observed', models.IntegerField(null=True)),
-                ('maximum_number_observed_time', models.DateTimeField(null=True)),
+                ('sex', models.CharField(choices=[('U', 'Unknown'), ('F', 'Female'), ('M', 'Male')], default='U', max_length=1)),
+                ('stage', models.CharField(choices=[('U', 'Unknown'), ('AD', 'Adult'), ('JU', 'Juvenile')], default='U', max_length=2)),
+                ('length', models.IntegerField(null=True, help_text='centimeters')),
+                ('behavior', models.CharField(null=True, max_length=50, blank=True)),
+                ('animal', models.ForeignKey(to='bruv.Animal')),
             ],
             options={
                 'abstract': False,
@@ -76,7 +80,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ObservationImage',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('create_datetime', models.DateTimeField(auto_now_add=True)),
                 ('last_modified_datetime', models.DateTimeField(auto_now=True)),
                 ('name', models.FileField(upload_to='')),
@@ -88,35 +92,23 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='ObservedAnimal',
-            fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
-                ('sex', models.CharField(choices=[('M', 'Male'), ('F', 'Female'), ('U', 'Unknown')], max_length=1)),
-                ('stage', models.TextField(choices=[('JU', 'Juvenile'), ('AD', 'Adult'), ('U', 'Unknown')], max_length=2)),
-                ('length', models.IntegerField(null=True, help_text='centimeters')),
-                ('activity', models.TextField(null=True, max_length=25)),
-                ('behavior', models.TextField(null=True, max_length=50)),
-                ('animal', models.ForeignKey(to='bruv.Animal')),
-            ],
-        ),
-        migrations.CreateModel(
             name='Observer',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(unique=True, max_length=100)),
             ],
         ),
         migrations.CreateModel(
             name='Set',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('create_datetime', models.DateTimeField(auto_now_add=True)),
                 ('last_modified_datetime', models.DateTimeField(auto_now=True)),
-                ('location', django.contrib.gis.db.models.fields.PointField(srid=4326)),
+                ('coordinates', django.contrib.gis.db.models.fields.PointField(null=True, srid=4326)),
                 ('drop_time', models.DateTimeField()),
-                ('collection_time', models.DateTimeField(null=True)),
-                ('time_bait_gone', models.DateTimeField(null=True)),
+                ('collection_time', models.DateTimeField(null=True, blank=True)),
                 ('depth', models.FloatField(null=True)),
+                ('bait', models.CharField(max_length=100)),
                 ('equipment', models.ForeignKey(to='bruv.Equipment')),
                 ('reef', models.ForeignKey(null=True, to='trip.Reef')),
                 ('trip', models.ForeignKey(to='trip.Trip')),
@@ -129,7 +121,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SiteImage',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('create_datetime', models.DateTimeField(auto_now_add=True)),
                 ('last_modified_datetime', models.DateTimeField(auto_now=True)),
                 ('name', models.FileField(upload_to='')),
@@ -143,7 +135,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Video',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('create_datetime', models.DateTimeField(auto_now_add=True)),
                 ('last_modified_datetime', models.DateTimeField(auto_now=True)),
                 ('name', models.FileField(upload_to='')),
@@ -164,11 +156,6 @@ class Migration(migrations.Migration):
             model_name='observationimage',
             name='video',
             field=models.ForeignKey(to='bruv.Video'),
-        ),
-        migrations.AddField(
-            model_name='observation',
-            name='observed_fish',
-            field=models.ForeignKey(to='bruv.ObservedAnimal'),
         ),
         migrations.AddField(
             model_name='observation',
