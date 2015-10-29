@@ -1,5 +1,26 @@
 [
   {
+    "model": "bruv.animalbehavior",
+    "pk": 1,
+    "fields": {
+      "type": "swim by"
+    }
+  },
+  {
+    "model": "bruv.animalbehavior",
+    "pk": 2,
+    "fields": {
+      "type": "stimulated"
+    }
+  },
+  {
+    "model": "bruv.animalbehavior",
+    "pk": 3,
+    "fields": {
+      "type": "interaction"
+    }
+  },
+  {
     "fields": {
       "common_name": "Lollipop cat shark",
       "family": "Scyliorhinidae",

@@ -1,51 +1,49 @@
 [
   {
     "fields": {
-      "boundary": null,
-      "name": "Armit Island"
+      "name": "Caribbean"
+    },
+    "model": "trip.region",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "name": "Coral Sea"
+    },
+    "model": "trip.region",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "name": "Belize",
+      "region": 1
     },
     "model": "trip.location",
     "pk": 1
   },
   {
     "fields": {
-      "boundary": null,
-      "name": "Barcoo Bank"
+      "name": "Cuba",
+      "region": 1
     },
     "model": "trip.location",
     "pk": 2
   },
   {
     "fields": {
-      "boundary": null,
-      "name": "East Warregoes"
+      "name": "Bahamas",
+      "region": 1
     },
     "model": "trip.location",
     "pk": 3
   },
   {
     "fields": {
-      "boundary": null,
-      "name": "Holbourne Island"
+      "name": "New Caledonia",
+      "region": 2
     },
     "model": "trip.location",
     "pk": 4
-  },
-  {
-    "fields": {
-      "boundary": null,
-      "name": "Karamea Bank"
-    },
-    "model": "trip.location",
-    "pk": 5
-  },
-  {
-    "fields": {
-      "boundary": null,
-      "name": "West Warregoes"
-    },
-    "model": "trip.location",
-    "pk": 6
   },
   {
     "fields": {
@@ -56,21 +54,31 @@
       "create_datetime": "2015-08-12T18:06:32.221Z"
     },
     "model": "trip.team",
-    "pk": 3
+    "pk": 1
   },
   {
     "fields": {
-      "team": 3,
-      "boat": "minnow",
+      "user": 1,
+      "lead": "Mark Bond",
+      "last_modified_datetime": "2015-08-12T18:06:32.221Z",
+      "association": "Stony Brook",
+      "create_datetime": "2015-08-12T18:06:32.221Z"
+    },
+    "model": "trip.team",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "team": 2,
+      "boat": "RV Minnow",
       "location": 1,
-      "type": "BPositive",
       "create_datetime": "2015-08-17T15:00:09.943Z",
       "user": 1,
       "last_modified_datetime": "2015-08-17T22:06:48.047Z",
-      "end_date": "2015-08-17",
-      "start_date": "2015-08-17"
+      "end_date": "2015-07-",
+      "start_date": "2015-07-"
     },
     "model": "trip.trip",
-    "pk": 2
+    "pk": 1
   }
 ]
