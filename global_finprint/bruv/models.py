@@ -86,7 +86,10 @@ class Equipment(AuditableModel):
     camera_height = models.PositiveIntegerField(help_text='centimeters')
 
     def __str__(self):
-        return u"{0}: {1}".format(self.bruv_frame, self.camera)
+        return u"{0} / {1}".format(self.frame_type.type, self.camera)
+
+    class Meta:
+        verbose_name_plural = "Equipment"
 
 
 class Set(AuditableModel):

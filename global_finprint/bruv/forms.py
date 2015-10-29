@@ -9,7 +9,7 @@ from bootstrap3_datetime.widgets import DateTimePicker
 class SetForm(ModelForm):
     class Meta:
         model = Set
-        fields = ['drop_time', 'collection_time', 'equipment', 'depth', 'reef', 'trip']
+        fields = ['coordinates', 'drop_time', 'collection_time', 'equipment', 'depth', 'reef', 'trip']
         widgets = {
                     'drop_time': DateTimePicker(options={
                         "format": "YYYY-MM-DD HH:mm",

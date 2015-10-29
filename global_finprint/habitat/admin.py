@@ -1,9 +1,7 @@
 from django.contrib import admin
-from global_finprint.habitat.models import Substrate #, Community, Benthic
-# Register your models here.
+
+from global_finprint.habitat import models
 
 
-admin.register(Substrate)
-# admin.register(Community)
-# admin.register(Benthic)
+admin.register(models.Substrate)
 

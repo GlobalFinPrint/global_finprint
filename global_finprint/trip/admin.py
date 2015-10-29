@@ -1,19 +1,18 @@
 from django.contrib import admin
+from leaflet.admin import LeafletGeoAdmin
 
-from global_finprint.trip.models import Region, Location, Team, Site, \
-    MPACompliance, MPAIsolation, MPA, \
-    ReefType, ProtectionStatus, SharkGearInUse, FishingRestrictions, Reef
+from global_finprint.trip import models
 
 
-admin.site.register(Region)
-admin.site.register(Location)
-admin.site.register(MPACompliance)
-admin.site.register(MPAIsolation)
-admin.site.register(MPA)
-admin.site.register(ReefType)
-admin.site.register(ProtectionStatus)
-admin.site.register(SharkGearInUse)
-admin.site.register(Reef)
-admin.site.register(FishingRestrictions)
-admin.site.register(Team)
-admin.site.register(Site)
+admin.site.register(models.Region, LeafletGeoAdmin)
+admin.site.register(models.Location, LeafletGeoAdmin)
+admin.site.register(models.MPACompliance)
+admin.site.register(models.MPAIsolation)
+admin.site.register(models.MPA)
+admin.site.register(models.ReefType)
+admin.site.register(models.ProtectionStatus)
+admin.site.register(models.SharkGearInUse)
+admin.site.register(models.Reef, LeafletGeoAdmin)
+admin.site.register(models.FishingRestrictions)
+admin.site.register(models.Team)
+admin.site.register(models.Site, LeafletGeoAdmin)

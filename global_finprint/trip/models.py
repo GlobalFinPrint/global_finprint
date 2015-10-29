@@ -44,7 +44,7 @@ class MPACompliance(models.Model):
         values:  low ("paper park"), medium ("some poaching"), high (well enforced)
     """
     type = models.CharField(max_length=16)
-    description = models.CharField(max_length=24)
+    description = models.CharField(max_length=48)
 
     def __str__(self):
             return u"{0} ({1})".format(self.type, self.description)
@@ -96,6 +96,7 @@ class ReefType(models.Model):
         values:  slope, crest, flat, back reef, lagoon
     """
     type = models.CharField(max_length=16)
+    description = models.CharField(max_length=48)
 
     def __str__(self):
             return u"{0}".format(self.type)
@@ -107,6 +108,7 @@ class ProtectionStatus(models.Model):
         values:  openly fished, restricted, unfished, remote
     """
     type = models.CharField(max_length=16)
+    description = models.CharField(max_length=48)
 
     def __str__(self):
             return u"{0}".format(self.type)
@@ -121,6 +123,7 @@ class SharkGearInUse(models.Model):
         values:  gillnet, spear, longline, seine, rod and reel, poly ball / highflyer, drumline
     """
     type = models.CharField(max_length=24)
+    description = models.CharField(max_length=48)
 
     def __str__(self):
             return u"{0}".format(self.type)
@@ -135,6 +138,7 @@ class FishingRestrictions(models.Model):
         values:  gear, species, effort, size
     """
     type = models.CharField(max_length=16)
+    description = models.CharField(max_length=48)
 
     def __str__(self):
             return u"{0}".format(self.type)
@@ -151,10 +155,10 @@ class Reef(models.Model):
 
     type = models.ForeignKey(to=ReefType)
     protection_status = models.ForeignKey(to=ProtectionStatus)
-    shark_gear_in_use = models.ForeignKey(to=SharkGearInUse, null=True)
-    # todo:  restrictions [0-oo]
+    shark_gear_in_use = models.ManyToManyField(to=SharkGearInUse, blank=True)
+    fishing_restrictions = models.ManyToManyField(to=FishingRestrictions, blank=True)
 
-    mpa = models.ForeignKey(to=MPA, null=True)
+    mpa = models.ForeignKey(to=MPA, null=True, blank=True)
 
     objects = models.GeoManager()
 
@@ -170,19 +174,20 @@ class Team(AuditableModel):
     # todo:  some other people ...
 
     def __str__(self):
-        return u"{0}-{1}".format(self.association, self.lead)
+        return u"{0} - {1}".format(self.association, self.lead)
 
 
 class Trip(AuditableModel):
     team = models.ForeignKey(Team)
     location = models.ForeignKey(Location)
-    boat = models.CharField(max_length=100)
+    boat = models.CharField(max_length=100, blank=True, null=True)
     start_date = models.DateField()
     end_date = models.DateField()
 
     def __str__(self):
         # todo:  whatever is most usefully readable ...
-        return u"{0} ({1} - {2})".format(self.team,
+        #   feedback: need this to be searchable: year, location ... team may be less useful.
+        return u"{0} ({1} - {2})".format(self.location.name,
                                          self.start_date.isoformat(),
                                          self.end_date.isoformat()
                                          )
