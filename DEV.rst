@@ -1,10 +1,5 @@
-global_finprint
-==============================
+Dev setup and deployment notes.
 
-Global FinPrint Database and Portal
-
-
-LICENSE: BSD
 
 Settings
 ------------
@@ -28,7 +23,7 @@ DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS   HSTS_INCLUDE_SUBDOMAINS     n/a         
 DJANGO_SESSION_COOKIE_HTTPONLY          SESSION_COOKIE_HTTPONLY     n/a                                            True
 DJANGO_SESSION_COOKIE_SECURE            SESSION_COOKIE_SECURE       n/a                                            False
 DJANGO_DEFAULT_FROM_EMAIL               DEFAULT_FROM_EMAIL          n/a                                            "global_finprint <noreply@globalfinprint.org>"
-DJANGO_SERVER_EMAIL                     SERVER_EMAIL                n/a                                            "global_finprint <noreply@globalfinprint.org>" 
+DJANGO_SERVER_EMAIL                     SERVER_EMAIL                n/a                                            "global_finprint <noreply@globalfinprint.org>"
 DJANGO_EMAIL_SUBJECT_PREFIX             EMAIL_SUBJECT_PREFIX        n/a                                            "[global_finprint] "
 ======================================= =========================== ============================================== ======================================================================
 
@@ -161,9 +156,9 @@ Run these commands to deploy the project to Heroku:
 
     heroku config:set DJANGO_MAILGUN_SERVER_NAME=YOUR_MALGUN_SERVER
     heroku config:set DJANGO_MAILGUN_API_KEY=YOUR_MAILGUN_API_KEY
-    
+
     heroku config:set PYTHONHASHSEED=random
-    
+
     git push heroku master
     heroku run python manage.py migrate
     heroku run python manage.py check --deploy
