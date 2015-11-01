@@ -1,0 +1,48 @@
+[
+    {
+    "fields": {
+      "name": "Caribbean"
+    },
+    "model": "habitat.region",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "name": "Coral Sea"
+    },
+    "model": "habitat.region",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "name": "Belize",
+      "region": 1
+    },
+    "model": "habitat.location",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "name": "Cuba",
+      "region": 1
+    },
+    "model": "habitat.location",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "name": "Bahamas",
+      "region": 1
+    },
+    "model": "habitat.location",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "name": "New Caledonia",
+      "region": 2
+    },
+    "model": "habitat.location",
+    "pk": 4
+  }
+]

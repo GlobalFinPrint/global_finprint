@@ -1,8 +1,10 @@
 from django.contrib.gis.db import models
 from django.core.urlresolvers import reverse
+from django.contrib.gis.geos import Point
 
 from global_finprint.core.models import AuditableModel
-from global_finprint.trip.models import Trip, Reef
+from global_finprint.trip.models import Trip
+from global_finprint.habitat.models import Reef
 
 
 class Observer(models.Model):
@@ -94,6 +96,8 @@ class Equipment(AuditableModel):
 
 class Set(AuditableModel):
     coordinates = models.PointField(null=True)
+    latitude = models.DecimalField(max_digits=10, decimal_places=6)
+    longitude = models.DecimalField(max_digits=10, decimal_places=6)
     drop_time = models.DateTimeField()
     collection_time = models.DateTimeField(null=True, blank=True)
 
@@ -109,6 +113,10 @@ class Set(AuditableModel):
 
     reef = models.ForeignKey(Reef, null=True)
     trip = models.ForeignKey(Trip)
+
+    def save(self, *args, **kwargs):
+        self.coordinates = Point(float(self.longitude), float(self.latitude))
+        super(Set, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('set_update', args=[str(self.id)])

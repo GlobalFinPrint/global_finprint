@@ -1,10 +1,59 @@
 [
   {
     "fields": {
+      "type": "seagrass"
+    },
+    "model": "habitat.substrate",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "type": "rubble"
+    },
+    "model": "habitat.substrate",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "type": "sand"
+    },
+    "model": "habitat.substrate",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "type": "rock"
+    },
+    "model": "habitat.substrate",
+    "pk": 4
+  },
+  {
+    "fields": {
+      "type": "spur and groove coral"
+    },
+    "model": "habitat.substrate",
+    "pk": 5
+  },
+  {
+    "fields": {
+      "type": "patch reef"
+    },
+    "model": "habitat.substrate",
+    "pk": 6
+  },
+  {
+    "fields": {
+      "type": "continuous reef"
+    },
+    "model": "habitat.substrate",
+    "pk": 7
+  },
+  {
+    "fields": {
       "description": "paper park",
       "type": "low"
     },
-    "model": "trip.mpacompliance",
+    "model": "habitat.mpacompliance",
     "pk": 1
   },
   {
@@ -12,7 +61,7 @@
       "description": "some poaching",
       "type": "medium"
     },
-    "model": "trip.mpacompliance",
+    "model": "habitat.mpacompliance",
     "pk": 2
   },
   {
@@ -20,168 +69,168 @@
       "description": "well enforced",
       "type": "high"
     },
-    "model": "trip.mpacompliance",
+    "model": "habitat.mpacompliance",
     "pk": 3
   },
   {
     "fields": {
       "type": "continuous"
     },
-    "model": "trip.mpaisolation",
+    "model": "habitat.mpaisolation",
     "pk": 1
   },
   {
     "fields": {
       "type": "<20km to next reef"
     },
-    "model": "trip.mpaisolation",
+    "model": "habitat.mpaisolation",
     "pk": 2
   },
   {
     "fields": {
       "type": ">20km to next reef"
     },
-    "model": "trip.mpaisolation",
+    "model": "habitat.mpaisolation",
     "pk": 3
   },
   {
     "fields": {
       "type": "slope"
     },
-    "model": "trip.reeftype",
+    "model": "habitat.reeftype",
     "pk": 1
   },
   {
     "fields": {
       "type": "crest"
     },
-    "model": "trip.reeftype",
+    "model": "habitat.reeftype",
     "pk": 2
   },
   {
     "fields": {
       "type": "flat"
     },
-    "model": "trip.reeftype",
+    "model": "habitat.reeftype",
     "pk": 3
   },
   {
     "fields": {
       "type": "back reef"
     },
-    "model": "trip.reeftype",
+    "model": "habitat.reeftype",
     "pk": 4
   },
   {
     "fields": {
       "type": "lagoon"
     },
-    "model": "trip.reeftype",
+    "model": "habitat.reeftype",
     "pk": 5
   },
   {
     "fields": {
       "type": "openly fished"
     },
-    "model": "trip.protectionstatus",
+    "model": "habitat.protectionstatus",
     "pk": 1
   },
   {
     "fields": {
       "type": "restricted"
     },
-    "model": "trip.protectionstatus",
+    "model": "habitat.protectionstatus",
     "pk": 2
   },
   {
     "fields": {
       "type": "unfished"
     },
-    "model": "trip.protectionstatus",
+    "model": "habitat.protectionstatus",
     "pk": 3
   },
   {
     "fields": {
       "type": "remote"
     },
-    "model": "trip.protectionstatus",
+    "model": "habitat.protectionstatus",
     "pk": 4
   },
   {
     "fields": {
       "type": "gillnet"
     },
-    "model": "trip.sharkgearinuse",
+    "model": "habitat.sharkgearinuse",
     "pk": 1
   },
   {
     "fields": {
       "type": "spear"
     },
-    "model": "trip.sharkgearinuse",
+    "model": "habitat.sharkgearinuse",
     "pk": 6
   },
   {
     "fields": {
       "type": "longline"
     },
-    "model": "trip.sharkgearinuse",
+    "model": "habitat.sharkgearinuse",
     "pk": 7
   },
   {
     "fields": {
       "type": "seine"
     },
-    "model": "trip.sharkgearinuse",
+    "model": "habitat.sharkgearinuse",
     "pk": 8
   },
   {
     "fields": {
       "type": "rod and reel"
     },
-    "model": "trip.sharkgearinuse",
+    "model": "habitat.sharkgearinuse",
     "pk": 9
   },
   {
     "fields": {
       "type": "poly ball / highflyer"
     },
-    "model": "trip.sharkgearinuse",
+    "model": "habitat.sharkgearinuse",
     "pk": 10
   },
   {
     "fields": {
       "type": "drumline"
     },
-    "model": "trip.sharkgearinuse",
+    "model": "habitat.sharkgearinuse",
     "pk": 11
   },
   {
     "fields": {
       "type": "gear"
     },
-    "model": "trip.fishingrestrictions",
+    "model": "habitat.fishingrestrictions",
     "pk": 1
   },
   {
     "fields": {
       "type": "species"
     },
-    "model": "trip.fishingrestrictions",
+    "model": "habitat.fishingrestrictions",
     "pk": 2
   },
   {
     "fields": {
       "type": "effort"
     },
-    "model": "trip.fishingrestrictions",
+    "model": "habitat.fishingrestrictions",
     "pk": 3
   },
   {
     "fields": {
       "type": "size"
     },
-    "model": "trip.fishingrestrictions",
+    "model": "habitat.fishingrestrictions",
     "pk": 4
   }
 ]
