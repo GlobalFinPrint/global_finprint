@@ -30,5 +30,21 @@
     },
     "model": "bruv.frametype",
     "pk": 4
+  },
+  {
+    "pk": 2,
+    "model": "bruv.equipment",
+    "fields": {
+      "camera_height": 100,
+      "frame_type": 1,
+      "last_modified_datetime": "2015-10-29T20:18:37.817Z",
+      "create_datetime": "2015-10-29T20:18:37.816Z",
+      "stereo": false,
+      "user": 1,
+      "camera": "GoPro Hero 3",
+      "bait_container": "C",
+      "arm_length": 100
+    }
   }
 ]
+
