@@ -274,6 +274,13 @@ LOGGING = {
     }
 }
 
+LEAFLET_CONFIG = {
+    'DEFAULT_CENTER': (25.0600, -77.3450),
+    'DEFAULT_ZOOM': 5,
+    'MIN_ZOOM': 3,
+    'MAX_ZOOM': 18,
+}
+
 ########## CELERY
 INSTALLED_APPS += ('global_finprint.taskapp.celery.CeleryConfig',)
 # if you are not using the django database broker (e.g. rabbitmq, redis, memcached), you can remove the next line.
