@@ -1,30 +1,11 @@
 from django.contrib.gis.db import models
 from django.core.urlresolvers import reverse
 from django.contrib.gis.geos import Point
+from django.contrib.auth.models import User
 
 from global_finprint.core.models import AuditableModel
 from global_finprint.trip.models import Trip
 from global_finprint.habitat.models import Reef
-
-
-class Observer(models.Model):
-    # todo:  placeholder for "tape reader"  create a real name list.
-    name = models.CharField(max_length=100, unique=True)
-
-    def __str__(self):
-        return u"{0}".format(self.name)
-
-
-class Animal(models.Model):
-    common_name = models.CharField(max_length=100)
-    family = models.CharField(max_length=100, unique=True)
-    genus = models.CharField(max_length=100, unique=True)
-    species = models.CharField(max_length=100, unique=True)
-    fishbase_key = models.IntegerField(null=True)
-    sealifebase_key = models.IntegerField(null=True)
-
-    def __str__(self):
-        return u"{0} {1} ({2})".format(self.genus, self.species, self.common_name)
 
 
 ANIMAL_SEX_CHOICES = {
@@ -70,8 +51,9 @@ VISIBILITY_CHOICES = {
     ('>15', '>15'),
 }
 
+
 class FrameType(models.Model):
-    # rebar, stainless rebar, PVC, mixed
+    # starting seed:  rebar, stainless rebar, PVC, mixed
     type = models.CharField(max_length=16)
     image = models.ImageField(null=True)
 
@@ -148,12 +130,48 @@ class EnvironmentMeasure(AuditableModel):
     set = models.ForeignKey(Set)
 
 
+class Animal(models.Model):
+    common_name = models.CharField(max_length=100)
+    family = models.CharField(max_length=100, unique=True)
+    genus = models.CharField(max_length=100, unique=True)
+    species = models.CharField(max_length=100, unique=True)
+    fishbase_key = models.IntegerField(null=True)
+    sealifebase_key = models.IntegerField(null=True)
+
+    def __str__(self):
+        return u"{0} {1} ({2})".format(self.genus, self.species, self.common_name)
+
+
 class AnimalBehavior(models.Model):
     #    swim by, stimulated, interaction
     type = models.CharField(max_length=16)
 
     def __str__(self):
         return u"{0}".format(self.type)
+
+
+class Video(AuditableModel):
+    # todo:  placeholder!  this should be filesystem / S3 ...
+    name = models.FileField()
+    length = models.FloatField()
+    set = models.ForeignKey(Set)
+
+
+class Annotator(models.Model):
+    # todo:  placeholder for "tape reader"
+    email = models.EmailField(max_length=100, unique=True)
+    first_name = models.CharField(max_length=40)
+    last_name = models.CharField(max_length=40)
+    affiliation = models.CharField(max_length=100)
+
+    def __str__(self):
+        return u"{0}".format(self.name)
+
+
+class VideoAnnotator(AuditableModel):
+    annotator = models.ForeignKey(to=Annotator)
+    video = models.ForeignKey(to=Video)
+    assigned_by = models.ForeignKey(to=User, related_name='assigned_by')
 
 
 class Observation(AuditableModel):
@@ -170,17 +188,10 @@ class Observation(AuditableModel):
     duration = models.PositiveIntegerField()
 
     set = models.ForeignKey(Set)
-    observer = models.ForeignKey(Observer)
+    video_annotator = models.ForeignKey(VideoAnnotator)
 
     def __str__(self):
         return u"{0}".format(self.initial_observation_time)
-
-
-class Video(AuditableModel):
-    # todo:  placeholder!  this should be filesystem / S3 ...
-    name = models.FileField()
-    length = models.FloatField()
-    set = models.ForeignKey(Set)
 
 
 class Image(AuditableModel):

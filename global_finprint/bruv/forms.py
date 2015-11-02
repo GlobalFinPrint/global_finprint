@@ -33,7 +33,7 @@ class ObservationForm(ModelForm):
         model = Observation
         fields = ['initial_observation_time',
                   'animal', 'sex', 'stage', 'length', 'behavior',
-                  'set', 'observer',
+                  'set', 'video_annotator',
                   ]
         widgets = {
             'initial_observation_time': DateTimePicker(options={
