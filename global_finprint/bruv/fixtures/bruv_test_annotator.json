@@ -1,0 +1,28 @@
+[{
+    "model": "bruv.annotator",
+    "pk": 2,
+    "fields": {
+        "email": "vol1@sharkspotters.org",
+        "last_name": "First",
+        "first_name": "Volunteer",
+        "affiliation": "SharkSpotters"
+    }
+}, {
+    "model": "bruv.annotator",
+    "pk": 3,
+    "fields": {
+        "email": "vol.two@sharkspotters.org",
+        "last_name": "Second",
+        "first_name": "Volunteer",
+        "affiliation": "SharkSpotters"
+    }
+}, {
+    "model": "bruv.annotator",
+    "pk": 4,
+    "fields": {
+        "email": "undergrad@fish.school.edu",
+        "last_name": "Graduate",
+        "first_name": "Under",
+        "affiliation": "Univ. of Fishes"
+    }
+}]

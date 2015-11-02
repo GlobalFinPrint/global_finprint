@@ -165,7 +165,7 @@ class Annotator(models.Model):
     affiliation = models.CharField(max_length=100)
 
     def __str__(self):
-        return u"{0}".format(self.name)
+        return u"{0}, {1}".format(self.last_name, self.first_name)
 
 
 class VideoAnnotator(AuditableModel):
