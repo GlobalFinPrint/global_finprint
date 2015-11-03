@@ -21,80 +21,198 @@
     }
   },
   {
-    "fields": {
-      "common_name": "Lollipop cat shark",
-      "family": "Scyliorhinidae",
-      "genus": "Cephalurus",
-      "species": "cephalus",
-      "fishbase_key": "803"
-    },
     "model": "bruv.animal",
+    "fields": {
+      "group": "S",
+      "common_name": "Lollipop cat shark",
+      "genus": "Cephalurus",
+      "region": 1,
+      "species": "cephalus",
+      "sealifebase_key": null,
+      "rank": 1,
+      "family": "Scyliorhinidae",
+      "fishbase_key": 803
+    },
     "pk": 1
   },
   {
-    "fields": {
-      "common_name": "Common hammerhead shark",
-      "family": "Sphyrnidae",
-      "genus": "Sphyrna",
-      "species": "zygaena",
-      "fishbase_key": "917"
-    },
     "model": "bruv.animal",
+    "fields": {
+      "group": "S",
+      "common_name": "Common hammerhead shark",
+      "genus": "Sphyrna",
+      "region": 1,
+      "species": "zygaena",
+      "sealifebase_key": null,
+      "rank": 1,
+      "family": "Sphyrnidae",
+      "fishbase_key": 917
+    },
     "pk": 2
   },
   {
-    "fields": {
-      "common_name": "Sand tiger shark",
-      "family": "Odontaspididae",
-      "genus": "Carcharias",
-      "species": "taurus",
-      "fishbase_key": "747"
-    },
     "model": "bruv.animal",
+    "fields": {
+      "group": "S",
+      "common_name": "Sand tiger shark",
+      "genus": "Carcharias",
+      "region": 1,
+      "species": "taurus",
+      "sealifebase_key": null,
+      "rank": 2,
+      "family": "Odontaspididae",
+      "fishbase_key": 747
+    },
     "pk": 3
   },
   {
-    "fields": {
-      "common_name": "Rusty carpetshark",
-      "family": "Parascylliidae",
-      "genus": "Parascyllium",
-      "species": "ferrugineum",
-      "fishbase_key": "5915"
-    },
     "model": "bruv.animal",
+    "fields": {
+      "group": "S",
+      "common_name": "Rusty carpetshark",
+      "genus": "Parascyllium",
+      "region": 1,
+      "species": "ferrugineum",
+      "sealifebase_key": null,
+      "rank": 3,
+      "family": "Parascylliidae",
+      "fishbase_key": 5915
+    },
     "pk": 4
   },
   {
-    "fields": {
-      "common_name": "Kemp's ridley turtle",
-      "family": "Cheloniidae",
-      "genus": "Lepidochelys",
-      "species": "kempii",
-      "sealifebase_key": "67114"
-    },
     "model": "bruv.animal",
+    "fields": {
+      "group": "T",
+      "common_name": "Kemp's ridley turtle",
+      "genus": "Lepidochelys",
+      "region": 1,
+      "species": "kempii",
+      "sealifebase_key": 67114,
+      "rank": 1,
+      "family": "Cheloniidae",
+      "fishbase_key": null
+    },
     "pk": 5
   },
   {
-    "fields": {
-      "common_name": "Lesser devil ray",
-      "family": "Myliobatidae",
-      "genus": "Mobula",
-      "species": "hypostoma",
-      "fishbase_key": "2586"
-    },
     "model": "bruv.animal",
+    "fields": {
+      "group": "R",
+      "common_name": "Lesser devil ray",
+      "genus": "Mobula",
+      "region": 1,
+      "species": "hypostoma",
+      "sealifebase_key": null,
+      "rank": 1,
+      "family": "Myliobatidae",
+      "fishbase_key": 2586
+    },
     "pk": 6
   },
   {
-    "fields": {
-      "common_name": "Witch guitarfish",
-      "family": "Rhinobatidae",
-      "genus": "Zapteryx",
-      "species": "xyster",
-      "fishbase_key": "52476"
-    },
     "model": "bruv.animal",
+    "fields": {
+      "group": "T",
+      "common_name": "Witch guitarfish",
+      "genus": "Zapteryx",
+      "region": 1,
+      "species": "xyster",
+      "sealifebase_key": null,
+      "rank": 4,
+      "family": "Rhinobatidae",
+      "fishbase_key": 52476
+    },
     "pk": 7
+  },
+  {
+    "model": "bruv.animal",
+    "fields": {
+      "group": "R",
+      "common_name": "Spotted eagle ray",
+      "genus": "Aetobatus",
+      "region": 1,
+      "species": "narinari",
+      "sealifebase_key": null,
+      "rank": 2,
+      "family": "Myliobatinae",
+      "fishbase_key": 1250
+    },
+    "pk": 8
+  },
+  {
+    "model": "bruv.animal",
+    "fields": {
+      "group": "T",
+      "common_name": "Goldentail moray",
+      "genus": "Gymnothorax",
+      "region": 1,
+      "species": "miliaris",
+      "sealifebase_key": null,
+      "rank": 2,
+      "family": "Muraenidae",
+      "fishbase_key": 1103
+    },
+    "pk": 9
+  },
+  {
+    "model": "bruv.animal",
+    "fields": {
+      "group": "T",
+      "common_name": "Magpie fiddler ray",
+      "genus": "Trygonorrhina",
+      "region": 1,
+      "species": "melaleuca",
+      "sealifebase_key": null,
+      "rank": 3,
+      "family": "Rhinobatidae",
+      "fishbase_key": 24037
+    },
+    "pk": 11
+  },
+  {
+    "model": "bruv.animal",
+    "fields": {
+      "group": "G",
+      "common_name": "Nassau grouper",
+      "genus": "Epinephelus",
+      "region": 1,
+      "species": "striatus",
+      "sealifebase_key": null,
+      "rank": 1,
+      "family": "Serranidae",
+      "fishbase_key": 18
+    },
+    "pk": 12
+  },
+  {
+    "model": "bruv.animal",
+    "fields": {
+      "group": "G",
+      "common_name": "Coney",
+      "genus": "Cephalopholis",
+      "region": 1,
+      "species": "fulva",
+      "sealifebase_key": null,
+      "rank": 2,
+      "family": "Serranidae",
+      "fishbase_key": 8816
+    },
+    "pk": 13
+  },
+  {
+    "model": "bruv.animal",
+    "fields": {
+      "group": "G",
+      "common_name": "Black grouper",
+      "genus": "Mycteroperca",
+      "region": 1,
+      "species": "bonaci",
+      "sealifebase_key": null,
+      "rank": 3,
+      "family": "Serranidae",
+      "fishbase_key": 1209
+    },
+    "pk": 14
   }
 ]

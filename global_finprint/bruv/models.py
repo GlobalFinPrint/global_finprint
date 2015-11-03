@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 from global_finprint.core.models import AuditableModel
 from global_finprint.trip.models import Trip
-from global_finprint.habitat.models import Reef
+from global_finprint.habitat.models import Region, Reef
 
 
 ANIMAL_SEX_CHOICES = {
@@ -17,6 +17,13 @@ ANIMAL_STAGE_CHOICES = {
     ('AD', 'Adult'),
     ('JU', 'Juvenile'),
     ('U', 'Unknown'),
+}
+ANIMAL_GROUPS = {
+    ('S', 'Shark'),
+    ('R', 'Ray'),
+    ('T', 'Other target'),
+    ('G', 'Groupers and jacks'),
+    ('N', 'n/a'),
 }
 EQUIPMENT_BAIT_CONTAINER = {
     ('B', 'Bag'),
@@ -131,12 +138,18 @@ class EnvironmentMeasure(AuditableModel):
 
 
 class Animal(models.Model):
+    region = models.ForeignKey(to=Region)
+    rank = models.PositiveIntegerField()
+    group = models.CharField(max_length=1, choices=ANIMAL_GROUPS)
     common_name = models.CharField(max_length=100)
-    family = models.CharField(max_length=100, unique=True)
-    genus = models.CharField(max_length=100, unique=True)
-    species = models.CharField(max_length=100, unique=True)
-    fishbase_key = models.IntegerField(null=True)
-    sealifebase_key = models.IntegerField(null=True)
+    family = models.CharField(max_length=100)
+    genus = models.CharField(max_length=100)
+    species = models.CharField(max_length=100)
+    fishbase_key = models.IntegerField(null=True, blank=True)
+    sealifebase_key = models.IntegerField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ('genus', 'species')
 
     def __str__(self):
         return u"{0} {1} ({2})".format(self.genus, self.species, self.common_name)

@@ -25,6 +25,10 @@ def observation_detail(request, pk):
     return JsonResponse(data)
 
 
+def observation_post(request):
+    pass
+
+
 class ObservationListView(ListView):
     model = Observation
     context_object_name = 'observations'
