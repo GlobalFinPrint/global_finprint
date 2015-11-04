@@ -1,7 +1,7 @@
 import json
 from django.http.response import HttpResponse
 
-from ..models import Animal
+from ..models import Animal, Video, VideoAnnotator
 
 
 def site_animal_list(request, site_id, *args, **kwargs):
@@ -14,8 +14,10 @@ def site_animal_list(request, site_id, *args, **kwargs):
         - sharks
         - rays
         - other targets
+        - groupers, jacks, other fish of interest
         - all
     """
+    # todo: sanity check if 'limit' can be cast to int
     limit = (int(request.REQUEST['limit']) if 'limit' in request.REQUEST else 5)
     animals = Animal.objects.all()
     animal_lists = {
@@ -54,4 +56,4 @@ def site_animal_list(request, site_id, *args, **kwargs):
 
 
 def annotator_video_list(request, annotator_id):
-    pass
+    videos = Video.objects.filter(pk=VideoAnnotator(annotator=annotator_id))

@@ -1,12 +1,14 @@
 from django.views.generic import ListView, DetailView, UpdateView, CreateView
 from django.contrib import messages
-from django.http.response import JsonResponse
+from django.core.serializers import serialize
+from django.http.response import JsonResponse, HttpResponse
 from django.core.urlresolvers import reverse_lazy
 
 from braces.views import LoginRequiredMixin
 
 from .forms import TripForm
 from .models import Trip
+from ..bruv.models import Set
 
 
 class TripActionMixin(object):
@@ -43,6 +45,14 @@ def trip_detail(request, pk):
             'team': str(t.team),
             'boat': t.boat,}
     return JsonResponse(data)
+
+
+def trip_sets_geojson(request, trip_id):
+    feature = serialize('geojson',
+                        Set.objects.filter(trip_id=trip_id),
+                        fields='coordinates, drop_time'
+                        )
+    return HttpResponse(feature, content_type='application/json')
 
 
 class TripCreateView(LoginRequiredMixin, TripActionMixin, CreateView):

@@ -171,7 +171,7 @@ class Video(AuditableModel):
 
 
 class Annotator(models.Model):
-    # todo:  placeholder for "tape reader"
+    # todo:  the volunteer anotators will need logins, etc.  tie back to auth.User?
     email = models.EmailField(max_length=100, unique=True)
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=40)
