@@ -41,6 +41,7 @@ THIRD_PARTY_APPS = (
     #'allauth.account',  # registration
     #'allauth.socialaccount',  # registration
     'bootstrap3_datetime',
+    'braces',
     'leaflet',
 )
 
