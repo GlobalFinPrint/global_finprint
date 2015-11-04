@@ -1,0 +1,13 @@
+createsuperuser
+
+# load base lookup data
+loaddata global_finprint/bruv/fixtures/bruv_animal
+loaddata global_finprint/bruv/fixtures/bruv_equipment
+loaddata global_finprint/habitat/fixtures/habitat_locations
+loaddata global_finprint/habitat/fixtures/habitat_reef_mpa_substrate
+
+# load test data
+loaddata global_finprint/bruv/fixtures/test_annotator
+loaddata global_finprint/habitat/fixtures/test_site
+loaddata global_finprint/trip/fixtures/test_trip
+loaddata global_finprint/bruv/fixtures/test_set
