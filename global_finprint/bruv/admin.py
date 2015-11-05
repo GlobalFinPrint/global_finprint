@@ -8,4 +8,5 @@ admin.site.register(models.FrameType)
 admin.site.register(models.Equipment)
 admin.site.register(models.AnimalBehavior)
 admin.site.register(models.Animal)
+admin.site.register(models.Set)
 

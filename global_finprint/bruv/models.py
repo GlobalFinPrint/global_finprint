@@ -104,6 +104,7 @@ class Set(AuditableModel):
     trip = models.ForeignKey(Trip)
 
     def save(self, *args, **kwargs):
+        # todo:  we're assuming the input is latitude & longitude!  this should be checked!
         self.coordinates = Point(float(self.longitude), float(self.latitude))
         super(Set, self).save(*args, **kwargs)
 
@@ -111,7 +112,7 @@ class Set(AuditableModel):
         return reverse('set_update', args=[str(self.id)])
 
     def __str__(self):
-        return u"{0}".format(self.drop_time)
+        return u"{0:.4f}, {1:.4f}".format(self.coordinates.y, self.coordinates.x)
 
 
 class EnvironmentMeasure(AuditableModel):

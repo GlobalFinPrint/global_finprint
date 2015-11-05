@@ -1,40 +1,100 @@
 {% extends "base.html" %}
+{% load leaflet_tags %}
 {% block content %}
 
-    <div class="col-md-11">
+    <div class="col-md-12" xmlns="http://www.w3.org/1999/html">
         <div class="row">
             <div class="well trail">
-                <a href="{% url 'trip_list' %}">Trips</a>
+                Global FinPrint | <a href="{% url 'trip_list' %}">Trips</a> | {{ trip_name }} | Sets
             </div>
         </div>
         <div class="row">
-            <legend class="pull-left">Sets
-                <a role="button" href="{% url 'set_create' trip_pk=trip_pk %}" class="btn btn-sm pull-right" title="Create Set" style="background: none;" aria-label="Left Align">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                </a>
-            </legend>
-            <br>
+            {% leaflet_map "set_map" callback="main_map_init" %}
+            <br/>
+            <br/>
         </div>
-        <div class ="row">
-            <div class = "col-md-6">
-                <div class="list-group generic-list">
-                {% for set in sets %}
-                    <li class="list-group-item generic-list-item" data-pk-id="{{ set.id }}" data-type="set">
-                        <span> {{ set }} </span>
-                        <div class="pull-right">
-                            <a href="{% url 'set_update' trip_pk=set.trip.id pk=set.id %}">Edit</a>
-                            <a href="{% url 'set_observation_list' trip_pk=set.trip.id set_pk=set.id %}">Observations</a>
-                        </div>
-                    </li>
-                {% endfor %}
-                </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-bordered table-condensed" cellspacing="0" width="100%">
+                    <thead>
+                    <tr class="success">
+                        <th id="reef">Date</th>
+                        <th id="reef">Reef</th>
+                        <th id="drop_time">Drop</th>
+                        <th id="collection_time">Collect</th>
+                        <th id="latitude">Lat</th>
+                        <th id="longitude">Long</th>
+                        <th id="depth">Depth</th>
+                        <th id="equipment">Equipment</th>
+                        <th id="tide_state">Tide</th>
+                        <th id="visibility">Vis</th>
+                        <th id="bait">Bait</th>
+                    </tr>
+                    <tr class="success">
+                        <th id="blank"></th>
+                        <th id="blank"></th>
+                        <th id="blank"></th>
+                        <th id="blank"></th>
+                        <th id="measurement_time">Time</th>
+                        <th id="temperature">Temp</th>
+                        <th id="salinity">Salinity</th>
+                        <th id="conductivity">Cond</th>
+                        <th id="dissolved_oxygen">DOx</th>
+                        <th id="current_flow">Flow</th>
+                        <th id="current_direction">Direction</th>
+                    </tr>
+                    </thead>
+                    {% for set in sets %}
+                        <tr>
+                            <td>{{ set.drop_time|date:"SHORT_DATE_FORMAT" }}</td>
+                            <td>{{ set.reef.name }}</td>
+                            <td>{{ set.drop_time|date:"H:i" }}</td>
+                            <td>{{ set.collection_time|date:"H:i" }}</td>
+                            <td>{{ set.latitude }}</td>
+                            <td>{{ set.longitude }}</td>
+                            <td>{{ set.depth }}</td>
+                            <td>{{ set.equipment }}</td>
+                            <td>{{ set.tide_state }}</td>
+                            <td>{{ set.visibility }}</td>
+                            <td>{{ set.bait }}</td>
+                        </tr>
+                        {# for each environmental measure: #}
+                        {% for env in set.environmentmeasure_set.all %}
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>{{ env.measurement_time|date:"H:i" }}</td>
+                                <td>{{ env.water_temperature }}</td>
+                                <td>{{ env.salinity }}</td>
+                                <td>{{ env.conductivity }}</td>
+                                <td>{{ env.dissolved_oxygen }}</td>
+                                <td>{{ env.current_flow }}</td>
+                                <td>{{ env.current_direction }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </table>
             </div>
-            <div class = "col-md-6">
-                <div class="well" id="detail_panel">
 
-                </div>
-            </div>
+        </div>
+        <div class="row">
+            <br/>
+            <br/>
+            [placeholder for set form]
+            <br/>
+            <br/>
         </div>
     </div>
+    <script type="text/javascript">
+        function main_map_init(map, options) {
+            var sets_geojson_url = '{% url "api_trip_sets_geojson" trip_pk %}';
 
+            $.getJSON(sets_geojson_url, function (data) {
+                L.geoJson(data).addTo(map);
+                map.fitBounds(L.geoJson(data).getBounds().pad(20))
+            });
+        }
+    </script>
 {% endblock %}

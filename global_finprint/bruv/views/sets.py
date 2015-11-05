@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse_lazy
 
 from braces.views import LoginRequiredMixin
 
+from global_finprint.trip.models import Trip
 from ..models import Set
 from ..forms import SetForm
 
@@ -27,11 +28,12 @@ class SetListView(ListView):
     template_name = 'pages/sets/set_list.html'
 
     def get_queryset(self):
-        return Set.objects.filter(trip=self.kwargs['trip_pk'])
+        return Set.objects.filter(trip=self.kwargs['trip_pk']).prefetch_related('environmentmeasure_set')
 
     def get_context_data(self, **kwargs):
         context = super(SetListView, self).get_context_data(**kwargs)
         context['trip_pk'] = self.kwargs['trip_pk']
+        context['trip_name'] = str(Trip.objects.get(pk=self.kwargs['trip_pk']))
         return context
 
 
