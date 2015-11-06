@@ -9,7 +9,10 @@ from bootstrap3_datetime.widgets import DateTimePicker
 class SetForm(ModelForm):
     class Meta:
         model = Set
-        fields = ['reef', 'latitude', 'longitude', 'depth', 'drop_time', 'collection_time', 'equipment']
+        fields = ['reef', 'latitude', 'longitude', 'depth',
+                  'drop_time', 'collection_time',
+                  'equipment', 'tide_state', 'visibility',
+                  'bait', 'bait_oiled']
         widgets = {
                     'drop_time': DateTimePicker(options={
                         "format": "YYYY-MM-DD HH:mm",
@@ -35,7 +38,7 @@ class ObservationForm(ModelForm):
         model = Observation
         fields = ['initial_observation_time',
                   'animal', 'sex', 'stage', 'length', 'behavior',
-                  'set', 'video_annotator',
+                  'set',    'video_annotator',
                   ]
         widgets = {
             'initial_observation_time': DateTimePicker(options={
