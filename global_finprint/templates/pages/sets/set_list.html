@@ -31,10 +31,7 @@
                         <th id="bait">Bait</th>
                     </tr>
                     <tr class="success">
-                        <th id="blank"></th>
-                        <th id="blank"></th>
-                        <th id="blank"></th>
-                        <th id="blank"></th>
+                        <th id="blank" colspan="4"></th>
                         <th id="measurement_time">Time</th>
                         <th id="temperature">Temp</th>
                         <th id="salinity">Salinity</th>
@@ -61,10 +58,7 @@
                         {# for each environmental measure: #}
                         {% for env in set.environmentmeasure_set.all %}
                             <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td colspan="4"></td>
                                 <td>{{ env.measurement_time|date:"H:i" }}</td>
                                 <td>{{ env.water_temperature }}</td>
                                 <td>{{ env.salinity }}</td>
