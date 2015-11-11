@@ -1,4 +1,4 @@
-from django.views.generic import ListView, UpdateView, CreateView
+from django.views.generic import UpdateView, CreateView
 from django.contrib import messages
 from django.http.response import JsonResponse
 from django.core.urlresolvers import reverse_lazy
