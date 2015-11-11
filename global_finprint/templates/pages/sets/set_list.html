@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load leaflet_tags %}
+{% load crispy_forms_tags %}
 {% block content %}
 
     <div class="col-md-12" xmlns="http://www.w3.org/1999/html">
@@ -73,13 +74,15 @@
             </div>
 
         </div>
+        {% if request.user.is_authenticated %}
         <div class="row">
-            <br/>
-            <br/>
-            [placeholder for set form]
-            <br/>
-            <br/>
+            <div class="col-md-12">
+                <div class="well">
+                    {% crispy set_form %}
+                </div>
+            </div>
         </div>
+        {% endif %}
     </div>
     <script type="text/javascript">
         function main_map_init(map, options) {

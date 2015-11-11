@@ -31,9 +31,16 @@ class SetListView(ListView):
         return Set.objects.filter(trip=self.kwargs['trip_pk']).prefetch_related('environmentmeasure_set')
 
     def get_context_data(self, **kwargs):
+        parent_trip = Trip.objects.get(id=self.kwargs['trip_pk'])
+        form_defaults = {
+            'drop_time': parent_trip.start_date,
+            'collection_time': parent_trip.start_date,
+        }
+
         context = super(SetListView, self).get_context_data(**kwargs)
         context['trip_pk'] = self.kwargs['trip_pk']
         context['trip_name'] = str(Trip.objects.get(pk=self.kwargs['trip_pk']))
+        context['set_form'] = SetForm(initial=form_defaults)
         return context
 
 
