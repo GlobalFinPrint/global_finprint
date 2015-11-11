@@ -75,7 +75,8 @@
 
         </div>
         {% if request.user.is_authenticated %}
-        <div class="row">
+        <h3>Add new set</h3>
+        <div class="row set-form">
             <div class="col-md-12">
                 <div class="well">
                     {% crispy set_form %}

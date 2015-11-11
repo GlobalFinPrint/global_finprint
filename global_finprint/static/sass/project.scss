@@ -39,3 +39,12 @@
 .generic-list-item {
 
 }
+
+.set-form .form-inline .form-group {
+  vertical-align: top;
+  padding-bottom: 15px;
+
+  p.help-block {
+    display: inline;
+  }
+}
