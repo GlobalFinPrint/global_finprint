@@ -30,17 +30,18 @@ class SetForm(ModelForm):
             nocancel = False
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
-        self.helper.form_class = 'form-inline'
+        self.helper.form_class = 'form-inline set'
         self.helper.form_action = "{{ action }}"
         self.helper.form_method = "post"
+        self.helper.layout.append(FormActions(Submit('save', 'Save Set')))
         if not nocancel:
             self.helper.layout.append(
                 FormActions(
-                    HTML("""<a role="button" class="btn btn-default"
+                    HTML("""<a role="button" class="btn btn-default cancel"
                         href="{% url "trip_set_list" trip_pk %}">Cancel</a>"""),
                 )
             )
-        self.helper.layout.append(FormActions(Submit('save', 'Save')))
+            self.helper.form_class += ' with-cancel'
 
 
 class ObservationForm(ModelForm):
@@ -63,5 +64,5 @@ class ObservationForm(ModelForm):
         self.helper.form_method = "post"
         self.helper.layout.append(
             FormActions(HTML("""<a role="button" class="btn btn-default" href="{% url "trip_list" %}">Cancel</a>"""),
-                        Submit('save', 'Save')))
+                        Submit('save', 'Save Observation')))
 

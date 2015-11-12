@@ -19,7 +19,7 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <table class="table table-bordered table-condensed" cellspacing="0" width="100%">
+                <table class="table table-bordered table-condensed set-table" cellspacing="0" width="100%">
                     <thead>
                     <tr class="success">
                         <th id="reef">Date</th>
@@ -33,6 +33,7 @@
                         <th id="tide_state">Tide</th>
                         <th id="visibility">Vis</th>
                         <th id="bait">Bait</th>
+                        <th id="edit" rowspan="2">Edit</th>
                     </tr>
                     <tr class="success">
                         <th id="blank" colspan="4"></th>
@@ -58,6 +59,7 @@
                             <td>{{ set.tide_state }}</td>
                             <td>{{ set.visibility }}</td>
                             <td>{{ set.bait }}</td>
+                            <td><a href="{% url 'set_update' set.trip.id set.id %}">Edit</a></td>
                         </tr>
                         {# for each environmental measure: #}
                         {% for env in set.environmentmeasure_set.all %}
@@ -79,8 +81,8 @@
         </div>
         {% if request.user.is_authenticated %}
         <h3>Add new set</h3>
-        <div class="row set-form">
-            <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-10">
                 <div class="well">
                     {% crispy set_form %}
                 </div>
