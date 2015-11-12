@@ -34,7 +34,8 @@
                         <th id="visibility">Vis</th>
                         <th id="bait">Bait</th>
                         <th id="edit">Edit set</th>
-                        <th class="show_observations">Show observations</th>
+                        <th id="observations">View Obs</th>
+                        <th class="show_observations">Show/Hide Env</th>
                     </tr>
                     </thead>
                     {% for set in sets %}
@@ -51,6 +52,7 @@
                             <td>{{ set.visibility }}</td>
                             <td>{{ set.bait }}</td>
                             <td><a href="{% url 'set_update' set.trip.id set.id %}">Edit</a></td>
+                            <td><a href="{% url 'set_observation_list' set.trip.id set.id %}">View</a></td>
                             <td>
                                 <a class="show-observation" href="#" data-set="{{ set.id }}">Show</a>
                                 <a class="hide-observation" href="#" data-set="{{ set.id }}">Hide</a>
@@ -58,7 +60,7 @@
                         </tr>
                         {# for each environmental measure: #}
                         <tr class="success observation-headers set-{{ set.id }}">
-                            <th class="blank" colspan="5"></th>
+                            <th class="blank" colspan="6"></th>
                             <th class="measurement_time">Time</th>
                             <th class="temperature">Temp</th>
                             <th class="salinity">Salinity</th>
@@ -66,12 +68,12 @@
                             <th class="dissolved_oxygen">DOx</th>
                             <th class="current_flow">Flow</th>
                             <th class="current_direction">Direction</th>
-                            <th class="edit_observation">Create/edit observations</th>
+                            <th class="edit_observation">Create/Edit Env.</th>
                         </tr>
                         {% if set.environmentmeasure_set.count.all %}
                             {% for env in set.environmentmeasure_set.all %}
                                 <tr class="observation-row set-{{ set.id }}">
-                                    <td colspan="5"></td>
+                                    <td colspan="6"></td>
                                     <td>{{ env.measurement_time|date:"H:i" }}</td>
                                     <td>{{ env.water_temperature }}</td>
                                     <td>{{ env.salinity }}</td>
@@ -79,13 +81,13 @@
                                     <td>{{ env.dissolved_oxygen }}</td>
                                     <td>{{ env.current_flow }}</td>
                                     <td>{{ env.current_direction }}</td>
-                                    <td><a href="{% url 'observation_update' set.trip.id set.id env.id %}">Edit</a></td>
+                                    <td><a href="#">Edit</a></td>
                                 </tr>
                             {% endfor %}
                         {% endif %}
                         <tr class="observation-row set-{{ set.id }}">
-                            <td colspan="12"></td>
-                            <td><a href="{% url 'observation_create' set.trip.id set.id %}">Create</a></td>
+                            <td colspan="13"></td>
+                            <td><a href="#">Create</a></td>
                         </tr>
                     {% endfor %}
                 </table>
@@ -95,8 +97,8 @@
         {% if request.user.is_authenticated %}
         <h3>Add new set</h3>
         <div class="row">
-            <div class="col-md-10">
-                <div class="well">
+            <div class="col-md-12">
+                <div class="well clearfix">
                     {% crispy set_form %}
                 </div>
             </div>
