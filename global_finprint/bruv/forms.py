@@ -24,13 +24,23 @@ class SetForm(ModelForm):
                 }
 
     def __init__(self, *args, **kwargs):
+        try:
+            nocancel = kwargs.pop('nocancel')
+        except KeyError:
+            nocancel = False
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_class = 'form-inline'
         self.helper.form_action = "{{ action }}"
         self.helper.form_method = "post"
-        self.helper.layout.append(
-            FormActions(Submit('save', 'Save')))
+        if not nocancel:
+            self.helper.layout.append(
+                FormActions(
+                    HTML("""<a role="button" class="btn btn-default"
+                        href="{% url "trip_set_list" trip_pk %}">Cancel</a>"""),
+                )
+            )
+        self.helper.layout.append(FormActions(Submit('save', 'Save')))
 
 
 class ObservationForm(ModelForm):

@@ -49,7 +49,7 @@ class SetListView(CreateView):
             .prefetch_related('environmentmeasure_set')
         context['trip_pk'] = self.kwargs['trip_pk']
         context['trip_name'] = str(Trip.objects.get(pk=self.kwargs['trip_pk']))
-        context['set_form'] = SetForm(initial=form_defaults)
+        context['set_form'] = SetForm(initial=form_defaults, nocancel=True)
         return context
 
 
@@ -65,3 +65,8 @@ class SetUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('trip_set_list', args=[self.request.POST['trip']])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['trip_pk'] = self.object.trip.id
+        return context
