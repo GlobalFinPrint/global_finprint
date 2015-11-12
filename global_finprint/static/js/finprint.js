@@ -34,6 +34,14 @@ var finprint = finprint || {};  //namespace if necessary...
         } else {
             $('#detail_panel').hide();
         }
+
+        $('table.set-table').find('a.show-observation, a.hide-observation').click(function(e) {
+            e.preventDefault();
+            $(this).hide()
+                .siblings().toggle().end()
+                .closest('table.set-table')
+                    .find('tr.set-' + $(this).data('set')).toggle();
+        });
     });
 
 

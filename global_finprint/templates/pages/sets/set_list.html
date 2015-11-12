@@ -33,17 +33,8 @@
                         <th id="tide_state">Tide</th>
                         <th id="visibility">Vis</th>
                         <th id="bait">Bait</th>
-                        <th id="edit" rowspan="2">Edit</th>
-                    </tr>
-                    <tr class="success">
-                        <th id="blank" colspan="4"></th>
-                        <th id="measurement_time">Time</th>
-                        <th id="temperature">Temp</th>
-                        <th id="salinity">Salinity</th>
-                        <th id="conductivity">Cond</th>
-                        <th id="dissolved_oxygen">DOx</th>
-                        <th id="current_flow">Flow</th>
-                        <th id="current_direction">Direction</th>
+                        <th id="edit">Edit set</th>
+                        <th class="show_observations">Show observations</th>
                     </tr>
                     </thead>
                     {% for set in sets %}
@@ -60,20 +51,42 @@
                             <td>{{ set.visibility }}</td>
                             <td>{{ set.bait }}</td>
                             <td><a href="{% url 'set_update' set.trip.id set.id %}">Edit</a></td>
+                            <td>
+                                <a class="show-observation" href="#" data-set="{{ set.id }}">Show</a>
+                                <a class="hide-observation" href="#" data-set="{{ set.id }}">Hide</a>
+                            </td>
                         </tr>
                         {# for each environmental measure: #}
-                        {% for env in set.environmentmeasure_set.all %}
-                            <tr>
-                                <td colspan="4"></td>
-                                <td>{{ env.measurement_time|date:"H:i" }}</td>
-                                <td>{{ env.water_temperature }}</td>
-                                <td>{{ env.salinity }}</td>
-                                <td>{{ env.conductivity }}</td>
-                                <td>{{ env.dissolved_oxygen }}</td>
-                                <td>{{ env.current_flow }}</td>
-                                <td>{{ env.current_direction }}</td>
-                            </tr>
-                        {% endfor %}
+                        <tr class="success observation-headers set-{{ set.id }}">
+                            <th class="blank" colspan="5"></th>
+                            <th class="measurement_time">Time</th>
+                            <th class="temperature">Temp</th>
+                            <th class="salinity">Salinity</th>
+                            <th class="conductivity">Cond</th>
+                            <th class="dissolved_oxygen">DOx</th>
+                            <th class="current_flow">Flow</th>
+                            <th class="current_direction">Direction</th>
+                            <th class="edit_observation">Create/edit observations</th>
+                        </tr>
+                        {% if set.environmentmeasure_set.count.all %}
+                            {% for env in set.environmentmeasure_set.all %}
+                                <tr class="observation-row set-{{ set.id }}">
+                                    <td colspan="5"></td>
+                                    <td>{{ env.measurement_time|date:"H:i" }}</td>
+                                    <td>{{ env.water_temperature }}</td>
+                                    <td>{{ env.salinity }}</td>
+                                    <td>{{ env.conductivity }}</td>
+                                    <td>{{ env.dissolved_oxygen }}</td>
+                                    <td>{{ env.current_flow }}</td>
+                                    <td>{{ env.current_direction }}</td>
+                                    <td><a href="{% url 'observation_update' set.trip.id set.id env.id %}">Edit</a></td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                        <tr class="observation-row set-{{ set.id }}">
+                            <td colspan="12"></td>
+                            <td><a href="{% url 'observation_create' set.trip.id set.id %}">Create</a></td>
+                        </tr>
                     {% endfor %}
                 </table>
             </div>

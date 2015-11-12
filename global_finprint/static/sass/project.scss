@@ -65,3 +65,13 @@
 div.trip-list li a:visited {
   color: #fff;
 }
+
+table.set-table {
+  td a.hide-observation {
+    display: none;
+  }
+
+  tr.observation-headers, tr.observation-row {
+    display: none;
+  }
+}
