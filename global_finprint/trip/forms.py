@@ -23,9 +23,10 @@ class TripForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
+        self.helper.form_class = 'form-inline trip'
         self.helper.form_action = "{{ action }}"
         self.helper.form_method = "post"
         self.helper.layout.append(
-            FormActions(HTML("""<a role="button" class="btn btn-default" href="{% url "trip_list" %}">Cancel</a>"""),
-                        Submit('save', 'Save')))
-
+            FormActions(HTML("""<a role="button" class="btn btn-default cancel-button"
+            href="{% url "trip_list" %}">Cancel</a>"""),
+                        Submit('save', 'Save Trip')))

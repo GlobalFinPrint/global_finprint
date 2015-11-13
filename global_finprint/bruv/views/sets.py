@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse_lazy
 from braces.views import LoginRequiredMixin
 
 from global_finprint.trip.models import Trip
+from global_finprint.bruv.models import Equipment
 from ..models import Set
 from ..forms import SetForm
 
@@ -42,6 +43,7 @@ class SetListView(CreateView):
             'trip': parent_trip,
             'drop_time': parent_trip.start_date,
             'collection_time': parent_trip.start_date,
+            'equipment': Equipment.objects.all().first()
         }
 
         context = super(SetListView, self).get_context_data(**kwargs)

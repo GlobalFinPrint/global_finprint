@@ -40,7 +40,7 @@ class SetForm(ModelForm):
         if not nocancel:
             self.helper.layout.append(
                 FormActions(
-                    HTML("""<a role="button" class="btn btn-default cancel"
+                    HTML("""<a role="button" class="btn btn-default cancel-button"
                         href="{% url "trip_set_list" trip_pk %}">Cancel</a>"""),
                 )
             )

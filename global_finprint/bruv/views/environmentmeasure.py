@@ -2,7 +2,7 @@ from django.views.generic import UpdateView, CreateView
 from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
 from braces.views import LoginRequiredMixin
-from ..models import EnvironmentMeasure
+from ..models import EnvironmentMeasure, Set
 from ..forms import EnvironmentMeasureForm
 
 
@@ -22,10 +22,12 @@ class EnvironmentMeasureCreateView(LoginRequiredMixin, CreateView):
         return reverse_lazy('trip_set_list', args=[self.kwargs['trip_pk']])
 
     def get_context_data(self, **kwargs):
+        parent_set = Set.objects.get(id=self.kwargs['trip_pk'])
+        initial = {'set': self.kwargs['set_pk'], 'measurement_time': parent_set.drop_time}
         context = super().get_context_data(**kwargs)
         context['trip_pk'] = self.kwargs['trip_pk']
         context['set_pk'] = self.kwargs['set_pk']
-        context['form'] = EnvironmentMeasureForm(self.request.POST or None, initial={'set': self.kwargs['set_pk']})
+        context['form'] = EnvironmentMeasureForm(self.request.POST or None, initial=initial)
         return context
 
 

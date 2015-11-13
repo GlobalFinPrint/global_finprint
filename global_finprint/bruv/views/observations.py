@@ -59,6 +59,12 @@ class ObservationCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy('set_observation_list', args=[self.kwargs['trip_pk'], self.kwargs['set_pk']])
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['trip_pk'] = self.kwargs['trip_pk']
+        context['set_pk'] = self.kwargs['set_pk']
+        return context
+
 
 class ObservationUpdateView(LoginRequiredMixin, UpdateView):
     success_msg = 'Observation Updated'
@@ -72,4 +78,10 @@ class ObservationUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('set_observation_list', args=[self.kwargs['trip_pk'], self.kwargs['set_pk']])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['trip_pk'] = self.kwargs['trip_pk']
+        context['set_pk'] = self.kwargs['set_pk']
+        return context
 

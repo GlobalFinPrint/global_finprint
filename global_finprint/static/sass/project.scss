@@ -40,7 +40,7 @@
 
 }
 
-.form-inline.set, .form-inline.obs, .form-inline.env {
+.form-inline.set, .form-inline.obs, .form-inline.env, .form-inline.trip {
   &.with-cancel .form-group:nth-last-child(2) {
     float: right;
     margin: 0 10px;
@@ -56,7 +56,9 @@
     }
 
     &:last-child {
-      float: right;
+      display: block;
+      text-align: right;
+      padding-bottom: 0;
     }
 
     a.cancel-button {
