@@ -4,7 +4,6 @@ from global_finprint.core.models import AuditableModel
 from global_finprint.habitat.models import Location
 
 
-
 class Team(AuditableModel):
     # todo:  or group, etc.  maybe useful for controlling data access during restricted periods?
     association = models.CharField(max_length=100)

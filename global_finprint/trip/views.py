@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse_lazy
 
 from braces.views import LoginRequiredMixin
 
-from .forms import TripForm
+from .forms import TripForm, TripSearchForm
 from .models import Trip
 from ..bruv.models import Set
 
@@ -23,9 +23,24 @@ class TripListView(ListView):
     model = Trip
     template_name = 'pages/trips/trip_list.html'
     context_object_name = 'trips'
+    search_form = TripSearchForm
 
     def get_queryset(self):
-        return Trip.objects.all()
+        if self.request.GET:
+            search_terms = dict((key, val) for (key, val) in self.request.GET.items()
+                                if key in ['location', 'team'] and val != '')
+            if 'start_date' in self.request.GET and self.request.GET['start_date'] != '':
+                search_terms['start_date__gte'] = self.request.GET['start_date']
+            if 'end_date' in self.request.GET and self.request.GET['end_date'] != '':
+                search_terms['end_date__lte'] = self.request.GET['end_date']
+            return Trip.objects.filter(**search_terms)
+        else:
+            return Trip.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_form'] = TripSearchForm(self.request.GET or None)
+        return context
 
 
 class TripDetailView(DetailView):

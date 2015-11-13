@@ -40,7 +40,7 @@
 
 }
 
-.form-inline.set, .form-inline.obs, .form-inline.env, .form-inline.trip {
+.form-inline {
   &.with-cancel .form-group:nth-last-child(2) {
     float: right;
     margin: 0 10px;
@@ -71,8 +71,10 @@
   vertical-align: middle;
 }
 
-div.trip-list li a:visited {
-  color: #fff;
+div.trip-list li.active {
+  a, a:visited {
+    color: #fff;
+  }
 }
 
 table.set-table {

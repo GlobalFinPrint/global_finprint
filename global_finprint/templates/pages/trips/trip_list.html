@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
 {% block content %}
     <div class="col-md-11">
@@ -16,6 +17,12 @@
             </legend>
             <br>
         </div>
+        <div class="row">
+            <div class="well clearfix">
+                {% crispy search_form %}
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-md-6">
                 <div class="list-group generic-list trip-list">
