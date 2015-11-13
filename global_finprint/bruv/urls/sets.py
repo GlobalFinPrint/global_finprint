@@ -4,6 +4,7 @@ from ..views.sets import *
 
 urlpatterns = [
     url(r"^(?P<set_pk>\d+)/observations/", include('global_finprint.bruv.urls.observations')),
+    url(r"^(?P<set_pk>\d+)/environmentmeasure/", include('global_finprint.bruv.urls.environmentmeasure')),
     url(r"^(?P<pk>\d+)/$", SetUpdateView.as_view(), name='set_update'),
     url(r"", SetListView.as_view(), name='trip_set_list'),
 ]

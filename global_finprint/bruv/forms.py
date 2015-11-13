@@ -1,5 +1,5 @@
 from django.forms import ModelForm, HiddenInput
-from global_finprint.bruv.models import Set, Observation
+from global_finprint.bruv.models import Set, Observation, EnvironmentMeasure
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, HTML
 from crispy_forms.bootstrap import FormActions
@@ -52,9 +52,9 @@ class ObservationForm(ModelForm):
         model = Observation
         fields = ['initial_observation_time',
                   'animal', 'sex', 'stage', 'length', 'behavior',
-                  'set',    'video_annotator',
-                  ]
+                  'set', 'video_annotator']
         widgets = {
+            'set': HiddenInput(),
             'initial_observation_time': DateTimePicker(options={
                 "format": "YYYY-MM-DD HH:mm",
                 "pickSeconds": False}),
@@ -63,9 +63,35 @@ class ObservationForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
+        self.helper.form_class = 'form-inline obs'
         self.helper.form_action = "{{ action }}"
         self.helper.form_method = "post"
         self.helper.layout.append(
-            FormActions(HTML("""<a role="button" class="btn btn-default" href="{% url "trip_list" %}">Cancel</a>"""),
+            FormActions(HTML("""<a role="button" class="btn btn-default cancel-button"
+            href="{% url "trip_set_list" trip_pk %}">Cancel</a>"""),
                         Submit('save', 'Save Observation')))
 
+
+class EnvironmentMeasureForm(ModelForm):
+    class Meta:
+        model = EnvironmentMeasure
+        fields = ['set', 'measurement_time', 'water_temperature', 'salinity',
+                  'conductivity', 'dissolved_oxygen', 'current_flow',
+                  'current_direction']
+        widgets = {
+            'set': HiddenInput(),
+            'measurement_time': DateTimePicker(options={
+                "format": "YYYY-MM-DD HH:mm",
+                "pickSeconds": False})
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_class = 'form-inline env'
+        self.helper.form_action = "{{ action }}"
+        self.helper.form_method = "post"
+        self.helper.layout.append(
+            FormActions(HTML("""<a role="button" class="btn btn-default cancel-button"
+            href="{% url "trip_set_list" trip_pk %}">Cancel</a>"""),
+                        Submit('save', 'Save Environment Measure')))

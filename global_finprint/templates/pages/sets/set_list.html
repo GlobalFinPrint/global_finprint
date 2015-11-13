@@ -70,7 +70,7 @@
                             <th class="current_direction">Direction</th>
                             <th class="edit_observation">Create/Edit Env.</th>
                         </tr>
-                        {% if set.environmentmeasure_set.count.all %}
+                        {% if set.environmentmeasure_set.count %}
                             {% for env in set.environmentmeasure_set.all %}
                                 <tr class="observation-row set-{{ set.id }}">
                                     <td colspan="6"></td>
@@ -81,13 +81,15 @@
                                     <td>{{ env.dissolved_oxygen }}</td>
                                     <td>{{ env.current_flow }}</td>
                                     <td>{{ env.current_direction }}</td>
-                                    <td><a href="#">Edit</a></td>
+                                    <td><a href="{% url 'environmentmeasure_update' set.trip.id set.id env.id %}">
+                                        Edit
+                                    </a></td>
                                 </tr>
                             {% endfor %}
                         {% endif %}
                         <tr class="observation-row set-{{ set.id }}">
                             <td colspan="13"></td>
-                            <td><a href="#">Create</a></td>
+                            <td><a href="{% url 'environmentmeasure_create' set.trip.id set.id %}">Create</a></td>
                         </tr>
                     {% endfor %}
                 </table>

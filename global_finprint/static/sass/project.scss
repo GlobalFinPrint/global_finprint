@@ -40,22 +40,29 @@
 
 }
 
-.form-inline.set .form-group {
-  vertical-align: top;
-  padding-bottom: 15px;
-
-  p.help-block {
-    display: inline;
-  }
-
-  &:last-child {
+.form-inline.set, .form-inline.obs, .form-inline.env {
+  &.with-cancel .form-group:nth-last-child(2) {
     float: right;
+    margin: 0 10px;
   }
-}
 
-.form-inline.set.with-cancel .form-group:nth-last-child(2) {
-  float: right;
-  margin: 0 10px;
+  .form-group {
+    vertical-align: top;
+    padding-bottom: 15px;
+    margin-right: 5px;
+
+    p.help-block {
+      display: inline;
+    }
+
+    &:last-child {
+      float: right;
+    }
+
+    a.cancel-button {
+      margin: 0 10px;
+    }
+  }
 }
 
 .set-table th#edit {
