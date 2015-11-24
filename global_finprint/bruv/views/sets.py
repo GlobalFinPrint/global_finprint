@@ -41,12 +41,18 @@ class SetListView(CreateView):
         parent_trip = Trip.objects.get(id=self.kwargs['trip_pk'])
         last_set = parent_trip.set_set.last()
         form_defaults = {
-            'reef': last_set.reef if last_set is not None else None,
             'trip': parent_trip,
             'drop_time': parent_trip.start_date,
             'collection_time': parent_trip.start_date,
             'equipment': Equipment.objects.all().first()
         }
+
+        if last_set is not None:
+            form_defaults.update({
+                'reef': last_set.reef,
+                'latitude': round(last_set.latitude, 1),
+                'longitude': round(last_set.longitude, 1),
+            })
 
         context = super(SetListView, self).get_context_data(**kwargs)
         context['sets'] = Set.objects.filter(trip=self.kwargs['trip_pk'])\
