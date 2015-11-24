@@ -52,6 +52,8 @@ class SetListView(CreateView):
                 'reef': last_set.reef,
                 'latitude': round(last_set.latitude, 1),
                 'longitude': round(last_set.longitude, 1),
+                'bait': last_set.bait,
+                'bait_oiled': last_set.bait_oiled,
             })
 
         context = super(SetListView, self).get_context_data(**kwargs)
