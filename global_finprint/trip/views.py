@@ -23,6 +23,7 @@ class TripListView(ListView):
     model = Trip
     template_name = 'pages/trips/trip_list.html'
     context_object_name = 'trips'
+    trip_form = TripForm
     search_form = TripSearchForm
 
     def get_queryset(self):
@@ -40,6 +41,7 @@ class TripListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['search_form'] = TripSearchForm(self.request.GET or None)
+        context['trip_form'] = TripForm()
         return context
 
 
@@ -51,14 +53,13 @@ class TripDetailView(DetailView):
 
 def trip_detail(request, pk):
     t = Trip.objects.get(pk=pk)
-#    data = serializers.serialize('json', t._meta.__dict__)
     data = {'id': str(t.id),
             'name': str(t),
             'start_date': t.start_date,
-            'end_date':t.end_date,
+            'end_date': t.end_date,
             'location': str(t.location),
             'team': str(t.team),
-            'boat': t.boat,}
+            'boat': t.boat}
     return JsonResponse(data)
 
 

@@ -26,12 +26,9 @@ class TripForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_class = 'form-inline trip'
-        self.helper.form_action = "{{ action }}"
+        self.helper.form_action = reverse('trip_create')
         self.helper.form_method = "post"
-        self.helper.layout.append(
-            FormActions(HTML("""<a role="button" class="btn btn-default cancel-button"
-            href="{% url "trip_list" %}">Cancel</a>"""),
-                        Submit('save', 'Save Trip')))
+        self.helper.layout.append(FormActions(Submit('save', 'Create trip')))
 
 
 class TripSearchForm(forms.Form):
@@ -54,5 +51,5 @@ class TripSearchForm(forms.Form):
         self.helper.form_method = "get"
         self.helper.layout.append(
             FormActions(HTML("""<a role="button" class="btn btn-default cancel-button"
-                href="{% url "trip_list" %}">Reset Search</a>"""),
-                        Submit('', 'Search Trips')))
+                href="{% url "trip_list" %}">Reset search</a>"""),
+                        Submit('', 'Search trips')))

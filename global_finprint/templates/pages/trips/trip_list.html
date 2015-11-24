@@ -8,14 +8,18 @@
                 Global FinPrint | Trips
             </div>
         </div>
+
         <div class="row">
-            <legend class="pull-left">Trips
-                <a role="button" href="{% url 'trip_create' %}" class="btn btn-sm pull-right" title="Create Trip"
-                   style="background: none;" aria-label="Left Align">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                </a>
-            </legend>
-            <br>
+            <legend class="pull-left">Create trip</legend>
+        </div>
+        <div class="row">
+            <div class="well clearfix">
+                {% crispy trip_form %}
+            </div>
+        </div>
+
+        <div class="row">
+            <legend class="pull-left">Search trips</legend>
         </div>
         <div class="row">
             <div class="well clearfix">
