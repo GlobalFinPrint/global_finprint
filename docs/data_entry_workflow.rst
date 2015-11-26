@@ -55,10 +55,10 @@ GFP Trip data entry web pages:
         - how best to represent the reef within the site (there is currently no reference to the site on the set page)
 
 
-Test site http://52.34.168.178/trips/
+Test site [share location]
     - while it may not look that way to begin with, it is necessary to login to get complete functionality (security is still a work in progress)
-        - use login:  finprint with pwd finprint
-    - test data is for
+        - [share test login and password]
+    - test data [add explanation for test data]
 
 
 Not ready for testing or assessment:
