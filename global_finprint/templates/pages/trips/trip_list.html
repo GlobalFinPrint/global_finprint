@@ -10,15 +10,6 @@
         </div>
 
         <div class="row">
-            <legend class="pull-left">Create trip</legend>
-        </div>
-        <div class="row">
-            <div class="well clearfix">
-                {% crispy trip_form %}
-            </div>
-        </div>
-
-        <div class="row">
             <legend class="pull-left">Search trips</legend>
         </div>
         <div class="row">
@@ -46,6 +37,16 @@
                 <div class="well" id="detail_panel">
 
                 </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <legend class="pull-left">Add a trip</legend>
+        </div>
+        <div class="row">
+            <div class="well clearfix">
+                {% crispy trip_form %}
             </div>
         </div>
     </div>
