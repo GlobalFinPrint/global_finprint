@@ -42,6 +42,9 @@ GFP Trip data entry web pages:
         - list of sets as a table
         - 0 or more environmental measures per set, env. meas. list can be expanded and collapsed
         - create a new set
+            - fields have been attempted to be ordered in the most reasonable way for quick data entry:  fields that change most often from set to set are first
+            - we attempted to provide reasonable defaults for each field based on the previously entered set
+            - note that lat and long just truncate the decimal:  it is assumed each set is sufficiently close to the previous one that a single decimal will likely be shared
         - add environmental measures to a set
         - edit an existing set
         - pivot to observation list from a set
@@ -50,6 +53,12 @@ GFP Trip data entry web pages:
         - delete a set?
         - remove an environmental measure?
         - how best to represent the reef within the site (there is currently no reference to the site on the set page)
+
+
+Test site http://52.34.168.178/trips/
+    - while it may not look that way to begin with, it is necessary to login to get complete functionality (security is still a work in progress)
+        - use login:  finprint with pwd finprint
+    - test data is for
 
 
 Not ready for testing or assessment:
