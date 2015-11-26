@@ -9,9 +9,9 @@ from bootstrap3_datetime.widgets import DateTimePicker
 class SetForm(ModelForm):
     class Meta:
         model = Set
-        fields = ['trip', 'reef', 'latitude', 'longitude', 'depth',
-                  'drop_time', 'collection_time',
-                  'equipment', 'tide_state', 'visibility',
+        fields = ['trip', 'latitude', 'longitude', 'depth',
+                  'drop_time', 'collection_time', 'tide_state',
+                  'reef', 'equipment', 'visibility',
                   'bait', 'bait_oiled']
         widgets = {
                     'trip': HiddenInput(),
