@@ -33,9 +33,9 @@
                         <th id="tide_state">Tide</th>
                         <th id="visibility">Vis</th>
                         <th id="bait">Bait</th>
-                        <th id="edit">Edit set</th>
                         <th id="observations">View Obs</th>
                         <th class="show_observations">Show/Hide Env</th>
+                        <th id="edit">Edit set</th>
                     </tr>
                     </thead>
                     {% for set in sets %}
@@ -51,12 +51,12 @@
                             <td>{{ set.tide_state }}</td>
                             <td>{{ set.visibility }}</td>
                             <td>{{ set.bait }}</td>
-                            <td><a href="{% url 'set_update' set.trip.id set.id %}">Edit</a></td>
                             <td><a href="{% url 'set_observation_list' set.trip.id set.id %}">View</a></td>
                             <td>
                                 <a class="show-observation" href="#" data-set="{{ set.id }}">Show</a>
                                 <a class="hide-observation" href="#" data-set="{{ set.id }}">Hide</a>
                             </td>
+                            <td><a href="{% url 'set_update' set.trip.id set.id %}">Edit</a></td>
                         </tr>
                         {# for each environmental measure: #}
                         <tr class="success observation-headers set-{{ set.id }}">
