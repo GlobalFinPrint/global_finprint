@@ -1,16 +1,16 @@
 Workflow testing December 2015
 
+
 Scale assumptions:
     - 400 reefs
-    - 2+ reefs per trip
+    - 2+ reefs per trip (valid?)
     - 50 sets per reef, i.e., 100+ sets per trip
-    - trips are divided up amongst 10 (?) teams each with a lead who will do the data entry
+    - trips are divided up amongst 10 (this is approximately correct?) teams each with a lead who will do the data entry
     - trip data will be entered 1 or a few at a time and possibly edited slightly after the trip
     - set data will be entered in large batches after returning from the trip
         - set data is thus the crux of the trip data entry optimization problem
     - observations will be handled by a large group of volunteers
         - while shortening the time necessary for the volunteers to get through a video is a key goal, they will not be rapidly entering large amounts of data
-
 
 
 Assumed workflow:
@@ -23,6 +23,7 @@ Assumed workflow:
 - report, analysis, etc to follow
 
 
+*** 27 November 2015 test scope:
 GFP Trip data entry web pages:
 1)  Trip planning
     a) page includes
@@ -32,7 +33,7 @@ GFP Trip data entry web pages:
         - access to set list for the trip
         - ability to update basic trip data
     b) outstanding questions
-        - need to "demote" or delete trips?
+        - is there a need to "demote" or delete trips?
         - other trip parameters that might need adding?
         - input of "proposed" set coordinates from design (e.g. from ArcGIS work)?
 
@@ -40,10 +41,18 @@ GFP Trip data entry web pages:
     a) page includes
         - list of sets as a table
         - 0 or more environmental measures per set, env. meas. list can be expanded and collapsed
-        -
+        - create a new set
+        - add environmental measures to a set
+        - edit an existing set
+        - pivot to observation list from a set
+    b) outstanding questions
+        - is there a need to filter (search) the set list?  if so, what are reasonable filters?
+        - delete a set?
+        - remove an environmental measure?
+        - how best to represent the reef within the site (there is currently no reference to the site on the set page)
 
 
-Not ready for testing and assesment:
+Not ready for testing or assessment:
 1)  Reporting
 2)  Volunteer / annotator assignment
 3)  Observation entry (via website or annotation tool)
