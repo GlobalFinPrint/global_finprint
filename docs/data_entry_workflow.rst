@@ -27,19 +27,19 @@
 
 *GFP Trip data entry web pages*
     1.  Trip planning
-        a. page includes
+        A. page includes
             - form for basic trip data entry (dates, location, etc.)
             - list of trips
             - filters for trip list
             - access to set list for the trip
             - ability to update basic trip data
-        b. outstanding questions
+        B. outstanding questions
             - is there a need to "demote" or delete trips?
             - other trip parameters that might need adding?
             - input of "proposed" set coordinates from design (e.g. from ArcGIS work)?
 
     2.  Set data entry:
-        a. page includes
+        A. page includes
             - list of sets as a table
             - 0 or more environmental measures per set, env. meas. list can be expanded and collapsed
             - create a new set
@@ -49,7 +49,7 @@
             - add environmental measures to a set
             - edit an existing set
             - pivot to observation list from a set
-        b. outstanding questions
+        B. outstanding questions
             - is there a need to filter (search) the set list?  if so, what are reasonable filters?
             - delete a set?
             - remove an environmental measure?
@@ -58,8 +58,8 @@
 
 *Test site [share location]*
     1. while it may not look that way to begin with, it is necessary to login to get complete functionality (security is still a work in progress)
-        a. [share test login and password]
-        b. feedback means?
+        A. [share test login and password]
+        B. feedback means?
     2. test data [add explanation for test data]
 
 
