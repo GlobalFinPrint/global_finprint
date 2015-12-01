@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse_lazy
 
 from braces.views import LoginRequiredMixin
 
-from ..models import Observation
+from ..models import Observation, Set, Trip
 from ..forms import ObservationForm
 
 
@@ -41,6 +41,8 @@ class ObservationListView(ListView):
         context = super(ObservationListView, self).get_context_data(**kwargs)
         context['trip_pk'] = self.kwargs['trip_pk']
         context['set_pk'] = self.kwargs['set_pk']
+        context['trip_name'] = str(Trip.objects.get(pk=self.kwargs['trip_pk']))
+        context['set_name'] = str(Set.objects.get(pk=self.kwargs['set_pk']))
         return context
 
 
