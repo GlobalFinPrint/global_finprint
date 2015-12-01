@@ -96,7 +96,7 @@ class Set(AuditableModel):
 
     equipment = models.ForeignKey(Equipment)
 
-    depth = models.FloatField(null=True)
+    depth = models.FloatField(null=True, help_text='m')
     bait = models.CharField(max_length=16, help_text='1kg')
     bait_oiled = models.BooleanField(default=False, help_text='20ml menhaden oil')
 
