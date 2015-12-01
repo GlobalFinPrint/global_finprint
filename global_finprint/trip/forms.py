@@ -39,9 +39,9 @@ class TripSearchForm(forms.Form):
         "format": "YYYY-MM-DD",
         "pickTime": False}))
     location = forms.ModelChoiceField(required=False,
-                                      queryset=Location.objects.filter(trip__in=Trip.objects.all()))
+                                      queryset=Location.objects.filter(trip__in=Trip.objects.all()).distinct())
     team = forms.ModelChoiceField(required=False,
-                                  queryset=Team.objects.filter(trip__in=Trip.objects.all()))
+                                  queryset=Team.objects.filter(trip__in=Trip.objects.all()).distinct())
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
