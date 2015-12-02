@@ -30,8 +30,9 @@ class SetForm(ModelForm):
             combined = False
         super().__init__(*args, **kwargs)
         self.fields['visibility'].choices = \
-            sorted(self.fields['visibility'].choices, key=lambda _: _[0].isdigit() and int(_[0])
-                                                                    or _[0] == '' and -1 or 100)
+            sorted(self.fields['visibility'].choices,
+                   key=lambda _: _[0].isdigit() and int(_[0]) or _[0] == '' and -1 or 100)
+        self.fields['visibility'].choices[0] = (None, '---')
         self.helper = FormHelper(self)
         self.helper.form_class = 'form-inline set'
         self.helper.form_action = "{{ action }}"
