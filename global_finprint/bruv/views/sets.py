@@ -96,4 +96,7 @@ class SetUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['trip_pk'] = self.object.trip.id
+        context['trip_name'] = str(self.object.trip)
+        context['set_pk'] = self.object.id
+        context['set_name'] = str(self.object)
         return context

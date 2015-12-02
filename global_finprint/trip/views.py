@@ -94,3 +94,8 @@ class TripUpdateView(LoginRequiredMixin, TripActionMixin, UpdateView):
     def form_valid(self, form):
         messages.info(self.request, self.success_msg)
         return super(TripActionMixin, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['trip_name'] = str(self.object)
+        return context

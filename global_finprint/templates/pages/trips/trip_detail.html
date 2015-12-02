@@ -4,7 +4,9 @@
 {% block content %}
     <div class="row">
         <div class="well trail col-md-8">
-            <a href="{% url 'trip_list' %}">Trips</a>
+            <a href="/">Global FinPrint</a> |
+            <a href="{% url 'trip_list' %}">Trips</a> |
+            {{ trip_name }}
         </div>
     </div>
     <div class="row">
