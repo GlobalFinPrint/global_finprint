@@ -28,7 +28,7 @@ class TripForm(forms.ModelForm):
         self.helper.form_class = 'form-inline trip'
         self.helper.form_action = reverse('trip_create')
         self.helper.form_method = "post"
-        self.helper.layout.append(FormActions(Submit('save', 'Add trip')))
+        self.helper.layout.append(FormActions(Submit('save', 'Save trip')))
 
 
 class TripSearchForm(forms.Form):
