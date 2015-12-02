@@ -11,41 +11,43 @@
         </div>
 
         <div class="row">
-            <legend class="pull-left">Search trips</legend>
-        </div>
-        <div class="row">
-            <div class="well clearfix">
+            <div class="search clearfix">
                 {% crispy search_form %}
             </div>
         </div>
 
         <div class="row">
-            <div class="col-md-6">
-                <div class="list-group generic-list trip-list">
-                    {% for trip in trips %}
-                        <li class="list-group-item generic-list-item" data-pk-id="{{ trip.id }} " data-type="trip">
-                            <span> {{ trip }} </span>
-
-                            <div class="pull-right">
-                                <a href="{% url 'trip_update' trip.id %}">Edit</a>
-                                <a href="{% url 'trip_set_list' trip.id %}">Sets</a>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="well" id="detail_panel">
-
-                </div>
-            </div>
+            <table class="table table-bordered table-condensed trip-table" cellspacing="0" width="100%">
+                <thead>
+                <tr class="success">
+                    <th>Start date</th>
+                    <th>End date</th>
+                    <th>Location</th>
+                    <th>Team</th>
+                    <th>Boat</th>
+                    <th>Edit</th>
+                    <th>Sets</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for trip in trips %}
+                <tr>
+                    <td>{{ trip.start_date }}</td>
+                    <td>{{ trip.end_date }}</td>
+                    <td>{{ trip.location }}</td>
+                    <td>{{ trip.team }}</td>
+                    <td>{{ trip.boat }}</td>
+                    <td><a href="{% url 'trip_update' trip.id %}">Edit</a></td>
+                    <td><a href="{% url 'trip_set_list' trip.id %}">Sets</a></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
 
-        {% if user.is_authenticated %}
+        {% if request.user.is_authenticated %}
         <div class="row">
-            <legend class="pull-left">Add a trip</legend>
-        </div>
-        <div class="row">
+            <h3>Add a trip</h3>
             <div class="well clearfix">
                 {% crispy trip_form %}
             </div>
