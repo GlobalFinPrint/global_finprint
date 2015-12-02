@@ -25,9 +25,9 @@ class SetForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         try:
-            nocancel = kwargs.pop('nocancel')
+            combined = kwargs.pop('combined')
         except KeyError:
-            nocancel = False
+            combined = False
         super().__init__(*args, **kwargs)
         self.fields['visibility'].choices = \
             sorted(self.fields['visibility'].choices, key=lambda _: _[0].isdigit() and int(_[0])
@@ -36,15 +36,14 @@ class SetForm(ModelForm):
         self.helper.form_class = 'form-inline set'
         self.helper.form_action = "{{ action }}"
         self.helper.form_method = "post"
-        self.helper.layout.append(FormActions(Submit('save', 'Save Set')))
-        if not nocancel:
+        if not combined:
             self.helper.layout.append(
                 FormActions(
                     HTML("""<a role="button" class="btn btn-default cancel-button"
                         href="{% url "trip_set_list" trip_pk %}">Cancel</a>"""),
+                    Submit('save', 'Save Set')
                 )
             )
-            self.helper.form_class += ' with-cancel'
 
 
 class ObservationForm(ModelForm):
@@ -86,12 +85,17 @@ class EnvironmentMeasureForm(ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        try:
+            combined = kwargs.pop('combined')
+        except KeyError:
+            combined = False
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_class = 'form-inline env'
         self.helper.form_action = "{{ action }}"
         self.helper.form_method = "post"
-        self.helper.layout.append(
-            FormActions(HTML("""<a role="button" class="btn btn-default cancel-button"
-            href="{% url "trip_set_list" trip_pk %}">Cancel</a>"""),
-                        Submit('save', 'Save Environment Measure')))
+        if not combined:
+            self.helper.layout.append(
+                FormActions(HTML("""<a role="button" class="btn btn-default cancel-button"
+                href="{% url "trip_set_list" trip_pk %}">Cancel</a>"""),
+                            Submit('save', 'Save Environment Measure')))

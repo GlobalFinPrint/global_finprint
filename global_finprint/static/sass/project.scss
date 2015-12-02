@@ -41,11 +41,6 @@
 }
 
 .form-inline {
-  &.with-cancel .form-group:nth-last-child(2) {
-    float: right;
-    margin: 0 10px;
-  }
-
   .form-group {
     vertical-align: top;
     padding-bottom: 15px;
@@ -64,6 +59,10 @@
     a.cancel-button {
       margin: 0 10px;
     }
+  }
+
+  #div_id_bait_oiled {
+    padding-top: 25px;
   }
 }
 

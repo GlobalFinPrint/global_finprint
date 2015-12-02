@@ -6,7 +6,7 @@
     <div class="col-md-12" xmlns="http://www.w3.org/1999/html">
         <div class="row">
             <div class="well trail">
-                Global FinPrint |
+                <a href="/">Global FinPrint</a> |
                 <a href="{% url 'trip_list' %}">Trips</a> |
                 <a href="{% url 'trip_update' trip_pk %}">{{ trip_name }}</a> |
                 Sets
@@ -97,11 +97,25 @@
 
         </div>
         {% if request.user.is_authenticated %}
-        <h3>Add new set</h3>
+        <h3>Add new set with environmental measure</h3>
         <div class="row">
             <div class="col-md-12">
                 <div class="well clearfix">
-                    {% crispy set_form %}
+                    <form class="form-inline set ng-pristine ng-valid" action="" method="post">
+                        <div class="sub-form">
+                            <h4>Set</h4>
+                            {% crispy set_form %}
+                            <p><!-- placeholder --></p>
+                        </div>
+                        <div class="sub-form">
+                            <h4>Environmental measure</h4>
+                            {% crispy env_form %}
+                            <p><!-- placeholder --></p>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" name="save" value="Create" class="btn btn-primary" id="submit-id-save">
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

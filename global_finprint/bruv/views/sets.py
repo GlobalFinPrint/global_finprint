@@ -2,13 +2,14 @@ from django.views.generic import UpdateView, CreateView
 from django.contrib import messages
 from django.http.response import JsonResponse
 from django.core.urlresolvers import reverse_lazy
+from django.http import HttpResponseRedirect
 
 from braces.views import LoginRequiredMixin
 
 from global_finprint.trip.models import Trip
 from global_finprint.bruv.models import Equipment
-from ..models import Set
-from ..forms import SetForm
+from ..models import Set, EnvironmentMeasure
+from ..forms import SetForm, EnvironmentMeasureForm
 
 
 def set_detail(request, pk):
@@ -24,15 +25,25 @@ def set_detail(request, pk):
 
 
 class SetListView(CreateView):
-    success_msg = 'Set Created!'
+    success_msg = 'Set and environmental measure created!'
     model = Set
     form_class = SetForm
     context_object_name = 'set'
     template_name = 'pages/sets/set_list.html'
 
     def form_valid(self, form):
-        messages.info(self.request, self.success_msg)
-        return super().form_valid(form)
+        env_form = EnvironmentMeasureForm(self.request.POST)
+        env_form.fields['set'].required = False
+        if env_form.is_valid():
+            messages.info(self.request, self.success_msg)
+            new_set = Set(**form.cleaned_data)
+            new_set.save()
+            env_form.cleaned_data['set'] = new_set
+            new_env = EnvironmentMeasure(**env_form.cleaned_data)
+            new_env.save()
+            return HttpResponseRedirect(self.get_success_url())
+        else:
+            return super().form_invalid(env_form)
 
     def get_success_url(self):
         return reverse_lazy('trip_set_list', args=[self.request.POST['trip']])
@@ -62,7 +73,10 @@ class SetListView(CreateView):
             .prefetch_related('environmentmeasure_set')
         context['trip_pk'] = self.kwargs['trip_pk']
         context['trip_name'] = str(Trip.objects.get(pk=self.kwargs['trip_pk']))
-        context['set_form'] = SetForm(self.request.POST or None, initial=form_defaults, nocancel=True)
+        context['set_form'] = SetForm(self.request.POST or None, initial=form_defaults, combined=True)
+        context['set_form'].helper.form_tag = False
+        context['env_form'] = EnvironmentMeasureForm(self.request.POST or None, combined=True)
+        context['env_form'].helper.form_tag = False
         return context
 
 
