@@ -41,7 +41,7 @@
             </div>
         </div>
 
-
+        {% if user.is_authenticated %}
         <div class="row">
             <legend class="pull-left">Add a trip</legend>
         </div>
@@ -50,5 +50,6 @@
                 {% crispy trip_form %}
             </div>
         </div>
+        {% endif %}
     </div>
 {% endblock %}

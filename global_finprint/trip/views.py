@@ -11,20 +11,17 @@ from .models import Trip
 from ..bruv.models import Set
 
 
-class TripActionMixin(object):
-    template_name = 'pages/trips/trip_detail.html'
-
-    @property
-    def success_msg(self):
-        return NotImplemented
-
-
-class TripListView(ListView):
+class TripListView(CreateView):
     model = Trip
+    form_class = TripForm
+    context_object_name = 'trip'
     template_name = 'pages/trips/trip_list.html'
-    context_object_name = 'trips'
-    trip_form = TripForm
-    search_form = TripSearchForm
+    success_msg = 'Trip Created!'
+    success_url = reverse_lazy('trip_list')
+
+    def form_valid(self, form):
+        messages.info(self.request, self.success_msg)
+        return super().form_valid(form)
 
     def get_queryset(self):
         if self.request.GET:
@@ -40,8 +37,9 @@ class TripListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['trips'] = self.get_queryset()
         context['search_form'] = TripSearchForm(self.request.GET or None)
-        context['trip_form'] = TripForm()
+        context['trip_form'] = TripForm(self.request.POST or None)
         return context
 
 
@@ -71,29 +69,18 @@ def trip_sets_geojson(request, trip_id):
     return HttpResponse(feature, content_type='application/json')
 
 
-class TripCreateView(LoginRequiredMixin, TripActionMixin, CreateView):
-    form_class = TripForm
-    model = Trip
-    success_msg = 'Trip Created!'
-    context_object_name = 'trip'
-    success_url = reverse_lazy('trip_list')
-
-    def form_valid(self, form):
-        messages.info(self.request, self.success_msg)
-        return super(TripActionMixin, self).form_valid(form)
-
-
-class TripUpdateView(LoginRequiredMixin, TripActionMixin, UpdateView):
+class TripUpdateView(LoginRequiredMixin, UpdateView):
     form_class = TripForm
     model = Trip
     success_msg = 'Trip Updated'
     context_object_name = 'trip'
     success_url = reverse_lazy('trip_list')
     cancel_url = reverse_lazy('trip_list')
+    template_name = 'pages/trips/trip_detail.html'
 
     def form_valid(self, form):
         messages.info(self.request, self.success_msg)
-        return super(TripActionMixin, self).form_valid(form)
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

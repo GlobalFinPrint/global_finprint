@@ -3,14 +3,14 @@
 
 {% block content %}
     <div class="row">
-        <div class="well trail col-md-8">
+        <div class="well trail">
             <a href="/">Global FinPrint</a> |
             <a href="{% url 'trip_list' %}">Trips</a> |
             {{ trip_name }}
         </div>
     </div>
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-offset-1 col-md-10">
             <div class="well">
                 {% crispy form %}
             </div>
