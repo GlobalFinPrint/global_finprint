@@ -65,6 +65,9 @@ class ObservationCreateView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['trip_pk'] = self.kwargs['trip_pk']
         context['set_pk'] = self.kwargs['set_pk']
+        context['trip_name'] = str(Trip.objects.get(pk=self.kwargs['trip_pk']))
+        context['set_name'] = str(Set.objects.get(pk=self.kwargs['set_pk']))
+        context['obs_name'] = 'Create'
         return context
 
 
@@ -85,5 +88,8 @@ class ObservationUpdateView(LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context['trip_pk'] = self.kwargs['trip_pk']
         context['set_pk'] = self.kwargs['set_pk']
+        context['trip_name'] = str(self.object.set.trip)
+        context['set_name'] = str(self.object.set)
+        context['obs_name'] = str(self.object)
         return context
 
