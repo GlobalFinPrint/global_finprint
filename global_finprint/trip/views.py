@@ -1,4 +1,4 @@
-from django.views.generic import ListView, DetailView, UpdateView, CreateView
+from django.views.generic import DetailView, UpdateView, CreateView
 from django.contrib import messages
 from django.core.serializers import serialize
 from django.http.response import JsonResponse, HttpResponse

@@ -1,5 +1,6 @@
 from django.forms import ModelForm, HiddenInput
 from global_finprint.bruv.models import Set, Observation, EnvironmentMeasure
+from global_finprint.trip.models import Trip
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, HTML
 from crispy_forms.bootstrap import FormActions
@@ -28,7 +29,17 @@ class SetForm(ModelForm):
             combined = kwargs.pop('combined')
         except KeyError:
             combined = False
+
+        try:
+            trip_pk = kwargs.pop('trip_pk')
+        except KeyError:
+            trip_pk = False
+
         super().__init__(*args, **kwargs)
+
+        if trip_pk:
+            self.fields['reef'].queryset = Trip.objects.get(pk=trip_pk).location.reef_set
+
         self.fields['visibility'].choices = \
             sorted(self.fields['visibility'].choices,
                    key=lambda _: _[0].isdigit() and int(_[0]) or _[0] == '' and -1 or 100)

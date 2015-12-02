@@ -73,7 +73,12 @@ class SetListView(CreateView):
             .prefetch_related('environmentmeasure_set')
         context['trip_pk'] = self.kwargs['trip_pk']
         context['trip_name'] = str(Trip.objects.get(pk=self.kwargs['trip_pk']))
-        context['set_form'] = SetForm(self.request.POST or None, initial=form_defaults, combined=True)
+        context['set_form'] = SetForm(
+            self.request.POST or None,
+            initial=form_defaults,
+            combined=True,
+            trip_pk=self.kwargs['trip_pk']
+        )
         context['set_form'].helper.form_tag = False
         context['env_form'] = EnvironmentMeasureForm(self.request.POST or None, combined=True)
         context['env_form'].helper.form_tag = False

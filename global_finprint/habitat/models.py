@@ -1,7 +1,5 @@
 from django.contrib.gis.db import models
 
-from global_finprint.core.models import AuditableModel
-
 
 class Substrate(models.Model):
     type = models.CharField(max_length=24, unique=True)
@@ -17,6 +15,10 @@ class Region(models.Model):
 class Location(models.Model):
     name = models.CharField(max_length=100)
     region = models.ForeignKey(to=Region)
+
+    @property
+    def reef_set(self):
+        return Reef.objects.filter(site__in=self.site_set.all().values_list('id', flat=True))
 
     def __str__(self):
         return u"{0}".format(self.name)
