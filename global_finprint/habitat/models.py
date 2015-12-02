@@ -167,4 +167,4 @@ class Reef(models.Model):
     objects = models.GeoManager()
 
     def __str__(self):
-        return u"{0}".format(self.name)
+        return u"{0} - {1}".format(self.site, self.name)
