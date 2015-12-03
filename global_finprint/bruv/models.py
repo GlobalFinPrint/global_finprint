@@ -137,6 +137,9 @@ class EnvironmentMeasure(AuditableModel):
                                          help_text='compass direction')  # eight point compass
     set = models.ForeignKey(Set)
 
+    def __str__(self):
+        return u'{0}'.format(self.measurement_time)
+
 
 class Animal(models.Model):
     region = models.ForeignKey(to=Region)
