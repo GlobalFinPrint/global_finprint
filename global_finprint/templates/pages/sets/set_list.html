@@ -51,9 +51,15 @@
                             <td>{{ set.tide_state }}</td>
                             <td>{{ set.visibility }}</td>
                             <td>{{ set.bait }}</td>
-                            <td><a href="{% url 'set_observation_list' set.trip.id set.id %}">View</a></td>
                             <td>
-                                <a class="show-observation" href="#" data-set="{{ set.id }}">Show</a>
+                                <a href="{% url 'set_observation_list' set.trip.id set.id %}">
+                                    View ({{ set.observation_set.count }})
+                                </a>
+                            </td>
+                            <td>
+                                <a class="show-observation" href="#" data-set="{{ set.id }}">
+                                    Show ({{ set.environmentmeasure_set.count }})
+                                </a>
                                 <a class="hide-observation" href="#" data-set="{{ set.id }}">Hide</a>
                             </td>
                             <td><a href="{% url 'set_update' set.trip.id set.id %}">Edit</a></td>

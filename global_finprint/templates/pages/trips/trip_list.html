@@ -38,7 +38,7 @@
                     <td>{{ trip.team }}</td>
                     <td>{{ trip.boat }}</td>
                     <td><a href="{% url 'trip_update' trip.id %}">Edit</a></td>
-                    <td><a href="{% url 'trip_set_list' trip.id %}">Sets</a></td>
+                    <td><a href="{% url 'trip_set_list' trip.id %}">View ({{ trip.set_set.count }})</a></td>
                 </tr>
                 {% endfor %}
                 </tbody>
