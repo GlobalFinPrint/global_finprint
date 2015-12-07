@@ -24,11 +24,11 @@
                     <tr class="success">
                         <th id="reef">Date</th>
                         <th id="reef">Reef</th>
-                        <th id="drop_time">Drop</th>
-                        <th id="collection_time">Collect</th>
                         <th id="latitude">Lat</th>
                         <th id="longitude">Long</th>
                         <th id="depth">Depth</th>
+                        <th id="drop_time">Drop</th>
+                        <th id="collection_time">Collect</th>
                         <th id="equipment">Equipment</th>
                         <th id="tide_state">Tide</th>
                         <th id="visibility">Vis</th>
@@ -42,11 +42,11 @@
                         <tr>
                             <td>{{ set.drop_time|date:"SHORT_DATE_FORMAT" }}</td>
                             <td>{{ set.reef }}</td>
-                            <td>{{ set.drop_time|date:"H:i" }}</td>
-                            <td>{{ set.collection_time|date:"H:i" }}</td>
                             <td>{{ set.latitude }}</td>
                             <td>{{ set.longitude }}</td>
                             <td>{{ set.depth }}</td>
+                            <td>{{ set.drop_time|date:"H:i" }}</td>
+                            <td>{{ set.collection_time|date:"H:i" }}</td>
                             <td>{{ set.equipment }}</td>
                             <td>{{ set.tide_state }}</td>
                             <td>{{ set.visibility }}</td>
