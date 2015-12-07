@@ -117,7 +117,8 @@ class Set(AuditableModel):
 
 class EnvironmentMeasure(AuditableModel):
     measurement_time = models.DateTimeField()
-    water_temperature = models.IntegerField(null=True,
+    water_temperature = models.DecimalField(null=True,
+                                            max_digits=4, decimal_places=1,
                                             help_text='C')  # C
     salinity = models.DecimalField(null=True,
                                    max_digits=4, decimal_places=2,
