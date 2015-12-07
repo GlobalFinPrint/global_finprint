@@ -3,7 +3,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, HTML
 from crispy_forms.bootstrap import FormActions
 from bootstrap3_datetime.widgets import DateTimePicker
-from global_finprint.habitat.models import Location
+from global_finprint.habitat.models import Location, Region
 from .models import Team, Trip
 from global_finprint.trip import models
 from django.core.urlresolvers import reverse
@@ -41,6 +41,8 @@ class TripSearchForm(forms.Form):
     search_end_date = forms.DateField(required=False, widget=DateTimePicker(options={
         "format": "YYYY-MM-DD",
         "pickTime": False}))
+    region = forms.ModelChoiceField(required=False,
+                                    queryset=Region.objects.all())
     location = forms.ModelChoiceField(required=False,
                                       queryset=Location.objects.filter(trip__in=Trip.objects.all()).distinct())
     team = forms.ModelChoiceField(required=False,

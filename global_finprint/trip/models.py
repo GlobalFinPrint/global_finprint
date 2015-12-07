@@ -22,6 +22,10 @@ class Trip(AuditableModel):
     start_date = models.DateField()
     end_date = models.DateField()
 
+    @property
+    def region(self):
+        return self.location.region
+
     def __str__(self):
         # todo:  whatever is most usefully readable ...
         #   feedback: need this to be searchable: year, location ... team may be less useful.
