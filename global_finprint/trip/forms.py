@@ -32,10 +32,10 @@ class TripForm(forms.ModelForm):
 
 
 class TripSearchForm(forms.Form):
-    start_date = forms.DateField(required=False, widget=DateTimePicker(options={
+    search_start_date = forms.DateField(required=False, widget=DateTimePicker(options={
         "format": "YYYY-MM-DD",
         "pickTime": False}))
-    end_date = forms.DateField(required=False, widget=DateTimePicker(options={
+    search_end_date = forms.DateField(required=False, widget=DateTimePicker(options={
         "format": "YYYY-MM-DD",
         "pickTime": False}))
     location = forms.ModelChoiceField(required=False,
