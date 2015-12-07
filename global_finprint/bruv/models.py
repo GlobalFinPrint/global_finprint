@@ -57,6 +57,18 @@ VISIBILITY_CHOICES = {
     ('15', '15'),
     ('>15', '>15'),
 }
+TIDE_CHOICES = {
+    ('F', 'Flood'),
+    ('E', 'Ebb'),
+    ('S', 'Slack'),
+    ('S2F', 'Slack to Flood'),
+    ('S2E', 'Slack to Ebb'),
+}
+SURFACE_CHOP_CHOICES = {
+    ('L', 'Light'),
+    ('M', 'Medium'),
+    ('H', 'Heavy'),
+}
 
 
 class FrameType(models.Model):
@@ -90,8 +102,6 @@ class Set(AuditableModel):
     drop_time = models.DateTimeField()
     collection_time = models.DateTimeField(null=True, blank=True)
 
-    # todo:  tide_state values?
-    tide_state = models.CharField(max_length=16)
     visibility = models.CharField(max_length=3, choices=VISIBILITY_CHOICES)
 
     equipment = models.ForeignKey(Equipment)
@@ -136,6 +146,18 @@ class EnvironmentMeasure(AuditableModel):
                                          null=True,
                                          choices=CURRENT_DIRECTION,
                                          help_text='compass direction')  # eight point compass
+    tide_state = models.CharField(max_length=3,
+                                  null=True,
+                                  choices=TIDE_CHOICES)
+    estimated_wind_speed = models.IntegerField(null=True)
+    wind_direction = models.CharField(max_length=2,
+                                      null=True,
+                                      choices=CURRENT_DIRECTION,
+                                      help_text='compass direction')  # eight point compass
+    cloud_cover = models.IntegerField(null=True, help_text='%')  # percentage
+    surface_chop = models.CharField(max_length=1,
+                                    null=True,
+                                    choices=SURFACE_CHOP_CHOICES)
     set = models.ForeignKey(Set)
 
     def __str__(self):

@@ -11,9 +11,8 @@ class SetForm(ModelForm):
     class Meta:
         model = Set
         fields = ['trip', 'latitude', 'longitude', 'depth',
-                  'drop_time', 'collection_time', 'tide_state',
-                  'reef', 'equipment', 'visibility',
-                  'bait', 'bait_oiled']
+                  'drop_time', 'collection_time', 'reef',
+                  'equipment', 'visibility', 'bait', 'bait_oiled']
         widgets = {
                     'trip': HiddenInput(),
                     'drop_time': DateTimePicker(options={
@@ -88,7 +87,8 @@ class EnvironmentMeasureForm(ModelForm):
         model = EnvironmentMeasure
         fields = ['set', 'measurement_time', 'water_temperature', 'salinity',
                   'conductivity', 'dissolved_oxygen', 'current_flow',
-                  'current_direction']
+                  'current_direction', 'tide_state', 'estimated_wind_speed',
+                  'wind_direction', 'cloud_cover', 'surface_chop']
         widgets = {
             'set': HiddenInput(),
             'measurement_time': DateTimePicker(options={
