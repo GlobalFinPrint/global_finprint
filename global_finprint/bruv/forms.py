@@ -16,10 +16,10 @@ class SetForm(ModelForm):
         widgets = {
                     'trip': HiddenInput(),
                     'drop_time': DateTimePicker(options={
-                        "format": "YYYY-MM-DD HH:mm",
+                        "format": "MMMM DD YYYY HH:mm",
                         "pickSeconds": False}),
                     'collection_time': DateTimePicker(options={
-                        "format": "YYYY-MM-DD HH:mm",
+                        "format": "MMMM DD YYYY HH:mm",
                         "pickSeconds": False}),
                 }
 
@@ -66,7 +66,7 @@ class ObservationForm(ModelForm):
         widgets = {
             'set': HiddenInput(),
             'initial_observation_time': DateTimePicker(options={
-                "format": "YYYY-MM-DD HH:mm",
+                "format": "MMMM DD YYYY HH:mm",
                 "pickSeconds": False}),
         }
 
@@ -92,7 +92,7 @@ class EnvironmentMeasureForm(ModelForm):
         widgets = {
             'set': HiddenInput(),
             'measurement_time': DateTimePicker(options={
-                "format": "YYYY-MM-DD HH:mm",
+                "format": "MMMM DD YYYY HH:mm",
                 "pickSeconds": False})
         }
 

@@ -40,7 +40,7 @@
                     </thead>
                     {% for set in sets %}
                         <tr>
-                            <td>{{ set.drop_time|date:"SHORT_DATE_FORMAT" }}</td>
+                            <td>{{ set.drop_time|date:"F d Y" }}</td>
                             <td>{{ set.reef }}</td>
                             <td>{{ set.latitude }}</td>
                             <td>{{ set.longitude }}</td>

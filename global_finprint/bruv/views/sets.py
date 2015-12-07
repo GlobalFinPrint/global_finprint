@@ -11,6 +11,9 @@ from global_finprint.bruv.models import Equipment
 from ..models import Set, EnvironmentMeasure
 from ..forms import SetForm, EnvironmentMeasureForm
 
+from datetime import datetime
+from pytz import timezone
+
 
 def set_detail(request, pk):
     s = Set.objects.get(pk=pk)
@@ -51,10 +54,13 @@ class SetListView(CreateView):
     def get_context_data(self, **kwargs):
         parent_trip = Trip.objects.get(id=self.kwargs['trip_pk'])
         last_set = parent_trip.set_set.last()
+        default_date = timezone('UTC').localize(
+            datetime.combine(parent_trip.start_date, datetime.min.time()))
+
         form_defaults = {
             'trip': parent_trip,
-            'drop_time': parent_trip.start_date,
-            'collection_time': parent_trip.start_date,
+            'drop_time': default_date,
+            'collection_time': default_date,
             'equipment': Equipment.objects.all().first()
         }
 

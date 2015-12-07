@@ -15,10 +15,10 @@ class TripForm(forms.ModelForm):
         fields = ['team', 'start_date', 'end_date', 'location', 'boat',]
         widgets = {
             'start_date': DateTimePicker(options={
-                "format": "YYYY-MM-DD",
+                "format": "MMMM DD YYYY",
                 "pickTime": False}),
             'end_date': DateTimePicker(options={
-                "format": "YYYY-MM-DD",
+                "format": "MMMM DD YYYY",
                 "pickTime": False}),
         }
 
@@ -36,10 +36,10 @@ class TripForm(forms.ModelForm):
 
 class TripSearchForm(forms.Form):
     search_start_date = forms.DateField(required=False, widget=DateTimePicker(options={
-        "format": "YYYY-MM-DD",
+        "format": "MMMM DD YYYY",
         "pickTime": False}))
     search_end_date = forms.DateField(required=False, widget=DateTimePicker(options={
-        "format": "YYYY-MM-DD",
+        "format": "MMMM DD YYYY",
         "pickTime": False}))
     region = forms.ModelChoiceField(required=False,
                                     queryset=Region.objects.all())
