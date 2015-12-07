@@ -28,7 +28,10 @@ class TripForm(forms.ModelForm):
         self.helper.form_class = 'form-inline trip'
         self.helper.form_action = reverse('trip_list')
         self.helper.form_method = "post"
-        self.helper.layout.append(FormActions(Submit('save', 'Save trip')))
+        self.helper.layout.append(
+            FormActions(HTML("""<a role="button" class="btn btn-default cancel-button"
+            href="{% url "trip_list" %}">Cancel</a>"""),
+                        Submit('save', 'Save trip')))
 
 
 class TripSearchForm(forms.Form):
