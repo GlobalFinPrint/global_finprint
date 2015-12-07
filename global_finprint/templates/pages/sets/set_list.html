@@ -30,7 +30,6 @@
                         <th id="drop_time">Drop</th>
                         <th id="collection_time">Collect</th>
                         <th id="equipment">Equipment</th>
-                        <th id="tide_state">Tide</th>
                         <th id="visibility">Vis</th>
                         <th id="bait">Bait</th>
                         <th id="observations">View Obs</th>
@@ -48,7 +47,6 @@
                             <td>{{ set.drop_time|date:"H:i" }}</td>
                             <td>{{ set.collection_time|date:"H:i" }}</td>
                             <td>{{ set.equipment }}</td>
-                            <td>{{ set.tide_state }}</td>
                             <td>{{ set.visibility }}</td>
                             <td>{{ set.bait }}</td>
                             <td>
@@ -66,7 +64,6 @@
                         </tr>
                         {# for each environmental measure: #}
                         <tr class="success observation-headers set-{{ set.id }}">
-                            <th class="blank" colspan="1"></th>
                             <th class="measurement_time">Time</th>
                             <th class="temperature">Temp</th>
                             <th class="salinity">Salinity</th>
@@ -84,7 +81,6 @@
                         {% if set.environmentmeasure_set.count %}
                             {% for env in set.environmentmeasure_set.all %}
                                 <tr class="observation-row set-{{ set.id }}">
-                                    <td class="blank" colspan="1"></td>
                                     <td>{{ env.measurement_time|date:"H:i" }}</td>
                                     <td>{{ env.water_temperature }}</td>
                                     <td>{{ env.salinity }}</td>
@@ -104,7 +100,7 @@
                             {% endfor %}
                         {% endif %}
                         <tr class="observation-row set-{{ set.id }}">
-                            <td colspan="13"></td>
+                            <td colspan="12"></td>
                             <td><a href="{% url 'environmentmeasure_create' set.trip.id set.id %}">Add another</a></td>
                         </tr>
                     {% endfor %}
