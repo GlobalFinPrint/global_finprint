@@ -33,8 +33,8 @@
                 <tbody>
                 {% for trip in trips %}
                 <tr>
-                    <td>{{ trip.start_date }}</td>
-                    <td>{{ trip.end_date }}</td>
+                    <td>{{ trip.start_date|date:"F d Y" }}</td>
+                    <td>{{ trip.end_date|date:"F d Y" }}</td>
                     <td>{{ trip.region }}</td>
                     <td>{{ trip.location }}</td>
                     <td>{{ trip.team }}</td>

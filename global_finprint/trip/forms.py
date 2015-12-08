@@ -9,18 +9,22 @@ from global_finprint.trip import models
 from django.core.urlresolvers import reverse
 
 
+datepicker_opts = {"format": "MMMM DD YYYY", "pickTime": False}
+
+
 class TripForm(forms.ModelForm):
+    start_date = forms.DateField(
+        input_formats=['%B %d %Y'],
+        widget=DateTimePicker(options=datepicker_opts)
+    )
+    end_date = forms.DateField(
+        input_formats=['%B %d %Y'],
+        widget=DateTimePicker(options=datepicker_opts)
+    )
+
     class Meta:
         model = models.Trip
-        fields = ['team', 'start_date', 'end_date', 'location', 'boat',]
-        widgets = {
-            'start_date': DateTimePicker(options={
-                "format": "MMMM DD YYYY",
-                "pickTime": False}),
-            'end_date': DateTimePicker(options={
-                "format": "MMMM DD YYYY",
-                "pickTime": False}),
-        }
+        fields = ['team', 'start_date', 'end_date', 'location', 'boat']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -35,12 +39,12 @@ class TripForm(forms.ModelForm):
 
 
 class TripSearchForm(forms.Form):
-    search_start_date = forms.DateField(required=False, widget=DateTimePicker(options={
-        "format": "MMMM DD YYYY",
-        "pickTime": False}))
-    search_end_date = forms.DateField(required=False, widget=DateTimePicker(options={
-        "format": "MMMM DD YYYY",
-        "pickTime": False}))
+    search_start_date = forms.DateField(required=False,
+                                        input_formats=['%B %d %Y'],
+                                        widget=DateTimePicker(options=datepicker_opts))
+    search_end_date = forms.DateField(required=False,
+                                      input_formats=['%B %d %Y'],
+                                      widget=DateTimePicker(options=datepicker_opts))
     region = forms.ModelChoiceField(required=False,
                                     queryset=Region.objects.all())
     location = forms.ModelChoiceField(required=False,
