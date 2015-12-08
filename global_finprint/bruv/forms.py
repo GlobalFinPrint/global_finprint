@@ -1,4 +1,4 @@
-from django.forms import ModelForm, HiddenInput
+from django import forms
 from global_finprint.bruv.models import Set, Observation, EnvironmentMeasure
 from global_finprint.trip.models import Trip
 from crispy_forms.helper import FormHelper
@@ -7,21 +7,28 @@ from crispy_forms.bootstrap import FormActions
 from bootstrap3_datetime.widgets import DateTimePicker
 
 
-class SetForm(ModelForm):
+datepicker_opts = {"format": "MMMM DD YYYY HH:mm", "pickSeconds": False}
+
+
+class SetForm(forms.ModelForm):
+    drop_time = forms.DateTimeField(
+        input_formats=['%B %d %Y %H:%M'],
+        widget=DateTimePicker(options=datepicker_opts)
+    )
+    collection_time = forms.DateTimeField(
+        required=False,
+        input_formats=['%B %d %Y %H:%M'],
+        widget=DateTimePicker(options=datepicker_opts)
+    )
+
     class Meta:
         model = Set
         fields = ['trip', 'latitude', 'longitude', 'depth',
                   'drop_time', 'collection_time', 'reef',
                   'equipment', 'visibility', 'bait', 'bait_oiled']
         widgets = {
-                    'trip': HiddenInput(),
-                    'drop_time': DateTimePicker(options={
-                        "format": "MMMM DD YYYY HH:mm",
-                        "pickSeconds": False}),
-                    'collection_time': DateTimePicker(options={
-                        "format": "MMMM DD YYYY HH:mm",
-                        "pickSeconds": False}),
-                }
+            'trip': forms.HiddenInput()
+        }
 
     def __init__(self, *args, **kwargs):
         try:
@@ -57,17 +64,19 @@ class SetForm(ModelForm):
             )
 
 
-class ObservationForm(ModelForm):
+class ObservationForm(forms.ModelForm):
+    initial_observation_time = forms.DateTimeField(
+        input_formats=['%B %d %Y %H:%M'],
+        widget=DateTimePicker(options=datepicker_opts)
+    )
+
     class Meta:
         model = Observation
         fields = ['initial_observation_time',
                   'animal', 'sex', 'stage', 'length', 'behavior',
                   'set', 'video_annotator']
         widgets = {
-            'set': HiddenInput(),
-            'initial_observation_time': DateTimePicker(options={
-                "format": "MMMM DD YYYY HH:mm",
-                "pickSeconds": False}),
+            'set': forms.HiddenInput()
         }
 
     def __init__(self, *args, **kwargs):
@@ -82,7 +91,12 @@ class ObservationForm(ModelForm):
                         Submit('save', 'Save Observation')))
 
 
-class EnvironmentMeasureForm(ModelForm):
+class EnvironmentMeasureForm(forms.ModelForm):
+    measurement_time = forms.DateTimeField(
+        input_formats=['%B %d %Y %H:%M'],
+        widget=DateTimePicker(options=datepicker_opts)
+    )
+
     class Meta:
         model = EnvironmentMeasure
         fields = ['set', 'measurement_time', 'water_temperature', 'salinity',
@@ -90,10 +104,7 @@ class EnvironmentMeasureForm(ModelForm):
                   'current_direction', 'tide_state', 'estimated_wind_speed',
                   'wind_direction', 'cloud_cover', 'surface_chop']
         widgets = {
-            'set': HiddenInput(),
-            'measurement_time': DateTimePicker(options={
-                "format": "MMMM DD YYYY HH:mm",
-                "pickSeconds": False})
+            'set': forms.HiddenInput()
         }
 
     def __init__(self, *args, **kwargs):
