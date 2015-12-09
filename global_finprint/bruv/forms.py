@@ -11,6 +11,10 @@ datepicker_opts = {"format": "MMMM DD YYYY HH:mm", "pickSeconds": False}
 
 
 class SetForm(forms.ModelForm):
+    set = forms.IntegerField(
+        required=False,
+        widget=forms.HiddenInput()
+    )
     drop_time = forms.DateTimeField(
         input_formats=['%B %d %Y %H:%M'],
         widget=DateTimePicker(options=datepicker_opts)
