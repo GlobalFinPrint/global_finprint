@@ -77,11 +77,11 @@
 }
 
 table.set-table {
-  td a.hide-observation {
+  td a.hide-env {
     display: none;
   }
 
-  tr.observation-headers, tr.observation-row {
+  tr.env-headers, tr.env-row {
     display: none;
   }
 }

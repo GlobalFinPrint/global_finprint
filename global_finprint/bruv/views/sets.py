@@ -8,7 +8,7 @@ from braces.views import LoginRequiredMixin
 
 from global_finprint.trip.models import Trip
 from global_finprint.bruv.models import Equipment
-from ..models import Set, EnvironmentMeasure
+from ..models import Set
 from ..forms import SetForm, EnvironmentMeasureForm
 
 from datetime import datetime
@@ -35,18 +35,20 @@ class SetListView(CreateView):
     template_name = 'pages/sets/set_list.html'
 
     def form_valid(self, form):
-        env_form = EnvironmentMeasureForm(self.request.POST)
-        env_form.fields['set'].required = False
-        if env_form.is_valid():
-            messages.info(self.request, self.success_msg)
-            new_set = Set(**form.cleaned_data)
-            new_set.save()
-            env_form.cleaned_data['set'] = new_set
-            new_env = EnvironmentMeasure(**env_form.cleaned_data)
-            new_env.save()
-            return HttpResponseRedirect(self.get_success_url())
-        else:
-            return super().form_invalid(env_form)
+        drop_form = EnvironmentMeasureForm(self.request.POST or None, prefix='drop')
+        haul_form = EnvironmentMeasureForm(self.request.POST or None, prefix='haul')
+
+        if not drop_form.is_valid():
+            return super().form_invalid(drop_form)
+        if not haul_form.is_valid():
+            return super().form_invalid(haul_form)
+
+        form.cleaned_data['drop_measure'] = drop_form.save()
+        form.cleaned_data['haul_measure'] = haul_form.save()
+        new_set = Set(**form.cleaned_data)
+        new_set.save()
+        messages.info(self.request, self.success_msg)
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse_lazy('trip_set_list', args=[self.request.POST['trip']])
@@ -75,19 +77,16 @@ class SetListView(CreateView):
             })
 
         context = super(SetListView, self).get_context_data(**kwargs)
-        context['sets'] = Set.objects.filter(trip=self.kwargs['trip_pk'])\
-            .prefetch_related('environmentmeasure_set')
+        context['sets'] = Set.objects.filter(trip=self.kwargs['trip_pk']).order_by('drop_time')
         context['trip_pk'] = self.kwargs['trip_pk']
         context['trip_name'] = str(Trip.objects.get(pk=self.kwargs['trip_pk']))
         context['set_form'] = SetForm(
             self.request.POST or None,
             initial=form_defaults,
-            combined=True,
             trip_pk=self.kwargs['trip_pk']
         )
-        context['set_form'].helper.form_tag = False
-        context['env_form'] = EnvironmentMeasureForm(self.request.POST or None, combined=True)
-        context['env_form'].helper.form_tag = False
+        context['drop_form'] = EnvironmentMeasureForm(self.request.POST or None, prefix='drop')
+        context['haul_form'] = EnvironmentMeasureForm(self.request.POST or None, prefix='haul')
         return context
 
 

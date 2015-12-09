@@ -32,11 +32,6 @@ class SetForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         try:
-            combined = kwargs.pop('combined')
-        except KeyError:
-            combined = False
-
-        try:
             trip_pk = kwargs.pop('trip_pk')
         except KeyError:
             trip_pk = False
@@ -54,14 +49,7 @@ class SetForm(forms.ModelForm):
         self.helper.form_class = 'form-inline set'
         self.helper.form_action = "{{ action }}"
         self.helper.form_method = "post"
-        if not combined:
-            self.helper.layout.append(
-                FormActions(
-                    HTML("""<a role="button" class="btn btn-default cancel-button"
-                        href="{% url "trip_set_list" trip_pk %}">Cancel</a>"""),
-                    Submit('save', 'Save Set')
-                )
-            )
+        self.helper.form_tag = False
 
 
 class ObservationForm(forms.ModelForm):
@@ -92,33 +80,17 @@ class ObservationForm(forms.ModelForm):
 
 
 class EnvironmentMeasureForm(forms.ModelForm):
-    measurement_time = forms.DateTimeField(
-        input_formats=['%B %d %Y %H:%M'],
-        widget=DateTimePicker(options=datepicker_opts)
-    )
-
     class Meta:
         model = EnvironmentMeasure
-        fields = ['set', 'measurement_time', 'water_temperature', 'salinity',
+        fields = ['water_temperature', 'salinity',
                   'conductivity', 'dissolved_oxygen', 'current_flow',
                   'current_direction', 'tide_state', 'estimated_wind_speed',
                   'wind_direction', 'cloud_cover', 'surface_chop']
-        widgets = {
-            'set': forms.HiddenInput()
-        }
 
     def __init__(self, *args, **kwargs):
-        try:
-            combined = kwargs.pop('combined')
-        except KeyError:
-            combined = False
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_class = 'form-inline env'
         self.helper.form_action = "{{ action }}"
         self.helper.form_method = "post"
-        if not combined:
-            self.helper.layout.append(
-                FormActions(HTML("""<a role="button" class="btn btn-default cancel-button"
-                href="{% url "trip_set_list" trip_pk %}">Cancel</a>"""),
-                            Submit('save', 'Save Environment Measure')))
+        self.helper.form_tag = False

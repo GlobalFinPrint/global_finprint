@@ -55,16 +55,16 @@
                                 </a>
                             </td>
                             <td>
-                                <a class="show-observation" href="#" data-set="{{ set.id }}">
-                                    Show ({{ set.environmentmeasure_set.count }})
+                                <a class="show-env" href="#" data-set="{{ set.id }}">
+                                    Show ({{ set.environmentmeasure_set|length }})
                                 </a>
-                                <a class="hide-observation" href="#" data-set="{{ set.id }}">Hide</a>
+                                <a class="hide-env" href="#" data-set="{{ set.id }}">Hide</a>
                             </td>
                             <td><a href="{% url 'set_update' set.trip.id set.id %}">Edit</a></td>
                         </tr>
                         {# for each environmental measure: #}
-                        <tr class="success observation-headers set-{{ set.id }}">
-                            <th class="measurement_time">Time</th>
+                        <tr class="success env-headers set-{{ set.id }}">
+                            <th></th>
                             <th class="temperature">Temp</th>
                             <th class="salinity">Salinity</th>
                             <th class="conductivity">Cond</th>
@@ -76,33 +76,56 @@
                             <th class="wind_direction">Wind dir</th>
                             <th class="cloud_cover">Cloud cvr</th>
                             <th class="surface_chop">Chop</th>
-                            <th class="edit_observation">Create/Edit Env.</th>
+                            <th class="haul-drop">Haul/drop</th>
                         </tr>
-                        {% if set.environmentmeasure_set.count %}
-                            {% for env in set.environmentmeasure_set.all %}
-                                <tr class="observation-row set-{{ set.id }}">
-                                    <td>{{ env.measurement_time|date:"H:i" }}</td>
-                                    <td>{{ env.water_temperature }}</td>
-                                    <td>{{ env.salinity }}</td>
-                                    <td>{{ env.conductivity }}</td>
-                                    <td>{{ env.dissolved_oxygen }}</td>
-                                    <td>{{ env.current_flow }}</td>
-                                    <td>{{ env.current_direction }}</td>
-                                    <td>{{ env.tide_state }}</td>
-                                    <td>{{ env.estimated_wind_speed }}</td>
-                                    <td>{{ env.wind_direction }}</td>
-                                    <td>{{ env.cloud_cover }}</td>
-                                    <td>{{ env.surface_chop }}</td>
-                                    <td><a href="{% url 'environmentmeasure_update' set.trip.id set.id env.id %}">
-                                        Edit
-                                    </a></td>
-                                </tr>
-                            {% endfor %}
+                        {% if set.drop_measure %}
+                        {% with env=set.drop_measure %}
+                            <tr class="env-row set-{{ set.id }}">
+                                <td></td>
+                                <td>{{ env.water_temperature }}</td>
+                                <td>{{ env.salinity }}</td>
+                                <td>{{ env.conductivity }}</td>
+                                <td>{{ env.dissolved_oxygen }}</td>
+                                <td>{{ env.current_flow }}</td>
+                                <td>{{ env.current_direction }}</td>
+                                <td>{{ env.tide_state }}</td>
+                                <td>{{ env.estimated_wind_speed }}</td>
+                                <td>{{ env.wind_direction }}</td>
+                                <td>{{ env.cloud_cover }}</td>
+                                <td>{{ env.surface_chop }}</td>
+                                <td>Drop measure</td>
+                            </tr>
+                        {% endwith %}
+                        {% else %}
+                            <tr class="env-row set-{{ set.id }}">
+                                <td colspan="12"></td>
+                                <td>Add drop measure</td>
+                            </tr>
                         {% endif %}
-                        <tr class="observation-row set-{{ set.id }}">
-                            <td colspan="12"></td>
-                            <td><a href="{% url 'environmentmeasure_create' set.trip.id set.id %}">Add another</a></td>
-                        </tr>
+                        {% if set.haul_measure %}
+                        {% with env=set.haul_measure %}
+                            <tr class="env-row set-{{ set.id }}">
+                                <td></td>
+                                <td>{{ env.water_temperature }}</td>
+                                <td>{{ env.salinity }}</td>
+                                <td>{{ env.conductivity }}</td>
+                                <td>{{ env.dissolved_oxygen }}</td>
+                                <td>{{ env.current_flow }}</td>
+                                <td>{{ env.current_direction }}</td>
+                                <td>{{ env.tide_state }}</td>
+                                <td>{{ env.estimated_wind_speed }}</td>
+                                <td>{{ env.wind_direction }}</td>
+                                <td>{{ env.cloud_cover }}</td>
+                                <td>{{ env.surface_chop }}</td>
+                                <td>Haul measure</td>
+                            </tr>
+                        {% endwith %}
+                        {% else %}
+                            <tr class="env-row set-{{ set.id }}">
+                                <td colspan="12"></td>
+                                <td>Add haul measure</td>
+                            </tr>
+                        {% endif %}
                     {% endfor %}
                 </table>
             </div>
@@ -120,8 +143,13 @@
                             <p><!-- placeholder --></p>
                         </div>
                         <div class="sub-form">
-                            <h4>Environmental measure</h4>
-                            {% crispy env_form %}
+                            <h4>Drop environmental measure</h4>
+                            {% crispy drop_form %}
+                            <p><!-- placeholder --></p>
+                        </div>
+                        <div class="sub-form">
+                            <h4>Haul environmental measure</h4>
+                            {% crispy haul_form %}
                             <p><!-- placeholder --></p>
                         </div>
                         <div class="form-group">
