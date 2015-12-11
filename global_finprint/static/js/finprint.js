@@ -35,7 +35,7 @@ var finprint = finprint || {};  //namespace if necessary...
             $('#detail_panel').hide();
         }
 
-        $('table.set-table').find('a.show-observation, a.hide-observation').click(function(e) {
+        $('table.set-table').find('a.show-env, a.hide-env').click(function(e) {
             e.preventDefault();
             $(this).hide()
                 .siblings().toggle().end()

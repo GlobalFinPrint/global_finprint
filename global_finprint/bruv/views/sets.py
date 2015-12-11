@@ -3,12 +3,13 @@ from django.contrib import messages
 from django.http.response import JsonResponse
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 
 from braces.views import LoginRequiredMixin
 
 from global_finprint.trip.models import Trip
 from global_finprint.bruv.models import Equipment
-from ..models import Set, EnvironmentMeasure
+from ..models import Set
 from ..forms import SetForm, EnvironmentMeasureForm
 
 from datetime import datetime
@@ -28,28 +29,44 @@ def set_detail(request, pk):
 
 
 class SetListView(CreateView):
-    success_msg = 'Set and environmental measure created!'
+    success_msg = 'Set and environmental measure saved!'
     model = Set
     form_class = SetForm
     context_object_name = 'set'
     template_name = 'pages/sets/set_list.html'
 
     def form_valid(self, form):
-        env_form = EnvironmentMeasureForm(self.request.POST)
-        env_form.fields['set'].required = False
-        if env_form.is_valid():
-            messages.info(self.request, self.success_msg)
+        drop_form = EnvironmentMeasureForm(self.request.POST or None, prefix='drop')
+        haul_form = EnvironmentMeasureForm(self.request.POST or None, prefix='haul')
+
+        if not drop_form.is_valid():
+            return super().form_invalid(drop_form)
+        if not haul_form.is_valid():
+            return super().form_invalid(haul_form)
+
+        if 'set' in form.cleaned_data:
+            edited_set = get_object_or_404(Set, pk=form.cleaned_data['set'])
+            for k, v in form.cleaned_data.items():
+                setattr(edited_set, k, v)
+            for k, v in drop_form.cleaned_data.items():
+                setattr(edited_set.drop_measure, k, v)
+            for k, v in haul_form.cleaned_data.items():
+                setattr(edited_set.haul_measure, k, v)
+            edited_set.save()
+            edited_set.drop_measure.save()
+            edited_set.haul_measure.save()
+        else:
+            form.cleaned_data['drop_measure'] = drop_form.save()
+            form.cleaned_data['haul_measure'] = haul_form.save()
             new_set = Set(**form.cleaned_data)
             new_set.save()
-            env_form.cleaned_data['set'] = new_set
-            new_env = EnvironmentMeasure(**env_form.cleaned_data)
-            new_env.save()
-            return HttpResponseRedirect(self.get_success_url())
-        else:
-            return super().form_invalid(env_form)
+
+        messages.info(self.request, self.success_msg)
+
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse_lazy('trip_set_list', args=[self.request.POST['trip']])
+        return reverse_lazy('trip_set_list', args=[self.request.POST['trip']]) + '#'
 
     def get_context_data(self, **kwargs):
         parent_trip = Trip.objects.get(id=self.kwargs['trip_pk'])
@@ -75,39 +92,29 @@ class SetListView(CreateView):
             })
 
         context = super(SetListView, self).get_context_data(**kwargs)
-        context['sets'] = Set.objects.filter(trip=self.kwargs['trip_pk'])\
-            .prefetch_related('environmentmeasure_set')
+        context['sets'] = Set.objects.filter(trip=self.kwargs['trip_pk']).order_by('drop_time')
         context['trip_pk'] = self.kwargs['trip_pk']
         context['trip_name'] = str(Trip.objects.get(pk=self.kwargs['trip_pk']))
-        context['set_form'] = SetForm(
-            self.request.POST or None,
-            initial=form_defaults,
-            combined=True,
-            trip_pk=self.kwargs['trip_pk']
-        )
-        context['set_form'].helper.form_tag = False
-        context['env_form'] = EnvironmentMeasureForm(self.request.POST or None, combined=True)
-        context['env_form'].helper.form_tag = False
-        return context
 
+        if 'set_pk' in self.kwargs:
+            edited_set = get_object_or_404(Set, pk=self.kwargs['set_pk'])
 
-class SetUpdateView(LoginRequiredMixin, UpdateView):
-    success_msg = 'Set Updated'
-    model = Set
-    form_class = SetForm
-    template_name = 'pages/sets/set_detail.html'
+            context['set_pk'] = edited_set.id
+            context['set_name'] = str(edited_set)
 
-    def form_valid(self, form):
-        messages.info(self.request, self.success_msg)
-        return super(SetUpdateView, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy('trip_set_list', args=[self.request.POST['trip']])
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['trip_pk'] = self.object.trip.id
-        context['trip_name'] = str(self.object.trip)
-        context['set_pk'] = self.object.id
-        context['set_name'] = str(self.object)
+            context['set_form'] = SetForm(
+                instance=edited_set,
+                trip_pk=self.kwargs['trip_pk'],
+                initial={'set': edited_set.id}
+            )
+            context['drop_form'] = EnvironmentMeasureForm(instance=edited_set.drop_measure, prefix='drop')
+            context['haul_form'] = EnvironmentMeasureForm(instance=edited_set.haul_measure, prefix='haul')
+        else:
+            context['set_form'] = SetForm(
+                self.request.POST or None,
+                initial=form_defaults,
+                trip_pk=self.kwargs['trip_pk']
+            )
+            context['drop_form'] = EnvironmentMeasureForm(self.request.POST or None, prefix='drop')
+            context['haul_form'] = EnvironmentMeasureForm(self.request.POST or None, prefix='haul')
         return context

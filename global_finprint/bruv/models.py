@@ -95,38 +95,7 @@ class Equipment(AuditableModel):
         verbose_name_plural = "Equipment"
 
 
-class Set(AuditableModel):
-    coordinates = models.PointField(null=True)
-    latitude = models.DecimalField(max_digits=10, decimal_places=6)
-    longitude = models.DecimalField(max_digits=10, decimal_places=6)
-    drop_time = models.DateTimeField()
-    collection_time = models.DateTimeField(null=True, blank=True)
-
-    visibility = models.CharField(max_length=3, choices=VISIBILITY_CHOICES)
-
-    equipment = models.ForeignKey(Equipment)
-
-    depth = models.FloatField(null=True, help_text='m')
-    bait = models.CharField(max_length=16, help_text='1kg')
-    bait_oiled = models.BooleanField(default=False, help_text='20ml menhaden oil')
-
-    reef = models.ForeignKey(Reef, null=True)
-    trip = models.ForeignKey(Trip)
-
-    def save(self, *args, **kwargs):
-        # todo:  we're assuming the input is latitude & longitude!  this should be checked!
-        self.coordinates = Point(float(self.longitude), float(self.latitude))
-        super(Set, self).save(*args, **kwargs)
-
-    def get_absolute_url(self):
-        return reverse('set_update', args=[str(self.id)])
-
-    def __str__(self):
-        return u"{0:.4f}, {1:.4f}".format(self.coordinates.y, self.coordinates.x)
-
-
 class EnvironmentMeasure(AuditableModel):
-    measurement_time = models.DateTimeField()
     water_temperature = models.DecimalField(null=True,
                                             max_digits=4, decimal_places=1,
                                             help_text='C')  # C
@@ -158,10 +127,54 @@ class EnvironmentMeasure(AuditableModel):
     surface_chop = models.CharField(max_length=1,
                                     null=True,
                                     choices=SURFACE_CHOP_CHOICES)
-    set = models.ForeignKey(Set)
 
     def __str__(self):
         return u'{0}'.format(self.measurement_time)
+
+
+class Set(AuditableModel):
+    coordinates = models.PointField(null=True)
+    latitude = models.DecimalField(max_digits=10, decimal_places=6)
+    longitude = models.DecimalField(max_digits=10, decimal_places=6)
+    drop_time = models.DateTimeField()
+    collection_time = models.DateTimeField(null=True, blank=True)
+
+    visibility = models.CharField(max_length=3, choices=VISIBILITY_CHOICES)
+
+    equipment = models.ForeignKey(Equipment)
+
+    depth = models.FloatField(null=True, help_text='m')
+    bait = models.CharField(max_length=16, help_text='1kg')
+    bait_oiled = models.BooleanField(default=False, help_text='20ml menhaden oil')
+
+    reef = models.ForeignKey(Reef, null=True)
+    trip = models.ForeignKey(Trip)
+
+    drop_measure = models.OneToOneField(
+        EnvironmentMeasure,
+        on_delete=models.CASCADE,
+        null=True, blank=True,
+        related_name='drop_parent_set')
+    haul_measure = models.OneToOneField(
+        EnvironmentMeasure,
+        on_delete=models.CASCADE,
+        null=True, blank=True,
+        related_name='haul_parent_set')
+
+    @property
+    def environmentmeasure_set(self):
+        return [x for x in [self.haul_measure, self.drop_measure] if x is not None]
+
+    def save(self, *args, **kwargs):
+        # todo:  we're assuming the input is latitude & longitude!  this should be checked!
+        self.coordinates = Point(float(self.longitude), float(self.latitude))
+        super(Set, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('set_update', args=[str(self.id)])
+
+    def __str__(self):
+        return u"{0:.4f}, {1:.4f}".format(self.coordinates.y, self.coordinates.x)
 
 
 class Animal(models.Model):
