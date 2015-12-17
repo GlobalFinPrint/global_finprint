@@ -8,6 +8,7 @@ from braces.views import LoginRequiredMixin
 
 from .forms import TripForm, TripSearchForm
 from .models import Trip
+from ..habitat.models import Region
 from ..bruv.models import Set
 
 
@@ -24,13 +25,22 @@ class TripListView(CreateView):
         return super().form_valid(form)
 
     def get_queryset(self):
-        if self.request.GET:
-            search_terms = dict((key, val) for (key, val) in self.request.GET.items()
-                                if key in ['location', 'team'] and val != '')
-            if 'start_date' in self.request.GET and self.request.GET['start_date'] != '':
-                search_terms['start_date__gte'] = self.request.GET['start_date']
-            if 'end_date' in self.request.GET and self.request.GET['end_date'] != '':
-                search_terms['end_date__lte'] = self.request.GET['end_date']
+        form = TripSearchForm(self.request.GET)
+        if self.request.GET and form.is_valid():
+            search_values = form.cleaned_data
+            search_terms = dict((key, val) for (key, val) in search_values.items()
+                                if key in ['location', 'team'] and val is not None)
+
+            if search_values['search_start_date']:
+                search_terms['start_date__gte'] = search_values['search_start_date']
+
+            if search_values['search_end_date']:
+                search_terms['end_date__lte'] = search_values['search_end_date']
+
+            if search_values['region']:
+                search_terms['location__in'] = Region.objects.get(pk=search_values['region'].id) \
+                    .location_set.values_list('id', flat=True)
+
             return Trip.objects.filter(**search_terms)
         else:
             return Trip.objects.all()
