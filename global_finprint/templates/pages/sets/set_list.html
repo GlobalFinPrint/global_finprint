@@ -63,7 +63,7 @@
                             <td><a href="{% url 'set_update' set.trip.id set.id %}#set-env-form">Edit</a></td>
                         </tr>
                         {# for each environmental measure: #}
-                        <tr class="success env-headers set-{{ set.id }}">
+                        <tr class="info env-headers set-{{ set.id }}">
                             <th></th>
                             <th class="temperature">Temp</th>
                             <th class="salinity">Salinity</th>
@@ -80,7 +80,7 @@
                         </tr>
                         {% if set.drop_measure %}
                         {% with env=set.drop_measure %}
-                            <tr class="env-row set-{{ set.id }}">
+                            <tr class="env-row set-{{ set.id }} drop">
                                 <td></td>
                                 <td>{{ env.water_temperature }}</td>
                                 <td>{{ env.salinity }}</td>
@@ -97,14 +97,14 @@
                             </tr>
                         {% endwith %}
                         {% else %}
-                            <tr class="env-row set-{{ set.id }}">
+                            <tr class="env-row set-{{ set.id }} drop">
                                 <td colspan="12"></td>
                                 <td>Add drop measure</td>
                             </tr>
                         {% endif %}
                         {% if set.haul_measure %}
                         {% with env=set.haul_measure %}
-                            <tr class="env-row set-{{ set.id }}">
+                            <tr class="env-row set-{{ set.id }} haul">
                                 <td></td>
                                 <td>{{ env.water_temperature }}</td>
                                 <td>{{ env.salinity }}</td>
@@ -121,11 +121,14 @@
                             </tr>
                         {% endwith %}
                         {% else %}
-                            <tr class="env-row set-{{ set.id }}">
+                            <tr class="env-row set-{{ set.id }} haul">
                                 <td colspan="12"></td>
                                 <td>Add haul measure</td>
                             </tr>
                         {% endif %}
+                        <tr class="env-row set-{{ set.id }} spacer">
+                            <td colspan="13"></td>
+                        </tr>
                     {% endfor %}
                 </table>
             </div>
