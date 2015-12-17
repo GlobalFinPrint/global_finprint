@@ -99,7 +99,9 @@
                         {% else %}
                             <tr class="env-row set-{{ set.id }} drop">
                                 <td colspan="12"></td>
-                                <td>Add drop measure</td>
+                                <td><a href="{% url 'set_update' set.trip.id set.id %}#set-env-form">
+                                    Add drop measure
+                                </a></td>
                             </tr>
                         {% endif %}
                         {% if set.haul_measure %}
@@ -123,7 +125,9 @@
                         {% else %}
                             <tr class="env-row set-{{ set.id }} haul">
                                 <td colspan="12"></td>
-                                <td>Add haul measure</td>
+                                <td><a href="{% url 'set_update' set.trip.id set.id %}#set-env-form">
+                                    Add haul measure
+                                </a></td>
                             </tr>
                         {% endif %}
                         <tr class="env-row set-{{ set.id }} spacer">
