@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-    {% if form_errors %}
+    {% if set_pk or form_errors %}
     {# jump to form if editing or there is an error #}
         <script type="text/javascript">$(function() { window.location.hash = '#set-env-form'; });</script>
     {% else %}

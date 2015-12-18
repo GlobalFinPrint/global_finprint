@@ -134,7 +134,7 @@ class SetListView(View):
 
                 messages.info(self.request, 'Set and drop/haul measures updated')
 
-                success_url = reverse_lazy('trip_set_list', args=trip_pk) + '#'
+                success_url = reverse_lazy('trip_set_list', args=trip_pk)
                 return HttpResponseRedirect(success_url)
 
             context['set_form'] = SetForm(
@@ -150,6 +150,9 @@ class SetListView(View):
             messages.info(self.request, 'Form errors found')
 
             context['form_errors'] = True
+            if set_pk:
+                context['set_pk'] = set_pk
+                context['set_name'] = str(get_object_or_404(Set, pk=set_pk))
             context['set_form'] = set_form
             context['drop_form'] = drop_form
             context['haul_form'] = haul_form
