@@ -12,7 +12,6 @@ from ..models import Set
 from ..forms import SetForm, EnvironmentMeasureForm, BaitForm
 
 from datetime import datetime
-from pytz import timezone
 
 
 def set_detail(request, pk):
@@ -41,13 +40,11 @@ class SetListView(View):
         return context
 
     def _get_set_form_defaults(self, parent_trip):
-        default_date = timezone('UTC').localize(datetime.combine(parent_trip.start_date, datetime.min.time()))
-
         set_form_defaults = {
             'trip': parent_trip,
-            'set_date': default_date,
-            'drop_time': default_date,
-            'haul_time': default_date,
+            'set_date': parent_trip.start_date,
+            'drop_time': datetime.min.time(),
+            'haul_time': datetime.min.time(),
             'equipment': Equipment.objects.all().first(),
         }
 
@@ -114,7 +111,7 @@ class SetListView(View):
         haul_form = EnvironmentMeasureForm(request.POST, prefix='haul')
 
         # forms are valid
-        if set_form.is_valid() and drop_form.is_valid() and haul_form.is_valid():
+        if all(form.is_valid() for form in [set_form, bait_form, drop_form, haul_form]):
 
             # create new set and env measures
             if set_pk is None:
@@ -124,7 +121,7 @@ class SetListView(View):
                 new_set.haul_measure = haul_form.save()
                 new_set.save()
 
-                messages.info(self.request, 'Set and drop/haul measures created')
+                messages.success(self.request, 'Set and drop/haul measures created')
 
             # edit existing set and env measures
             else:
@@ -143,7 +140,7 @@ class SetListView(View):
                 edited_set.drop_measure.save()
                 edited_set.haul_measure.save()
 
-                messages.info(self.request, 'Set and drop/haul measures updated')
+                messages.success(self.request, 'Set and drop/haul measures updated')
 
             # navigate back to set list
             success_url = reverse_lazy('trip_set_list', args=trip_pk)
@@ -151,13 +148,14 @@ class SetListView(View):
 
         # one or more forms have errors
         else:
-            messages.info(self.request, 'Form errors found')
+            messages.error(self.request, 'Form errors found')
 
             context['form_errors'] = True
             if set_pk:
                 context['set_pk'] = set_pk
                 context['set_name'] = str(get_object_or_404(Set, pk=set_pk))
             context['set_form'] = set_form
+            context['bait_form'] = bait_form
             context['drop_form'] = drop_form
             context['haul_form'] = haul_form
 
