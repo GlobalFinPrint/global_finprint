@@ -69,6 +69,11 @@ SURFACE_CHOP_CHOICES = {
     ('M', 'Medium'),
     ('H', 'Heavy'),
 }
+BAIT_TYPE_CHOICES = {
+    ('CHP', 'Chopped'),
+    ('CRS', 'Crushed'),
+    ('WHL', 'Whole'),
+}
 
 
 class FrameType(models.Model):
@@ -96,69 +101,77 @@ class Equipment(AuditableModel):
 
 
 class EnvironmentMeasure(AuditableModel):
-    water_temperature = models.DecimalField(null=True,
+    water_temperature = models.DecimalField(null=True, blank=True,
                                             max_digits=4, decimal_places=1,
                                             help_text='C')  # C
-    salinity = models.DecimalField(null=True,
+    salinity = models.DecimalField(null=True, blank=True,
                                    max_digits=4, decimal_places=2,
                                    help_text='ppt')  # ppt .0
-    conductivity = models.DecimalField(null=True,
+    conductivity = models.DecimalField(null=True, blank=True,
                                        max_digits=4, decimal_places=2,
                                        help_text='S/m')  # S/m .00
-    dissolved_oxygen = models.DecimalField(null=True,
+    dissolved_oxygen = models.DecimalField(null=True, blank=True,
                                            max_digits=3, decimal_places=1,
                                            help_text='%')  # % .0
-    current_flow = models.DecimalField(null=True,
+    current_flow = models.DecimalField(null=True, blank=True,
                                        max_digits=5, decimal_places=2,
                                        help_text='m/s')  # m/s .00
     current_direction = models.CharField(max_length=2,
-                                         null=True,
+                                         null=True, blank=True,
                                          choices=CURRENT_DIRECTION,
                                          help_text='compass direction')  # eight point compass
     tide_state = models.CharField(max_length=3,
-                                  null=True,
+                                  null=True, blank=True,
                                   choices=TIDE_CHOICES)
-    estimated_wind_speed = models.IntegerField(null=True)
+    estimated_wind_speed = models.IntegerField(null=True, blank=True)
     wind_direction = models.CharField(max_length=2,
-                                      null=True,
+                                      null=True, blank=True,
                                       choices=CURRENT_DIRECTION,
                                       help_text='compass direction')  # eight point compass
-    cloud_cover = models.IntegerField(null=True, help_text='%')  # percentage
+    cloud_cover = models.IntegerField(null=True, blank=True, help_text='%')  # percentage
     surface_chop = models.CharField(max_length=1,
-                                    null=True,
+                                    null=True, blank=True,
                                     choices=SURFACE_CHOP_CHOICES)
 
     def __str__(self):
         return u'{0}'.format(self.measurement_time)
 
 
+class Bait(AuditableModel):
+    description = models.CharField(max_length=16, help_text='1kg')
+    type = models.CharField(max_length=3, choices=BAIT_TYPE_CHOICES)
+    oiled = models.BooleanField(default=False, help_text='20ml menhaden oil')
+
+
 class Set(AuditableModel):
+    set_date = models.DateField()
     coordinates = models.PointField(null=True)
     latitude = models.DecimalField(max_digits=10, decimal_places=6)
     longitude = models.DecimalField(max_digits=10, decimal_places=6)
-    drop_time = models.DateTimeField()
-    collection_time = models.DateTimeField(null=True, blank=True)
-
+    drop_time = models.TimeField()
+    haul_time = models.TimeField()
     visibility = models.CharField(max_length=3, choices=VISIBILITY_CHOICES)
+    depth = models.FloatField(null=True, help_text='m')
+    comments = models.CharField(max_length=255, null=True, blank=True)
 
     equipment = models.ForeignKey(Equipment)
-
-    depth = models.FloatField(null=True, help_text='m')
-    bait = models.CharField(max_length=16, help_text='1kg')
-    bait_oiled = models.BooleanField(default=False, help_text='20ml menhaden oil')
-
-    reef = models.ForeignKey(Reef, null=True)
+    reef = models.ForeignKey(Reef)
     trip = models.ForeignKey(Trip)
 
+    bait = models.OneToOneField(
+        Bait,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name='bait_parent_set')
     drop_measure = models.OneToOneField(
         EnvironmentMeasure,
         on_delete=models.CASCADE,
-        null=True, blank=True,
+        null=True,
         related_name='drop_parent_set')
     haul_measure = models.OneToOneField(
         EnvironmentMeasure,
         on_delete=models.CASCADE,
-        null=True, blank=True,
+        null=True,
         related_name='haul_parent_set')
 
     @property

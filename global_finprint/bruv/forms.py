@@ -1,5 +1,5 @@
 from django import forms
-from global_finprint.bruv.models import Set, Observation, EnvironmentMeasure
+from global_finprint.bruv.models import Set, Observation, EnvironmentMeasure, Bait
 from global_finprint.trip.models import Trip
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, HTML
@@ -7,25 +7,30 @@ from crispy_forms.bootstrap import FormActions
 from bootstrap3_datetime.widgets import DateTimePicker
 
 
-datepicker_opts = {"format": "MMMM DD YYYY HH:mm", "pickSeconds": False}
+timepicker_opts = {"format": "HH:mm"}
+datepicker_opts = {"format": "MMMM DD YYYY"}
 
 
 class SetForm(forms.ModelForm):
-    drop_time = forms.DateTimeField(
-        input_formats=['%B %d %Y %H:%M'],
+    set_date = forms.DateField(
+        input_formats=['%B %d %Y'],
         widget=DateTimePicker(options=datepicker_opts)
     )
-    collection_time = forms.DateTimeField(
+    drop_time = forms.TimeField(
+        input_formats=['%H:%M'],
+        widget=DateTimePicker(options=timepicker_opts, icon_attrs={'class': 'glyphicon glyphicon-time'})
+    )
+    haul_time = forms.TimeField(
         required=False,
-        input_formats=['%B %d %Y %H:%M'],
-        widget=DateTimePicker(options=datepicker_opts)
+        input_formats=['%H:%M'],
+        widget=DateTimePicker(options=timepicker_opts, icon_attrs={'class': 'glyphicon glyphicon-time'})
     )
 
     class Meta:
         model = Set
-        fields = ['trip', 'latitude', 'longitude', 'depth',
-                  'drop_time', 'collection_time', 'reef',
-                  'equipment', 'visibility', 'bait', 'bait_oiled']
+        fields = ['trip', 'set_date', 'latitude', 'longitude', 'depth',
+                  'drop_time', 'haul_time', 'reef',
+                  'equipment', 'visibility']
         widgets = {
             'trip': forms.HiddenInput()
         }
@@ -45,10 +50,33 @@ class SetForm(forms.ModelForm):
             sorted(self.fields['visibility'].choices,
                    key=lambda _: _[0].isdigit() and int(_[0]) or _[0] == '' and -1 or 100)
         self.fields['visibility'].choices[0] = (None, '---')
+
         self.helper = FormHelper(self)
-        self.helper.form_class = 'form-inline set'
-        self.helper.form_action = "{{ action }}"
-        self.helper.form_method = "post"
+        self.helper.form_tag = False
+
+
+class BaitForm(forms.ModelForm):
+    class Meta:
+        model = Bait
+        fields = ['description', 'type', 'oiled']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+
+
+class EnvironmentMeasureForm(forms.ModelForm):
+    class Meta:
+        model = EnvironmentMeasure
+        fields = ['water_temperature', 'salinity',
+                  'conductivity', 'dissolved_oxygen', 'current_flow',
+                  'current_direction', 'tide_state', 'estimated_wind_speed',
+                  'wind_direction', 'cloud_cover', 'surface_chop']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
         self.helper.form_tag = False
 
 
@@ -77,20 +105,3 @@ class ObservationForm(forms.ModelForm):
             FormActions(HTML("""<a role="button" class="btn btn-default cancel-button"
             href="{% url "trip_set_list" trip_pk %}">Cancel</a>"""),
                         Submit('save', 'Save Observation')))
-
-
-class EnvironmentMeasureForm(forms.ModelForm):
-    class Meta:
-        model = EnvironmentMeasure
-        fields = ['water_temperature', 'salinity',
-                  'conductivity', 'dissolved_oxygen', 'current_flow',
-                  'current_direction', 'tide_state', 'estimated_wind_speed',
-                  'wind_direction', 'cloud_cover', 'surface_chop']
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper(self)
-        self.helper.form_class = 'form-inline env'
-        self.helper.form_action = "{{ action }}"
-        self.helper.form_method = "post"
-        self.helper.form_tag = False

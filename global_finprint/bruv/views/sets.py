@@ -9,7 +9,7 @@ from django.template.context_processors import csrf
 from global_finprint.trip.models import Trip
 from global_finprint.bruv.models import Equipment
 from ..models import Set
-from ..forms import SetForm, EnvironmentMeasureForm
+from ..forms import SetForm, EnvironmentMeasureForm, BaitForm
 
 from datetime import datetime
 from pytz import timezone
@@ -20,7 +20,7 @@ def set_detail(request, pk):
     data = {'id': str(s.id),
             'name': str(s),
             'drop_time': s.drop_time.isoformat(),
-            'collection_time': s.collection_time.isoformat() if s.collection_time else None,
+            'haul_time': s.haul_time.isoformat() if s.haul_time else None,
             'equipment': str(s.equipment),
             'depth': s.depth,
             'reef': str(s.reef)}
@@ -45,8 +45,9 @@ class SetListView(View):
 
         set_form_defaults = {
             'trip': parent_trip,
+            'set_date': default_date,
             'drop_time': default_date,
-            'collection_time': default_date,
+            'haul_time': default_date,
             'equipment': Equipment.objects.all().first(),
         }
 
@@ -57,8 +58,9 @@ class SetListView(View):
                 'reef': last_set.reef,
                 'latitude': round(last_set.latitude, 1),
                 'longitude': round(last_set.longitude, 1),
-                'bait': last_set.bait,
-                'bait_oiled': last_set.bait_oiled,
+                'set_date': last_set.set_date,
+                'drop_time': last_set.drop_time,
+                'haul_time': last_set.haul_time,
                 'visibility': last_set.visibility,
             })
 
@@ -78,6 +80,9 @@ class SetListView(View):
                 instance=edited_set,
                 trip_pk=trip_pk
             )
+            context['bait_form'] = BaitForm(
+                instance=edited_set.bait
+            )
             context['drop_form'] = EnvironmentMeasureForm(
                 instance=edited_set.drop_measure, prefix='drop'
             )
@@ -92,6 +97,7 @@ class SetListView(View):
                 initial=self._get_set_form_defaults(parent_trip),
                 trip_pk=trip_pk
             )
+            context['bait_form'] = BaitForm()
             context['drop_form'] = EnvironmentMeasureForm(None, prefix='drop')
             context['haul_form'] = EnvironmentMeasureForm(None, prefix='haul')
 
@@ -103,6 +109,7 @@ class SetListView(View):
         context = self._common_context(request, parent_trip)
 
         set_form = SetForm(request.POST)
+        bait_form = BaitForm(request.POST)
         drop_form = EnvironmentMeasureForm(request.POST, prefix='drop')
         haul_form = EnvironmentMeasureForm(request.POST, prefix='haul')
 
@@ -112,6 +119,7 @@ class SetListView(View):
             # create new set and env measures
             if set_pk is None:
                 new_set = set_form.save()
+                new_set.bait = bait_form.save()
                 new_set.drop_measure = drop_form.save()
                 new_set.haul_measure = haul_form.save()
                 new_set.save()
@@ -123,27 +131,23 @@ class SetListView(View):
                 edited_set = get_object_or_404(Set, pk=set_pk)
                 for k, v in set_form.cleaned_data.items():
                     setattr(edited_set, k, v)
+                for k, v in bait_form.cleaned_data.items():
+                    setattr(edited_set.bait, k, v)
                 for k, v in drop_form.cleaned_data.items():
                     setattr(edited_set.drop_measure, k, v)
                 for k, v in haul_form.cleaned_data.items():
                     setattr(edited_set.haul_measure, k, v)
 
                 edited_set.save()
+                edited_set.bait.save()
                 edited_set.drop_measure.save()
                 edited_set.haul_measure.save()
 
                 messages.info(self.request, 'Set and drop/haul measures updated')
 
-                success_url = reverse_lazy('trip_set_list', args=trip_pk)
-                return HttpResponseRedirect(success_url)
-
-            context['set_form'] = SetForm(
-                None,
-                initial=self._get_set_form_defaults(parent_trip),
-                trip_pk=trip_pk
-            )
-            context['drop_form'] = EnvironmentMeasureForm(None, prefix='drop')
-            context['haul_form'] = EnvironmentMeasureForm(None, prefix='haul')
+            # navigate back to set list
+            success_url = reverse_lazy('trip_set_list', args=trip_pk)
+            return HttpResponseRedirect(success_url)
 
         # one or more forms have errors
         else:
