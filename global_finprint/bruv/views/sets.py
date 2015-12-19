@@ -4,7 +4,7 @@ from django.http.response import JsonResponse
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
-from django.template.context_processors import csrf
+from django.template import RequestContext
 
 from global_finprint.trip.models import Trip
 from global_finprint.bruv.models import Equipment
@@ -30,14 +30,12 @@ class SetListView(View):
     template = 'pages/sets/set_list.html'
 
     def _common_context(self, request, parent_trip):
-        context = {
+        return RequestContext(request, {
             'request': request,
             'trip_pk': parent_trip.pk,
             'trip_name': str(parent_trip),
             'sets': Set.objects.filter(trip=parent_trip).order_by('drop_time'),
-        }
-        context.update(csrf(request))
-        return context
+        })
 
     def _get_set_form_defaults(self, parent_trip):
         set_form_defaults = {
