@@ -148,8 +148,6 @@ class SetListView(View):
 
         # one or more forms have errors
         else:
-            messages.error(self.request, 'Form errors found')
-
             context['form_errors'] = True
             if set_pk:
                 context['set_pk'] = set_pk
@@ -159,4 +157,6 @@ class SetListView(View):
             context['drop_form'] = drop_form
             context['haul_form'] = haul_form
 
-        return render_to_response(self.template, context=context)
+            messages.error(self.request, 'Form errors found')
+
+            return render_to_response(self.template, context=context)

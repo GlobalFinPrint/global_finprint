@@ -7,8 +7,8 @@ from crispy_forms.bootstrap import FormActions
 from bootstrap3_datetime.widgets import DateTimePicker
 
 
-timepicker_opts = {"format": "HH:mm"}
-datepicker_opts = {"format": "MMMM DD YYYY"}
+timepicker_opts = {"format": "HH:mm", "pickDate": False, "showClear": True}
+datepicker_opts = {"format": "MMMM DD YYYY", "pickTime": False, "showClear": True}
 
 
 class SetForm(forms.ModelForm):
@@ -21,7 +21,6 @@ class SetForm(forms.ModelForm):
         widget=DateTimePicker(options=timepicker_opts, icon_attrs={'class': 'glyphicon glyphicon-time'})
     )
     haul_time = forms.TimeField(
-        required=False,
         input_formats=['%H:%M'],
         widget=DateTimePicker(options=timepicker_opts, icon_attrs={'class': 'glyphicon glyphicon-time'})
     )
@@ -29,8 +28,7 @@ class SetForm(forms.ModelForm):
     class Meta:
         model = Set
         fields = ['trip', 'set_date', 'latitude', 'longitude', 'depth',
-                  'drop_time', 'haul_time', 'reef',
-                  'equipment', 'visibility']
+                  'drop_time', 'haul_time', 'reef', 'equipment', 'visibility']
         widgets = {
             'trip': forms.HiddenInput()
         }
