@@ -16,7 +16,6 @@
   "dependencies": {
     "angular": "~1.4.7",
     "bootstrap": "~3.3.5",
-    "eonasdan-bootstrap-datetimepicker": "~4.17.37",
     "jquery": "~2.1.4",
     "leaflet": "~0.7.5",
     "moment": "~2.10.6"
