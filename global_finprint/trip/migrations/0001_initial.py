@@ -2,27 +2,27 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import config.current_user
 from django.conf import settings
+import config.current_user
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('habitat', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('habitat', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='Team',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, verbose_name='ID', serialize=False)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('create_datetime', models.DateTimeField(auto_now_add=True)),
                 ('last_modified_datetime', models.DateTimeField(auto_now=True)),
                 ('association', models.CharField(max_length=100)),
                 ('lead', models.CharField(max_length=100)),
-                ('user', models.ForeignKey(default=config.current_user.get_current_user, to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, default=config.current_user.get_current_user)),
             ],
             options={
                 'abstract': False,
@@ -31,15 +31,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Trip',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, verbose_name='ID', serialize=False)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('create_datetime', models.DateTimeField(auto_now_add=True)),
                 ('last_modified_datetime', models.DateTimeField(auto_now=True)),
-                ('boat', models.CharField(null=True, max_length=100, blank=True)),
+                ('boat', models.CharField(max_length=100, null=True, blank=True)),
                 ('start_date', models.DateField()),
                 ('end_date', models.DateField()),
                 ('location', models.ForeignKey(to='habitat.Location')),
                 ('team', models.ForeignKey(to='trip.Team')),
-                ('user', models.ForeignKey(default=config.current_user.get_current_user, to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, default=config.current_user.get_current_user)),
             ],
             options={
                 'abstract': False,
