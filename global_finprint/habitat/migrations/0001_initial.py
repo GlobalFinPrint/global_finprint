@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='FishingRestrictions',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('type', models.CharField(max_length=16)),
                 ('description', models.CharField(max_length=48)),
             ],
@@ -25,16 +25,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Location',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('name', models.CharField(max_length=100)),
             ],
         ),
         migrations.CreateModel(
             name='MPA',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('name', models.CharField(max_length=100)),
-                ('boundary', django.contrib.gis.db.models.fields.MultiPolygonField(srid=4326, null=True)),
+                ('boundary', django.contrib.gis.db.models.fields.MultiPolygonField(null=True, srid=4326)),
                 ('area', models.PositiveIntegerField(help_text='km^2')),
                 ('founded', models.PositiveIntegerField()),
             ],
@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MPACompliance',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('type', models.CharField(max_length=16)),
                 ('description', models.CharField(max_length=48)),
             ],
@@ -58,7 +58,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MPAIsolation',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('type', models.CharField(max_length=24)),
             ],
             options={
@@ -69,7 +69,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ProtectionStatus',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('type', models.CharField(max_length=16)),
                 ('description', models.CharField(max_length=48)),
             ],
@@ -80,18 +80,18 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Reef',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('name', models.CharField(max_length=100)),
-                ('boundary', django.contrib.gis.db.models.fields.MultiPolygonField(srid=4326, null=True)),
-                ('fishing_restrictions', models.ManyToManyField(to='habitat.FishingRestrictions', blank=True)),
-                ('mpa', models.ForeignKey(to='habitat.MPA', null=True, blank=True)),
+                ('boundary', django.contrib.gis.db.models.fields.MultiPolygonField(null=True, srid=4326)),
+                ('fishing_restrictions', models.ManyToManyField(blank=True, to='habitat.FishingRestrictions')),
+                ('mpa', models.ForeignKey(null=True, blank=True, to='habitat.MPA')),
                 ('protection_status', models.ForeignKey(to='habitat.ProtectionStatus')),
             ],
         ),
         migrations.CreateModel(
             name='ReefType',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('type', models.CharField(max_length=16)),
                 ('description', models.CharField(max_length=48)),
             ],
@@ -99,14 +99,14 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Region',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('name', models.CharField(max_length=100)),
             ],
         ),
         migrations.CreateModel(
             name='SharkGearInUse',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('type', models.CharField(max_length=24)),
                 ('description', models.CharField(max_length=48)),
             ],
@@ -117,24 +117,24 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Site',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('name', models.CharField(max_length=100)),
-                ('boundary', django.contrib.gis.db.models.fields.MultiPolygonField(srid=4326, null=True)),
-                ('type', models.CharField(choices=[('C', 'Continental'), ('A', 'Atoll'), ('I', 'Island')], max_length=16)),
+                ('boundary', django.contrib.gis.db.models.fields.MultiPolygonField(null=True, srid=4326)),
+                ('type', models.CharField(max_length=16, choices=[('C', 'Continental'), ('I', 'Island'), ('A', 'Atoll')])),
                 ('location', models.ForeignKey(to='habitat.Location')),
             ],
         ),
         migrations.CreateModel(
             name='Substrate',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('type', models.CharField(max_length=24, unique=True)),
             ],
         ),
         migrations.AddField(
             model_name='reef',
             name='shark_gear_in_use',
-            field=models.ManyToManyField(to='habitat.SharkGearInUse', blank=True),
+            field=models.ManyToManyField(blank=True, to='habitat.SharkGearInUse'),
         ),
         migrations.AddField(
             model_name='reef',
