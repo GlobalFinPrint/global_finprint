@@ -20,18 +20,13 @@ ANIMAL_STAGE_CHOICES = {
 
 class AnimalGroup(models.Model):
     name = models.CharField(max_length=24)
-    # was:
-    # ANIMAL_GROUPS = {
-    #     ('S', 'Shark'),
-    #     ('R', 'Ray'),
-    #     ('T', 'Other target'),
-    #     ('G', 'Groupers and jacks'),
-    #     ('N', 'n/a'),
-    # }
+
+    def __str__(self):
+        return u"{0}".format(self.name)
 
 
 class Animal(models.Model):
-    region = models.ForeignKey(to=Region)
+    regions = models.ManyToManyField(Region)
     rank = models.PositiveIntegerField()
     group = models.ForeignKey(to=AnimalGroup)
     common_name = models.CharField(max_length=100)
