@@ -1,10 +1,9 @@
-from django.views.generic import DetailView, UpdateView, CreateView
+from django.views.generic import CreateView
 from django.contrib import messages
 from django.core.serializers import serialize
-from django.http.response import JsonResponse, HttpResponse
+from django.http.response import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse_lazy
-
-from braces.views import LoginRequiredMixin
+from django.shortcuts import get_object_or_404
 
 from .forms import TripForm, TripSearchForm
 from .models import Trip
@@ -17,12 +16,24 @@ class TripListView(CreateView):
     form_class = TripForm
     context_object_name = 'trip'
     template_name = 'pages/trips/trip_list.html'
-    success_msg = 'Trip Created!'
+    success_msg = 'Trip created'
     success_url = reverse_lazy('trip_list')
 
+    def form_invalid(self, form):
+        messages.error(self.request, 'Form errors found')
+        return super().form_invalid(form)
+
     def form_valid(self, form):
-        messages.info(self.request, self.success_msg)
-        return super().form_valid(form)
+        if 'trip_pk' in self.kwargs:
+            edited_trip = get_object_or_404(Trip, pk=self.kwargs['trip_pk'])
+            for k, v in form.cleaned_data.items():
+                setattr(edited_trip, k, v)
+            edited_trip.save()
+            messages.success(self.request, 'Trip updated')
+            return HttpResponseRedirect(self.success_url)
+        else:
+            messages.success(self.request, self.success_msg)
+            return super().form_valid(form)
 
     def get_queryset(self):
         form = TripSearchForm(self.request.GET)
@@ -49,14 +60,12 @@ class TripListView(CreateView):
         context = super().get_context_data(**kwargs)
         context['trips'] = self.get_queryset()
         context['search_form'] = TripSearchForm(self.request.GET or None)
-        context['trip_form'] = TripForm(self.request.POST or None)
+        if 'trip_pk' in self.kwargs:
+            context['trip_pk'] = self.kwargs['trip_pk']
+            context['trip_form'] = TripForm(instance=get_object_or_404(Trip, pk=self.kwargs['trip_pk']))
+        else:
+            context['trip_form'] = TripForm(self.request.POST or None)
         return context
-
-
-class TripDetailView(DetailView):
-    form_class = TripForm
-    model = Trip
-    template_name = 'pages/trips/trip_detail.html'
 
 
 def trip_detail(request, pk):
@@ -77,22 +86,3 @@ def trip_sets_geojson(request, trip_id):
                         fields='coordinates, drop_time'
                         )
     return HttpResponse(feature, content_type='application/json')
-
-
-class TripUpdateView(LoginRequiredMixin, UpdateView):
-    form_class = TripForm
-    model = Trip
-    success_msg = 'Trip Updated'
-    context_object_name = 'trip'
-    success_url = reverse_lazy('trip_list')
-    cancel_url = reverse_lazy('trip_list')
-    template_name = 'pages/trips/trip_detail.html'
-
-    def form_valid(self, form):
-        messages.info(self.request, self.success_msg)
-        return super().form_valid(form)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['trip_name'] = str(self.object)
-        return context
