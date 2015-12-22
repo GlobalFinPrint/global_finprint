@@ -1,10 +1,10 @@
 from django.conf.urls import url
 
-from ..trip.views import trip_detail, trip_sets_geojson
+from global_finprint.annotation.views.annotation import site_animal_list, annotator_video_list
+from global_finprint.annotation.views.observations import observation_detail, observation_post
 from ..bruv.views.sets import set_detail
 from ..habitat.views import reef_detail_geojson
-from ..bruv.views.observations import observation_detail, observation_post
-from ..bruv.views.annotation import site_animal_list, annotator_video_list
+from ..trip.views import trip_detail, trip_sets_geojson
 
 
 urlpatterns = [

@@ -1,5 +1,6 @@
 from django import forms
-from global_finprint.bruv.models import Set, Observation, EnvironmentMeasure, Bait
+from global_finprint.bruv.models import Set, EnvironmentMeasure, Bait
+from global_finprint.annotation.models import Observation
 from global_finprint.trip.models import Trip
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, HTML

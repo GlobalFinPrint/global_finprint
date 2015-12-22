@@ -1,6 +1,6 @@
 from django.conf.urls import url
-from ..views.observations import *
 
+from global_finprint.annotation.views.observations import *
 
 urlpatterns = [
     url(r"^create/$", ObservationCreateView.as_view(), name='observation_create'),

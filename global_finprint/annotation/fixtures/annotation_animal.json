@@ -1,32 +1,67 @@
 [
   {
-    "model": "bruv.animalbehavior",
+    "model": "annotation.animalgroup",
+    "pk": 1,
+    "fields": {
+      "name": "Shark"
+    }
+  },
+  {
+    "model": "annotation.animalgroup",
+    "pk": 2,
+    "fields": {
+      "name": "Ray"
+    }
+  },
+  {
+    "model": "annotation.animalgroup",
+    "pk": 3,
+    "fields": {
+      "name": "Other target"
+    }
+  },
+  {
+    "model": "annotation.animalgroup",
+    "pk": 4,
+    "fields": {
+      "name": "Groupers and jacks"
+    }
+  },
+  {
+    "model": "annotation.animalgroup",
+    "pk": 5,
+    "fields": {
+      "name": "n/a"
+    }
+  },
+  {
+    "model": "annotation.animalbehavior",
     "pk": 1,
     "fields": {
       "type": "swim by"
     }
   },
   {
-    "model": "bruv.animalbehavior",
+    "model": "annotation.animalbehavior",
     "pk": 2,
     "fields": {
       "type": "stimulated"
     }
   },
   {
-    "model": "bruv.animalbehavior",
+    "model": "annotation.animalbehavior",
     "pk": 3,
     "fields": {
       "type": "interaction"
     }
   },
   {
-    "model": "bruv.animal",
+    "model": "annotation.animal",
     "fields": {
-      "group": "S",
+      "group": 1,
       "common_name": "Lollipop cat shark",
       "genus": "Cephalurus",
-      "region": 1,
+      "regions": [1],
       "species": "cephalus",
       "sealifebase_key": null,
       "rank": 1,
@@ -36,12 +71,12 @@
     "pk": 1
   },
   {
-    "model": "bruv.animal",
+    "model": "annotation.animal",
     "fields": {
-      "group": "S",
+      "group": 1,
       "common_name": "Common hammerhead shark",
       "genus": "Sphyrna",
-      "region": 1,
+      "regions": [1],
       "species": "zygaena",
       "sealifebase_key": null,
       "rank": 1,
@@ -51,12 +86,12 @@
     "pk": 2
   },
   {
-    "model": "bruv.animal",
+    "model": "annotation.animal",
     "fields": {
-      "group": "S",
+      "group": 1,
       "common_name": "Sand tiger shark",
       "genus": "Carcharias",
-      "region": 1,
+      "regions": [1],
       "species": "taurus",
       "sealifebase_key": null,
       "rank": 2,
@@ -66,12 +101,12 @@
     "pk": 3
   },
   {
-    "model": "bruv.animal",
+    "model": "annotation.animal",
     "fields": {
-      "group": "S",
+      "group": 1,
       "common_name": "Rusty carpetshark",
       "genus": "Parascyllium",
-      "region": 1,
+      "regions": [1],
       "species": "ferrugineum",
       "sealifebase_key": null,
       "rank": 3,
@@ -81,12 +116,12 @@
     "pk": 4
   },
   {
-    "model": "bruv.animal",
+    "model": "annotation.animal",
     "fields": {
-      "group": "T",
+      "group": 3,
       "common_name": "Kemp's ridley turtle",
       "genus": "Lepidochelys",
-      "region": 1,
+      "regions": [1],
       "species": "kempii",
       "sealifebase_key": 67114,
       "rank": 1,
@@ -96,12 +131,12 @@
     "pk": 5
   },
   {
-    "model": "bruv.animal",
+    "model": "annotation.animal",
     "fields": {
-      "group": "R",
+      "group": 2,
       "common_name": "Lesser devil ray",
       "genus": "Mobula",
-      "region": 1,
+      "regions": [1],
       "species": "hypostoma",
       "sealifebase_key": null,
       "rank": 1,
@@ -111,12 +146,12 @@
     "pk": 6
   },
   {
-    "model": "bruv.animal",
+    "model": "annotation.animal",
     "fields": {
-      "group": "T",
+      "group": 3,
       "common_name": "Witch guitarfish",
       "genus": "Zapteryx",
-      "region": 1,
+      "regions": [1],
       "species": "xyster",
       "sealifebase_key": null,
       "rank": 4,
@@ -126,12 +161,12 @@
     "pk": 7
   },
   {
-    "model": "bruv.animal",
+    "model": "annotation.animal",
     "fields": {
-      "group": "R",
+      "group": 2,
       "common_name": "Spotted eagle ray",
       "genus": "Aetobatus",
-      "region": 1,
+      "regions": [1],
       "species": "narinari",
       "sealifebase_key": null,
       "rank": 2,
@@ -141,12 +176,12 @@
     "pk": 8
   },
   {
-    "model": "bruv.animal",
+    "model": "annotation.animal",
     "fields": {
-      "group": "T",
+      "group": 3,
       "common_name": "Goldentail moray",
       "genus": "Gymnothorax",
-      "region": 1,
+      "regions": [1],
       "species": "miliaris",
       "sealifebase_key": null,
       "rank": 2,
@@ -156,12 +191,12 @@
     "pk": 9
   },
   {
-    "model": "bruv.animal",
+    "model": "annotation.animal",
     "fields": {
-      "group": "T",
+      "group": 3,
       "common_name": "Magpie fiddler ray",
       "genus": "Trygonorrhina",
-      "region": 1,
+      "regions": [1],
       "species": "melaleuca",
       "sealifebase_key": null,
       "rank": 3,
@@ -171,12 +206,12 @@
     "pk": 11
   },
   {
-    "model": "bruv.animal",
+    "model": "annotation.animal",
     "fields": {
-      "group": "G",
+      "group": 4,
       "common_name": "Nassau grouper",
       "genus": "Epinephelus",
-      "region": 1,
+      "regions": [1],
       "species": "striatus",
       "sealifebase_key": null,
       "rank": 1,
@@ -186,12 +221,12 @@
     "pk": 12
   },
   {
-    "model": "bruv.animal",
+    "model": "annotation.animal",
     "fields": {
-      "group": "G",
+      "group": 4,
       "common_name": "Coney",
       "genus": "Cephalopholis",
-      "region": 1,
+      "regions": [1],
       "species": "fulva",
       "sealifebase_key": null,
       "rank": 2,
@@ -201,12 +236,12 @@
     "pk": 13
   },
   {
-    "model": "bruv.animal",
+    "model": "annotation.animal",
     "fields": {
-      "group": "G",
+      "group": 4,
       "common_name": "Black grouper",
       "genus": "Mycteroperca",
-      "region": 1,
+      "regions": [1],
       "species": "bonaci",
       "sealifebase_key": null,
       "rank": 3,

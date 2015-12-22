@@ -5,8 +5,9 @@ from django.core.urlresolvers import reverse_lazy
 
 from braces.views import LoginRequiredMixin
 
-from ..models import Observation, Set, Trip
-from ..forms import ObservationForm
+from global_finprint.annotation.models import Observation
+from global_finprint.bruv.models import Set, Trip
+from global_finprint.bruv.forms import ObservationForm
 
 
 def observation_detail(request, pk):

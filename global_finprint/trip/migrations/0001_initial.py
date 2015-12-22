@@ -9,15 +9,15 @@ from django.conf import settings
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('habitat', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('habitat', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='Team',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, verbose_name='ID', serialize=False)),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('create_datetime', models.DateTimeField(auto_now_add=True)),
                 ('last_modified_datetime', models.DateTimeField(auto_now=True)),
                 ('association', models.CharField(max_length=100)),
@@ -31,10 +31,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Trip',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, verbose_name='ID', serialize=False)),
+                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('create_datetime', models.DateTimeField(auto_now_add=True)),
                 ('last_modified_datetime', models.DateTimeField(auto_now=True)),
-                ('boat', models.CharField(null=True, max_length=100, blank=True)),
+                ('boat', models.CharField(max_length=100, null=True, blank=True)),
                 ('start_date', models.DateField()),
                 ('end_date', models.DateField()),
                 ('location', models.ForeignKey(to='habitat.Location')),
