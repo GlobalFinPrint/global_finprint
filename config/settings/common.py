@@ -43,6 +43,7 @@ THIRD_PARTY_APPS = (
     'bootstrap3_datetime',
     'braces',
     'leaflet',
+    'storages'
 )
 
 # Apps specific for this project go here.
@@ -290,3 +291,8 @@ INSTALLED_APPS += ('kombu.transport.django',)
 BROKER_URL = env("CELERY_BROKER_URL", default='django://')
 ########## END CELERY
 
+# AWS S3 Storage
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+AWS_S3_SECURE_URLS = False       # use http instead of https
+AWS_QUERYSTRING_AUTH = False     # don't add complex authentication-related query parameters for requests
+AWS_STORAGE_BUCKET_NAME = 'finprint-videos'
