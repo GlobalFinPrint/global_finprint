@@ -1,11 +1,10 @@
 from django.contrib.gis.db import models
 from django.core.urlresolvers import reverse
 from django.contrib.gis.geos import Point
-from django.contrib.auth.models import User
 
 from global_finprint.core.models import AuditableModel
 from global_finprint.trip.models import Trip
-from global_finprint.habitat.models import Region, Reef
+from global_finprint.habitat.models import Reef
 
 
 EQUIPMENT_BAIT_CONTAINER = {
@@ -156,6 +155,12 @@ class Set(AuditableModel):
         on_delete=models.CASCADE,
         null=True,
         related_name='haul_parent_set')
+    video = models.OneToOneField(
+        'annotation.Video',
+        on_delete=models.CASCADE,
+        null=True,
+        related_name='set'
+    )
 
     @property
     def environmentmeasure_set(self):

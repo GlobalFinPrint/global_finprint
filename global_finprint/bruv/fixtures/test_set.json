@@ -61,6 +61,24 @@
   },
   {
     "pk": 1,
+    "model": "annotation.Video",
+    "fields": {
+      "user_id": 1,
+      "create_datetime": "2015-11-03T19:00:22.080Z",
+      "last_modified_datetime": "2015-11-03T19:03:16.655Z"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "annotation.Video",
+    "fields": {
+      "user_id": 1,
+      "create_datetime": "2015-11-03T19:00:22.080Z",
+      "last_modified_datetime": "2015-11-03T19:03:16.655Z"
+    }
+  },
+  {
+    "pk": 1,
     "model": "bruv.set",
     "fields": {
       "visibility": "1",
@@ -79,7 +97,8 @@
       "reef": 1,
       "bait_id": 1,
       "drop_measure_id": 1,
-      "haul_measure_id": 2
+      "haul_measure_id": 2,
+      "video": 1
     }
   },
   {
@@ -102,7 +121,8 @@
       "reef": 1,
       "bait_id": 2,
       "drop_measure_id": 3,
-      "haul_measure_id": 4
+      "haul_measure_id": 4,
+      "video": 2
     }
   }
 ]

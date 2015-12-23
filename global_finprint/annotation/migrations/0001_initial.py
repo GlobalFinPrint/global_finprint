@@ -106,9 +106,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
                 ('create_datetime', models.DateTimeField(auto_now_add=True)),
                 ('last_modified_datetime', models.DateTimeField(auto_now=True)),
-                ('name', models.FileField(upload_to='')),
-                ('length', models.FloatField()),
-                ('set', models.ForeignKey(to='bruv.Set')),
+                ('file', models.FileField(upload_to='', null=True, blank=True)),
                 ('user', models.ForeignKey(default=config.current_user.get_current_user, to=settings.AUTH_USER_MODEL)),
             ],
             options={

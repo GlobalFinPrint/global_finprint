@@ -10,6 +10,7 @@ from global_finprint.trip.models import Trip
 from global_finprint.bruv.models import Equipment
 from ..models import Set
 from ..forms import SetForm, EnvironmentMeasureForm, BaitForm
+from ...annotation.forms import VideoForm
 
 from datetime import datetime
 
@@ -84,6 +85,9 @@ class SetListView(View):
             context['haul_form'] = EnvironmentMeasureForm(
                 instance=edited_set.haul_measure, prefix='haul'
             )
+            context['video_form'] = VideoForm(
+                instance=edited_set.video
+            )
 
         # new set form
         else:
@@ -92,9 +96,10 @@ class SetListView(View):
                 initial=self._get_set_form_defaults(parent_trip),
                 trip_pk=trip_pk
             )
-            context['bait_form'] = BaitForm()
+            context['bait_form'] = BaitForm(initial={'type': 'CHP'})
             context['drop_form'] = EnvironmentMeasureForm(None, prefix='drop')
             context['haul_form'] = EnvironmentMeasureForm(None, prefix='haul')
+            context['video_form'] = VideoForm()
 
         return render_to_response(self.template, context=context)
 
@@ -107,9 +112,10 @@ class SetListView(View):
         bait_form = BaitForm(request.POST)
         drop_form = EnvironmentMeasureForm(request.POST, prefix='drop')
         haul_form = EnvironmentMeasureForm(request.POST, prefix='haul')
+        video_form = VideoForm(request.POST, request.FILES)
 
         # forms are valid
-        if all(form.is_valid() for form in [set_form, bait_form, drop_form, haul_form]):
+        if all(form.is_valid() for form in [set_form, bait_form, drop_form, haul_form, video_form]):
 
             # create new set and env measures
             if set_pk is None:
@@ -117,6 +123,7 @@ class SetListView(View):
                 new_set.bait = bait_form.save()
                 new_set.drop_measure = drop_form.save()
                 new_set.haul_measure = haul_form.save()
+                new_set.video = video_form.save()
                 new_set.save()
 
                 messages.success(self.request, 'Set and drop/haul measures created')
@@ -132,11 +139,14 @@ class SetListView(View):
                     setattr(edited_set.drop_measure, k, v)
                 for k, v in haul_form.cleaned_data.items():
                     setattr(edited_set.haul_measure, k, v)
+                for k, v in video_form.cleaned_data.items():
+                    setattr(edited_set.video, k, v)
 
                 edited_set.save()
                 edited_set.bait.save()
                 edited_set.drop_measure.save()
                 edited_set.haul_measure.save()
+                edited_set.video.save()
 
                 messages.success(self.request, 'Set and drop/haul measures updated')
 
@@ -154,6 +164,7 @@ class SetListView(View):
             context['bait_form'] = bait_form
             context['drop_form'] = drop_form
             context['haul_form'] = haul_form
+            context['video_form'] = video_form
 
             messages.error(self.request, 'Form errors found')
 

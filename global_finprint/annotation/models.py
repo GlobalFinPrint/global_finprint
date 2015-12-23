@@ -1,8 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.apps import apps
 
 from global_finprint.core.models import AuditableModel
-from global_finprint.bruv.models import Set
 from global_finprint.habitat.models import Region
 
 
@@ -52,10 +52,7 @@ class AnimalBehavior(models.Model):
 
 
 class Video(AuditableModel):
-    # todo:  placeholder!  this should be filesystem / S3 ...
-    name = models.FileField()
-    length = models.FloatField()
-    set = models.ForeignKey(Set)
+    file = models.FileField(null=True, blank=True)
 
 
 class Annotator(models.Model):
@@ -88,7 +85,7 @@ class Observation(AuditableModel):
     behavior = models.ForeignKey(to=AnimalBehavior, null=True)
     duration = models.PositiveIntegerField()
 
-    set = models.ForeignKey(Set)
+    set = models.ForeignKey('bruv.Set')
     video_annotator = models.ForeignKey(VideoAnnotator)
 
     def __str__(self):
@@ -112,4 +109,4 @@ class ObservationImage(Image):
 class SiteImage(Image):
     # todo:  placeholder!
     video = models.ForeignKey(Video)
-    set = models.ForeignKey(Set)
+    set = models.ForeignKey('bruv.Set')
