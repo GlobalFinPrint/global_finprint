@@ -1,6 +1,7 @@
 import json
 from django.http.response import HttpResponse
 
+from global_finprint.annotation.models import AnimalGroup
 from global_finprint.habitat.models import Region, Site, Location
 from ..models import Animal, Video, VideoAnnotator
 
@@ -23,12 +24,10 @@ def site_animal_list(request, site_id, *args, **kwargs):
     animals = Animal.objects.filter(
         regions=Region.objects.filter(pk=Location.objects.filter(pk=Site.objects.filter(pk=site_id))))
     animal_lists = {
-        'sharks': [],
-        'rays': [],
-        'other_targets': [],
-        'groupers_jacks': [],
         'all': [],
     }
+    for animal_group in AnimalGroup.objects.all():
+        animal_lists[animal_group.name] = []
     for animal in animals:
         animal_dict = {
             'rank': animal.rank,
@@ -45,15 +44,9 @@ def site_animal_list(request, site_id, *args, **kwargs):
             if animal.sealifebase_key else None,
         }
         animal_lists['all'].append(animal_dict)
-        # todo:  just filter all list subsets and order by rank!
-        if animal.group == 'S' and animal.rank <= limit:
-            animal_lists['sharks'].append(animal_dict)
-        elif animal.group == 'R' and animal.rank <= limit:
-            animal_lists['rays'].append(animal_dict)
-        elif animal.group == 'T' and animal.rank <= limit:
-            animal_lists['other_targets'].append(animal_dict)
-        elif animal.group == 'G' and animal.rank <= limit:
-            animal_lists['groupers_jacks'].append(animal_dict)
+        if animal.rank <= limit:
+            animal_lists[animal.group.name].append(animal_dict)
+
     return HttpResponse(json.dumps(animal_lists), content_type='application/json')
 
 
