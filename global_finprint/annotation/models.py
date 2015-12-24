@@ -1,10 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.apps import apps
 
 from global_finprint.core.models import AuditableModel
 from global_finprint.habitat.models import Region
-
 
 ANIMAL_SEX_CHOICES = {
     ('M', 'Male'),

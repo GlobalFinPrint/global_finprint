@@ -1,6 +1,7 @@
 import json
 from django.http.response import HttpResponse
 
+from global_finprint.habitat.models import Region, Site, Location
 from ..models import Animal, Video, VideoAnnotator
 
 
@@ -19,7 +20,8 @@ def site_animal_list(request, site_id, *args, **kwargs):
     """
     # todo: sanity check if 'limit' can be cast to int
     limit = (int(request.REQUEST['limit']) if 'limit' in request.REQUEST else 5)
-    animals = Animal.objects.all()
+    animals = Animal.objects.filter(
+        regions=Region.objects.filter(pk=Location.objects.filter(pk=Site.objects.filter(pk=site_id))))
     animal_lists = {
         'sharks': [],
         'rays': [],
@@ -30,7 +32,7 @@ def site_animal_list(request, site_id, *args, **kwargs):
     for animal in animals:
         animal_dict = {
             'rank': animal.rank,
-            'group': animal.group,
+            'group': animal.group.name,
             'common_name': animal.common_name,
             'family': animal.family,
             'genus': animal.genus,
