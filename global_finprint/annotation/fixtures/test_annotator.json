@@ -1,28 +1,41 @@
-[{
+[
+    {
+        "model": "auth.user",
+        "pk": 2,
+        "fields": {
+            "email": "vol1@sharkspotters.org",
+            "last_name": "Volunteer",
+            "first_name": "First",
+            "affiliation": "SharkSpotters"
+        }
+    },
+    {
     "model": "annotation.annotator",
     "pk": 2,
     "fields": {
-        "email": "vol1@sharkspotters.org",
-        "last_name": "Volunteer",
-        "first_name": "First",
+        "user__email": "vol1@sharkspotters.org",
+        "user__last_name": "Volunteer",
+        "user__first_name": "First",
         "affiliation": "SharkSpotters"
     }
-}, {
+    },
+    {
     "model": "annotation.annotator",
     "pk": 3,
     "fields": {
-        "email": "vol.two@sharkspotters.org",
-        "last_name": "Volunteer",
-        "first_name": "Second",
+        "user__email": "vol.two@sharkspotters.org",
+        "user__last_name": "Volunteer",
+        "user__first_name": "Second",
         "affiliation": "SharkSpotters"
     }
-}, {
+    },
+    {
     "model": "annotation.annotator",
     "pk": 4,
     "fields": {
-        "email": "undergrad@fish.school.edu",
-        "last_name": "Graduate",
-        "first_name": "Under",
+        "user__email": "undergrad@fish.school.edu",
+        "user__last_name": "Graduate",
+        "user__first_name": "Under",
         "affiliation": "Univ. of Fishes"
     }
 }]

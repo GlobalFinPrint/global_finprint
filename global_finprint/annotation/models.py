@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from global_finprint.core.models import AuditableModel
+from global_finprint.core.models import AuditableModel, FinprintUser
 from global_finprint.habitat.models import Region
 
 ANIMAL_SEX_CHOICES = {
@@ -53,21 +53,18 @@ class Video(AuditableModel):
     file = models.FileField(null=True, blank=True)
 
 
-class Annotator(models.Model):
-    # todo:  the volunteer anotators will need logins, etc.  tie back to auth.User?
-    email = models.EmailField(max_length=100, unique=True)
-    first_name = models.CharField(max_length=40)
-    last_name = models.CharField(max_length=40)
-    affiliation = models.CharField(max_length=100)
+class Lead(FinprintUser):
+    pass
 
-    def __str__(self):
-        return u"{0}, {1}".format(self.last_name, self.first_name)
+
+class Annotator(FinprintUser):
+    pass
 
 
 class VideoAnnotator(AuditableModel):
     annotator = models.ForeignKey(to=Annotator)
     video = models.ForeignKey(to=Video)
-    assigned_by = models.ForeignKey(to=User, related_name='assigned_by')
+    assigned_by = models.ForeignKey(to=Lead, related_name='assigned_by')
 
 
 class Observation(AuditableModel):
