@@ -1,41 +1,74 @@
 [
-    {
-        "model": "auth.user",
-        "pk": 2,
-        "fields": {
-            "email": "vol1@sharkspotters.org",
-            "last_name": "Volunteer",
-            "first_name": "First",
-            "affiliation": "SharkSpotters"
-        }
-    },
-    {
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "username": "First Volunteer",
+      "email": "vol1@sharkspotters.org",
+      "last_name": "Volunteer",
+      "first_name": "First"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "username": "Second Volunteer",
+      "email": "vol2@manta.edu",
+      "last_name": "Volunteer",
+      "first_name": "Second"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "username": "One Lead",
+      "email": "a.lead@global_finprint.org",
+      "last_name": "Lead",
+      "first_name": "One"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "username": "Another Lead",
+      "email": "another.lead@global_finprint.org",
+      "last_name": "Lead",
+      "first_name": "Another"
+    }
+  },
+  {
+    "model": "annotation.annotator",
+    "pk": 1,
+    "fields": {
+      "user": 2,
+      "affiliation": "SharkSpotters"
+    }
+  },
+  {
     "model": "annotation.annotator",
     "pk": 2,
     "fields": {
-        "user__email": "vol1@sharkspotters.org",
-        "user__last_name": "Volunteer",
-        "user__first_name": "First",
-        "affiliation": "SharkSpotters"
+       "user": 2,
+       "affiliation": "Manta College"
     }
-    },
-    {
-    "model": "annotation.annotator",
-    "pk": 3,
+  },
+  {
+    "model": "annotation.lead",
+    "pk": 1,
     "fields": {
-        "user__email": "vol.two@sharkspotters.org",
-        "user__last_name": "Volunteer",
-        "user__first_name": "Second",
-        "affiliation": "SharkSpotters"
+      "user": 3,
+      "affiliation": "Global Finprint"
     }
-    },
-    {
-    "model": "annotation.annotator",
-    "pk": 4,
+  },
+  {
+    "model": "annotation.lead",
+    "pk": 2,
     "fields": {
-        "user__email": "undergrad@fish.school.edu",
-        "user__last_name": "Graduate",
-        "user__first_name": "Under",
-        "affiliation": "Univ. of Fishes"
+      "user": 4,
+      "affiliation": "Global Finprint"
     }
-}]
+  }
+]
