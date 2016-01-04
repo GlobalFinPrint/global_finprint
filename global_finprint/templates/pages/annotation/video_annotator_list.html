@@ -1,6 +1,17 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
+
 {% block content %}
-    <br/>
-    <br/>
-    <h4>[allow the lab manager to assign sets/videos to observers for annotation]</h4>
+    <div class="row">
+        <table></table>
+    </div>
+
+    {% if request.user.is_authenticated %}
+        <div class="row">
+            <h3>Assign a video</h3>
+            <div class="well clearfix">
+                {% crispy form %}
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}
