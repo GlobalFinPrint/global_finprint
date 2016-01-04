@@ -1,6 +1,6 @@
 from django import forms
 from crispy_forms.helper import FormHelper
-from .models import Video
+from .models import Video, VideoAnnotator
 
 
 class VideoForm(forms.ModelForm):
@@ -12,3 +12,9 @@ class VideoForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_tag = False
+
+
+class VideoAnnotatorForm(forms.ModelForm):
+    class Meta:
+        model = VideoAnnotator
+        fields = ['annotator', 'video']
