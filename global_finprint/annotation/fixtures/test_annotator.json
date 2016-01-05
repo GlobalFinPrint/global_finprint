@@ -70,5 +70,25 @@
       "user": 4,
       "affiliation": "Global Finprint"
     }
+  },
+  {
+    "model": "annotation.video",
+    "pk": 1,
+    "fields": {
+      "create_datetime": "2015-11-03T19:00:22.080Z",
+      "last_modified_datetime": "2015-11-03T19:03:16.655Z",
+      "user": 2,
+      "file": "video1.mpg"
+    }
+  },
+  {
+    "model": "annotation.video",
+    "pk": 2,
+    "fields": {
+      "create_datetime": "2015-11-03T19:00:22.080Z",
+      "last_modified_datetime": "2015-11-03T19:03:16.655Z",
+      "user": 2,
+      "file": "video2.mpg"
+    }
   }
 ]

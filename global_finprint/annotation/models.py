@@ -52,6 +52,9 @@ class AnimalBehavior(models.Model):
 class Video(AuditableModel):
     file = models.FileField(null=True, blank=True)
 
+    def __str__(self):
+        return u"{0}".format(self.file)
+
 
 class Lead(FinprintUser):
     pass

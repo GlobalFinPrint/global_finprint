@@ -3,7 +3,30 @@
 
 {% block content %}
     <div class="row">
-        <table></table>
+        <table class="table table-bordered table-condensed video-annotator-table" cellspacing="0" width="100%">
+            <thead>
+            <tr class="success">
+                <th>Video</th>
+                <th>Set</th>
+                <th>Trip</th>
+                <th>Team</th>
+                <th>Location / region</th>
+                <th>Annotator</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for v in videos %}
+                <tr>
+                    <td>{{ v.file }}</td>
+                    <td>{{ v.set }}</td>
+                    <td>{{ v.set.trip }}</td>
+                    <td>{{ v.set.trip.team }}</td>
+                    <td>{{ v.set.trip.location }} / {{ v.set.trip.region }}</td>
+                    <td><a href="#">Assign<a/></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 
     {% if request.user.is_authenticated %}
