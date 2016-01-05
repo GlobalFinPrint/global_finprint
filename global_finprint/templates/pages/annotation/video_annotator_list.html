@@ -3,6 +3,13 @@
 
 {% block content %}
     <div class="row">
+        <h3>Search videos</h3>
+        <div class="well clearfix">
+            {% crispy search_form %}
+        </div>
+    </div>
+
+    <div class="row">
         <table class="table table-bordered table-condensed video-annotator-table" cellspacing="0" width="100%">
             <thead>
             <tr class="success">
@@ -22,7 +29,7 @@
                     <td>{{ v.set.trip }}</td>
                     <td>{{ v.set.trip.team }}</td>
                     <td>{{ v.set.trip.location }} / {{ v.set.trip.region }}</td>
-                    <td><a href="#">Assign<a/></td>
+                    <td><a href="#">Assign</a></td>
                 </tr>
             {% endfor %}
             </tbody>

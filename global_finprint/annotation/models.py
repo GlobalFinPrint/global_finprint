@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import User
 
 from global_finprint.core.models import AuditableModel, FinprintUser
 from global_finprint.habitat.models import Region
