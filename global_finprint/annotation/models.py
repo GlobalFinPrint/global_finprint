@@ -54,6 +54,9 @@ class Video(AuditableModel):
     def __str__(self):
         return u"{0}".format(self.file)
 
+    def assigned_users(self):
+        return Annotator.objects.filter(user__in=self.videoannotator_set.values_list('annotator__user', flat=True))
+
 
 class Lead(FinprintUser):
     pass

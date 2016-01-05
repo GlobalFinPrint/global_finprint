@@ -17,8 +17,9 @@
                 <th>Set</th>
                 <th>Trip</th>
                 <th>Team</th>
-                <th>Location / region</th>
-                <th>Annotator</th>
+                <th>Location</th>
+                <th>Region</th>
+                <th>Annotators</th>
             </tr>
             </thead>
             <tbody>
@@ -28,17 +29,29 @@
                     <td>{{ v.set }}</td>
                     <td>{{ v.set.trip }}</td>
                     <td>{{ v.set.trip.team }}</td>
-                    <td>{{ v.set.trip.location }} / {{ v.set.trip.region }}</td>
-                    <td><a href="#">Assign</a></td>
+                    <td>{{ v.set.trip.location }}</td>
+                    <td>{{ v.set.trip.region }}</td>
+                    <td>
+                    <ul class="annotators">
+                        {% if v.assigned_users %}
+                            {% for u in v.assigned_users %}
+                                <li>{{ u }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li><i>Unassigned</i></li>
+                        {% endif %}
+                        <li><a href="?video={{ v.id }}">Assign</a></li>
+                    </ul>
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
 
-    {% if request.user.is_authenticated %}
+    {% if form %}
         <div class="row">
-            <h3>Assign a video</h3>
+            <h3>Assign video</h3>
             <div class="well clearfix">
                 {% crispy form %}
             </div>

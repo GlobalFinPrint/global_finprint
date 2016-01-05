@@ -2,7 +2,7 @@ from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.layout import Submit, HTML
-from .models import Video, VideoAnnotator
+from .models import Video, VideoAnnotator, Annotator
 from ..trip.models import Trip, Team
 from ..habitat.models import Location, Region
 from django.core.urlresolvers import reverse
@@ -28,6 +28,10 @@ class VideoAnnotatorSearchForm(forms.Form):
                                       queryset=Location.objects.all())
     region = forms.ModelChoiceField(required=False,
                                     queryset=Region.objects.all())
+    annotator = forms.ModelChoiceField(required=False,
+                                       queryset=Annotator.objects.all(),
+                                       label='Assigned annotator')
+    # TODO figure out unassigned video search
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -37,14 +41,15 @@ class VideoAnnotatorSearchForm(forms.Form):
         self.helper.form_method = "get"
         self.helper.layout.append(
                 FormActions(HTML("""<a role="button" class="btn btn-default cancel-button"
-                href="{% url "trip_list" %}">Reset search</a>"""),
+                href="{% url "video_annotator_list" %}">Reset search</a>"""),
                             Submit('', 'Search videos')))
 
 
 class VideoAnnotatorForm(forms.ModelForm):
     class Meta:
         model = VideoAnnotator
-        fields = ['video', 'annotator']
+        fields = ['video', 'annotator', 'assigned_by']
+        widgets = {'assigned_by': forms.HiddenInput()}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
