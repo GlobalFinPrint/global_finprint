@@ -35,8 +35,8 @@ DJANGO_APPS = (
     'django.contrib.admin',
 )
 THIRD_PARTY_APPS = (
-    #'c_forms',  # Form layouts
     'crispy_forms',
+    'oauth2_provider',
     #'allauth',  # registration
     #'allauth.account',  # registration
     #'allauth.socialaccount',  # registration
@@ -285,10 +285,10 @@ LEAFLET_CONFIG = {
 }
 
 ########## CELERY
-INSTALLED_APPS += ('global_finprint.taskapp.celery.CeleryConfig',)
-# if you are not using the django database broker (e.g. rabbitmq, redis, memcached), you can remove the next line.
-INSTALLED_APPS += ('kombu.transport.django',)
-BROKER_URL = env("CELERY_BROKER_URL", default='django://')
+# INSTALLED_APPS += ('global_finprint.taskapp.celery.CeleryConfig',)
+# # if you are not using the django database broker (e.g. rabbitmq, redis, memcached), you can remove the next line.
+# INSTALLED_APPS += ('kombu.transport.django',)
+# BROKER_URL = env("CELERY_BROKER_URL", default='django://')
 ########## END CELERY
 
 # AWS S3 Storage
