@@ -1,4 +1,4 @@
-from django.conf.urls import url, include
+from django.conf.urls import url
 
 from global_finprint.annotation.views.annotation import site_animal_list, annotator_video_list
 from global_finprint.annotation.views.observations import observation_detail, observation_post
@@ -9,8 +9,6 @@ from global_finprint.api import views
 
 
 urlpatterns = [
-    url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-
     # object details
     url(r"^trips/(?P<pk>\d+)/$", trip_detail, name='api_trip_detail'),
     url(r"^sets/(?P<pk>\d+)/$", set_detail, name='api_set_detail'),

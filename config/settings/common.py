@@ -36,10 +36,11 @@ DJANGO_APPS = (
 )
 THIRD_PARTY_APPS = (
     'crispy_forms',
-    'oauth2_provider',
-    #'allauth',  # registration
-    #'allauth.account',  # registration
-    #'allauth.socialaccount',  # registration
+    # 'oauth2_provider',
+    # 'corsheaders',
+    # 'allauth',  # registration
+    # 'allauth.account',  # registration
+    # 'allauth.socialaccount',  # registration
     'bootstrap3_datetime',
     'braces',
     'leaflet',

@@ -14,8 +14,8 @@ from global_finprint.core.views import UrlRedirect
 urlpatterns = [
     url(r"^$", TemplateView.as_view(template_name='pages/home.html'), name="home"),
 
-    # Django Admin
     url(r"^admin/", include(admin.site.urls)),
+
     url(r'^trips/', include('global_finprint.trip.urls')),
     url(r'^reports/', include('global_finprint.report.urls')),
     url(r'^api/', include('global_finprint.api.urls')),
