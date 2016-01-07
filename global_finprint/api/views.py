@@ -1,7 +1,7 @@
 from django.views.generic.base import View
 from django.http import JsonResponse, HttpResponseForbidden
 from django.contrib.auth import authenticate
-from ..annotation.models import Annotator
+from ..annotation.models import Annotator, VideoAnnotator
 
 
 class APIView(View):
@@ -14,7 +14,7 @@ class APIView(View):
             return HttpResponseForbidden()
 
         try:
-            request.user = Annotator.objects.get(token=token).user
+            request.annotator = Annotator.objects.get(token=token)
         except Annotator.DoesNotExist:
             return HttpResponseForbidden()
 
@@ -35,17 +35,24 @@ class Login(View):
 
 class Logout(APIView):
     def post(self, request):
-        return JsonResponse({'user': request.user.username})
+        request.annotator.clear_token()
+        return JsonResponse({'status': 'OK'})
 
 
 class SetList(APIView):
     def get(self, request):
-        pass
+        set_list = list(VideoAnnotator.objects.filter(annotator=request.annotator).values('id', 'video__file'))
+        return JsonResponse({'sets': set_list})
 
 
 class SetDetail(APIView):
     def get(self, request, set_id):
-        pass
+        set = VideoAnnotator.objects.filter(annotator=request.annotator).get(pk=set_id)
+        return JsonResponse({'set': {'id': set.id,
+                                     'file': str(set.video.file),
+                                     'observations': list(set.observation_set.all())
+                                     }
+                             })
 
 
 class Observation(APIView):
