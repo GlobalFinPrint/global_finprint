@@ -51,7 +51,7 @@ Returns:
 ### Delete observation
 `DELETE /api/set/:id/obs`
 Expects:
-- set id
+- set id, obs id
 Returns:
 - list of observations
 

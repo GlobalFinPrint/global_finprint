@@ -1,7 +1,7 @@
 from django.views.generic.base import View
 from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotFound
 from django.contrib.auth import authenticate
-from ..annotation.models import Annotator, VideoAnnotator
+from ..annotation.models import Annotator, VideoAnnotator, Observation
 
 
 class APIView(View):
@@ -41,41 +41,47 @@ class Logout(APIView):
 
 class SetList(APIView):
     def get(self, request):
-        set_list = list({'id': set.id, 'file': str(set.video.file)} for set
-                        in VideoAnnotator.objects.filter(annotator=request.annotator))
-        return JsonResponse({'sets': set_list})
+        va_list = list({'id': va.id, 'file': str(va.video.file)} for va
+                       in VideoAnnotator.objects.filter(annotator=request.annotator))
+        return JsonResponse({'sets': va_list})
 
 
 class SetDetail(APIView):
     def get(self, request, set_id):
         try:
-            set = VideoAnnotator.objects.filter(annotator=request.annotator).get(pk=set_id)
-            return JsonResponse({'set': {'id': set.id,
-                                         'file': str(set.video.file),
-                                         'observations': list(set.observation_set.all())}})
+            va = VideoAnnotator.objects.filter(annotator=request.annotator).get(pk=set_id)
+            return JsonResponse({'set': {'id': va.id,
+                                         'file': str(va.video.file),
+                                         'observations': list(va.observation_set.all())}})
         except VideoAnnotator.DoesNotExist:
             return HttpResponseNotFound()
 
 
-class Observation(APIView):
+class Observations(APIView):
     def get(self, request, set_id):
         try:
-            set = VideoAnnotator.objects.filter(annotator=request.annotator).get(pk=set_id)
-            return JsonResponse({'observations': list(set.observation_set.all())})
+            va = VideoAnnotator.objects.filter(annotator=request.annotator).get(pk=set_id)
+            return JsonResponse({'observations': list(va.observation_set.all())})
         except VideoAnnotator.DoesNotExist:
             return HttpResponseNotFound()
 
     def post(self, request, set_id):
         try:
-            set = VideoAnnotator.objects.filter(annotator=request.annotator).get(pk=set_id)
-            return JsonResponse({})  # TODO
+            va = VideoAnnotator.objects.filter(annotator=request.annotator).get(pk=set_id)
+            params = dict((key, val) for key, val in request.POST if key in Observation._meta.get_all_field_names())
+            params['video_annotator'] = va
+            params['set'] = va.video.set
+            params['user'] = request.annotator.user
+            va.observation_set.create(**params)
+            return JsonResponse({'observations': list(va.observation_set.all())})
         except VideoAnnotator.DoesNotExist:
             return HttpResponseNotFound()
 
     def delete(self, request, set_id):
         try:
-            set = VideoAnnotator.objects.filter(annotator=request.annotator).get(pk=set_id)
-            return JsonResponse({})  # TODO
+            va = VideoAnnotator.objects.filter(annotator=request.annotator).get(pk=set_id)
+            Observation.objects.filter(video_annotator=va).get(pk=request.GET.get('obs_id')).delete()
+            return JsonResponse({'observations': list(va.observation_set.all())})
         except VideoAnnotator.DoesNotExist:
             return HttpResponseNotFound()
 
@@ -83,8 +89,8 @@ class Observation(APIView):
 class AnimalList(APIView):
     def get(self, request, set_id):
         try:
-            set = VideoAnnotator.objects.filter(annotator=request.annotator).get(pk=set_id)
-            return JsonResponse({'animals': list(set.video.set.trip.region.animal_set.all().values())})
+            va = VideoAnnotator.objects.filter(annotator=request.annotator).get(pk=set_id)
+            return JsonResponse({'animals': list(va.video.set.trip.region.animal_set.all().values())})
         except VideoAnnotator.DoesNotExist:
             return HttpResponseNotFound()
 
@@ -92,7 +98,8 @@ class AnimalList(APIView):
 class StatusUpdate(APIView):
     def post(self, request, set_id):
         try:
-            set = VideoAnnotator.objects.filter(annotator=request.annotator).get(pk=set_id)
-            return JsonResponse({})  # TODO
+            va = VideoAnnotator.objects.filter(annotator=request.annotator).get(pk=set_id)
+            va.update(status='C')
+            return JsonResponse({'status': 'OK'})
         except VideoAnnotator.DoesNotExist:
             return HttpResponseNotFound()
