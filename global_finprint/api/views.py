@@ -1,36 +1,41 @@
 from django.views.generic.base import View
 from django.http import JsonResponse, HttpResponseForbidden
 from django.contrib.auth import authenticate
+from ..annotation.models import Annotator
 
 
 class APIView(View):
     def dispatch(self, request, *args, **kwargs):
-        # TODO error without user token
-        super().dispatch(request, *args, **kwargs)
+        if 'token' in request.GET:
+            token = request.GET.get('token', None)
+        elif 'token' in request.POST:
+            token = request.POST.get('token', None)
+        else:
+            return HttpResponseForbidden()
 
+        try:
+            request.user = Annotator.objects.get(token=token).user
+        except Annotator.DoesNotExist:
+            return HttpResponseForbidden()
 
-class APIResponse(JsonResponse):
-    def __init__(self, data):
-        # TODO add to data
-        super().__init__(data)
+        return super().dispatch(request, *args, **kwargs)
 
 
 class Login(View):
     def post(self, request):
         user = authenticate(
-                user=self.request.POST.get('user', None),
-                password=self.request.POST.get('password', None))
+                username=request.POST.get('user', None),
+                password=request.POST.get('password', None))
 
         if user is None:
             return HttpResponseForbidden()
 
-        annotator = user.annotator
-
+        return JsonResponse({'token': user.annotator.set_token()})
 
 
 class Logout(APIView):
     def post(self, request):
-        pass
+        return JsonResponse({'user': request.user.username})
 
 
 class SetList(APIView):
