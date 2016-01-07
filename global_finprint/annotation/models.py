@@ -13,6 +13,11 @@ ANIMAL_STAGE_CHOICES = {
     ('JU', 'Juvenile'),
     ('U', 'Unknown'),
 }
+VIDEO_ANNOTATOR_CHOICES = {
+    ('N', 'Not started'),
+    ('I', 'In progress'),
+    ('C', 'Competed')
+}
 
 
 class AnimalGroup(models.Model):
@@ -70,6 +75,7 @@ class VideoAnnotator(AuditableModel):
     annotator = models.ForeignKey(to=Annotator)
     video = models.ForeignKey(to=Video)
     assigned_by = models.ForeignKey(to=Lead, related_name='assigned_by')
+    status = models.CharField(max_length=1, choices=VIDEO_ANNOTATOR_CHOICES, default='N')
 
 
 class Observation(AuditableModel):
