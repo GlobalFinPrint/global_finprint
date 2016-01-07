@@ -126,6 +126,7 @@ class Bait(AuditableModel):
 
 
 class Set(AuditableModel):
+    drop_id = models.CharField(max_length=32)
     set_date = models.DateField()
     coordinates = models.PointField(null=True)
     latitude = models.DecimalField(max_digits=10, decimal_places=6)
