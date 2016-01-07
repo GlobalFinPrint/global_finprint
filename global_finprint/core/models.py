@@ -1,6 +1,7 @@
 from django.contrib.gis.db import models
 from django.contrib.auth.models import User
 from config.current_user import get_current_user
+import uuid
 
 
 class TimestampedModel(models.Model):
@@ -19,8 +20,19 @@ class AuditableModel(TimestampedModel):
 
 
 class FinprintUser(models.Model):
-    user = models.ForeignKey(to=User)
+    user = models.OneToOneField(to=User)
     affiliation = models.CharField(max_length=100)
+    token = models.CharField(max_length=32, null=True)
+
+    def set_token(self):
+        self.token = uuid.uuid4().hex
+        self.save()
+        return self.token
+
+    def clear_token(self):
+        self.token = None
+        self.save()
+        return True
 
     def __str__(self):
         return u"{0}, {1} ({2})".format(self.user.last_name, self.user.first_name, self.affiliation)

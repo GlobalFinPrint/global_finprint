@@ -14,14 +14,14 @@ Expects:
 Returns:
 - nothing
 
-### set listing
+### Set listing
 `GET /api/set`
 Expects:
 - nothing
 Returns:
 - list of sets for a user
 
-### set detail
+### Set detail
 `GET /api/set/:id`
 Expects:
 - set id (from listing)
@@ -55,8 +55,8 @@ Expects:
 Returns:
 - list of observations
 
-### Critter list
-`GET /api/set/:id/critters`
+### Animal list
+`GET /api/set/:id/animals`
 Expects:
 - set id
 Returns:
