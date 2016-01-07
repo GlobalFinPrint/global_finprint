@@ -9,7 +9,7 @@ from global_finprint.trip import models
 from django.core.urlresolvers import reverse
 
 
-datepicker_opts = {"format": "MMMM DD YYYY", "pickTime": False}
+datepicker_opts = {"format": "MMMM DD YYYY"}
 
 
 class TripForm(forms.ModelForm):

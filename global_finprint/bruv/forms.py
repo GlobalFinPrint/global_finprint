@@ -8,8 +8,8 @@ from crispy_forms.bootstrap import FormActions
 from bootstrap3_datetime.widgets import DateTimePicker
 
 
-timepicker_opts = {"format": "HH:mm", "pickDate": False, "showClear": True}
-datepicker_opts = {"format": "MMMM DD YYYY", "pickTime": False, "showClear": True}
+timepicker_opts = {"format": "HH:mm", "showClear": True}
+datepicker_opts = {"format": "MMMM DD YYYY", "showClear": True}
 
 
 class SetForm(forms.ModelForm):

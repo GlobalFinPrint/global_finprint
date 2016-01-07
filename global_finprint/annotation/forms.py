@@ -1,11 +1,11 @@
 from django import forms
+from django.core.urlresolvers import reverse
 from crispy_forms.helper import FormHelper
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.layout import Submit, HTML
 from .models import Video, VideoAnnotator, Annotator
 from ..trip.models import Trip, Team
 from ..habitat.models import Location, Region
-from django.core.urlresolvers import reverse
 
 
 class VideoForm(forms.ModelForm):
