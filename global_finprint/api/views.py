@@ -30,7 +30,12 @@ class Login(View):
         if user is None:
             return HttpResponseForbidden()
 
-        return JsonResponse({'token': user.annotator.set_token()})
+        try:
+            token = user.annotator.set_token()
+        except Annotator.DoesNotExist:
+            return HttpResponseForbidden()
+
+        return JsonResponse({'token': token})
 
 
 class Logout(APIView):
