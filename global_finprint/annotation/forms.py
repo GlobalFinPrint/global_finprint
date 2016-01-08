@@ -31,7 +31,8 @@ class VideoAnnotatorSearchForm(forms.Form):
     annotator = forms.ModelChoiceField(required=False,
                                        queryset=Annotator.objects.all(),
                                        label='Assigned annotator')
-    # TODO figure out unassigned video search
+    number_assigned = forms.ChoiceField(required=False,
+                                        choices=[(None, '----'), (0, 0), (1, 1), (2, 2), ('3+', '3+')])
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

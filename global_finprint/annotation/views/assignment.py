@@ -2,6 +2,7 @@ from django.views.generic import CreateView
 from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import get_object_or_404
+from django.db.models import Count
 from ..models import VideoAnnotator, Video, Lead
 from ..forms import VideoAnnotatorForm, VideoAnnotatorSearchForm
 
@@ -47,6 +48,12 @@ class VideoAnnotatorListView(CreateView):
                 query = query.filter(set__trip__region=search_values['region'])
             if search_values['annotator'] is not None:
                 query = query.filter(videoannotator__annotator=search_values['annotator'])
+            if search_values['number_assigned'] not in (None, ''):
+                query = query.annotate(Count('videoannotator'))
+                if search_values['number_assigned'] == '3+':
+                    query = query.filter(videoannotator__count__gte=3)
+                else:
+                    query = query.filter(videoannotator__count=search_values['number_assigned'])
             context['videos'] = query.all()
         else:
             context['videos'] = Video.objects.all()
