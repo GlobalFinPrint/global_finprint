@@ -56,6 +56,10 @@ BAIT_TYPE_CHOICES = {
     ('CRS', 'Crushed'),
     ('WHL', 'Whole'),
 }
+HABITAT_CHOICES = {
+    ('F', 'Forereef'),
+    ('B', 'Backreef/Lagoon'),
+}
 
 
 class FrameType(models.Model):
@@ -128,6 +132,7 @@ class Bait(AuditableModel):
 class Set(AuditableModel):
     drop_id = models.CharField(max_length=32)
     set_date = models.DateField()
+    habitat = models.CharField(max_length=1, choices=HABITAT_CHOICES)
     coordinates = models.PointField(null=True)
     latitude = models.DecimalField(max_digits=10, decimal_places=6)
     longitude = models.DecimalField(max_digits=10, decimal_places=6)
