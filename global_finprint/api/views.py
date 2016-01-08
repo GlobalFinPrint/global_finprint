@@ -73,6 +73,7 @@ class Observations(APIView):
             params['set'] = va.video.set
             params['user'] = request.annotator.user
             va.observation_set.create(**params)
+            va.update(status='I')
             return JsonResponse({'observations': list(va.observation_set.all())})
         except VideoAnnotator.DoesNotExist:
             return HttpResponseNotFound()
