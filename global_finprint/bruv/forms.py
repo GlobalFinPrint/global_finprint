@@ -28,7 +28,7 @@ class SetForm(forms.ModelForm):
 
     class Meta:
         model = Set
-        fields = ['trip', 'set_date', 'latitude', 'longitude', 'depth',
+        fields = ['trip', 'drop_id', 'set_date', 'latitude', 'longitude', 'depth',
                   'drop_time', 'haul_time', 'reef', 'equipment', 'visibility']
         widgets = {
             'trip': forms.HiddenInput()

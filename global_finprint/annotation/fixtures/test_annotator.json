@@ -56,6 +56,14 @@
     }
   },
   {
+    "model": "annotation.annotator",
+    "pk": 3,
+    "fields": {
+      "user": 1,
+      "affiliation": "Admin"
+    }
+  },
+  {
     "model": "annotation.lead",
     "pk": 1,
     "fields": {

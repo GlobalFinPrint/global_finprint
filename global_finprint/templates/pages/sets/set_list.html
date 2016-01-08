@@ -69,7 +69,7 @@
                         </td>
                         <td>
                             {% if set.video %}
-                                View
+                                {{ set.video.file }}
                             {% else %}
                                 <a href="{% url 'set_update' set.trip.id set.id %}">Add</a>
                             {% endif %}
