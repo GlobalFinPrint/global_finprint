@@ -82,6 +82,7 @@ class Migration(migrations.Migration):
             name='Set',
             fields=[
                 ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('drop_id', models.CharField(max_length=32)),
                 ('create_datetime', models.DateTimeField(auto_now_add=True)),
                 ('last_modified_datetime', models.DateTimeField(auto_now=True)),
                 ('set_date', models.DateField()),
@@ -97,8 +98,7 @@ class Migration(migrations.Migration):
                 ('drop_measure', models.OneToOneField(null=True, to='bruv.EnvironmentMeasure', related_name='drop_parent_set')),
                 ('equipment', models.ForeignKey(to='bruv.Equipment')),
                 ('haul_measure', models.OneToOneField(null=True, to='bruv.EnvironmentMeasure', related_name='haul_parent_set')),
-                # ('video', models.OneToOneField(null=True, related_name='set', to='annotation.Video')),
-                ('reef', models.ForeignKey(to='habitat.Reef')),
+                ('reef_habitat', models.ForeignKey(to='habitat.ReefHabitat')),
                 ('trip', models.ForeignKey(to='trip.Trip')),
                 ('user', models.ForeignKey(default=config.current_user.get_current_user, to=settings.AUTH_USER_MODEL)),
             ],

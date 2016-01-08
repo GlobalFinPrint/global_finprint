@@ -1,11 +1,12 @@
 from django import forms
-from global_finprint.bruv.models import Set, EnvironmentMeasure, Bait
-from global_finprint.annotation.models import Observation
-from global_finprint.trip.models import Trip
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, HTML
 from crispy_forms.bootstrap import FormActions
 from bootstrap3_datetime.widgets import DateTimePicker
+from .models import Set, EnvironmentMeasure, Bait
+from ..annotation.models import Observation
+from ..trip.models import Trip
+from ..habitat.models import Reef, ReefType
 
 
 timepicker_opts = {"format": "HH:mm", "pickDate": False, "showClear": True}
@@ -25,13 +26,20 @@ class SetForm(forms.ModelForm):
         input_formats=['%H:%M'],
         widget=DateTimePicker(options=timepicker_opts, icon_attrs={'class': 'glyphicon glyphicon-time'})
     )
+    reef = forms.ModelChoiceField(
+        queryset=Reef.objects.all()
+    )
+    habitat = forms.ModelChoiceField(
+        queryset=ReefType.objects.all()
+    )
 
     class Meta:
         model = Set
         fields = ['trip', 'drop_id', 'set_date', 'latitude', 'longitude', 'depth',
-                  'drop_time', 'haul_time', 'reef', 'equipment', 'visibility']
+                  'drop_time', 'haul_time', 'reef', 'habitat', 'equipment', 'visibility']
         widgets = {
-            'trip': forms.HiddenInput()
+            'trip': forms.HiddenInput(),
+            'reef_habitat': forms.HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):

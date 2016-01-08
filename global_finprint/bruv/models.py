@@ -4,7 +4,7 @@ from django.contrib.gis.geos import Point
 
 from global_finprint.core.models import AuditableModel
 from global_finprint.trip.models import Trip
-from global_finprint.habitat.models import Reef
+from global_finprint.habitat.models import ReefHabitat
 
 
 EQUIPMENT_BAIT_CONTAINER = {
@@ -138,7 +138,7 @@ class Set(AuditableModel):
     comments = models.CharField(max_length=255, null=True, blank=True)
 
     equipment = models.ForeignKey(Equipment)
-    reef = models.ForeignKey(Reef)
+    reef_habitat = models.ForeignKey(ReefHabitat)
     trip = models.ForeignKey(Trip)
 
     bait = models.OneToOneField(

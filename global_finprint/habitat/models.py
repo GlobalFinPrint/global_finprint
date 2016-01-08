@@ -170,3 +170,20 @@ class Reef(models.Model):
 
     def __str__(self):
         return u"{0} - {1}".format(self.site, self.name)
+
+
+class ReefHabitat(models.Model):
+    reef = models.ForeignKey(Reef)
+    habitat = models.ForeignKey(ReefType)
+
+    @classmethod
+    def get_or_create(cls, reef, habitat):
+        try:
+            return cls.objects.get(reef=reef, habitat=habitat)
+        except cls.DoesNotExist:
+            new_reef_habitat = cls(reef=reef, habitat=habitat)
+            new_reef_habitat.save()
+            return new_reef_habitat
+
+    def __str__(self):
+        return u"{0} - {1} ({2})".format(self.reef.site, self.reef.name, self.habitat.type)

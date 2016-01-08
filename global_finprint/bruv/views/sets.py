@@ -11,6 +11,7 @@ from global_finprint.bruv.models import Equipment
 from ..models import Set
 from ..forms import SetForm, EnvironmentMeasureForm, BaitForm
 from ...annotation.forms import VideoForm
+from ...habitat.models import Reef, ReefType, ReefHabitat
 
 from datetime import datetime
 
@@ -23,7 +24,7 @@ def set_detail(request, pk):
             'haul_time': s.haul_time.isoformat() if s.haul_time else None,
             'equipment': str(s.equipment),
             'depth': s.depth,
-            'reef': str(s.reef)}
+            'reef_habitat': str(s.reef_habitat)}
     return JsonResponse(data)
 
 
@@ -51,7 +52,7 @@ class SetListView(View):
 
         if last_set is not None:
             set_form_defaults.update({
-                'reef': last_set.reef,
+                'reef_habitat': last_set.reef_habitat,
                 'latitude': round(last_set.latitude, 1),
                 'longitude': round(last_set.longitude, 1),
                 'set_date': last_set.set_date,
@@ -76,6 +77,8 @@ class SetListView(View):
                 instance=edited_set,
                 trip_pk=trip_pk
             )
+            context['set_form'].initial['reef'] = edited_set.reef_habitat.reef
+            context['set_form'].initial['habitat'] = edited_set.reef_habitat.habitat
             context['bait_form'] = BaitForm(
                 instance=edited_set.bait
             )
@@ -116,6 +119,11 @@ class SetListView(View):
 
         # forms are valid
         if all(form.is_valid() for form in [set_form, bait_form, drop_form, haul_form, video_form]):
+
+            # get reef_habitat from reef + habitat
+            set_form.cleaned_data['reef_habitat'] = ReefHabitat.get_or_create(
+                    reef=set_form.cleaned_data['reef'],
+                    habitat=set_form.cleaned_data['habitat'])
 
             # create new set and env measures
             if set_pk is None:

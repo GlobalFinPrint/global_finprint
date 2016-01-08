@@ -31,4 +31,9 @@ class Migration(migrations.Migration):
                 name='user',
                 field=models.OneToOneField(to=settings.AUTH_USER_MODEL),
         ),
+        migrations.AddField(
+                model_name='videoannotator',
+                name='status',
+                field=models.CharField(default='N', choices=[('C', 'Competed'), ('N', 'Not started'), ('I', 'In progress')], max_length=1),
+        ),
     ]
