@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView
 from django.contrib import messages
 from django.core.serializers import serialize
@@ -11,7 +13,7 @@ from ..habitat.models import Region
 from ..bruv.models import Set
 
 
-class TripListView(CreateView):
+class TripListView(LoginRequiredMixin, CreateView):
     model = Trip
     form_class = TripForm
     context_object_name = 'trip'
@@ -68,6 +70,8 @@ class TripListView(CreateView):
         return context
 
 
+# deprecated:
+@login_required
 def trip_detail(request, pk):
     t = Trip.objects.get(pk=pk)
     data = {'id': str(t.id),
@@ -80,6 +84,7 @@ def trip_detail(request, pk):
     return JsonResponse(data)
 
 
+@login_required
 def trip_sets_geojson(request, trip_id):
     feature = serialize('geojson',
                         Set.objects.filter(trip_id=trip_id),

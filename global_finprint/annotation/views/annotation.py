@@ -1,4 +1,6 @@
 import json
+
+from django.contrib.auth.decorators import login_required
 from django.http.response import HttpResponse
 
 from global_finprint.annotation.models import AnimalGroup

@@ -1,7 +1,7 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import UpdateView, CreateView
 from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
-from braces.views import LoginRequiredMixin
 from ..models import EnvironmentMeasure, Set, Trip
 from ..forms import EnvironmentMeasureForm
 

@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View
 from django.contrib import messages
 from django.http.response import JsonResponse
@@ -11,11 +13,13 @@ from global_finprint.bruv.models import Equipment
 from ..models import Set
 from ..forms import SetForm, EnvironmentMeasureForm, BaitForm
 from ...annotation.forms import VideoForm
-from ...habitat.models import Reef, ReefType, ReefHabitat
+from ...habitat.models import ReefHabitat
 
 from datetime import datetime
 
 
+# deprecated:
+@login_required
 def set_detail(request, pk):
     s = Set.objects.get(pk=pk)
     data = {'id': str(s.id),
@@ -28,7 +32,7 @@ def set_detail(request, pk):
     return JsonResponse(data)
 
 
-class SetListView(View):
+class SetListView(LoginRequiredMixin, View):
     template = 'pages/sets/set_list.html'
 
     def _common_context(self, request, parent_trip):

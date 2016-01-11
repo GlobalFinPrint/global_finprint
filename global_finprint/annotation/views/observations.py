@@ -1,15 +1,17 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, UpdateView, CreateView
 from django.contrib import messages
 from django.http.response import JsonResponse
 from django.core.urlresolvers import reverse_lazy
-
-from braces.views import LoginRequiredMixin
 
 from global_finprint.annotation.models import Observation
 from global_finprint.bruv.models import Set, Trip
 from global_finprint.bruv.forms import ObservationForm
 
 
+# deprecated:
+@login_required
 def observation_detail(request, pk):
     observation = Observation.objects.get(pk=pk)
     data = {
@@ -30,7 +32,7 @@ def observation_post(request):
     pass
 
 
-class ObservationListView(ListView):
+class ObservationListView(LoginRequiredMixin, ListView):
     model = Observation
     context_object_name = 'observations'
     template_name = 'pages/observations/observation_list.html'

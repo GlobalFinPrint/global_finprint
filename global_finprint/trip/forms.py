@@ -9,7 +9,7 @@ from ..habitat.models import Location, Region
 from .models import Team, Trip
 
 
-datepicker_opts = {"format": "MMMM DD YYYY", "pickTime": False}
+datepicker_opts = {"format": "MMMM DD YYYY"}
 
 
 class TripForm(forms.ModelForm):

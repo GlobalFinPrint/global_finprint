@@ -1,5 +1,5 @@
-# Bleeding edge Django
-django==1.8.3
+# Django
+django==1.9.1
 
 # Configuration
 django-environ==0.4.0
@@ -9,21 +9,21 @@ whitenoise==2.0.4
 # Forms
 django-braces==1.8.1
 django-crispy-forms==1.5.2
-django-floppyforms==1.5.2
-django-bootstrap3-datetimepicker==2.2.3
+django-bootstrap3-datetimepicker-2==2.4.2
 
 # data presentation
-django-leaflet==0.16.0
+django-leaflet==0.17.1
 django-geojson==2.8.1
 
 # Models
 django-model-utils==2.3.1
 
 # Images
-Pillow==2.9.0
+Pillow==3.1.0
 
-# For user registration, either via email or social
-# Well-built with regular release cycles!
+# Security and user registration
+# django-oauth-toolkit==0.10.0
+# django-cors-headers==1.1.0
 # django-allauth==0.23.0
 
 # For the persistence stores
@@ -42,6 +42,6 @@ redis>=2.10.0
 
 celery==3.1.18
 
-# Your custom requirements go here
+# AWS, S3
 boto==2.38.0
 django-storages-redux==1.3
