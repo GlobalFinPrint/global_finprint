@@ -9,10 +9,11 @@ from global_finprint.api import views
 
 
 urlpatterns = [
+    # deprecated:
     # object details
-    url(r"^trips/(?P<pk>\d+)/$", trip_detail, name='api_trip_detail'),
-    url(r"^sets/(?P<pk>\d+)/$", set_detail, name='api_set_detail'),
-    url(r"^observations/(?P<pk>\d+)/$", observation_detail, name='api_observation_detail'),
+    # url(r"^trips/(?P<pk>\d+)/$", trip_detail, name='api_trip_detail'),
+    # url(r"^sets/(?P<pk>\d+)/$", set_detail, name='api_set_detail'),
+    # url(r"^observations/(?P<pk>\d+)/$", observation_detail, name='api_observation_detail'),
 
     # geo
     url(r"^reef/(?P<reef_id>\d+)/geojson/$", reef_detail_geojson, name='api_reef_detail_geojson'),

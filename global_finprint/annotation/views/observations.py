@@ -10,6 +10,7 @@ from global_finprint.bruv.models import Set, Trip
 from global_finprint.bruv.forms import ObservationForm
 
 
+# deprecated:
 @login_required
 def observation_detail(request, pk):
     observation = Observation.objects.get(pk=pk)

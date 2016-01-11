@@ -18,6 +18,7 @@ from ...habitat.models import ReefHabitat
 from datetime import datetime
 
 
+# deprecated:
 @login_required
 def set_detail(request, pk):
     s = Set.objects.get(pk=pk)

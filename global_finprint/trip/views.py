@@ -70,6 +70,7 @@ class TripListView(LoginRequiredMixin, CreateView):
         return context
 
 
+# deprecated:
 @login_required
 def trip_detail(request, pk):
     t = Trip.objects.get(pk=pk)
