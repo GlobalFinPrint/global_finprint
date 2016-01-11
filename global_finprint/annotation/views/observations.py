@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, UpdateView, CreateView
 from django.contrib import messages
@@ -9,6 +10,7 @@ from global_finprint.bruv.models import Set, Trip
 from global_finprint.bruv.forms import ObservationForm
 
 
+@login_required
 def observation_detail(request, pk):
     observation = Observation.objects.get(pk=pk)
     data = {
