@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView
 from django.contrib import messages
 from django.core.serializers import serialize
@@ -11,7 +12,7 @@ from ..habitat.models import Region
 from ..bruv.models import Set
 
 
-class TripListView(CreateView):
+class TripListView(LoginRequiredMixin, CreateView):
     model = Trip
     form_class = TripForm
     context_object_name = 'trip'
