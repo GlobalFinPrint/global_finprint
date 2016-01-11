@@ -28,6 +28,9 @@ EMAIL_PORT = 1025
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND',
                     default='django.core.mail.backends.console.EmailBackend')
 
+# cross-domain
+# CORS_ORIGIN_ALLOW_ALL = True
+
 # CACHING
 # ------------------------------------------------------------------------------
 # CACHES = {

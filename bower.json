@@ -2,8 +2,7 @@
   "name": "global_finprint",
   "version": "0.1.0",
   "homepage": "https://github.com/GlobalFinPrint/global_finprint/",
-  "authors": [
-  ],
+  "authors": [],
   "description": "Shark and Ray Survey",
   "license": "AGPL 3.0",
   "ignore": [
@@ -18,6 +17,7 @@
     "bootstrap": "~3.3.5",
     "jquery": "~2.1.4",
     "leaflet": "~0.7.5",
-    "moment": "~2.10.6"
+    "moment": "~2.10.6",
+    "eonasdan-bootstrap-datetimepicker": "~4.17.37"
   }
 }

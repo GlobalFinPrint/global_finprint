@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView
 from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
@@ -7,7 +8,7 @@ from ..models import VideoAnnotator, Video, Lead
 from ..forms import VideoAnnotatorForm, VideoAnnotatorSearchForm
 
 
-class VideoAnnotatorListView(CreateView):
+class VideoAnnotatorListView(LoginRequiredMixin, CreateView):
     model = VideoAnnotator
     form_class = VideoAnnotatorForm
     context_object_name = 'video_annotator'

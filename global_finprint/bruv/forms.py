@@ -9,8 +9,8 @@ from ..trip.models import Trip
 from ..habitat.models import Reef, ReefType
 
 
-timepicker_opts = {"format": "HH:mm", "pickDate": False, "showClear": True}
-datepicker_opts = {"format": "MMMM DD YYYY", "pickTime": False, "showClear": True}
+timepicker_opts = {"format": "HH:mm", "showClear": True}
+datepicker_opts = {"format": "MMMM DD YYYY", "showClear": True}
 
 
 class SetForm(forms.ModelForm):
