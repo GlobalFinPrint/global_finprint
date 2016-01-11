@@ -126,7 +126,8 @@ class Bait(AuditableModel):
 
 
 class Set(AuditableModel):
-    drop_id = models.CharField(max_length=32)
+    code = models.CharField(max_length=32)
+    # drop_id = models.CharField(max_length=32)
     set_date = models.DateField()
     coordinates = models.PointField(null=True)
     latitude = models.DecimalField(max_digits=10, decimal_places=6)
@@ -176,4 +177,4 @@ class Set(AuditableModel):
         return reverse('set_update', args=[str(self.id)])
 
     def __str__(self):
-        return u"{0:.4f}, {1:.4f}".format(self.coordinates.y, self.coordinates.x)
+        return u"{0}".format(self.code)
