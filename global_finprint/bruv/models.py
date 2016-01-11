@@ -126,6 +126,8 @@ class Bait(AuditableModel):
 
 
 class Set(AuditableModel):
+    # suggested code pattern:
+    # FP_[set_date.year]_[location.code][site.code][reef.code]_[set number within reef]
     code = models.CharField(max_length=32)
     # drop_id = models.CharField(max_length=32)
     set_date = models.DateField()
