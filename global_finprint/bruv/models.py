@@ -4,7 +4,7 @@ from django.contrib.gis.geos import Point
 
 from global_finprint.core.models import AuditableModel
 from global_finprint.trip.models import Trip
-from global_finprint.habitat.models import Reef
+from global_finprint.habitat.models import ReefHabitat
 
 
 EQUIPMENT_BAIT_CONTAINER = {
@@ -55,10 +55,6 @@ BAIT_TYPE_CHOICES = {
     ('CHP', 'Chopped'),
     ('CRS', 'Crushed'),
     ('WHL', 'Whole'),
-}
-HABITAT_CHOICES = {
-    ('F', 'Forereef'),
-    ('B', 'Backreef/Lagoon'),
 }
 
 
@@ -132,7 +128,6 @@ class Bait(AuditableModel):
 class Set(AuditableModel):
     drop_id = models.CharField(max_length=32)
     set_date = models.DateField()
-    habitat = models.CharField(max_length=1, choices=HABITAT_CHOICES)
     coordinates = models.PointField(null=True)
     latitude = models.DecimalField(max_digits=10, decimal_places=6)
     longitude = models.DecimalField(max_digits=10, decimal_places=6)
@@ -143,7 +138,7 @@ class Set(AuditableModel):
     comments = models.CharField(max_length=255, null=True, blank=True)
 
     equipment = models.ForeignKey(Equipment)
-    reef = models.ForeignKey(Reef)
+    reef_habitat = models.ForeignKey(ReefHabitat)
     trip = models.ForeignKey(Trip)
 
     bait = models.OneToOneField(

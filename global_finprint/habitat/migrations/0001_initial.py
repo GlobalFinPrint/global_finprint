@@ -161,4 +161,12 @@ class Migration(migrations.Migration):
             name='region',
             field=models.ForeignKey(to='habitat.Region'),
         ),
+        migrations.CreateModel(
+                name='ReefHabitat',
+                fields=[
+                    ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
+                    ('habitat', models.ForeignKey(to='habitat.ReefType')),
+                    ('reef', models.ForeignKey(to='habitat.Reef')),
+                ],
+        ),
     ]

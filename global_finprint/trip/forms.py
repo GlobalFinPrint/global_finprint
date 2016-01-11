@@ -1,12 +1,12 @@
 from django import forms
+from django.db.models import Count
+from django.core.urlresolvers import reverse
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, HTML
 from crispy_forms.bootstrap import FormActions
 from bootstrap3_datetime.widgets import DateTimePicker
-from global_finprint.habitat.models import Location, Region
+from ..habitat.models import Location, Region
 from .models import Team, Trip
-from global_finprint.trip import models
-from django.core.urlresolvers import reverse
 
 
 datepicker_opts = {"format": "MMMM DD YYYY"}
@@ -21,9 +21,12 @@ class TripForm(forms.ModelForm):
         input_formats=['%B %d %Y'],
         widget=DateTimePicker(options=datepicker_opts)
     )
+    location = forms.ModelChoiceField(
+        queryset=Location.objects.annotate(Count('site__reef')).filter(site__reef__count__gt=0).all()
+    )
 
     class Meta:
-        model = models.Trip
+        model = Trip
         fields = ['team', 'start_date', 'end_date', 'location', 'boat']
 
     def __init__(self, *args, **kwargs):

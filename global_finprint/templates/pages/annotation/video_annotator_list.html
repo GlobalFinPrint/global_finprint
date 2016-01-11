@@ -33,9 +33,9 @@
                     <td>{{ v.set.trip.region }}</td>
                     <td>
                     <ul class="annotators">
-                        {% if v.assigned_users %}
-                            {% for u in v.assigned_users %}
-                                <li>{{ u }}</li>
+                        {% if v.videoannotator_set %}
+                            {% for va in v.videoannotator_set.all %}
+                                <li>{{ va.annotator.user }} ({{ va.get_status_display }})</li>
                             {% endfor %}
                         {% else %}
                             <li><i>Unassigned</i></li>

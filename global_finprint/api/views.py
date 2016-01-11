@@ -30,7 +30,12 @@ class Login(View):
         if user is None:
             return HttpResponseForbidden()
 
-        return JsonResponse({'token': user.annotator.set_token()})
+        try:
+            token = user.annotator.set_token()
+        except Annotator.DoesNotExist:
+            return HttpResponseForbidden()
+
+        return JsonResponse({'token': token})
 
 
 class Logout(APIView):
@@ -73,6 +78,7 @@ class Observations(APIView):
             params['set'] = va.video.set
             params['user'] = request.annotator.user
             va.observation_set.create(**params)
+            va.update(status='I')
             return JsonResponse({'observations': list(va.observation_set.all())})
         except VideoAnnotator.DoesNotExist:
             return HttpResponseNotFound()
