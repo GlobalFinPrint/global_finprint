@@ -1,7 +1,5 @@
 {% extends "base.html" %}
-
 {% block content %}
-
 
 <div class="col-md-12">
     <div class="row">
@@ -14,33 +12,38 @@
             Observations
         </div>
     </div>
-    <div class="row">
-        <legend class="pull-left">Observations
-            <a role="button" href="{% url 'observation_create' trip_pk=trip_pk set_pk=set_pk %}" class="btn btn-sm pull-right" title="Create Observation" style="background: none;" aria-label="Left Align">
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-            </a>
-        </legend>
-        <br>
-    </div>
-    <div class ="row">
-        <div class = "col-md-6">
-            <div class="list-group generic-list">
-            {% for observation in observations %}
-                <li class="list-group-item generic-list-item" data-pk-id="{{ observation.id }}" data-type="observation">
-                    <span> {{ observation }} </span>
-                    <div class="pull-right">
-                        <a href="{% url 'observation_update' trip_pk=observation.set.trip.id set_pk=observation.set.id pk=observation.id %}">Edit</a>
-                    </div>
-                </li>
-            {% endfor %}
-            </div>
-        </div>
-        <div class = "col-md-6">
-            <div class="well" id="detail_panel">
 
-            </div>
-        </div>
+    <div class="row">
+        <table class="table table-bordered table-condensed obs-table" cellspacing="0" width="100%">
+            <thead>
+            <tr class="success">
+                <th>Initial observation time</th>
+                <th>Animal</th>
+                <th>Sex</th>
+                <th>Stage</th>
+                <th>Length</th>
+                <th>Behavior</th>
+                <th>Duration</th>
+                <th>Video annotator</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for obs in observations %}
+            <tr>
+                <td>{{ obs.initial_observation_time }}</td>
+                <td>{{ obs.animal }}</td>
+                <td>{{ obs.get_sex_display }}</td>
+                <td>{{ obs.get_stage_display }}</td>
+                <td>{{ obs.length }}</td>
+                <td>{{ obs.behavior }}</td>
+                <td>{{ obs.duration }}</td>
+                <td>{{ obs.video_annotator.annotator }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
+
 </div>
 
 

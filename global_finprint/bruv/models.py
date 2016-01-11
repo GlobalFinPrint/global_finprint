@@ -5,6 +5,7 @@ from django.contrib.gis.geos import Point
 from global_finprint.core.models import AuditableModel
 from global_finprint.trip.models import Trip
 from global_finprint.habitat.models import ReefHabitat
+from global_finprint.annotation.models import VideoAnnotator, Observation
 
 
 EQUIPMENT_BAIT_CONTAINER = {
@@ -175,5 +176,8 @@ class Set(AuditableModel):
     def get_absolute_url(self):
         return reverse('set_update', args=[str(self.id)])
 
+    def observations(self):
+        return Observation.objects.filter(video_annotator__in=VideoAnnotator.objects.filter(video=self.video))
+
     def __str__(self):
-        return u"{0:.4f}, {1:.4f}".format(self.coordinates.y, self.coordinates.x)
+        return u"{0}".format(self.drop_id)

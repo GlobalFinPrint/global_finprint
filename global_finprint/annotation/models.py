@@ -88,8 +88,10 @@ class Observation(AuditableModel):
     behavior = models.ForeignKey(to=AnimalBehavior, null=True)
     duration = models.PositiveIntegerField()
 
-    set = models.ForeignKey('bruv.Set')
     video_annotator = models.ForeignKey(VideoAnnotator)
+
+    def set(self):
+        return self.video_annotator.video.set
 
     def __str__(self):
         return u"{0}".format(self.initial_observation_time)
@@ -112,4 +114,6 @@ class ObservationImage(Image):
 class SiteImage(Image):
     # todo:  placeholder!
     video = models.ForeignKey(Video)
-    set = models.ForeignKey('bruv.Set')
+
+    def set(self):
+        return self.video.set
