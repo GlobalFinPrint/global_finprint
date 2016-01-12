@@ -14,3 +14,4 @@ python manage.py loaddata global_finprint/annotation/fixtures/test_annotator
 python manage.py loaddata global_finprint/habitat/fixtures/test_site
 python manage.py loaddata global_finprint/trip/fixtures/test_trip
 python manage.py loaddata global_finprint/bruv/fixtures/test_set
+python manage.py loaddata global_finprint/annotation/fixtures/test_obs

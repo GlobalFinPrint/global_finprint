@@ -7,6 +7,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
 from django.contrib.auth.views import login, logout
+from django.views.defaults import bad_request, permission_denied, page_not_found, server_error
 
 from global_finprint.core.views import UrlRedirect
 
@@ -19,8 +20,8 @@ urlpatterns = [
     url(r'^trips/', include('global_finprint.trip.urls')),
     url(r'^reports/', include('global_finprint.report.urls')),
     url(r'^api/', include('global_finprint.api.urls')),
-    url(r"^assignment/$", include('global_finprint.annotation.urls.assignment')),
-    url(r"^annotation/$", TemplateView.as_view(template_name='pages/sets/set_annotation.html'),
+    url(r"^assignment/", include('global_finprint.annotation.urls.assignment')),
+    url(r"^annotation/", TemplateView.as_view(template_name='pages/sets/set_annotation.html'),
         name='set_annotation'),
 
     url(r"^about/$", TemplateView.as_view(template_name='pages/about.html'), name="about"),
@@ -36,8 +37,8 @@ if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit
     # these url in browser to see how these error pages look like.
     urlpatterns += [
-        url(r'^400/$', 'django.views.defaults.bad_request'),
-        url(r'^403/$', 'django.views.defaults.permission_denied'),
-        url(r'^404/$', 'django.views.defaults.page_not_found'),
-        url(r'^500/$', 'django.views.defaults.server_error'),
+        url(r'^400/$', bad_request),
+        url(r'^403/$', permission_denied),
+        url(r'^404/$', page_not_found),
+        url(r'^500/$', server_error),
     ]

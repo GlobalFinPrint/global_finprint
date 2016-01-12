@@ -36,4 +36,12 @@ class Migration(migrations.Migration):
                 name='status',
                 field=models.CharField(default='N', choices=[('C', 'Competed'), ('N', 'Not started'), ('I', 'In progress')], max_length=1),
         ),
+        migrations.RemoveField(
+                model_name='observation',
+                name='set',
+        ),
+        migrations.RemoveField(
+                model_name='siteimage',
+                name='set',
+        ),
     ]

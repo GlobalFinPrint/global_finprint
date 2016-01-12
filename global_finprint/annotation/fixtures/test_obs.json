@@ -1,0 +1,32 @@
+[
+  {
+    "model": "annotation.videoannotator",
+    "pk": 1,
+    "fields": {
+      "create_datetime": "2015-11-03T19:00:22.080Z",
+      "last_modified_datetime": "2015-11-03T19:03:16.655Z",
+      "annotator": 1,
+      "video": 1,
+      "assigned_by": 1,
+      "status": "I",
+      "user": 1
+    }
+  },
+  {
+    "model": "annotation.observation",
+    "pk": 1,
+    "fields": {
+      "create_datetime": "2015-11-03T19:00:22.080Z",
+      "last_modified_datetime": "2015-11-03T19:03:16.655Z",
+      "initial_observation_time": "2015-11-03T19:03:16.655Z",
+      "animal": 1,
+      "sex": "F",
+      "stage": "AD",
+      "length": 250,
+      "behavior": 1,
+      "duration": 15,
+      "video_annotator": 1,
+      "user": 1
+    }
+  }
+]

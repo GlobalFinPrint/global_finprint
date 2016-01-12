@@ -41,6 +41,23 @@ class Animal(models.Model):
     class Meta:
         unique_together = ('genus', 'species')
 
+    @staticmethod
+    def get_for_api(video_annotator):
+        return list(a.to_json() for a in video_annotator.video.set.trip.region.animal_set.all())
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'rank': self.rank,
+            'group': str(self.group),
+            'common_name': self.common_name,
+            'family': self.family,
+            'genus': self.genus,
+            'species': self.species,
+            'fishbase_key': self.fishbase_key,
+            'sealifebase_key': self.sealifebase_key
+        }
+
     def __str__(self):
         return u"{0} {1} ({2})".format(self.genus, self.species, self.common_name)
 
@@ -87,9 +104,29 @@ class Observation(AuditableModel):
 
     behavior = models.ForeignKey(to=AnimalBehavior, null=True)
     duration = models.PositiveIntegerField()
+    comment = models.CharField(max_length=256, null=True)
 
-    set = models.ForeignKey('bruv.Set')
     video_annotator = models.ForeignKey(VideoAnnotator)
+
+    @classmethod
+    def get_for_api(cls, video_annotator):
+        return list(ob.to_json() for ob in cls.objects.filter(video_annotator=video_annotator))
+
+    def set(self):
+        return self.video_annotator.video.set
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'initial_observation_time': self.initial_observation_time,
+            'animal': str(self.animal),
+            'sex': self.get_sex_display(),
+            'stage': self.get_stage_display(),
+            'length': self.length,
+            'behavior': str(self.behavior),
+            'duration': self.duration,
+            'comment': self.comment
+        }
 
     def __str__(self):
         return u"{0}".format(self.initial_observation_time)
@@ -112,4 +149,6 @@ class ObservationImage(Image):
 class SiteImage(Image):
     # todo:  placeholder!
     video = models.ForeignKey(Video)
-    set = models.ForeignKey('bruv.Set')
+
+    def set(self):
+        return self.video.set

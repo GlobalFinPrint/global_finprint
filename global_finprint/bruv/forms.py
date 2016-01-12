@@ -85,30 +85,3 @@ class EnvironmentMeasureForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-
-
-class ObservationForm(forms.ModelForm):
-    initial_observation_time = forms.DateTimeField(
-        input_formats=['%B %d %Y %H:%M'],
-        widget=DateTimePicker(options=datepicker_opts)
-    )
-
-    class Meta:
-        model = Observation
-        fields = ['initial_observation_time',
-                  'animal', 'sex', 'stage', 'length', 'behavior',
-                  'set', 'video_annotator']
-        widgets = {
-            'set': forms.HiddenInput()
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper(self)
-        self.helper.form_class = 'form-inline obs'
-        self.helper.form_action = "{{ action }}"
-        self.helper.form_method = "post"
-        self.helper.layout.append(
-            FormActions(HTML("""<a role="button" class="btn btn-default cancel-button"
-            href="{% url "trip_set_list" trip_pk %}">Cancel</a>"""),
-                        Submit('save', 'Save Observation')))
