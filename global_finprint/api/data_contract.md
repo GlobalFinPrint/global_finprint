@@ -52,7 +52,7 @@ Provides details for the specified set along with data used for annotation tool 
 - file: (string)
 - observations: (array)
     - id: (integer)
-    - initial_observation_time: (datetime)
+    - initial_observation_time: (datetime YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ])
     - animal: (string)
     - sex: (string)
     - stage: (string)
@@ -88,7 +88,7 @@ Provides a list of observations for the specified set.
 **Returns** (JSON):
 - observations: (array)
     - id: (integer)
-    - initial_observation_time: (datetime)
+    - initial_observation_time: (datetime YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ])
     - animal: (string)
     - sex: (string)
     - stage: (string)
@@ -107,7 +107,7 @@ Creates a new observation for the specified set.
 
 **Expects** (POST):
 - token (string)
-- initial_observation_time: (datetime)
+- initial_observation_time: (datetime YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ])
 - animal_id: (integer)
 - sex: ("M", "F", or "U")
 - stage: ("AD", "JD", or "U")
@@ -119,7 +119,7 @@ Creates a new observation for the specified set.
 **Returns** (JSON):
 - observations: (array)
     - id: (integer)
-    - initial_observation_time: (datetime)
+    - initial_observation_time: (datetime YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ])
     - animal: (string)
     - sex: (string)
     - stage: (string)
@@ -143,7 +143,7 @@ Delete an observation for the specified set.
 **Returns** (JSON):
 - observations: (array)
     - id: (integer)
-    - initial_observation_time: (datetime)
+    - initial_observation_time: (datetime YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ])
     - animal: (string)
     - sex: (string)
     - stage: (string)

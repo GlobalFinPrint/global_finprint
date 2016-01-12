@@ -75,12 +75,12 @@ class Observations(APIView):
         return JsonResponse({'observations': Observation.get_for_api(request.va)})
 
     def post(self, request, set_id):
-        params = dict((key, val) for key, val in request.POST if key in Observation._meta.get_all_field_names())
+        params = dict((key, val) for key, val in request.POST.items() if key in Observation._meta.get_all_field_names())
         params['video_annotator'] = request.va
-        params['set'] = request.va.video.set
         params['user'] = request.annotator.user
-        request.va.observation_set.create(**params)
-        request.va.update(status='I')
+        Observation(**params).save()
+        request.va.status = 'I'
+        request.va.save()
         return JsonResponse({'observations': Observation.get_for_api(request.va)})
 
     def delete(self, request, set_id):
