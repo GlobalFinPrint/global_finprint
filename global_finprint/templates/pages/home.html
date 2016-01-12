@@ -1,6 +1,11 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 {% block content %}
     <br/>
     <br/>
-    <h4>[home page]</h4>
+    <div class="center span8 well">
+        <img class="img-responsive image-rounded"
+             src="{% static 'images/fp_main.jpg' %}"
+             />
+    </div>
 {% endblock %}

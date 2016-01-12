@@ -16,6 +16,7 @@
   {
     "fields": {
       "name": "Belize",
+      "code": "BZ",
       "region": 1
     },
     "model": "habitat.location",
@@ -24,6 +25,7 @@
   {
     "fields": {
       "name": "Cuba",
+      "code": "CU",
       "region": 1
     },
     "model": "habitat.location",
@@ -32,6 +34,7 @@
   {
     "fields": {
       "name": "Bahamas",
+      "code": "BS",
       "region": 1
     },
     "model": "habitat.location",
@@ -40,6 +43,7 @@
   {
     "fields": {
       "name": "New Caledonia",
+      "code": "NC",
       "region": 2
     },
     "model": "habitat.location",

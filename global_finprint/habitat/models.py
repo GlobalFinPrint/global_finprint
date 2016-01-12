@@ -13,7 +13,8 @@ class Region(models.Model):
 
 
 class Location(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
+    code = models.CharField(max_length=2, unique=True, help_text='3166-1 alpha-2, if applicable.')
     region = models.ForeignKey(to=Region)
 
     @property
@@ -32,8 +33,9 @@ SITE_TYPE_CHOICES = {
 
 
 class Site(models.Model):
+    name = models.CharField(max_length=100, help_text='Must be unique for site location.')
+    code = models.CharField(max_length=2, help_text='Must be unique for site location.')
     location = models.ForeignKey(Location)
-    name = models.CharField(max_length=100)
     boundary = models.MultiPolygonField(srid=4326, null=True)
     type = models.CharField(max_length=16, choices=SITE_TYPE_CHOICES)
 
@@ -41,6 +43,10 @@ class Site(models.Model):
 
     def __str__(self):
         return u"{0}".format(self.name)
+
+    class Meta:
+        unique_together = (('location', 'name'),
+                           ('location', 'code'),)
 
 
 class MPACompliance(models.Model):
@@ -102,6 +108,7 @@ class ReefType(models.Model):
         values:  slope, crest, flat, back reef, lagoon
     """
     type = models.CharField(max_length=16)
+    code = models.CharField(max_length=1)
     description = models.CharField(max_length=48)
 
     def __str__(self):
@@ -154,12 +161,12 @@ class FishingRestrictions(models.Model):
 
 
 class Reef(models.Model):
+    name = models.CharField(max_length=100, help_text='Must be unique for reef site.')
+    code = models.CharField(max_length=1, help_text='Must be unique for reef site.')
     site = models.ForeignKey(Site)
-    name = models.CharField(max_length=100)
 
     boundary = models.MultiPolygonField(srid=4326, null=True)
 
-    type = models.ForeignKey(to=ReefType)
     protection_status = models.ForeignKey(to=ProtectionStatus)
     shark_gear_in_use = models.ManyToManyField(to=SharkGearInUse, blank=True)
     fishing_restrictions = models.ManyToManyField(to=FishingRestrictions, blank=True)
@@ -170,6 +177,10 @@ class Reef(models.Model):
 
     def __str__(self):
         return u"{0} - {1}".format(self.site, self.name)
+
+    class Meta:
+        unique_together = (('site', 'name'),
+                           ('site', 'code'),)
 
 
 class ReefHabitat(models.Model):
