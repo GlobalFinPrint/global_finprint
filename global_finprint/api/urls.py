@@ -28,6 +28,7 @@ urlpatterns = [
     url(r"^login$", csrf_exempt(views.Login.as_view()), name='api_login'),
     url(r"^logout$", csrf_exempt(views.Logout.as_view()), name='api_logout'),
     url(r"^set$", csrf_exempt(views.SetList.as_view()), name='api_set_list'),
+    url(r"^behaviors$", csrf_exempt(views.BehaviorList.as_view()), name='api_behavior_list'),
     url(r"^set/(?P<set_id>\d+)$", csrf_exempt(views.SetDetail.as_view()), name='api_set_detail'),
     url(r"^set/(?P<set_id>\d+)/obs$", csrf_exempt(views.Observations.as_view()), name='api_observation'),
     url(r"^set/(?P<set_id>\d+)/animals", csrf_exempt(views.AnimalList.as_view()), name='api_animal_list'),

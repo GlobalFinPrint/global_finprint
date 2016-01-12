@@ -52,7 +52,7 @@ Provides details for the specified set along with data used for annotation tool 
 - file: (string)
 - observations: (array)
     - id: (integer)
-    - initial_observation_time: (datetime)
+    - initial_observation_time: (datetime YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ])
     - animal: (string)
     - sex: (string)
     - stage: (string)
@@ -70,6 +70,9 @@ Provides details for the specified set along with data used for annotation tool 
     - species: (string)
     - fishbase_key: (integer)
     - sealifebase_key: (integer)
+- behaviors: (array)
+    - id (integer)
+    - type (string)
 
 
 ### Observation listing
@@ -85,7 +88,7 @@ Provides a list of observations for the specified set.
 **Returns** (JSON):
 - observations: (array)
     - id: (integer)
-    - initial_observation_time: (datetime)
+    - initial_observation_time: (datetime YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ])
     - animal: (string)
     - sex: (string)
     - stage: (string)
@@ -104,12 +107,19 @@ Creates a new observation for the specified set.
 
 **Expects** (POST):
 - token (string)
-- TODO NEW OBS PROPS 
+- initial_observation_time: (datetime YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ])
+- animal_id: (integer)
+- sex: ("M", "F", or "U")
+- stage: ("AD", "JD", or "U")
+- duration: (integer)
+- behavior_id: (integer) (optional)
+- length: (integer) (optional)
+- comment: (string) (optional)
 
 **Returns** (JSON):
 - observations: (array)
     - id: (integer)
-    - initial_observation_time: (datetime)
+    - initial_observation_time: (datetime YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ])
     - animal: (string)
     - sex: (string)
     - stage: (string)
@@ -133,7 +143,7 @@ Delete an observation for the specified set.
 **Returns** (JSON):
 - observations: (array)
     - id: (integer)
-    - initial_observation_time: (datetime)
+    - initial_observation_time: (datetime YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ])
     - animal: (string)
     - sex: (string)
     - stage: (string)
@@ -164,6 +174,19 @@ Provides a list of animals that can be observed for the specified set.
     - species: (string)
     - fishbase_key: (integer)
     - sealifebase_key: (integer)
+
+
+### Behavior list
+`GET /api/behaviors`
+Provides a list of animal behaviors.
+
+**Expects** (GET):
+- token (string)
+
+**Returns** (JSON):
+- behaviors: (array)
+    - id (integer)
+    - type (string)
 
 
 ### Mark set as done
