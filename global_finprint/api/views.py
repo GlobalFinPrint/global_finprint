@@ -1,7 +1,7 @@
 from django.views.generic.base import View
 from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotFound
 from django.contrib.auth import authenticate
-from ..annotation.models import Annotator, VideoAnnotator, Observation, Animal
+from ..annotation.models import Annotator, VideoAnnotator, Observation, Animal, AnimalBehavior
 
 
 class APIView(View):
@@ -66,7 +66,8 @@ class SetDetail(APIView):
         return JsonResponse({'set': {'id': request.va.id,
                                      'file': str(request.va.video.file),
                                      'observations': Observation.get_for_api(request.va),
-                                     'animals': Animal.get_for_api(request.va)}})
+                                     'animals': Animal.get_for_api(request.va),
+                                     'behaviors': list(AnimalBehavior.objects.all().values())}})
 
 
 class Observations(APIView):
@@ -90,6 +91,11 @@ class Observations(APIView):
 class AnimalList(APIView):
     def get(self, request, set_id):
         return JsonResponse({'animals': Animal.get_for_api(request.va)})
+
+
+class BehaviorList(APIView):
+    def get(self, reqeust):
+        return JsonResponse({'behaviors': list(AnimalBehavior.objects.all().values())})
 
 
 class StatusUpdate(APIView):

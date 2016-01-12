@@ -70,6 +70,9 @@ Provides details for the specified set along with data used for annotation tool 
     - species: (string)
     - fishbase_key: (integer)
     - sealifebase_key: (integer)
+- behaviors: (array)
+    - id (integer)
+    - type (string)
 
 
 ### Observation listing
@@ -104,7 +107,14 @@ Creates a new observation for the specified set.
 
 **Expects** (POST):
 - token (string)
-- TODO NEW OBS PROPS 
+- initial_observation_time: (datetime)
+- animal_id: (integer)
+- sex: ("M", "F", or "U")
+- stage: ("AD", "JD", or "U")
+- duration: (integer)
+- behavior_id: (integer) (optional)
+- length: (integer) (optional)
+- comment: (string) (optional)
 
 **Returns** (JSON):
 - observations: (array)
@@ -164,6 +174,19 @@ Provides a list of animals that can be observed for the specified set.
     - species: (string)
     - fishbase_key: (integer)
     - sealifebase_key: (integer)
+
+
+### Behavior list
+`GET /api/behaviors`
+Provides a list of animal behaviors.
+
+**Expects** (GET):
+- token (string)
+
+**Returns** (JSON):
+- behaviors: (array)
+    - id (integer)
+    - type (string)
 
 
 ### Mark set as done
