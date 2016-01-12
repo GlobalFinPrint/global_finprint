@@ -2,25 +2,25 @@
 `POST /api/login`
 Logs an annotator into the API and provides an auth token and the list of unfinished sets assigned.
 
-Expects (POST):
+**Expects** (POST):
 - username: (string)
 - password: (string)
 
-Returns (JSON):
+**Returns** (JSON):
 - token: (string)
 - sets (array)
--- id: (integer)
--- file: (string)
+    - id: (integer)
+    - file: (string)
 
 
 ### Logout
 `POST /api/logout`
 Logs an annotator out of the API.
 
-Expects (POST):
+**Expects** (POST):
 - token: (string)
 
-Returns (JSON):
+**Returns** (JSON):
 - status: "OK"
 
 
@@ -28,149 +28,149 @@ Returns (JSON):
 `GET /api/set`
 Provides a list of unfinished sets assigned to an annotator for review. 
 
-Expects (GET):
+**Expects** (GET):
 - token: (string)
 
-Returns (JSON):
+**Returns** (JSON):
 - sets (array)
--- id: (integer)
--- file: (string)
+    - id: (integer)
+    - file: (string)
 
 
 ### Set detail
 `GET /api/set/:id`
 Provides details for the specified set along with data used for annotation tool display.
 
-Expects (URL):
+**Expects** (URL):
 - id (integer)
 
-Expects (GET):
+**Expects** (GET):
 - token (string)
 
-Returns (JSON):
+**Returns** (JSON):
 - id: (integer)
 - file: (string)
 - observations: (array)
--- id: (integer)
--- initial_observation_time: (datetime)
--- animal: (string)
--- sex: (string)
--- stage: (string)
--- length: (integer)
--- behavior: (string)
--- duration: (integer)
+    - id: (integer)
+    - initial_observation_time: (datetime)
+    - animal: (string)
+    - sex: (string)
+    - stage: (string)
+    - length: (integer)
+    - behavior: (string)
+    - duration: (integer)
 - animals: (array)
--- id: (integer)
--- rank: (integer)
--- group: (string)
--- common_name: (string)
--- family: (string)
--- genus: (string)
--- species: (string)
--- fishbase_key: (integer)
--- sealifebase_key: (integer)
+    - id: (integer)
+    - rank: (integer)
+    - group: (string)
+    - common_name: (string)
+    - family: (string)
+    - genus: (string)
+    - species: (string)
+    - fishbase_key: (integer)
+    - sealifebase_key: (integer)
 
 
 ### Observation listing
 `GET /api/set/:id/obs`
 Provides a list of observations for the specified set.
 
-Expects (URL):
+**Expects** (URL):
 - id (integer)
 
-Expects (GET):
+**Expects** (GET):
 - token (string)
 
-Returns (JSON):
+**Returns** (JSON):
 - observations: (array)
--- id: (integer)
--- initial_observation_time: (datetime)
--- animal: (string)
--- sex: (string)
--- stage: (string)
--- length: (integer)
--- behavior: (string)
--- duration: (integer)
+    - id: (integer)
+    - initial_observation_time: (datetime)
+    - animal: (string)
+    - sex: (string)
+    - stage: (string)
+    - length: (integer)
+    - behavior: (string)
+    - duration: (integer)
 
 
 ### New observation
 `POST /api/set/:id/obs`
 Creates a new observation for the specified set.
 
-Expects (URL):
+**Expects** (URL):
 - id (integer)
 
-Expects (POST):
+**Expects** (POST):
 - token (string)
 - TODO NEW OBS PROPS 
 
-Returns (JSON):
+**Returns** (JSON):
 - observations: (array)
--- id: (integer)
--- initial_observation_time: (datetime)
--- animal: (string)
--- sex: (string)
--- stage: (string)
--- length: (integer)
--- behavior: (string)
--- duration: (integer)
+    - id: (integer)
+    - initial_observation_time: (datetime)
+    - animal: (string)
+    - sex: (string)
+    - stage: (string)
+    - length: (integer)
+    - behavior: (string)
+    - duration: (integer)
 
 
 ### Delete observation
 `DELETE /api/set/:id/obs`
 Delete an observation for the specified set.
 
-Expects (URL):
+**Expects** (URL):
 - id (integer)
 
-Expects (POST):
+**Expects** (POST):
 - token (string)
 - obs_id (integer)
 
-Returns (JSON):
+**Returns** (JSON):
 - observations: (array)
--- id: (integer)
--- initial_observation_time: (datetime)
--- animal: (string)
--- sex: (string)
--- stage: (string)
--- length: (integer)
--- behavior: (string)
--- duration: (integer)
+    - id: (integer)
+    - initial_observation_time: (datetime)
+    - animal: (string)
+    - sex: (string)
+    - stage: (string)
+    - length: (integer)
+    - behavior: (string)
+    - duration: (integer)
 
 
 ### Animal list
 `GET /api/set/:id/animals`
 Provides a list of animals that can be observed for the specified set.
 
-Expects (URL):
+**Expects** (URL):
 - id (integer)
 
-Expects (GET):
+**Expects** (GET):
 - token (string)
 
-Returns (JSON):
+**Returns** (JSON):
 - animals: (array)
--- id: (integer)
--- rank: (integer)
--- group: (string)
--- common_name: (string)
--- family: (string)
--- genus: (string)
--- species: (string)
--- fishbase_key: (integer)
--- sealifebase_key: (integer)
+    - id: (integer)
+    - rank: (integer)
+    - group: (string)
+    - common_name: (string)
+    - family: (string)
+    - genus: (string)
+    - species: (string)
+    - fishbase_key: (integer)
+    - sealifebase_key: (integer)
 
 
 ### Mark set as done
 `POST /api/set/:id/done`
 Updates the status for the specified set to "finished".
 
-Expects (URL):
+**Expects** (URL):
 - id: (integer)
 
-Expects (GET):
+**Expects** (GET):
 - token (string)
 
-Returns:
+**Returns**:
 - status: "OK"
