@@ -104,6 +104,7 @@ class Observation(AuditableModel):
 
     behavior = models.ForeignKey(to=AnimalBehavior, null=True)
     duration = models.PositiveIntegerField()
+    comment = models.CharField(max_length=256, null=True)
 
     video_annotator = models.ForeignKey(VideoAnnotator)
 
@@ -123,7 +124,8 @@ class Observation(AuditableModel):
             'stage': self.get_stage_display(),
             'length': self.length,
             'behavior': str(self.behavior),
-            'duration': self.duration
+            'duration': self.duration,
+            'comment': self.comment
         }
 
     def __str__(self):

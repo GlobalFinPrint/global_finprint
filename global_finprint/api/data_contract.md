@@ -59,6 +59,7 @@ Provides details for the specified set along with data used for annotation tool 
     - length: (integer)
     - behavior: (string)
     - duration: (integer)
+    - comment: (string)
 - animals: (array)
     - id: (integer)
     - rank: (integer)
@@ -91,6 +92,7 @@ Provides a list of observations for the specified set.
     - length: (integer)
     - behavior: (string)
     - duration: (integer)
+    - comment: (string)
 
 
 ### New observation
@@ -114,6 +116,7 @@ Creates a new observation for the specified set.
     - length: (integer)
     - behavior: (string)
     - duration: (integer)
+    - comment: (string)
 
 
 ### Delete observation
@@ -137,6 +140,7 @@ Delete an observation for the specified set.
     - length: (integer)
     - behavior: (string)
     - duration: (integer)
+    - comment: (string)
 
 
 ### Animal list
