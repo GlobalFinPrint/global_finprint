@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from boto.s3.connection import OrdinaryCallingFormat
+
 from .common import *  # noqa
 
 
@@ -53,3 +55,12 @@ INSTALLED_APPS += ('django_extensions', )
 # TESTING
 # ------------------------------------------------------------------------------
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
+# See: http://django-storages.readthedocs.org/en/latest/index.html
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+
+AWS_ACCESS_KEY_ID = env('DJANGO_AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('DJANGO_AWS_SECRET_ACCESS_KEY')
+AWS_S3_SECURE_URLS = False
+AWS_QUERYSTRING_AUTH = False  # don't add complex authentication-related query parameters for requests
+AWS_STORAGE_BUCKET_NAME = 'finprint-videos'

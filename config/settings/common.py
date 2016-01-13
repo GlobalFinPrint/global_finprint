@@ -1,16 +1,8 @@
 # -*- coding: utf-8 -*-
-"""
-Django settings for global_finprint project.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/dev/topics/settings/
-
-For the full list of settings and their values, see
-https://docs.djangoproject.com/en/dev/ref/settings/
-"""
 from __future__ import absolute_import, unicode_literals
 
 import environ
+
 
 ROOT_DIR = environ.Path(__file__) - 3  # (/a/b/myfile.py - 3 = /)
 APPS_DIR = ROOT_DIR.path('global_finprint')
@@ -188,61 +180,29 @@ STATICFILES_DIRS = (
     str(APPS_DIR.path('static')),
 )
 
-
 # See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
-# MEDIA CONFIGURATION
-# ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-root
 MEDIA_ROOT = str(APPS_DIR('media'))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = '/media/'
 
-# URL Configuration
-# ------------------------------------------------------------------------------
 ROOT_URLCONF = 'config.urls'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# AUTHENTICATION CONFIGURATION
-# ------------------------------------------------------------------------------
-# AUTHENTICATION_BACKENDS = (
-#     'django.contrib.auth.backends.ModelBackend',
-#     'allauth.account.auth_backends.AuthenticationBackend',
-# )
-
-# Some really nice defaults
-# ACCOUNT_AUTHENTICATION_METHOD = 'username'
-# ACCOUNT_EMAIL_REQUIRED = True
-# ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-#
-# # Custom user app defaults
-# # Select the correct user model
-# AUTH_USER_MODEL = 'users.User'
-# LOGIN_REDIRECT_URL = 'users:redirect'
-# LOGIN_URL = 'account_login'
 LOGIN_URL = 'finprint_login'
 
 # SLUGLIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 
-
-# LOGGING CONFIGURATION
-# ------------------------------------------------------------------------------
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#logging
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration
-
-# don't go to prod with this...
+# todo:  don't go to prod with this...
 DEBUG_LOG_DIR = '/var/log/global_finprint/debug.log'
 
 LOGGING = {
@@ -284,16 +244,3 @@ LEAFLET_CONFIG = {
     'MIN_ZOOM': 3,
     'MAX_ZOOM': 18,
 }
-
-########## CELERY
-# INSTALLED_APPS += ('global_finprint.taskapp.celery.CeleryConfig',)
-# # if you are not using the django database broker (e.g. rabbitmq, redis, memcached), you can remove the next line.
-# INSTALLED_APPS += ('kombu.transport.django',)
-# BROKER_URL = env("CELERY_BROKER_URL", default='django://')
-########## END CELERY
-
-# AWS S3 Storage
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-AWS_S3_SECURE_URLS = False       # use http instead of https
-AWS_QUERYSTRING_AUTH = False     # don't add complex authentication-related query parameters for requests
-AWS_STORAGE_BUCKET_NAME = 'finprint-videos'
