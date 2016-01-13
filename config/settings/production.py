@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from boto.s3.connection import OrdinaryCallingFormat
 
-from .common import *  # noqa
+from .common import *
+
 
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 
@@ -30,7 +31,7 @@ AWS_EXPIRY = 60 * 60 * 24 * 7
 # DATABASE CONFIGURATION
 # ------------------------------------------------------------------------------
 # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
-DATABASES['default'] = env.db("DATABASE_URL")
+DATABASES['default'] = env.db("DJANGO_DATABASE_URL")
 DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from boto.s3.connection import OrdinaryCallingFormat
 
-from .common import *  # noqa
+from .common import *
 
 
 # DEBUG
@@ -63,4 +63,5 @@ AWS_ACCESS_KEY_ID = env('DJANGO_AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = env('DJANGO_AWS_SECRET_ACCESS_KEY')
 AWS_S3_SECURE_URLS = False
 AWS_QUERYSTRING_AUTH = False  # don't add complex authentication-related query parameters for requests
-AWS_STORAGE_BUCKET_NAME = 'finprint-videos'
+AWS_STORAGE_BUCKET_NAME = env("DJANGO_AWS_STORAGE_BUCKET_NAME", default='finprint-videos-test')
+AWS_AUTO_CREATE_BUCKET = True
