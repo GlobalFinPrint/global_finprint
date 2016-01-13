@@ -2,6 +2,7 @@ from django.contrib.gis.db import models
 from django.core.urlresolvers import reverse
 from django.contrib.gis.geos import Point
 
+from global_finprint.annotation.models import Observation
 from global_finprint.core.models import AuditableModel
 from global_finprint.trip.models import Trip
 from global_finprint.habitat.models import ReefHabitat
@@ -177,6 +178,9 @@ class Set(AuditableModel):
 
     def get_absolute_url(self):
         return reverse('set_update', args=[str(self.id)])
+
+    def observations(self):
+        return Observation.objects.filter(video_annotator__in=self.video.videoannotator_set.all())
 
     def __str__(self):
         return u"{0}".format(self.code)
