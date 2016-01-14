@@ -30,7 +30,8 @@
             <table class="table table-bordered table-condensed set-table" cellspacing="0" width="100%">
                 <thead>
                 <tr class="success">
-                    <th id="reef">Date</th>
+                    <th id="code">Code</th>
+                    <th id="date">Date</th>
                     <th id="reef">Reef</th>
                     <th id="latitude">Lat</th>
                     <th id="longitude">Long</th>
@@ -48,7 +49,8 @@
                 </thead>
                 {% for set in sets %}
                     <tr>
-                        <td>{{ set.set_date|date:"F d Y" }}</td>
+                        <td>{{ set.code }}</td>
+                        <td>{{ set.set_date|date:"M d Y" }}</td>
                         <td>{{ set.reef_habitat }}</td>
                         <td>{{ set.latitude }}</td>
                         <td>{{ set.longitude }}</td>
@@ -57,7 +59,7 @@
                         <td>{{ set.haul_time|date:"H:i" }}</td>
                         <td>{{ set.equipment }}</td>
                         <td>{{ set.visibility }}</td>
-                        <td>{{ set.bait.description }}</td>
+                        <td>{{ set.bait }}</td>
                         <td>
                             <a href="{% url 'set_observation_list' set.trip.id set.id %}">
                                 View ({{ set.observations.count }})
@@ -160,7 +162,7 @@
         {% if request.user.is_authenticated %}
         <div class="row">
             {% if set_pk %}
-            <h3>Edit {{ set_name }}</h3>
+            <h3>Edit set "{{ set_name }}"</h3>
             {% else %}
             <h3>Add new set with environmental measures</h3>
             {% endif %}

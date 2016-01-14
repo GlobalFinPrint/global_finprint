@@ -125,6 +125,9 @@ class Bait(AuditableModel):
     type = models.CharField(max_length=3, choices=BAIT_TYPE_CHOICES)
     oiled = models.BooleanField(default=False, help_text='20ml menhaden oil')
 
+    def __str__(self):
+        return u'{0} {1} {2}'.format(self.get_type_display(), self.description, '*' if self.oiled else '')
+
 
 class Set(AuditableModel):
     # suggested code pattern:
