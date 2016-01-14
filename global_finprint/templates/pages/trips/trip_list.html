@@ -55,7 +55,13 @@
 
         {% if request.user.is_authenticated %}
         <div class="row">
+
+            {% if trip_pk %}
+            <h3>Edit trip "{{ trip_name }}"</h3>
+            {% else %}
             <h3>Add a trip</h3>
+            {% endif %}
+
             <div class="well clearfix">
                 {% crispy trip_form %}
             </div>

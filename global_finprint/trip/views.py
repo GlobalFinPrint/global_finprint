@@ -64,7 +64,9 @@ class TripListView(LoginRequiredMixin, CreateView):
         context['search_form'] = TripSearchForm(self.request.GET or None)
         if 'trip_pk' in self.kwargs:
             context['trip_pk'] = self.kwargs['trip_pk']
-            context['trip_form'] = TripForm(instance=get_object_or_404(Trip, pk=self.kwargs['trip_pk']))
+            trip = get_object_or_404(Trip, pk=self.kwargs['trip_pk'])
+            context['trip_name'] = str(trip)
+            context['trip_form'] = TripForm(instance=trip)
         else:
             context['trip_form'] = TripForm(self.request.POST or None)
         return context
