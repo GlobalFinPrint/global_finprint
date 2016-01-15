@@ -20,6 +20,7 @@
             <table class="table table-bordered table-condensed trip-table" cellspacing="0" width="100%">
                 <thead>
                 <tr class="success">
+                    <th>Code</th>
                     <th>Start date</th>
                     <th>End date</th>
                     <th>Region</th>
@@ -33,6 +34,7 @@
                 <tbody>
                 {% for trip in trips %}
                 <tr>
+                    <td>{{ trip.code }}</td>
                     <td>{{ trip.start_date|date:"F d Y" }}</td>
                     <td>{{ trip.end_date|date:"F d Y" }}</td>
                     <td>{{ trip.region }}</td>

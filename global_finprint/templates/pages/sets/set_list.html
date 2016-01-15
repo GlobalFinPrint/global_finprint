@@ -30,7 +30,7 @@
             <table class="table table-bordered table-condensed set-table" cellspacing="0" width="100%">
                 <thead>
                 <tr class="success">
-                    <th id="code">Code</th>
+                    <th id="code">Trip & set code</th>
                     <th id="date">Date</th>
                     <th id="reef">Reef</th>
                     <th id="latitude">Lat</th>
@@ -49,7 +49,7 @@
                 </thead>
                 {% for set in sets %}
                     <tr>
-                        <td>{{ set.code }}</td>
+                        <td>{{ set }}</td>
                         <td>{{ set.set_date|date:"M d Y" }}</td>
                         <td>{{ set.reef_habitat }}</td>
                         <td>{{ set.latitude }}</td>

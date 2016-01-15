@@ -176,7 +176,7 @@ class Reef(models.Model):
     objects = models.GeoManager()
 
     def __str__(self):
-        return u"{0} - {1}".format(self.site, self.name)
+        return u"{0} - {1} ({2}{3})".format(self.site, self.name, self.site.code, self.code)
 
     class Meta:
         unique_together = (('site', 'name'),

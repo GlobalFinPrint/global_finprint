@@ -8,3 +8,4 @@ loaddata
     global_finprint/habitat/fixtures/test_site
     global_finprint/trip/fixtures/test_trip
     global_finprint/bruv/fixtures/test_set
+    global_finprint/annotation/fixtures/test_obs

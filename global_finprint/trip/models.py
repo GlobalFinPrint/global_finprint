@@ -16,6 +16,9 @@ class Team(AuditableModel):
 
 
 class Trip(AuditableModel):
+    # suggested code pattern:
+    # FP_[location.code]_[start_date.year]_[trip number within location / year]
+    code = models.CharField(max_length=32, help_text='FP_[year]_[loc code]_xx')  # todo:  unique??
     team = models.ForeignKey(Team)
     location = models.ForeignKey(Location)
     boat = models.CharField(max_length=100, blank=True, null=True)
@@ -27,9 +30,4 @@ class Trip(AuditableModel):
         return self.location.region
 
     def __str__(self):
-        # todo:  whatever is most usefully readable ...
-        #   feedback: need this to be searchable: year, location ... team may be less useful.
-        return u"{0} ({1} - {2})".format(self.location.name,
-                                         self.start_date.isoformat(),
-                                         self.end_date.isoformat()
-                                         )
+        return u"{0}".format(self.code)

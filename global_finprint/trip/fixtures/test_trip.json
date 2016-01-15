@@ -23,6 +23,7 @@
   },
   {
     "fields": {
+      "code": "FP_2015_BZ_01",
       "team": 2,
       "boat": "RV Minnow",
       "location": 1,

@@ -99,7 +99,7 @@
       "drop_measure_id": 1,
       "haul_measure_id": 2,
       "video": 1,
-      "code": "FP_2015_BZGE1"
+      "code": "GE_001"
     }
   },
   {
@@ -124,7 +124,7 @@
       "drop_measure_id": 3,
       "haul_measure_id": 4,
       "video": 2,
-      "code": "FP_2015_BZGE2"
+      "code": "GE_002"
     }
   }
 ]

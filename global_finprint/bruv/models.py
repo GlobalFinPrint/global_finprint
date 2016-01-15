@@ -131,9 +131,8 @@ class Bait(AuditableModel):
 
 class Set(AuditableModel):
     # suggested code pattern:
-    # FP_[set_date.year]_[location.code][site.code][reef.code]_[set number within reef]
-    code = models.CharField(max_length=32)
-    # drop_id = models.CharField(max_length=32)
+    # [site.code][reef.code]_[set number within reef]
+    code = models.CharField(max_length=32, help_text='[site + reef code]_xxx')
     set_date = models.DateField()
     coordinates = models.PointField(null=True)
     latitude = models.DecimalField(max_digits=10, decimal_places=6)
@@ -186,4 +185,4 @@ class Set(AuditableModel):
         return Observation.objects.filter(video_annotator__in=self.video.videoannotator_set.all())
 
     def __str__(self):
-        return u"{0}".format(self.code)
+        return u"{0}_{1}".format(self.trip.code, self.code)
