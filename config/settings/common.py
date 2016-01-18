@@ -170,7 +170,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 # STATIC FILE CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-STATIC_ROOT = str(ROOT_DIR('staticfiles'))
+STATIC_ROOT = str(ROOT_DIR('static'))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = '/static/'
@@ -202,8 +202,7 @@ LOGIN_URL = 'finprint_login'
 # SLUGLIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 
-# todo:  don't go to prod with this...
-DEBUG_LOG_DIR = '/var/log/global_finprint/debug.log'
+LOG_DIR = '/var/log/global_finprint/gf_web.log'
 
 LOGGING = {
     'version': 1,
@@ -219,10 +218,16 @@ LOGGING = {
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
         },
-        'log_file': {
+        'debug_log_file': {
             'level':'DEBUG',
+            'filters': ['require_debug_false'],
             'class':'logging.handlers.RotatingFileHandler',
-            'filename': DEBUG_LOG_DIR,
+            'filename': LOG_DIR,
+        },
+        'log_file': {
+            'level':'INFO',
+            'class':'logging.handlers.RotatingFileHandler',
+            'filename': LOG_DIR,
         },
     },
     'loggers': {
@@ -231,9 +236,9 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
-        '': {
-            'handlers': ['log_file'],
-            'level': 'DEBUG',
+        '':
+        {
+            'handlers': ['debug_log_file', 'log_file'],
         },
     }
 }
