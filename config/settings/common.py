@@ -207,10 +207,21 @@ LOG_DIR = '/var/log/global_finprint/gf_web.log'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'debug_formatter': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'terse_formatter': {
+            'format': '%(levelname)s %(asctime)s %(message)s'
+        },
+    },
     'filters': {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse'
-        }
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue'
+        },
     },
     'handlers': {
         'mail_admins': {
@@ -219,14 +230,17 @@ LOGGING = {
             'class': 'django.utils.log.AdminEmailHandler'
         },
         'debug_log_file': {
-            'level':'DEBUG',
-            'filters': ['require_debug_false'],
-            'class':'logging.handlers.RotatingFileHandler',
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'formatter': 'debug_formatter',
+            'class': 'logging.handlers.RotatingFileHandler',
             'filename': LOG_DIR,
         },
         'log_file': {
-            'level':'INFO',
-            'class':'logging.handlers.RotatingFileHandler',
+            'level': 'INFO',
+            'filters': ['require_debug_false'],
+            'formatter': 'terse_formatter',
+            'class': 'logging.handlers.RotatingFileHandler',
             'filename': LOG_DIR,
         },
     },
@@ -237,9 +251,9 @@ LOGGING = {
             'propagate': True,
         },
         '':
-        {
-            'handlers': ['debug_log_file', 'log_file'],
-        },
+            {
+                'handlers': ['debug_log_file', 'log_file'],
+            },
     }
 }
 
