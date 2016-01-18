@@ -4,6 +4,9 @@ from django.contrib.gis.db import models
 class Substrate(models.Model):
     type = models.CharField(max_length=24, unique=True)
 
+    def __str__(self):
+        return u"{0}".format(self.type)
+
 
 class Region(models.Model):
     name = models.CharField(max_length=100)

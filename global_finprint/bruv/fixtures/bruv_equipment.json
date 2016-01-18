@@ -2,7 +2,7 @@
   {
     "fields": {
       "image": "",
-      "type": "rebar"
+      "type": "Rebar"
     },
     "model": "bruv.frametype",
     "pk": 1
@@ -10,7 +10,7 @@
   {
     "fields": {
       "image": "",
-      "type": "stainless rebar"
+      "type": "Stainless rebar"
     },
     "model": "bruv.frametype",
     "pk": 2
@@ -26,7 +26,7 @@
   {
     "fields": {
       "image": "",
-      "type": "mixed"
+      "type": "Mixed"
     },
     "model": "bruv.frametype",
     "pk": 4
