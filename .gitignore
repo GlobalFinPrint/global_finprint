@@ -56,9 +56,14 @@ node_modules/
 .env
 
 global_finprint/static/bower_components
-deploy
+
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+# local deployment bits
+deploy/fabric
+deploy/fabfile.py
+deploy/set_env.sh

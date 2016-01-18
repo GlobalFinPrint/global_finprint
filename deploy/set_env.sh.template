@@ -1,0 +1,15 @@
+#!/bin/bash
+NAME=”global_finprint”
+BASE_DIR=/var/opt/finprint_web/
+DJANGO_DIR=$BASE_DIR/global_finprint
+VIRTUAL_ENV=$BASE_DIR/venv
+
+export DJANGO_SETTINGS_MODULE=config.settings.production
+export DJANGO_DATABASE_URL=postgresql://finprint:finprint@server_address:5432/global_finprint
+export DJANGO_SECRET_KEY="alphanumeric_nonsense_and_some_other_characters"
+export DJANGO_AWS_ACCESS_KEY_ID=string_of_cvapital_letters
+export DJANGO_AWS_SECRET_ACCESS_KEY=alphanumeric_nonsense
+export DJANGO_AWS_STORAGE_BUCKET_NAME=finprint-videos
+export PYTHONPATH=$DJANGO_DIR:$PYTHONPATH
+
+source $VIRTUAL_ENV/bin/activate
