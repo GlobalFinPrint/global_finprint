@@ -1,0 +1,125 @@
+from fabric.api import *
+from fabric.contrib.files import exists
+
+## fill in hosts and key!
+env.hosts = []
+env.key_filename = []
+
+local_app_dir = '../../global_finprint'
+local_config_dir = '.'
+local_settings = './settings'
+
+remote_app_dir = '/var/opt/finprint_web'
+remote_django_dir = remote_app_dir + '/global_finprint'
+remote_venv_dir = remote_app_dir + '/venv'
+remote_log_dir = '/var/log/global_finprint'
+remote_nginx_dir = '/etc/nginx'
+remote_init_dir = '/etc/init'
+
+env.user = 'ubuntu'
+env.activate = 'source '+ remote_venv_dir + '/bin/activate'
+
+
+def install_requirements():
+    sudo('apt-get update')
+
+    sudo('apt-get install -y binutils')
+
+    sudo('apt-get install -y python3.4')
+    sudo('apt-get install -y python3-pip')
+    sudo('apt-get install -y python3-dev')
+    sudo('apt-get install -y python3-psycopg2')
+    sudo('apt-get install -y python-virtualenv')
+
+    sudo('apt-get install -y libproj-dev')
+    sudo('apt-get install -y gdal-bin')
+    sudo('apt-get install -y python3-gdal')
+    sudo('apt-get install -y libpq-dev')
+    # for Pillow
+    sudo('apt-get install -y libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev')
+    sudo('apt-get install -y tcl8.6-dev tk8.6-dev python-tk')
+
+    sudo('apt-get install -y nginx')
+    sudo('apt-get install -y gunicorn')
+    sudo('apt-get install -y git')
+
+    sudo('apt-get install -y nodejs')
+    sudo('apt-get install -y npm')
+    sudo('npm install -g bower')
+    if not exists('/usr/bin/node'):
+        sudo('ln -s /usr/bin/nodejs /usr/bin/node')
+
+
+def create_remote():
+    if not exists(remote_app_dir):
+        sudo('mkdir ' + remote_app_dir)
+        sudo('chown -R www-data:www-data ' + remote_app_dir)
+    if not exists(remote_log_dir):
+        sudo('mkdir ' + remote_log_dir)
+        sudo('chown -R www-data:www-data ' + remote_log_dir)
+    if not exists(remote_django_dir):
+        with cd(remote_app_dir):
+            sudo('git clone https://github.com/GlobalFinPrint/global_finprint', user='www-data')
+        with lcd(local_config_dir):
+            with cd(remote_django_dir):
+                put('set_env.sh', './', use_sudo=True)
+                put('collect_static.sh', './', use_sudo=True)
+                sudo('chown www-data:www-data *.sh')
+    with lcd(local_app_dir):
+        with cd(remote_app_dir):
+            sudo('virtualenv -p /usr/bin/python3 venv', user='www-data')
+
+
+def collect_static():
+    with cd(remote_django_dir):
+        sudo('source ./collect_static.sh', user='www-data')
+
+
+def deploy():
+    with cd(remote_django_dir):
+        sudo('git pull', user='www-data')
+        sudo('source ../venv/bin/activate')
+        sudo('../venv/bin/pip3 install -r ./requirements/production.txt', user='www-data')
+        sudo('bower install --allow-root --config.interactive=false')
+        sudo('chown -R www-data:www-data ./global_finprint/static')
+        collect_static()
+
+
+def configure_gunicorn():
+    with lcd(local_config_dir):
+        with cd(remote_django_dir):
+            put('gunicorn.conf.py', './config/', use_sudo=True)
+        with cd(remote_django_dir):
+            put('run_gunicorn.sh', './', use_sudo=True)
+            sudo('chown www-data:www-data run_gunicorn.sh')
+            sudo('chmod u+x run_gunicorn.sh')
+
+
+def configure_init():
+    with lcd(local_config_dir):
+        with cd(remote_init_dir):
+            put('./global_finprint.conf', './', use_sudo=True)
+            sudo('chown root:root global_finprint.conf')
+    sudo('initctl start global_finprint')
+
+
+def restart_nginx():
+    sudo('/etc/init.d/nginx restart')
+
+
+def configure_nginx():
+    with lcd(local_config_dir):
+        with cd(remote_nginx_dir):
+            put('./nginx.conf', './', use_sudo=True)
+            sudo('chown root:root nginx.conf')
+    sudo('/etc/init.d/nginx reload')
+
+
+def create():
+    install_requirements()
+    create_remote()
+    deploy()
+    configure_gunicorn()
+    configure_init()
+    configure_nginx()
+    restart_nginx()
