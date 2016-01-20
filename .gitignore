@@ -1,9 +1,9 @@
-### OSX ###
+# OSX
 .DS_Store
 .AppleDouble
 .LSOverride
 
-### SublimeText ###
+# SublimeText
 # cache files for sublime text
 *.tmlanguage.cache
 *.tmPreferences.cache
@@ -21,7 +21,6 @@ sftp-config.json
 
 # Basics
 *.py[cod]
-*.pyc
 __pycache__
 
 # Logs
@@ -41,10 +40,8 @@ nosetests.xml
 .idea
 
 # Vim
-
 *~
-*.swp
-*.swo
+*.sw[op]
 
 # npm
 node_modules/
@@ -55,9 +52,6 @@ node_modules/
 # virtual environments
 .env
 
-global_finprint/static/bower_components
-
-
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
@@ -67,3 +61,6 @@ global_finprint/static/bower_components
 deploy/fabric
 deploy/fabfile.py
 deploy/set_env.sh
+
+global_finprint/static/bower_components
+

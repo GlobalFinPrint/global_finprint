@@ -229,13 +229,6 @@ LOGGING = {
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
         },
-        'debug_log_file': {
-            'level': 'DEBUG',
-            'filters': ['require_debug_true'],
-            'formatter': 'debug_formatter',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': LOG_DIR,
-        },
         'log_file': {
             'level': 'INFO',
             'filters': ['require_debug_false'],
@@ -243,6 +236,13 @@ LOGGING = {
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': LOG_DIR,
         },
+        'debug_log_file': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'formatter': 'debug_formatter',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOG_DIR,
+        }
     },
     'loggers': {
         'django.request': {
@@ -251,9 +251,9 @@ LOGGING = {
             'propagate': True,
         },
         '':
-            {
-                'handlers': ['debug_log_file', 'log_file'],
-            },
+        {
+            'handlers': ['debug_log_file', 'log_file'],
+        },
     }
 }
 

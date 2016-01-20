@@ -95,6 +95,10 @@ def configure_gunicorn():
             sudo('chmod u+x run_gunicorn.sh')
 
 
+def restart_gunicorn():
+    sudo('initctl restart global_finprint')
+
+
 def configure_init():
     with lcd(local_config_dir):
         with cd(remote_init_dir):
@@ -123,3 +127,8 @@ def create():
     configure_init()
     configure_nginx()
     restart_nginx()
+
+
+def update():
+    deploy()
+    restart_gunicorn()
