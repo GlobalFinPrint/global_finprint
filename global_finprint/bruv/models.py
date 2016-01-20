@@ -117,7 +117,7 @@ class EnvironmentMeasure(AuditableModel):
                                     choices=SURFACE_CHOP_CHOICES)
 
     def __str__(self):
-        return u'{0}'.format(self.measurement_time)
+        return u'{0} {1}'.format('Env measure for',str(self.set))
 
 
 class Bait(AuditableModel):

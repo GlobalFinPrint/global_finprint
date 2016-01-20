@@ -2,9 +2,9 @@
   {
     "fields": {
       "user": 1,
-      "lead": "Mike Heithaus",
+      "lead": 1,
       "last_modified_datetime": "2015-08-12T18:06:32.221Z",
-      "association": "FIU",
+      "sampler_collaborator": "Whitman",
       "create_datetime": "2015-08-12T18:06:32.221Z"
     },
     "model": "trip.team",
@@ -13,9 +13,9 @@
   {
     "fields": {
       "user": 1,
-      "lead": "Mark Bond",
+      "lead": 2,
       "last_modified_datetime": "2015-08-12T18:06:32.221Z",
-      "association": "Stony Brook",
+      "sampler_collaborator": "Bond/CONCH",
       "create_datetime": "2015-08-12T18:06:32.221Z"
     },
     "model": "trip.team",

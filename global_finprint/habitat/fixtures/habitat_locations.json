@@ -1,17 +1,31 @@
 [
     {
     "fields": {
-      "name": "Caribbean"
+      "name": "Western Atlantic"
     },
     "model": "habitat.region",
     "pk": 1
   },
   {
     "fields": {
-      "name": "Coral Sea"
+      "name": "Coral Triangle"
     },
     "model": "habitat.region",
     "pk": 2
+  },
+  {
+    "fields": {
+      "name": "Pacific"
+    },
+    "model": "habitat.region",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "name": "Indian Ocean"
+    },
+    "model": "habitat.region",
+    "pk": 4
   },
   {
     "fields": {
@@ -44,9 +58,81 @@
     "fields": {
       "name": "New Caledonia",
       "code": "NC",
-      "region": 2
+      "region": 3
     },
     "model": "habitat.location",
     "pk": 4
+  },
+  {
+    "fields": {
+      "name": "Honduras",
+      "code": "HN",
+      "region": 1
+    },
+    "model": "habitat.location",
+    "pk": 5
+  },
+  {
+    "fields": {
+      "name": "Mexico",
+      "code": "MX",
+      "region": 1
+    },
+    "model": "habitat.location",
+    "pk": 6
+  },
+  {
+    "fields": {
+      "name": "Jamaica",
+      "code": "JM",
+      "region": 1
+    },
+    "model": "habitat.location",
+    "pk": 7
+  },
+  {
+    "fields": {
+      "name": "Cayman Islands",
+      "code": "KY",
+      "region": 1
+    },
+    "model": "habitat.location",
+    "pk": 8
+  },
+  {
+    "fields": {
+      "name": "Turks and Caicos",
+      "code": "TC",
+      "region": 1
+    },
+    "model": "habitat.location",
+    "pk": 9
+  },
+  {
+    "fields": {
+      "name": "Barbados",
+      "code": "BB",
+      "region": 1
+    },
+    "model": "habitat.location",
+    "pk": 10
+  },
+  {
+    "fields": {
+      "name": "Trinidad and Tobago",
+      "code": "TT",
+      "region": 1
+    },
+    "model": "habitat.location",
+    "pk": 11
+  },
+  {
+    "fields": {
+      "name": "USA",
+      "code": "US",
+      "region": 1
+    },
+    "model": "habitat.location",
+    "pk": 12
   }
 ]

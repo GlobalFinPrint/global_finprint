@@ -40,19 +40,68 @@
     }
   },
   {
-    "model": "annotation.annotator",
+    "model": "core.affiliation",
     "pk": 1,
     "fields": {
-      "user": 2,
-      "affiliation": "SharkSpotters"
+      "name": "SharkSpotters"
+    }
+  },
+  {
+    "model": "core.affiliation",
+    "pk": 2,
+    "fields": {
+      "name": "Manta College"
+    }
+  },
+  {
+    "model": "core.affiliation",
+    "pk": 3,
+    "fields": {
+      "name": "Global Finprint"
+    }
+  },
+  {
+    "model": "core.affiliation",
+    "pk": 4,
+    "fields": {
+      "name": "FIU"
+    }
+  },
+  {
+    "model": "core.affiliation",
+    "pk": 5,
+    "fields": {
+      "name": "AIMS"
+    }
+  },
+  {
+    "model": "core.affiliation",
+    "pk": 6,
+    "fields": {
+      "name": "Stony Brook"
+    }
+  },
+  {
+    "model": "core.affiliation",
+    "pk": 7,
+    "fields": {
+      "name": "James Cook"
     }
   },
   {
     "model": "annotation.annotator",
-    "pk": 2,
+    "pk": 1,
+    "fields": {
+      "user": 2,
+      "affiliation": 1
+    }
+  },
+  {
+    "model": "annotation.annotator",
+    "pk": 3,
     "fields": {
        "user": 3,
-       "affiliation": "Manta College"
+       "affiliation": 2
     }
   },
   {
@@ -60,7 +109,7 @@
     "pk": 3,
     "fields": {
       "user": 1,
-      "affiliation": "Admin"
+      "affiliation": 3
     }
   },
   {
@@ -68,7 +117,7 @@
     "pk": 1,
     "fields": {
       "user": 4,
-      "affiliation": "Global Finprint"
+      "affiliation": 4
     }
   },
   {
@@ -76,7 +125,7 @@
     "pk": 2,
     "fields": {
       "user": 5,
-      "affiliation": "Global Finprint"
+      "affiliation": 5
     }
   },
   {
@@ -84,7 +133,7 @@
     "pk": 3,
     "fields": {
       "user": 1,
-      "affiliation": "Admin"
+      "affiliation": 3
     }
   },
   {

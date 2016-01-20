@@ -18,7 +18,7 @@
     "fields": {
       "create_datetime": "2015-11-03T19:00:22.080Z",
       "last_modified_datetime": "2015-11-03T19:03:16.655Z",
-      "initial_observation_time": "2015-11-03T19:03:16.655Z",
+      "initial_observation_time": "12345",
       "animal": 1,
       "sex": "F",
       "stage": "AD",

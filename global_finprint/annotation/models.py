@@ -93,7 +93,7 @@ class VideoAnnotator(AuditableModel):
 
 
 class Observation(AuditableModel):
-    initial_observation_time = models.DateTimeField()
+    initial_observation_time = models.DurationField(help_text='ms')
 
     animal = models.ForeignKey(Animal)
     sex = models.CharField(max_length=1,
@@ -118,7 +118,7 @@ class Observation(AuditableModel):
     def to_json(self):
         return {
             'id': self.id,
-            'initial_observation_time': self.initial_observation_time,
+            'initial_observation_time': (self.initial_observation_time.total_seconds() * 1000),
             'animal': str(self.animal),
             'sex': self.get_sex_display(),
             'stage': self.get_stage_display(),
@@ -129,7 +129,7 @@ class Observation(AuditableModel):
         }
 
     def __str__(self):
-        return u"{0}".format(self.initial_observation_time)
+        return u"{0}".format(self.initial_observation_time.total_seconds() * 1000)
 
 
 class Image(AuditableModel):

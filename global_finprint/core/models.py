@@ -19,9 +19,16 @@ class AuditableModel(TimestampedModel):
         abstract = True
 
 
+class Affiliation(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return u"{0}".format(self.name)
+
+
 class FinprintUser(models.Model):
     user = models.OneToOneField(to=User)
-    affiliation = models.CharField(max_length=100)
+    affiliation = models.ForeignKey(to=Affiliation)
     token = models.CharField(max_length=32, null=True)
 
     def set_token(self):
@@ -35,7 +42,7 @@ class FinprintUser(models.Model):
         return True
 
     def __str__(self):
-        return u"{0}, {1} ({2})".format(self.user.last_name, self.user.first_name, self.affiliation)
+        return u"{0}, {1} ({2})".format(self.user.last_name, self.user.first_name, self.affiliation.name)
 
     class Meta:
         abstract = True
