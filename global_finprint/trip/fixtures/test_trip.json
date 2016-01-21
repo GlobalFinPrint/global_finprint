@@ -2,7 +2,7 @@
   {
     "fields": {
       "user": 1,
-      "lead": 4,
+      "lead": 5,
       "last_modified_datetime": "2015-08-12T18:06:32.221Z",
       "sampler_collaborator": "Whitman",
       "create_datetime": "2015-08-12T18:06:32.221Z"
@@ -13,7 +13,7 @@
   {
     "fields": {
       "user": 1,
-      "lead": 5,
+      "lead": 6,
       "last_modified_datetime": "2015-08-12T18:06:32.221Z",
       "sampler_collaborator": "Bond/CONCH",
       "create_datetime": "2015-08-12T18:06:32.221Z"

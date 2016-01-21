@@ -5,11 +5,24 @@
     "fields": {
       "create_datetime": "2015-11-03T19:00:22.080Z",
       "last_modified_datetime": "2015-11-03T19:03:16.655Z",
-      "annotator": 1,
+      "annotator": 4,
       "video": 1,
-      "assigned_by": 1,
+      "assigned_by": 2,
       "status": "I",
-      "user": 1
+      "user": 2
+    }
+  },
+    {
+    "model": "annotation.videoannotator",
+    "pk": 2,
+    "fields": {
+      "create_datetime": "2015-11-03T19:00:22.080Z",
+      "last_modified_datetime": "2015-11-03T19:03:16.655Z",
+      "annotator": 3,
+      "video": 1,
+      "assigned_by": 2,
+      "status": "N",
+      "user": 2
     }
   },
   {
