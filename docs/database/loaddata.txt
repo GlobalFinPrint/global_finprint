@@ -3,6 +3,7 @@ loaddata
     global_finprint/annotation/fixtures/annotation_animal
     global_finprint/bruv/fixtures/bruv_equipment
     global_finprint/habitat/fixtures/habitat_reef_mpa_substrate
+    global_finprint/annotation/fixtures/annotation_fp_leads
 
     global_finprint/annotation/fixtures/test_annotator
     global_finprint/habitat/fixtures/test_site

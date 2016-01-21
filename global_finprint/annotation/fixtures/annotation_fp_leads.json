@@ -1,0 +1,207 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 15,
+    "fields": {
+      "username": "Mark Bond",
+      "email": "markbond8@gmail.com",
+      "last_name": "Mark",
+      "first_name": "Bond"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 16,
+    "fields": {
+      "username": "Leanne Currey",
+      "email": "L.Currey@aims.gov.au",
+      "last_name": "Leanne",
+      "first_name": "Currey"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 17,
+    "fields": {
+      "username": "Conrad Speed",
+      "email": "C.Speed@aims.gov.au",
+      "last_name": "Conrad",
+      "first_name": "Speed"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 18,
+    "fields": {
+      "username": "Michael Heithaus",
+      "email": "heithaus@fiu.edu",
+      "last_name": "Michael",
+      "first_name": "Heithaus"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 19,
+    "fields": {
+      "username": "Demian Chapman",
+      "email": "demian.chapman@stonybrook.edu",
+      "last_name": "Demian",
+      "first_name": "Chapman"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 20,
+    "fields": {
+      "username": "Aaron MacNeil",
+      "email": "macneil@glau.ca",
+      "last_name": "Aaron",
+      "first_name": "MacNeil"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 21,
+    "fields": {
+      "username": "Michelle Heupel",
+      "email": "M.Heupel@aims.gov.au",
+      "last_name": "Michelle",
+      "first_name": "Heupel"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 22,
+    "fields": {
+      "username": "Mark Meekan",
+      "email": "M.Meekan@aims.gov.au",
+      "last_name": "Mark",
+      "first_name": "Meekan"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 23,
+    "fields": {
+      "username": "Colin Simpfendorfer",
+      "email": "colin.simpfendorfer@jcu.edu.au",
+      "last_name": "Colin",
+      "first_name": "Simpfendorfer"
+    }
+  },
+  {
+    "model": "core.affiliation",
+    "pk": 1,
+    "fields": {
+      "name": "Global Finprint"
+    }
+  },
+  {
+    "model": "core.affiliation",
+    "pk": 2,
+    "fields": {
+      "name": "FIU"
+    }
+  },
+  {
+    "model": "core.affiliation",
+    "pk": 3,
+    "fields": {
+      "name": "AIMS"
+    }
+  },
+  {
+    "model": "core.affiliation",
+    "pk": 4,
+    "fields": {
+      "name": "SBU"
+    }
+  },
+  {
+    "model": "core.affiliation",
+    "pk": 5,
+    "fields": {
+      "name": "JCU"
+    }
+  },
+  {
+    "model": "annotation.lead",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "affiliation": 1
+    }
+  },
+  {
+    "model": "annotation.lead",
+    "pk": 1,
+    "fields": {
+      "user": 15,
+      "affiliation": 2
+    }
+  },
+  {
+    "model": "annotation.lead",
+    "pk": 2,
+    "fields": {
+      "user": 16,
+      "affiliation": 3
+    }
+  },
+  {
+    "model": "annotation.lead",
+    "pk": 3,
+    "fields": {
+      "user": 17,
+      "affiliation": 3
+    }
+  },
+  {
+    "model": "annotation.lead",
+    "pk": 4,
+    "fields": {
+      "user": 18,
+      "affiliation": 2
+    }
+  },
+  {
+    "model": "annotation.lead",
+    "pk": 5,
+    "fields": {
+      "user": 19,
+      "affiliation": 4
+    }
+  },
+  {
+    "model": "annotation.lead",
+    "pk": 6,
+    "fields": {
+      "user": 20,
+      "affiliation": 3
+    }
+  },
+  {
+    "model": "annotation.lead",
+    "pk": 7,
+    "fields": {
+      "user": 21,
+      "affiliation": 3
+    }
+  },
+  {
+    "model": "annotation.lead",
+    "pk": 8,
+    "fields": {
+      "user": 22,
+      "affiliation": 3
+    }
+  },
+  {
+    "model": "annotation.lead",
+    "pk": 9,
+    "fields": {
+      "user": 23,
+      "affiliation": 5
+    }
+  }
+]

@@ -3,139 +3,276 @@
     "model": "auth.user",
     "pk": 2,
     "fields": {
-      "username": "First Volunteer",
-      "email": "vol1@sharkspotters.org",
-      "last_name": "Volunteer",
-      "first_name": "First"
+      "username": "Emily Sinico",
+      "email": "emily@sharkspotters.org",
+      "last_name": "Sinico",
+      "first_name": "Emily"
     }
   },
   {
     "model": "auth.user",
     "pk": 3,
     "fields": {
-      "username": "Second Volunteer",
-      "email": "vol2@manta.edu",
-      "last_name": "Volunteer",
-      "first_name": "Second"
+      "username": "Jimmy Doyle",
+      "email": "jd@manta.edu",
+      "last_name": "Doyle",
+      "first_name": "Jimmy"
     }
   },
   {
     "model": "auth.user",
     "pk": 4,
     "fields": {
-      "username": "One Lead",
-      "email": "a.lead@global_finprint.org",
-      "last_name": "Lead",
-      "first_name": "One"
+      "username": "Mat O'Connor",
+      "email": "md@manta.edu",
+      "last_name": "O'Connor",
+      "first_name": "Mat"
     }
   },
   {
     "model": "auth.user",
     "pk": 5,
     "fields": {
-      "username": "Another Lead",
-      "email": "another.lead@global_finprint.org",
-      "last_name": "Lead",
-      "first_name": "Another"
+      "username": "Charles Parnell",
+      "email": "c.parnell@sharkspotters.org",
+      "last_name": "Parnell",
+      "first_name": "Charles"
     }
   },
   {
-    "model": "core.affiliation",
-    "pk": 1,
+    "model": "auth.user",
+    "pk": 6,
     "fields": {
-      "name": "SharkSpotters"
+      "username": "Richard Tierney",
+      "email": "r.tierney@ucd.ie",
+      "last_name": "Tierney",
+      "first_name": "Richard"
     }
   },
   {
-    "model": "core.affiliation",
-    "pk": 2,
+    "model": "auth.user",
+    "pk": 7,
     "fields": {
-      "name": "Manta College"
+      "username": "Ginger Mooney",
+      "email": "gingerm@ucd.ie",
+      "last_name": "Ginger",
+      "first_name": "Mooney"
     }
   },
   {
-    "model": "core.affiliation",
-    "pk": 3,
+    "model": "auth.user",
+    "pk": 8,
     "fields": {
-      "name": "Global Finprint"
+      "username": "Andre Riviere",
+      "email": "andrer@ucd.ie",
+      "last_name": "Andre",
+      "first_name": "Riviere"
     }
   },
   {
-    "model": "core.affiliation",
-    "pk": 4,
+    "model": "auth.user",
+    "pk": 9,
     "fields": {
-      "name": "FIU"
+      "username": "Joe Hynes",
+      "email": "joeh@ucd.ie",
+      "last_name": "Joe",
+      "first_name": "Hynes"
     }
   },
   {
-    "model": "core.affiliation",
-    "pk": 5,
+    "model": "auth.user",
+    "pk": 10,
     "fields": {
-      "name": "AIMS"
+      "username": "John Henchy",
+      "email": "johnh@ucd.ie",
+      "last_name": "John",
+      "first_name": "Henchy"
     }
   },
+  {
+    "model": "auth.user",
+    "pk": 11,
+    "fields": {
+      "username": "Charles Segouin",
+      "email": "csegouin@ndscs.edu",
+      "last_name": "Charles",
+      "first_name": "Segouin"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 12,
+    "fields": {
+      "username": "Gabriel Conroy",
+      "email": "gconroy@ndscs.edu",
+      "last_name": "Gabriel",
+      "first_name": "Conroy"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 13,
+    "fields": {
+      "username": "Bartell D'Arcy",
+      "email": "bdarcy@ndscs.edu",
+      "last_name": "Bartell",
+      "first_name": "D'Arcy"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 14,
+    "fields": {
+      "username": "Freddy Malins",
+      "email": "fmalins@ndscs.edu",
+      "last_name": "Freddy",
+      "first_name": "Malins"
+    }
+  },
+
   {
     "model": "core.affiliation",
     "pk": 6,
     "fields": {
-      "name": "Stony Brook"
+      "name": "SharkSpotters *"
     }
   },
   {
     "model": "core.affiliation",
     "pk": 7,
     "fields": {
-      "name": "James Cook"
+      "name": "Manta College *"
     }
   },
+  {
+    "model": "core.affiliation",
+    "pk": 8,
+    "fields": {
+      "name": "UCD *"
+    }
+  },
+  {
+    "model": "core.affiliation",
+    "pk": 9,
+    "fields": {
+      "name": "NDSCS *"
+    }
+  },
+
   {
     "model": "annotation.annotator",
     "pk": 1,
     "fields": {
-      "user": 2,
+      "user": 1,
       "affiliation": 1
     }
   },
   {
     "model": "annotation.annotator",
-    "pk": 3,
+    "pk": 2,
     "fields": {
-       "user": 3,
-       "affiliation": 2
+      "user": 2,
+      "affiliation": 6
     }
   },
   {
     "model": "annotation.annotator",
     "pk": 3,
     "fields": {
-      "user": 1,
-      "affiliation": 3
+      "user": 3,
+      "affiliation": 7
     }
   },
   {
-    "model": "annotation.lead",
-    "pk": 1,
+    "model": "annotation.annotator",
+    "pk": 4,
     "fields": {
       "user": 4,
-      "affiliation": 4
+      "affiliation": 7
     }
   },
   {
-    "model": "annotation.lead",
-    "pk": 2,
+    "model": "annotation.annotator",
+    "pk": 5,
     "fields": {
       "user": 5,
-      "affiliation": 5
+      "affiliation": 6
     }
   },
   {
-    "model": "annotation.lead",
-    "pk": 3,
+    "model": "annotation.annotator",
+    "pk": 6,
     "fields": {
-      "user": 1,
-      "affiliation": 3
+      "user": 6,
+      "affiliation": 8
     }
   },
+  {
+    "model": "annotation.annotator",
+    "pk": 7,
+    "fields": {
+      "user": 7,
+      "affiliation": 8
+    }
+  },
+
+   {
+    "model": "annotation.annotator",
+    "pk": 8,
+    "fields": {
+      "user": 8,
+      "affiliation": 8
+    }
+  },
+  {
+    "model": "annotation.annotator",
+    "pk": 9,
+    "fields": {
+      "user": 9,
+      "affiliation": 8
+    }
+  },
+  {
+    "model": "annotation.annotator",
+    "pk": 10,
+    "fields": {
+      "user": 10,
+      "affiliation": 8
+    }
+  },
+  {
+    "model": "annotation.annotator",
+    "pk": 11,
+    "fields": {
+      "user": 11,
+      "affiliation": 9
+    }
+  },
+  {
+    "model": "annotation.annotator",
+    "pk": 12,
+    "fields": {
+      "user": 12,
+      "affiliation": 9
+    }
+  },
+  {
+    "model": "annotation.annotator",
+    "pk": 13,
+    "fields": {
+      "user": 13,
+      "affiliation": 9
+    }
+  },
+  {
+    "model": "annotation.annotator",
+    "pk": 14,
+    "fields": {
+      "user": 14,
+      "affiliation": 9
+    }
+  },
+
   {
     "model": "annotation.video",
     "pk": 1,
