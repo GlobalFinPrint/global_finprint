@@ -35,7 +35,21 @@
                     <ul class="annotators">
                         {% if v.videoannotator_set %}
                             {% for va in v.videoannotator_set.all %}
-                                <li>{{ va.annotator.user }} ({{ va.get_status_display }})</li>
+                                <li>
+                                    <span class="va {% if va.status == 'D' %}disabled{% endif %}">
+                                        {{ va.annotator.user }} (<span class="status">{{ va.get_status_display }}</span>)
+                                    </span>
+
+                                    {% if is_lead %}
+                                        {% if va.status == 'N' %}
+                                            <a class="adjust-annotator remove" data-id="{{ va.id }}" data-name="{{ va.annotator.user }}" href="#">Remove</a>
+                                        {% elif va.status == 'D' %}
+                                            <a class="adjust-annotator enable" data-id="{{ va.id }}" data-name="{{ va.annotator.user }}" href="#">Enable</a>
+                                        {% elif va.status == 'I' %}
+                                            <a class="adjust-annotator disable" data-id="{{ va.id }}" data-name="{{ va.annotator.user }}" href="#">Disable</a>
+                                        {% endif %}
+                                    {% endif %}
+                                </li>
                             {% endfor %}
                         {% else %}
                             <li><i>Unassigned</i></li>

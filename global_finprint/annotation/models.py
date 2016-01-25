@@ -16,7 +16,8 @@ ANIMAL_STAGE_CHOICES = {
 VIDEO_ANNOTATOR_CHOICES = {
     ('N', 'Not started'),
     ('I', 'In progress'),
-    ('C', 'Competed')
+    ('C', 'Competed'),
+    ('D', 'Disabled')
 }
 
 

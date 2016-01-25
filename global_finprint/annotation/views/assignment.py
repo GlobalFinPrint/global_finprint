@@ -1,9 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView
+from django.views.generic import CreateView, View
 from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import get_object_or_404
 from django.db.models import Count
+from django.http.response import HttpResponseForbidden, HttpResponseNotFound, HttpResponse
 from ..models import VideoAnnotator, Video, Lead
 from ..forms import VideoAnnotatorForm, VideoAnnotatorSearchForm
 
@@ -31,9 +32,11 @@ class VideoAnnotatorListView(LoginRequiredMixin, CreateView):
             if 'video' in self.request.GET:
                 initial['video'] = get_object_or_404(Video, pk=self.request.GET.get('video', 0))
             context['form'] = VideoAnnotatorForm(initial=initial)
+            context['is_lead'] = True
 
         except Lead.DoesNotExist:
             context['form'] = None
+            context['is_lead'] = False
 
         context['search_form'] = VideoAnnotatorSearchForm(self.request.GET)
         if self.request.GET and context['search_form'].is_valid():
@@ -59,3 +62,48 @@ class VideoAnnotatorListView(LoginRequiredMixin, CreateView):
         else:
             context['videos'] = Video.objects.all()
         return context
+
+
+class RemoveVideoAnnotatorView(View):
+    def post(self, request):
+        try:
+            Lead.objects.get(user=request.user)
+        except Lead.DoesNotExist:
+            return HttpResponseForbidden()
+
+        va = get_object_or_404(VideoAnnotator, pk=request.POST.get('id'))
+
+        if va.status != 'N':
+            return HttpResponseNotFound()
+
+        va.delete()
+
+        return HttpResponse('ok')
+
+
+class DisableVideoAnnotatorView(View):
+    def post(self, request):
+        try:
+            Lead.objects.get(user=request.user)
+        except Lead.DoesNotExist:
+            return HttpResponseForbidden()
+
+        va = get_object_or_404(VideoAnnotator, pk=request.POST.get('id'))
+        va.status = 'D'
+        va.save()
+
+        return HttpResponse('ok')
+
+
+class EnableVideoAnnotatorView(View):
+    def post(self, request):
+        try:
+            Lead.objects.get(user=request.user)
+        except Lead.DoesNotExist:
+            return HttpResponseForbidden()
+
+        va = get_object_or_404(VideoAnnotator, pk=request.POST.get('id'))
+        va.status = 'I'
+        va.save()
+
+        return HttpResponse('ok')
