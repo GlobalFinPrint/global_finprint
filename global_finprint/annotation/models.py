@@ -96,6 +96,10 @@ class VideoAnnotator(AuditableModel):
     def set(self):
         return self.video.set
 
+    @classmethod
+    def get_active_for_annotator(cls, annotator):
+        return cls.objects.filter(annotator=annotator, status__in=['N', 'I'])
+
 
 class Observation(AuditableModel):
     initial_observation_time = models.DurationField(help_text='ms')

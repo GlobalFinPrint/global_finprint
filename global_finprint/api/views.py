@@ -20,7 +20,7 @@ class APIView(View):
 
         if 'set_id' in kwargs:
             try:
-                request.va = VideoAnnotator.objects.filter(annotator=request.annotator).get(pk=kwargs['set_id'])
+                request.va = VideoAnnotator.get_active_for_annotator(request.annotator).get(pk=kwargs['set_id'])
             except VideoAnnotator.DoesNotExist:
                 return HttpResponseNotFound()
 
@@ -43,7 +43,7 @@ class Login(View):
             return HttpResponseForbidden()
 
         va_list = list({'id': va.id, 'set_code': str(va.set()), 'file': str(va.video.file)} for va
-                       in VideoAnnotator.objects.filter(annotator=annotator))
+                       in VideoAnnotator.get_active_for_annotator(annotator))
 
         return JsonResponse({'token': token, 'sets': va_list})
 
@@ -57,7 +57,7 @@ class Logout(APIView):
 class SetList(APIView):
     def get(self, request):
         va_list = list({'id': va.id, 'set_code': str(va.set()), 'file': str(va.video.file)} for va
-                       in VideoAnnotator.objects.filter(annotator=request.annotator))
+                       in VideoAnnotator.get_active_for_annotator(request.annotator))
         return JsonResponse({'sets': va_list})
 
 
