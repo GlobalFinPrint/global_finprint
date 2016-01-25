@@ -42,7 +42,7 @@ class Login(View):
         except Annotator.DoesNotExist:
             return HttpResponseForbidden()
 
-        va_list = list({'id': va.id, 'file': str(va.video.file)} for va
+        va_list = list({'id': va.id, 'set_code': str(va.set()), 'file': str(va.video.file)} for va
                        in VideoAnnotator.objects.filter(annotator=annotator))
 
         return JsonResponse({'token': token, 'sets': va_list})
@@ -56,7 +56,7 @@ class Logout(APIView):
 
 class SetList(APIView):
     def get(self, request):
-        va_list = list({'id': va.id, 'file': str(va.video.file)} for va
+        va_list = list({'id': va.id, 'set_code': str(va.set()), 'file': str(va.video.file)} for va
                        in VideoAnnotator.objects.filter(annotator=request.annotator))
         return JsonResponse({'sets': va_list})
 
@@ -64,6 +64,7 @@ class SetList(APIView):
 class SetDetail(APIView):
     def get(self, request, set_id):
         return JsonResponse({'set': {'id': request.va.id,
+                                     'set_code': str(request.va.set()),
                                      'file': str(request.va.video.file),
                                      'observations': Observation.get_for_api(request.va),
                                      'animals': Animal.get_for_api(request.va),
