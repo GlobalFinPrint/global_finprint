@@ -57,18 +57,24 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
             {% if request.user.is_authenticated %}
-                <ul class="nav navbar-nav">
-                    <li><a href="{% url 'report_home' %}">Reports</a></li>
-                </ul>
+                {% if debug %}
+                <!-- disabling some dev and test links for prod deployment -->
+                    <ul class="nav navbar-nav">
+                        <li><a href="{% url 'report_home' %}">Reports</a></li>
+                    </ul>
+                {% endif %}
                 <ul class="nav navbar-nav">
                     <li><a href="{% url 'trip_list' %}">Manage trips</a></li>
                 </ul>
-                <ul class="nav navbar-nav">
-                    <li><a href="{% url 'video_annotator_list' %}">Manage videos</a></li>
-                </ul>
-                <ul class="nav navbar-nav">
-                    <li><a href="{% url 'set_annotation' %}">Annotate videos</a></li>
-                </ul>
+                {% if debug %}
+                <!-- disabling some dev and test links for prod deployment -->
+                    <ul class="nav navbar-nav">
+                        <li><a href="{% url 'video_annotator_list' %}">Manage videos</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav">
+                        <li><a href="{% url 'set_annotation' %}">Annotate videos</a></li>
+                    </ul>
+                {% endif %}
                 <ul class="nav navbar-nav">
                     <li><a href="/admin"> Admin </a></li>
                 </ul>
