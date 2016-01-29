@@ -42,8 +42,76 @@ var finprint = finprint || {};  //namespace if necessary...
                 .closest('table.set-table')
                     .find('tr.set-' + $(this).data('set')).toggle();
         });
+
+        initAdjustAnnotator();
     });
 
+    function getCSRF() {
+        var cookies = document.cookie.split(';');
+        var i;
+        for (i=0; i<cookies.length; i++) {
+            if (cookies[i].trim().startsWith('csrftoken=')) {
+                return cookies[i].trim().split('=')[1];
+            }
+        }
+    }
+
+    function initAdjustAnnotator() {
+        $('table.video-annotator-table a.adjust-annotator').on('click', function(e) {
+            var $target = $(e.target);
+            var id = $target.data('id');
+            var name = $target.data('name');
+            var $listItem = $target.closest('li');
+            var $vaSpan = $target.siblings('span.va');
+            var $statusSpan = $vaSpan.find('span.status');
+            var url, cb;
+
+            e.preventDefault();
+
+            if ($target.hasClass('remove')) {
+                url = '/assignment/remove/';
+                cb = function() { $listItem.remove(); };
+
+            } else if ($target.hasClass('disable')) {
+                url = '/assignment/disable/';
+                cb = function() {
+                    $vaSpan.addClass('disabled');
+                    $statusSpan.text('Disabled');
+                    $target
+                        .removeClass('disable')
+                        .addClass('enable')
+                        .text('Enable');
+                };
+
+            } else if ($target.hasClass('enable')) {
+                url = '/assignment/enable/';
+                cb = function() {
+                    $vaSpan.removeClass('disabled');
+                    $statusSpan.text('In progress');
+                    $target
+                        .removeClass('enable')
+                        .addClass('disable')
+                        .text('Disable');
+                }
+
+            } else {
+                return false;
+            }
+
+            if ($target.hasClass('remove') && !confirm('Are you sure you wish to remove ' + name + '?')) {
+                return false;
+            }
+
+            $.ajax({
+                url: url,
+                type: 'post',
+                data: { id: id },
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader('X-CSRFToken', getCSRF());
+                }
+            }).done(cb);
+        });
+    }
 
     function unknownType(container){
         var $containerEl = container;

@@ -16,7 +16,8 @@ ANIMAL_STAGE_CHOICES = {
 VIDEO_ANNOTATOR_CHOICES = {
     ('N', 'Not started'),
     ('I', 'In progress'),
-    ('C', 'Competed')
+    ('C', 'Competed'),
+    ('D', 'Disabled')
 }
 
 
@@ -50,6 +51,7 @@ class Animal(models.Model):
             'id': self.id,
             'rank': self.rank,
             'group': str(self.group),
+            'group_id': self.group_id,
             'common_name': self.common_name,
             'family': self.family,
             'genus': self.genus,
@@ -91,6 +93,13 @@ class VideoAnnotator(AuditableModel):
     assigned_by = models.ForeignKey(to=Lead, related_name='assigned_by')
     status = models.CharField(max_length=1, choices=VIDEO_ANNOTATOR_CHOICES, default='N')
 
+    def set(self):
+        return self.video.set
+
+    @classmethod
+    def get_active_for_annotator(cls, annotator):
+        return cls.objects.filter(annotator=annotator, status__in=['N', 'I'])
+
 
 class Observation(AuditableModel):
     initial_observation_time = models.DurationField(help_text='ms')
@@ -120,10 +129,14 @@ class Observation(AuditableModel):
             'id': self.id,
             'initial_observation_time': (self.initial_observation_time.total_seconds() * 1000),
             'animal': str(self.animal),
+            'animal_id': self.animal_id,
             'sex': self.get_sex_display(),
+            'sex_choice': self.sex,
             'stage': self.get_stage_display(),
+            'stage_choice': self.stage,
             'length': self.length,
             'behavior': str(self.behavior),
+            'behavior_id': self.behavior_id,
             'duration': self.duration,
             'comment': self.comment
         }

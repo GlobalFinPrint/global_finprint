@@ -29,7 +29,7 @@ class Affiliation(models.Model):
 class FinprintUser(models.Model):
     user = models.OneToOneField(to=User)
     affiliation = models.ForeignKey(to=Affiliation)
-    token = models.CharField(max_length=32, null=True)
+    token = models.CharField(max_length=32, null=True, blank=True)
 
     def set_token(self):
         self.token = uuid.uuid4().hex
