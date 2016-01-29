@@ -10,6 +10,7 @@ export DJANGO_SECRET_KEY="alphanumeric_nonsense_and_some_other_characters"
 export DJANGO_AWS_ACCESS_KEY_ID=string_of_cvapital_letters
 export DJANGO_AWS_SECRET_ACCESS_KEY=alphanumeric_nonsense
 export DJANGO_AWS_STORAGE_BUCKET_NAME=finprint-videos
+export DJANGO_DEBUG=False
 export PYTHONPATH=$DJANGO_DIR:$PYTHONPATH
 
 source $VIRTUAL_ENV/bin/activate
