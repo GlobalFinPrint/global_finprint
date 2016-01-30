@@ -1,0 +1,254 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$24000$YxRtJqt0Cbrn$//+fDeofke1kleqCRIuUcGQDCV/FjJwdO5E3KUDsMqM=",
+      "last_login": "2016-01-29T22:07:58Z",
+      "is_superuser": true,
+      "username": "GFAdmin",
+      "first_name": "Finprint",
+      "last_name": "Admin",
+      "email": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2016-01-29T22:06:41Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 15,
+    "fields": {
+      "password": "pbkdf2_sha256$24000$7Unpdq4dK9qp$HmP4cd4+/FDkk5o1+Ca8QMOapyB7LeGND3/X5z7lrjg=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "MarkB",
+      "first_name": "Mark",
+      "last_name": "Bond",
+      "email": "markbond8@gmail.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2016-01-29T22:07:06Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 16,
+    "fields": {
+      "password": "pbkdf2_sha256$24000$65oPB3pEidsu$3nKD71wIKehnxxc/XP1tusnhoqsCcurYC20qB/Xq/AU=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "LeanneC",
+      "first_name": "Leanne",
+      "last_name": "Currey",
+      "email": "L.Currey@aims.gov.au",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2016-01-29T22:07:06Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 17,
+    "fields": {
+      "password": "pbkdf2_sha256$24000$BRPYp3Bs2kmr$Ms55tTQGJeaCY6wOTSVbjALH9K0QKQRtcloRkTT/2m4=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "ConradS",
+      "first_name": "Conrad",
+      "last_name": "Speed",
+      "email": "C.Speed@aims.gov.au",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2016-01-29T22:07:06Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 18,
+    "fields": {
+      "password": "pbkdf2_sha256$24000$SN49LsrFMBQT$T1E9OgtTGx7WTZgOpdRRqVCSpI9lTxy51nn9bdZ4Pg0=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "MichaelH",
+      "first_name": "Michael",
+      "last_name": "Heithaus",
+      "email": "heithaus@fiu.edu",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2016-01-29T22:07:06Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 19,
+    "fields": {
+      "password": "pbkdf2_sha256$24000$nOYsOXhd8uxO$ICHqApp9RZfphCX2LvFLZbZ+JL7dO6Rj+4dwrfxwSOY=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "DemianC",
+      "first_name": "Demian",
+      "last_name": "Chapman",
+      "email": "demian.chapman@stonybrook.edu",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2016-01-29T22:07:06Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 20,
+    "fields": {
+      "password": "pbkdf2_sha256$24000$BBXmWtN5P9TZ$DTltI8tbhNF3ZkoZ8oq1KgTD+3uDxNmjRasEkvI0meY=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "AaronM",
+      "first_name": "Aaron",
+      "last_name": "MacNeil",
+      "email": "macneil@glau.ca",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2016-01-29T22:07:07Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 21,
+    "fields": {
+      "password": "pbkdf2_sha256$24000$44UjyinfpV6z$mvhYhKe1FDNTYGx4+uoWez3zWMP5I8nxkENHccu6Fe4=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "MichelleH",
+      "first_name": "Michelle",
+      "last_name": "Heupel",
+      "email": "M.Heupel@aims.gov.au",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2016-01-29T22:07:07Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 22,
+    "fields": {
+      "password": "pbkdf2_sha256$24000$bWY0e9f9l8e8$3NnTxVIZdMYWzcP4U3xUjxFipm77n/1cGoJlo0NDvcQ=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "MarkM",
+      "first_name": "Mark",
+      "last_name": "Meekan",
+      "email": "M.Meekan@aims.gov.au",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2016-01-29T22:07:07Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 23,
+    "fields": {
+      "password": "pbkdf2_sha256$24000$Z4R4DMZ2xepJ$jVvHrdYxFdJeD5DtoXmA5lEbArwGKXcB3mIKtCki1ak=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "ColinS",
+      "first_name": "Colin",
+      "last_name": "Simpfendorfer",
+      "email": "colin.simpfendorfer@jcu.edu.au",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2016-01-29T22:07:07Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 24,
+    "fields": {
+      "password": "pbkdf2_sha256$24000$pe4RoQQmhWwd$BxgGZLbo7XQWJAiw0veq84Ynk75DdT+O96D6nJYfrLI=",
+      "last_login": "2016-01-30T00:06:20.569Z",
+      "is_superuser": true,
+      "username": "AmyB",
+      "first_name": "Amy",
+      "last_name": "Bensinger",
+      "email": "AmyB@vulcan.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2016-01-29T23:46:04Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 25,
+    "fields": {
+      "password": "pbkdf2_sha256$24000$TrPiblGOPfzS$0t18wx5ZeUNE58u92562h3LPfEZ2wMljnaYwSPKpWHc=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "KirkL",
+      "first_name": "Kirk",
+      "last_name": "Larsen",
+      "email": "KirkL@vulcan.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2016-01-30T18:35:17Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 26,
+    "fields": {
+      "password": "pbkdf2_sha256$24000$pB2mfWUzZAGG$P7JZjZ2K8wY+von8yoRVBqLl29Kn9S/1dAxoNfVuDuE=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "StuartG",
+      "first_name": "Stuart",
+      "last_name": "Graham",
+      "email": "StuartG@vulcan.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2016-01-30T18:36:01Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 27,
+    "fields": {
+      "password": "pbkdf2_sha256$24000$IcFScGCuNRHC$dycQ3yAnECHS0or8wWm+eUzVFzNh9pQ7ddHP7E+gXec=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "RobertR",
+      "first_name": "Robert",
+      "last_name": "Reis",
+      "email": "RobertR@vulcan.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2016-01-30T18:36:35Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  }
+]

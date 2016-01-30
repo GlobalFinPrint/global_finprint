@@ -1,4 +1,5 @@
 loaddata
+    global_finprint/core/fixtures/core_users
     global_finprint/habitat/fixtures/habitat_locations
     global_finprint/annotation/fixtures/annotation_animal
     global_finprint/bruv/fixtures/bruv_equipment
