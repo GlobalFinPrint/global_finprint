@@ -25,7 +25,7 @@ class Location(models.Model):
         return Reef.objects.filter(site__in=self.site_set.all().values_list('id', flat=True))
 
     def __str__(self):
-        return u"{0}".format(self.name)
+        return u"{0} ({1})".format(self.name, self.code)
 
 
 SITE_TYPE_CHOICES = {
