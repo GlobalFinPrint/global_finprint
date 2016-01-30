@@ -132,7 +132,7 @@ class Bait(AuditableModel):
 class Set(AuditableModel):
     # suggested code pattern:
     # [site.code][reef.code]_[set number within reef]
-    code = models.CharField(max_length=32, help_text='[site + reef code]_xxx')
+    code = models.CharField(max_length=32, help_text='[site + reef code]_xxx', null=True, blank=True)
     set_date = models.DateField()
     coordinates = models.PointField(null=True)
     latitude = models.DecimalField(max_digits=10, decimal_places=6)
@@ -176,7 +176,16 @@ class Set(AuditableModel):
     def save(self, *args, **kwargs):
         # todo:  we're assuming the input is latitude & longitude!  this should be checked!
         self.coordinates = Point(float(self.longitude), float(self.latitude))
+        if not self.code:  # set code if it hasn't been set
+            self.code = u'{}{}_xxx'.format(self.reef().site.code, self.reef().code)
         super(Set, self).save(*args, **kwargs)
+        self.refresh_from_db()
+        next_id = str(len(Set.objects.filter(trip=self.trip, reef_habitat=self.reef_habitat)) + 1).zfill(3)
+        self.code = self.code.replace('_xxx', u'_{}'.format(next_id))
+        super(Set, self).save(*args, **kwargs)
+
+    def reef(self):
+        return self.reef_habitat.reef
 
     def get_absolute_url(self):
         return reverse('set_update', args=[str(self.id)])
