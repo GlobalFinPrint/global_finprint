@@ -180,7 +180,7 @@ class Set(AuditableModel):
             self.code = u'{}{}_xxx'.format(self.reef().site.code, self.reef().code)
         super(Set, self).save(*args, **kwargs)
         self.refresh_from_db()
-        next_id = str(len(Set.objects.filter(trip=self.trip, reef_habitat__reef=self.reef()))).zfill(3)
+        next_id = str(len(Set.objects.filter(trip=self.trip, reef_habitat__reef=self.reef))).zfill(3)
         self.code = self.code.replace('_xxx', u'_{}'.format(next_id))
         super(Set, self).save(*args, **kwargs)
 
