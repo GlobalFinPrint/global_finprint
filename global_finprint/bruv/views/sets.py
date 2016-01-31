@@ -125,7 +125,8 @@ class SetListView(LoginRequiredMixin, View):
         if all(form.is_valid() for form in [set_form, bait_form, drop_form, haul_form, video_form]):
 
             # get reef_habitat from reef + habitat
-            set_form.cleaned_data['reef_habitat'] = ReefHabitat.get_or_create(
+            # note:  "create new set" uses the .instance, "edit existing set" is using the .cleaned_data.  perhaps do something cleaner?
+            set_form.instance.reef_habitat = set_form.cleaned_data['reef_habitat'] = ReefHabitat.get_or_create(
                     reef=set_form.cleaned_data['reef'],
                     habitat=set_form.cleaned_data['habitat'])
 

@@ -144,7 +144,7 @@ class Set(AuditableModel):
     comments = models.CharField(max_length=255, null=True, blank=True)
 
     equipment = models.ForeignKey(Equipment)
-    reef_habitat = models.ForeignKey(ReefHabitat)
+    reef_habitat = models.ForeignKey(ReefHabitat, blank=True)
     trip = models.ForeignKey(Trip)
 
     bait = models.OneToOneField(

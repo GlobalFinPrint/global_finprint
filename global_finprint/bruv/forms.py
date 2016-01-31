@@ -1,10 +1,7 @@
 from django import forms
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, HTML
-from crispy_forms.bootstrap import FormActions
 from bootstrap3_datetime.widgets import DateTimePicker
 from .models import Set, EnvironmentMeasure, Bait
-from ..annotation.models import Observation
 from ..trip.models import Trip
 from ..habitat.models import Reef, ReefType
 
@@ -37,10 +34,10 @@ class SetForm(forms.ModelForm):
         model = Set
         fields = ['trip', 'code', 'set_date', 'latitude', 'longitude', 'depth',
                   'drop_time', 'haul_time', 'reef', 'habitat', 'equipment', 'visibility',
-                  'reef_habitat']
+                  'reef_habitat',]
+        exclude = ('reef_habitat',)
         widgets = {
             'trip': forms.HiddenInput(),
-            'reef_habitat': forms.HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):
