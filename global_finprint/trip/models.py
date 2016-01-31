@@ -31,7 +31,7 @@ class Trip(AuditableModel):
             self.code = u'FP_{}_{}_xx'.format(self.start_date.year, self.location.code)
         super(Trip, self).save(*args, **kwargs)
         self.refresh_from_db()
-        next_id = str(len(Trip.objects.filter(location=self.location)) + 1).zfill(2)
+        next_id = str(len(Trip.objects.filter(location=self.location, start_date__year=self.start_date.year))).zfill(2)
         self.code = self.code.replace('_xx', u'_{}'.format(next_id))
         super(Trip, self).save(*args, **kwargs)
 
