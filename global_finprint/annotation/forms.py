@@ -50,9 +50,11 @@ class VideoAnnotatorSearchForm(forms.Form):
 
 
 class VideoAnnotatorForm(forms.ModelForm):
+    affiliation = forms.ModelChoiceField(required=False, queryset=Affiliation.objects.order_by('name').all())
+
     class Meta:
         model = VideoAnnotator
-        fields = ['video', 'annotator', 'assigned_by']
+        fields = ['video', 'affiliation', 'annotator', 'assigned_by']
         widgets = {'assigned_by': forms.HiddenInput()}
 
     def __init__(self, *args, **kwargs):

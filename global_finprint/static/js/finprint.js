@@ -43,6 +43,16 @@ var finprint = finprint || {};  //namespace if necessary...
                     .find('tr.set-' + $(this).data('set')).toggle();
         });
 
+        $('div.assign-form #id_affiliation').change(function(e) {
+          var $affiliation = $(e.target);
+          var $annotator = $('div.assign-form #id_annotator');
+          $.get('/assignment/list/', { affiliation: $affiliation.val() }, function(res) {
+            $annotator.empty().append(res.annotators.map(function (a) {
+              return "<option value='" + a.id + "'>" + a.user + "</option>";
+            }).join('\n')).prepend('<option value="" selected="selected">---------</option>');
+          });
+        });
+
         initAdjustAnnotator();
     });
 

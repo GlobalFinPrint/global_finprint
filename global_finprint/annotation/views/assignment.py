@@ -4,8 +4,9 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import get_object_or_404
 from django.db.models import Count
-from django.http.response import HttpResponseForbidden, HttpResponseNotFound, HttpResponse
-from ..models import VideoAnnotator, Video, Lead
+from django.http.response import HttpResponseForbidden, HttpResponseNotFound, HttpResponse, JsonResponse
+from ...core.models import Affiliation
+from ..models import VideoAnnotator, Video, Lead, Annotator
 from ..forms import VideoAnnotatorForm, VideoAnnotatorSearchForm
 
 
@@ -109,3 +110,11 @@ class EnableVideoAnnotatorView(View):
         va.save()
 
         return HttpResponse('ok')
+
+
+class VideoAnnotatorJSONListView(View):
+    def get(self, request):
+        annotators = Annotator.objects.all()
+        if request.GET.get('affiliation', None):
+            annotators = annotators.filter(affiliation=request.GET['affiliation'])
+        return JsonResponse({'annotators': list({'id': a.id, 'user': str(a)} for a in annotators)})
