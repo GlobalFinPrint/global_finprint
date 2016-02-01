@@ -115,7 +115,7 @@ class SetListView(LoginRequiredMixin, View):
         parent_trip = get_object_or_404(Trip, pk=kwargs['trip_pk'])
         context = self._common_context(request, parent_trip)
 
-        set_form = SetForm(request.POST)
+        set_form = SetForm(request.POST, trip_pk=trip_pk)
         bait_form = BaitForm(request.POST)
         drop_form = EnvironmentMeasureForm(request.POST, prefix='drop')
         haul_form = EnvironmentMeasureForm(request.POST, prefix='haul')
@@ -125,7 +125,8 @@ class SetListView(LoginRequiredMixin, View):
         if all(form.is_valid() for form in [set_form, bait_form, drop_form, haul_form, video_form]):
 
             # get reef_habitat from reef + habitat
-            # note:  "create new set" uses the .instance, "edit existing set" is using the .cleaned_data.  perhaps do something cleaner?
+            # note: "create new set" uses the .instance, "edit existing set" is using the .cleaned_data
+            # perhaps do something cleaner?
             set_form.instance.reef_habitat = set_form.cleaned_data['reef_habitat'] = ReefHabitat.get_or_create(
                     reef=set_form.cleaned_data['reef'],
                     habitat=set_form.cleaned_data['habitat'])
