@@ -74,29 +74,5 @@
       "protection_status": 3
     },
     "pk": 4
-  },
-  {
-    "model": "habitat.reefhabitat",
-    "pk": 1,
-    "fields": {
-      "reef": 1,
-      "habitat": 1
-    }
-  },
-  {
-    "model": "habitat.reefhabitat",
-    "pk": 2,
-    "fields": {
-      "reef": 1,
-      "habitat": 3
-    }
-  },
-  {
-    "model": "habitat.reefhabitat",
-    "pk": 3,
-    "fields": {
-      "reef": 2,
-      "habitat": 1
-    }
   }
-]
+ ]
