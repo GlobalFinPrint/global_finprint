@@ -5,9 +5,3 @@ loaddata
     global_finprint/bruv/fixtures/bruv_equipment
     global_finprint/habitat/fixtures/habitat_reef_mpa_substrate
     global_finprint/annotation/fixtures/annotation_fp_leads
-
-    global_finprint/annotation/fixtures/test_annotator
-    global_finprint/habitat/fixtures/test_site
-    global_finprint/trip/fixtures/test_trip
-    global_finprint/bruv/fixtures/test_set
-    global_finprint/annotation/fixtures/test_obs

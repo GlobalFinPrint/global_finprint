@@ -1,0 +1,197 @@
+[
+  {
+    "model": "annotation.animal",
+    "fields": {
+      "group": 1,
+      "common_name": "Lollipop cat shark",
+      "genus": "Cephalurus",
+      "regions": [1],
+      "species": "cephalus",
+      "sealifebase_key": null,
+      "rank": 1,
+      "family": "Scyliorhinidae",
+      "fishbase_key": 803
+    },
+    "pk": 1
+  },
+  {
+    "model": "annotation.animal",
+    "fields": {
+      "group": 1,
+      "common_name": "Common hammerhead shark",
+      "genus": "Sphyrna",
+      "regions": [1, 2],
+      "species": "zygaena",
+      "sealifebase_key": null,
+      "rank": 1,
+      "family": "Sphyrnidae",
+      "fishbase_key": 917
+    },
+    "pk": 2
+  },
+  {
+    "model": "annotation.animal",
+    "fields": {
+      "group": 1,
+      "common_name": "Sand tiger shark",
+      "genus": "Carcharias",
+      "regions": [1],
+      "species": "taurus",
+      "sealifebase_key": null,
+      "rank": 2,
+      "family": "Odontaspididae",
+      "fishbase_key": 747
+    },
+    "pk": 3
+  },
+  {
+    "model": "annotation.animal",
+    "fields": {
+      "group": 1,
+      "common_name": "Rusty carpetshark",
+      "genus": "Parascyllium",
+      "regions": [1],
+      "species": "ferrugineum",
+      "sealifebase_key": null,
+      "rank": 3,
+      "family": "Parascylliidae",
+      "fishbase_key": 5915
+    },
+    "pk": 4
+  },
+  {
+    "model": "annotation.animal",
+    "fields": {
+      "group": 3,
+      "common_name": "Kemp's ridley turtle",
+      "genus": "Lepidochelys",
+      "regions": [1],
+      "species": "kempii",
+      "sealifebase_key": 67114,
+      "rank": 1,
+      "family": "Cheloniidae",
+      "fishbase_key": null
+    },
+    "pk": 5
+  },
+  {
+    "model": "annotation.animal",
+    "fields": {
+      "group": 2,
+      "common_name": "Lesser devil ray",
+      "genus": "Mobula",
+      "regions": [1],
+      "species": "hypostoma",
+      "sealifebase_key": null,
+      "rank": 1,
+      "family": "Myliobatidae",
+      "fishbase_key": 2586
+    },
+    "pk": 6
+  },
+  {
+    "model": "annotation.animal",
+    "fields": {
+      "group": 3,
+      "common_name": "Witch guitarfish",
+      "genus": "Zapteryx",
+      "regions": [1],
+      "species": "xyster",
+      "sealifebase_key": null,
+      "rank": 4,
+      "family": "Rhinobatidae",
+      "fishbase_key": 52476
+    },
+    "pk": 7
+  },
+  {
+    "model": "annotation.animal",
+    "fields": {
+      "group": 2,
+      "common_name": "Spotted eagle ray",
+      "genus": "Aetobatus",
+      "regions": [1],
+      "species": "narinari",
+      "sealifebase_key": null,
+      "rank": 2,
+      "family": "Myliobatinae",
+      "fishbase_key": 1250
+    },
+    "pk": 8
+  },
+  {
+    "model": "annotation.animal",
+    "fields": {
+      "group": 3,
+      "common_name": "Goldentail moray",
+      "genus": "Gymnothorax",
+      "regions": [1],
+      "species": "miliaris",
+      "sealifebase_key": null,
+      "rank": 2,
+      "family": "Muraenidae",
+      "fishbase_key": 1103
+    },
+    "pk": 9
+  },
+  {
+    "model": "annotation.animal",
+    "fields": {
+      "group": 3,
+      "common_name": "Magpie fiddler ray",
+      "genus": "Trygonorrhina",
+      "regions": [1],
+      "species": "melaleuca",
+      "sealifebase_key": null,
+      "rank": 3,
+      "family": "Rhinobatidae",
+      "fishbase_key": 24037
+    },
+    "pk": 11
+  },
+  {
+    "model": "annotation.animal",
+    "fields": {
+      "group": 4,
+      "common_name": "Nassau grouper",
+      "genus": "Epinephelus",
+      "regions": [1],
+      "species": "striatus",
+      "sealifebase_key": null,
+      "rank": 1,
+      "family": "Serranidae",
+      "fishbase_key": 18
+    },
+    "pk": 12
+  },
+  {
+    "model": "annotation.animal",
+    "fields": {
+      "group": 4,
+      "common_name": "Coney",
+      "genus": "Cephalopholis",
+      "regions": [1],
+      "species": "fulva",
+      "sealifebase_key": null,
+      "rank": 2,
+      "family": "Serranidae",
+      "fishbase_key": 8816
+    },
+    "pk": 13
+  },
+  {
+    "model": "annotation.animal",
+    "fields": {
+      "group": 4,
+      "common_name": "Black grouper",
+      "genus": "Mycteroperca",
+      "regions": [1, 2],
+      "species": "bonaci",
+      "sealifebase_key": null,
+      "rank": 3,
+      "family": "Serranidae",
+      "fishbase_key": 1209
+    },
+    "pk": 14
+  }
+]

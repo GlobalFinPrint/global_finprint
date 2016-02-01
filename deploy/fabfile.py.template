@@ -63,7 +63,6 @@ def create_remote():
         with lcd(local_config_dir):
             with cd(remote_django_dir):
                 put('set_env.sh', './', use_sudo=True)
-                put('collect_static.sh', './', use_sudo=True)
                 sudo('chown www-data:www-data *.sh')
     with lcd(local_app_dir):
         with cd(remote_app_dir):
@@ -72,7 +71,47 @@ def create_remote():
 
 def collect_static():
     with cd(remote_django_dir):
-        sudo('source ./collect_static.sh', user='www-data')
+        sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py collectstatic -v0 --noinput', user='www-data')
+
+
+def apply_migrations():
+    with cd(remote_django_dir):
+        sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py migrate', user='www-data')
+
+
+def check_settings():
+    with cd(remote_django_dir):
+        sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py diffsettings --all', user='www-data')
+
+
+def load_data():
+    with cd(remote_django_dir):
+        for fixture in [
+                        'global_finprint/core/fixtures/core_users',
+                        'global_finprint/habitat/fixtures/habitat_locations',
+                        'global_finprint/habitat/fixtures/habitat_site',
+                        'global_finprint/habitat/fixtures/habitat_reef',
+                        'global_finprint/annotation/fixtures/annotation_animal',
+                        'global_finprint/bruv/fixtures/bruv_equipment',
+                        'global_finprint/habitat/fixtures/habitat_reef_mpa_substrate',
+                        'global_finprint/annotation/fixtures/annotation_fp_leads',
+                        ]:
+            sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py loaddata {0}'.format(fixture),
+                user='www-data')
+
+
+def load_test_data():
+    with cd(remote_django_dir):
+        for fixture in [
+                        'global_finprint/annotation/fixtures/test_animal',
+                        'global_finprint/annotation/fixtures/test_annotator',
+                        'global_finprint/habitat/fixtures/test_site',
+                        'global_finprint/trip/fixtures/test_trip',
+                        'global_finprint/bruv/fixtures/test_set',
+                        'global_finprint/annotation/fixtures/test_obs',
+                        ]:
+            sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py loaddata {0}'.format(fixture),
+             user='www-data')
 
 
 def deploy():
@@ -83,6 +122,21 @@ def deploy():
         sudo('bower install --allow-root --config.interactive=false')
         sudo('chown -R www-data:www-data ./global_finprint/static')
         collect_static()
+        apply_migrations()
+        load_data()
+
+
+def deploy_test():
+    with cd(remote_django_dir):
+        sudo('git pull', user='www-data')
+        sudo('source ../venv/bin/activate')
+        sudo('../venv/bin/pip3 install -r ./requirements/local.txt', user='www-data')
+        sudo('bower install --allow-root --config.interactive=false')
+        sudo('chown -R www-data:www-data ./global_finprint/static')
+        collect_static()
+        apply_migrations()
+        load_data()
+        load_test_data()
 
 
 def configure_gunicorn():
@@ -132,3 +186,20 @@ def create():
 def update():
     deploy()
     restart_gunicorn()
+    restart_nginx()
+
+
+def create_test():
+    install_requirements()
+    create_remote()
+    deploy_test()
+    configure_gunicorn()
+    configure_init()
+    configure_nginx()
+    restart_nginx()
+
+
+def update_test():
+    deploy_test()
+    restart_gunicorn()
+    restart_nginx()

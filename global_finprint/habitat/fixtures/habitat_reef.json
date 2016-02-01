@@ -1,0 +1,1352 @@
+[
+    {
+        "model":"habitat.reef",
+        "pk":38,
+        "fields":{
+            "name":"North",
+            "code":"N",
+            "site":12,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":39,
+        "fields":{
+            "name":"South",
+            "code":"S",
+            "site":12,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":40,
+        "fields":{
+            "name":"Belize City",
+            "code":"B",
+            "site":13,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":41,
+        "fields":{
+            "name":"Caye Caulker",
+            "code":"C",
+            "site":14,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":42,
+        "fields":{
+            "name":"Gladden Spit",
+            "code":"G",
+            "site":15,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":43,
+        "fields":{
+            "name":"Glovers Reef",
+            "code":"G",
+            "site":16,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":44,
+        "fields":{
+            "name":"North",
+            "code":"N",
+            "site":16,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":45,
+        "fields":{
+            "name":"South",
+            "code":"S",
+            "site":16,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":46,
+        "fields":{
+            "name":"North",
+            "code":"N",
+            "site":17,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":47,
+        "fields":{
+            "name":"South",
+            "code":"S",
+            "site":17,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":48,
+        "fields":{
+            "name":"South",
+            "code":"S",
+            "site":18,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":49,
+        "fields":{
+            "name":"North",
+            "code":"N",
+            "site":18,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":50,
+        "fields":{
+            "name":"Southwater Cay",
+            "code":"SW",
+            "site":18,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":51,
+        "fields":{
+            "name":"Middle",
+            "code":"M",
+            "site":19,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":52,
+        "fields":{
+            "name":"Reef",
+            "code":"R",
+            "site":19,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":53,
+        "fields":{
+            "name":"South",
+            "code":"S",
+            "site":19,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":54,
+        "fields":{
+            "name":"Jardines de la reina",
+            "code":"J",
+            "site":20,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":55,
+        "fields":{
+            "name":"Elbow Cay Reef",
+            "code":"E",
+            "site":21,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":56,
+        "fields":{
+            "name":"Green Turtle Cay Reef",
+            "code":"G",
+            "site":21,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":57,
+        "fields":{
+            "name":"Sandy point Reef",
+            "code":"S",
+            "site":21,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":58,
+        "fields":{
+            "name":"Aklins",
+            "code":"A",
+            "site":22,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":59,
+        "fields":{
+            "name":"Middle",
+            "code":"M",
+            "site":23,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":60,
+        "fields":{
+            "name":"North",
+            "code":"N",
+            "site":23,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":61,
+        "fields":{
+            "name":"South",
+            "code":"S",
+            "site":23,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":62,
+        "fields":{
+            "name":"Bimini",
+            "code":"B",
+            "site":24,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":63,
+        "fields":{
+            "name":"Cat Island",
+            "code":"C",
+            "site":25,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":64,
+        "fields":{
+            "name":"Conception",
+            "code":"C",
+            "site":26,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":65,
+        "fields":{
+            "name":"Eleuthera ",
+            "code":"E",
+            "site":27,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":66,
+        "fields":{
+            "name":"Cayes Land and Sea Park",
+            "code":"C",
+            "site":28,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":67,
+        "fields":{
+            "name":"Highborne Caye",
+            "code":"H",
+            "site":28,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":68,
+        "fields":{
+            "name":"Lee Stocking",
+            "code":"L",
+            "site":28,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":69,
+        "fields":{
+            "name":"Grand Bahama",
+            "code":"G",
+            "site":29,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":70,
+        "fields":{
+            "name":"Great Inagua",
+            "code":"G",
+            "site":30,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":71,
+        "fields":{
+            "name":"Gun Cay",
+            "code":"G",
+            "site":31,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":72,
+        "fields":{
+            "name":"Nassau North",
+            "code":"N",
+            "site":32,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":73,
+        "fields":{
+            "name":"Nassau South",
+            "code":"S",
+            "site":32,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":74,
+        "fields":{
+            "name":"San Salvador",
+            "code":"S",
+            "site":33,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":75,
+        "fields":{
+            "name":"Guanaja",
+            "code":"G",
+            "site":34,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":76,
+        "fields":{
+            "name":"Roatan",
+            "code":"R",
+            "site":34,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":77,
+        "fields":{
+            "name":"Utila",
+            "code":"U",
+            "site":34,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":78,
+        "fields":{
+            "name":"Vivorillos cays",
+            "code":"V",
+            "site":35,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":79,
+        "fields":{
+            "name":"Banco Chinchorro",
+            "code":"B",
+            "site":36,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":80,
+        "fields":{
+            "name":"Puerto Morelos",
+            "code":"P",
+            "site":37,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":81,
+        "fields":{
+            "name":"Xcalak",
+            "code":"X",
+            "site":38,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":82,
+        "fields":{
+            "name":"Pedro Bank",
+            "code":"P",
+            "site":39,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":83,
+        "fields":{
+            "name":"Grand Cayman",
+            "code":"G",
+            "site":40,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":84,
+        "fields":{
+            "name":"Little Cayman",
+            "code":"L",
+            "site":41,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":85,
+        "fields":{
+            "name":"1",
+            "code":"1",
+            "site":42,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":86,
+        "fields":{
+            "name":"2",
+            "code":"2",
+            "site":42,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":87,
+        "fields":{
+            "name":"Reef 1",
+            "code":"R1",
+            "site":43,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":88,
+        "fields":{
+            "name":"Reef 2",
+            "code":"R2",
+            "site":43,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":89,
+        "fields":{
+            "name":"Reef 3",
+            "code":"R3",
+            "site":43,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":90,
+        "fields":{
+            "name":"Reef 4",
+            "code":"R4",
+            "site":43,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":91,
+        "fields":{
+            "name":"NE Tobago 1",
+            "code":"N1",
+            "site":44,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":92,
+        "fields":{
+            "name":"NE Tobago 2",
+            "code":"N2",
+            "site":44,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":93,
+        "fields":{
+            "name":"SW Tobago 1",
+            "code":"S1",
+            "site":44,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":94,
+        "fields":{
+            "name":"SW Tobago 2",
+            "code":"S2",
+            "site":44,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":95,
+        "fields":{
+            "name":"X reefs",
+            "code":"X",
+            "site":45,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":96,
+        "fields":{
+            "name":"Broward 1",
+            "code":"B1",
+            "site":46,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":97,
+        "fields":{
+            "name":"Broward 2",
+            "code":"B2",
+            "site":46,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":98,
+        "fields":{
+            "name":"Dry Tortugas 1",
+            "code":"T1",
+            "site":46,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":99,
+        "fields":{
+            "name":"Dry Tortugas 2",
+            "code":"T2",
+            "site":46,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":100,
+        "fields":{
+            "name":"Lower Keys 1",
+            "code":"L1",
+            "site":46,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":101,
+        "fields":{
+            "name":"Lower Keys 2",
+            "code":"L2",
+            "site":46,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":102,
+        "fields":{
+            "name":"Lower Keys 3",
+            "code":"L3",
+            "site":46,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":103,
+        "fields":{
+            "name":"Miami-Dade 1",
+            "code":"M1",
+            "site":46,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":104,
+        "fields":{
+            "name":"Miami-Dade 2",
+            "code":"M2",
+            "site":46,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":105,
+        "fields":{
+            "name":"Middle Keys 1",
+            "code":"D1",
+            "site":46,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":106,
+        "fields":{
+            "name":"Middle Keys 2",
+            "code":"D2",
+            "site":46,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":107,
+        "fields":{
+            "name":"Middle Keys 3",
+            "code":"D3",
+            "site":46,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":108,
+        "fields":{
+            "name":"Upper Keys 1",
+            "code":"U1",
+            "site":46,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":109,
+        "fields":{
+            "name":"Upper Keys 2",
+            "code":"U2",
+            "site":46,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":110,
+        "fields":{
+            "name":"Upper Keys 3",
+            "code":"U3",
+            "site":46,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":111,
+        "fields":{
+            "name":"West Palm 1",
+            "code":"W1",
+            "site":46,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    },
+    {
+        "model":"habitat.reef",
+        "pk":112,
+        "fields":{
+            "name":"West Palm 2",
+            "code":"W2",
+            "site":46,
+            "boundary":null,
+            "protection_status":1,
+            "mpa":null,
+            "shark_gear_in_use":[
+
+            ],
+            "fishing_restrictions":[
+
+            ]
+        }
+    }
+]

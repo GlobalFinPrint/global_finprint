@@ -1,0 +1,387 @@
+[
+  {
+    "model": "habitat.site",
+    "pk": 12,
+    "fields": {
+      "name": "Baccalar Chico",
+      "code": "BC",
+      "location": 1,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 13,
+    "fields": {
+      "name": "Belize City",
+      "code": "C",
+      "location": 1,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 14,
+    "fields": {
+      "name": "Caye Caulker",
+      "code": "CC",
+      "location": 1,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 15,
+    "fields": {
+      "name": "Gladden Spit",
+      "code": "GS",
+      "location": 1,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 16,
+    "fields": {
+      "name": "Glovers Reef",
+      "code": "GR",
+      "location": 1,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 17,
+    "fields": {
+      "name": "Lighthouse Reef",
+      "code": "LR",
+      "location": 1,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 18,
+    "fields": {
+      "name": "Southwater Cay",
+      "code": "SC",
+      "location": 1,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 19,
+    "fields": {
+      "name": "Turneffe Atoll",
+      "code": "TA",
+      "location": 1,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 20,
+    "fields": {
+      "name": "X reefs/ sites",
+      "code": "X",
+      "location": 2,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 21,
+    "fields": {
+      "name": "Abaco",
+      "code": "AB",
+      "location": 3,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 22,
+    "fields": {
+      "name": "Aklins",
+      "code": "AK",
+      "location": 3,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 23,
+    "fields": {
+      "name": "Andros",
+      "code": "AN",
+      "location": 3,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 24,
+    "fields": {
+      "name": "Bimini",
+      "code": "BI",
+      "location": 3,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 25,
+    "fields": {
+      "name": "Cat Island",
+      "code": "CI",
+      "location": 3,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 26,
+    "fields": {
+      "name": "Conception",
+      "code": "C",
+      "location": 3,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 27,
+    "fields": {
+      "name": "Eleuthera",
+      "code": "EL",
+      "location": 3,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 28,
+    "fields": {
+      "name": "Exumas",
+      "code": "EX",
+      "location": 3,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 29,
+    "fields": {
+      "name": "Grand Bahama",
+      "code": "GB",
+      "location": 3,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 30,
+    "fields": {
+      "name": "Great Inagua",
+      "code": "GI",
+      "location": 3,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 31,
+    "fields": {
+      "name": "Gun Cay",
+      "code": "GC",
+      "location": 3,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 32,
+    "fields": {
+      "name": "New Providence",
+      "code": "NP",
+      "location": 3,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 33,
+    "fields": {
+      "name": "San Salvador",
+      "code": "SS",
+      "location": 3,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 34,
+    "fields": {
+      "name": "Bay Islands",
+      "code": "BI",
+      "location": 5,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 35,
+    "fields": {
+      "name": "Miskitu Cays",
+      "code": "MC",
+      "location": 5,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 36,
+    "fields": {
+      "name": "Banco Chinchorro",
+      "code": "BC",
+      "location": 6,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 37,
+    "fields": {
+      "name": "Puerto Morelos",
+      "code": "PM",
+      "location": 6,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 38,
+    "fields": {
+      "name": "Xcalak",
+      "code": "X",
+      "location": 6,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 39,
+    "fields": {
+      "name": "Pedro Bank",
+      "code": "PB",
+      "location": 7,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 40,
+    "fields": {
+      "name": "Grand Cayman",
+      "code": "GC",
+      "location": 8,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 41,
+    "fields": {
+      "name": "Little Cayman",
+      "code": "LC",
+      "location": 8,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 42,
+    "fields": {
+      "name": "South Caicos",
+      "code": "SC",
+      "location": 9,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 43,
+    "fields": {
+      "name": "Barbados",
+      "code": "B",
+      "location": 10,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 44,
+    "fields": {
+      "name": "Tobago",
+      "code": "TB",
+      "location": 11,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 45,
+    "fields": {
+      "name": "Trinidad",
+      "code": "TR",
+      "location": 11,
+      "boundary": null,
+      "type": "I"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 46,
+    "fields": {
+      "name": "Florida",
+      "code": "F",
+      "location": 12,
+      "boundary": null,
+      "type": "I"
+    }
+  }
+]

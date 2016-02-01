@@ -39,8 +39,8 @@ class Site(models.Model):
     name = models.CharField(max_length=100, help_text='Must be unique for site location.')
     code = models.CharField(max_length=2, help_text='Must be unique for site location.')
     location = models.ForeignKey(Location)
-    boundary = models.MultiPolygonField(srid=4326, null=True)
-    type = models.CharField(max_length=16, choices=SITE_TYPE_CHOICES)
+    boundary = models.MultiPolygonField(srid=4326, null=True, blank=True)
+    type = models.CharField(max_length=1, choices=SITE_TYPE_CHOICES)
 
     objects = models.GeoManager()
 
@@ -165,10 +165,10 @@ class FishingRestrictions(models.Model):
 
 class Reef(models.Model):
     name = models.CharField(max_length=100, help_text='Must be unique for reef site.')
-    code = models.CharField(max_length=1, help_text='Must be unique for reef site.')
+    code = models.CharField(max_length=2, help_text='Must be unique for reef site.')
     site = models.ForeignKey(Site)
 
-    boundary = models.MultiPolygonField(srid=4326, null=True)
+    boundary = models.MultiPolygonField(srid=4326, null=True, blank=True)
 
     protection_status = models.ForeignKey(to=ProtectionStatus)
     shark_gear_in_use = models.ManyToManyField(to=SharkGearInUse, blank=True)
