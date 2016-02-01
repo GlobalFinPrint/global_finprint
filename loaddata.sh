@@ -3,11 +3,11 @@
 # load base lookup data
 python manage.py loaddata global_finprint/core/fixtures/core_users
 python manage.py loaddata global_finprint/habitat/fixtures/habitat_locations
+python manage.py loaddata global_finprint/habitat/fixtures/habitat_reef_mpa_substrate
 python manage.py loaddata global_finprint/habitat/fixtures/habitat_site
 python manage.py loaddata global_finprint/habitat/fixtures/habitat_reef
 python manage.py loaddata global_finprint/annotation/fixtures/annotation_animal
 python manage.py loaddata global_finprint/bruv/fixtures/bruv_equipment
-python manage.py loaddata global_finprint/habitat/fixtures/habitat_reef_mpa_substrate
 python manage.py loaddata global_finprint/annotation/fixtures/annotation_fp_leads
 
 # load test data
