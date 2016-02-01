@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from crispy_forms.helper import FormHelper
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.layout import Submit, HTML
+from ..core.models import Affiliation
 from .models import Video, VideoAnnotator, Annotator
 from ..trip.models import Trip, Team
 from ..habitat.models import Location, Region
@@ -31,6 +32,8 @@ class VideoAnnotatorSearchForm(forms.Form):
     annotator = forms.ModelChoiceField(required=False,
                                        queryset=Annotator.objects.all(),
                                        label='Assigned annotator')
+    affiliation = forms.ModelChoiceField(required=False,
+                                         queryset=Affiliation.objects.all())
     number_assigned = forms.ChoiceField(required=False,
                                         choices=[(None, '----'), (0, 0), (1, 1), (2, 2), ('3+', '3+')])
 

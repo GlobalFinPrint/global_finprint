@@ -52,15 +52,17 @@ class VideoAnnotatorListView(LoginRequiredMixin, CreateView):
                 query = query.filter(set__trip__region=search_values['region'])
             if search_values['annotator'] is not None:
                 query = query.filter(videoannotator__annotator=search_values['annotator'])
+            if search_values['affiliation'] is not None:
+                query = query.filter(videoannotator__annotator__affiliation=search_values['affiliation'])
             if search_values['number_assigned'] not in (None, ''):
                 query = query.annotate(Count('videoannotator'))
                 if search_values['number_assigned'] == '3+':
                     query = query.filter(videoannotator__count__gte=3)
                 else:
                     query = query.filter(videoannotator__count=search_values['number_assigned'])
-            context['videos'] = query.all()
+            context['videos'] = query.distinct().order_by('pk')
         else:
-            context['videos'] = Video.objects.all()
+            context['videos'] = Video.objects.all().order_by('pk')
         return context
 
 
