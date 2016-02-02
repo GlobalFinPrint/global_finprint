@@ -5,7 +5,6 @@ from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import get_object_or_404
 from django.db.models import Count
 from django.http.response import HttpResponseForbidden, HttpResponseNotFound, HttpResponse, JsonResponse
-from ...core.models import Affiliation
 from ..models import VideoAnnotator, Video, Lead, Annotator
 from ..forms import VideoAnnotatorForm, VideoAnnotatorSearchForm
 

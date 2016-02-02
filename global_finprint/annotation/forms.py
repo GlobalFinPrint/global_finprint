@@ -66,3 +66,10 @@ class VideoAnnotatorForm(forms.ModelForm):
                 FormActions(HTML("""<a role="button" class="btn btn-default cancel-button"
             href="{% url "video_annotator_list" %}">Cancel</a>"""),
                             Submit('save', 'Assign video')))
+
+    def save(self, *args, **kwargs):
+        try:
+            return VideoAnnotator.objects.get(video=self.cleaned_data['video'],
+                                              annotator=self.cleaned_data['annotator'])
+        except VideoAnnotator.DoesNotExist:
+            return super().save(*args, **kwargs)
