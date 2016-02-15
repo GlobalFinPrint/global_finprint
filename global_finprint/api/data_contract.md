@@ -124,6 +124,48 @@ Creates a new observation for the specified set.
 - sex: ("M", "F", or "U")
 - stage: ("AD", "JD", or "U")
 - duration: (integer)
+- behaviors: (comma separated list of integers) (optional)
+- length: (integer) (optional)
+- gear_on_animal: (boolean) (optional)
+- gear_fouled: (boolean) (optional)
+- tag: ("N", "D", "R", or "O") (optional)
+- external_parasites: (boolean) (optional)
+- comment: (string) (optional)
+
+**Returns** (JSON):
+- observations: (array)
+    - id: (integer)
+    - initial_observation_time: (integer)
+    - animal: (string)
+    - sex: (string)
+    - stage: (string)
+    - length: (integer)
+    - behaviors: (array)
+        - id: (integer)
+        - type: (string)
+    - duration: (integer)
+    - gear_on_animal: (boolean)
+    - gear_fouled: (boolean)
+    - tag: (string)
+    - external_parasites: (boolean)
+    - comment: (string)
+
+
+### New observation
+`POST /api/set/:id/obs/:obs_id`
+Creates a new observation for the specified set.
+
+**Expects** (URL):
+- id (integer)
+- obs_id (integer)
+
+**Expects** (POST):
+- token (string)
+- initial_observation_time: (integer)
+- animal_id: (integer)
+- sex: ("M", "F", or "U")
+- stage: ("AD", "JD", or "U")
+- duration: (integer)
 - behavior_ids: (array of integers) (optional)
 - length: (integer) (optional)
 - gear_on_animal: (boolean) (optional)

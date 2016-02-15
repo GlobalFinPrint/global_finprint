@@ -31,6 +31,8 @@ urlpatterns = [
     url(r"^behaviors$", csrf_exempt(views.BehaviorList.as_view()), name='api_behavior_list'),
     url(r"^set/(?P<set_id>\d+)$", csrf_exempt(views.SetDetail.as_view()), name='api_set_detail'),
     url(r"^set/(?P<set_id>\d+)/obs$", csrf_exempt(views.Observations.as_view()), name='api_observation'),
+    url(r"^set/(?P<set_id>\d+)/obs/(?P<obs_id>\d+)$", csrf_exempt(views.ObservationUpdate.as_view()),
+        name='api_observation_update'),
     url(r"^set/(?P<set_id>\d+)/animals", csrf_exempt(views.AnimalList.as_view()), name='api_animal_list'),
     url(r"^set/(?P<set_id>\d+)/done", csrf_exempt(views.StatusUpdate.as_view()), name='api_status_update'),
 ]

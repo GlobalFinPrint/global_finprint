@@ -146,7 +146,7 @@ class Observation(AuditableModel):
             'stage': self.get_stage_display(),
             'stage_choice': self.stage,
             'length': self.length,
-            'behaviors': list({'id': b.pk, 'type': b.type} for b in self.behaviors),
+            'behaviors': list({'id': b.pk, 'type': b.type} for b in self.behaviors.all()),
             'duration': self.duration,
             'gear_on_animal': self.gear_on_animal,
             'gear_fouled': self.gear_fouled,

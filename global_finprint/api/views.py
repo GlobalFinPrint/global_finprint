@@ -1,6 +1,7 @@
 from django.views.generic.base import View
 from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotFound
 from django.contrib.auth import authenticate
+from django.shortcuts import get_object_or_404
 from ..annotation.models import Annotator, VideoAnnotator, Observation, Animal, AnimalBehavior
 
 
@@ -86,6 +87,19 @@ class Observations(APIView):
 
     def delete(self, request, set_id):
         Observation.objects.filter(video_annotator=request.va).get(pk=request.GET.get('obs_id')).delete()
+        return JsonResponse({'observations': Observation.get_for_api(request.va)})
+
+
+class ObservationUpdate(APIView):
+    def post(self, request, set_id, obs_id):
+        obs = get_object_or_404(Observation, pk=obs_id, video_annotator=request.va)
+        params = dict((key, val) for key, val in request.POST.items() if key in Observation._meta.get_all_field_names())
+        params['user'] = request.annotator.user
+        for key, val in params.items():
+            if key == 'behaviors':
+                val = val.split(',') if val != '' else []
+            setattr(obs, key, val)
+        obs.save()
         return JsonResponse({'observations': Observation.get_for_api(request.va)})
 
 
