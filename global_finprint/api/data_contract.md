@@ -52,13 +52,17 @@ Provides details for the specified set along with data used for annotation tool 
 - file: (string)
 - observations: (array)
     - id: (integer)
-    - initial_observation_time: (datetime YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ])
+    - initial_observation_time: (integer)
     - animal: (string)
     - sex: (string)
     - stage: (string)
     - length: (integer)
     - behavior: (string)
     - duration: (integer)
+    - gear_on_animal: (boolean)
+    - gear_fouled: (boolean)
+    - tag: (string)
+    - external_parasites: (boolean)
     - comment: (string)
 - animals: (array)
     - id: (integer)
@@ -88,13 +92,17 @@ Provides a list of observations for the specified set.
 **Returns** (JSON):
 - observations: (array)
     - id: (integer)
-    - initial_observation_time: (datetime YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ])
+    - initial_observation_time: (integer)
     - animal: (string)
     - sex: (string)
     - stage: (string)
     - length: (integer)
     - behavior: (string)
     - duration: (integer)
+    - gear_on_animal: (boolean)
+    - gear_fouled: (boolean)
+    - tag: (string)
+    - external_parasites: (boolean)
     - comment: (string)
 
 
@@ -107,25 +115,33 @@ Creates a new observation for the specified set.
 
 **Expects** (POST):
 - token (string)
-- initial_observation_time: (datetime YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ])
+- initial_observation_time: (integer)
 - animal_id: (integer)
 - sex: ("M", "F", or "U")
 - stage: ("AD", "JD", or "U")
 - duration: (integer)
 - behavior_id: (integer) (optional)
 - length: (integer) (optional)
+- gear_on_animal: (boolean) (optional)
+- gear_fouled: (boolean) (optional)
+- tag: ("N", "D", "R", or "O") (optional)
+- external_parasites: (boolean) (optional)
 - comment: (string) (optional)
 
 **Returns** (JSON):
 - observations: (array)
     - id: (integer)
-    - initial_observation_time: (datetime YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ])
+    - initial_observation_time: (integer)
     - animal: (string)
     - sex: (string)
     - stage: (string)
     - length: (integer)
     - behavior: (string)
     - duration: (integer)
+    - gear_on_animal: (boolean)
+    - gear_fouled: (boolean)
+    - tag: (string)
+    - external_parasites: (boolean)
     - comment: (string)
 
 
@@ -143,13 +159,17 @@ Delete an observation for the specified set.
 **Returns** (JSON):
 - observations: (array)
     - id: (integer)
-    - initial_observation_time: (datetime YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ])
+    - initial_observation_time: (integer)
     - animal: (string)
     - sex: (string)
     - stage: (string)
     - length: (integer)
     - behavior: (string)
     - duration: (integer)
+    - gear_on_animal: (boolean)
+    - gear_fouled: (boolean)
+    - tag: (string)
+    - external_parasites: (boolean)
     - comment: (string)
 
 
@@ -191,7 +211,7 @@ Provides a list of animal behaviors.
 
 ### Mark set as done
 `POST /api/set/:id/done`
-Updates the status for the specified set to "finished".
+Updates the status for the specified set to "Ready for review".
 
 **Expects** (URL):
 - id: (integer)

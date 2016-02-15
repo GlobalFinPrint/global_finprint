@@ -20,7 +20,12 @@ VIDEO_ANNOTATOR_CHOICES = {
     ('C', 'Competed'),
     ('D', 'Disabled')
 }
-
+TAG_CHOICES = {
+    ('N', 'None'),
+    ('D', 'Dart tag'),
+    ('R', 'Roto tag'),
+    ('O', 'Other')
+}
 
 class AnimalGroup(models.Model):
     name = models.CharField(max_length=24)
@@ -116,6 +121,11 @@ class Observation(AuditableModel):
     duration = models.PositiveIntegerField()
     comment = models.CharField(max_length=256, null=True)
 
+    gear_on_animal = models.BooleanField(default=False)
+    gear_fouled = models.BooleanField(default=False)
+    tag = models.CharField(max_length=1, choices=TAG_CHOICES, default='N')
+    external_parasites = models.BooleanField(default=False)
+
     video_annotator = models.ForeignKey(VideoAnnotator)
 
     @classmethod
@@ -139,6 +149,10 @@ class Observation(AuditableModel):
             'behavior': str(self.behavior),
             'behavior_id': self.behavior_id,
             'duration': self.duration,
+            'gear_on_animal': self.gear_on_animal,
+            'gear_fouled': self.gear_fouled,
+            'tag': self.get_tag_display(),
+            'external_parasites': self.external_parasites,
             'comment': self.comment
         }
 
