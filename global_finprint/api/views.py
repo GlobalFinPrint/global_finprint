@@ -101,5 +101,5 @@ class BehaviorList(APIView):
 
 class StatusUpdate(APIView):
     def post(self, request, set_id):
-        request.va.update(status='C')
+        request.va.update(status='R')
         return JsonResponse({'status': 'OK'})
