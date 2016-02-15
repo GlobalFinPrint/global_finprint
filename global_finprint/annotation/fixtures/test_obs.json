@@ -36,7 +36,7 @@
       "sex": "F",
       "stage": "AD",
       "length": 250,
-      "behavior": 1,
+      "behaviors": [1],
       "duration": 15,
       "video_annotator": 1,
       "user": 1
