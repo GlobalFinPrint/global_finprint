@@ -4,7 +4,8 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import get_object_or_404, render_to_response
 from django.db.models import Count
-from django.http.response import HttpResponseForbidden, HttpResponseNotFound, HttpResponse, JsonResponse
+from django.http.response import HttpResponseForbidden, HttpResponseNotFound, \
+    HttpResponse, JsonResponse, HttpResponseRedirect
 from ...bruv.models import Trip
 from ..models import VideoAnnotator, Video, Lead, Annotator
 from ..forms import VideoAnnotatorForm, VideoAnnotatorSearchForm, SelectTripForm
@@ -130,3 +131,10 @@ class VideoAnnotatorJSONListView(View):
         if request.GET.get('affiliation', None):
             annotators = annotators.filter(affiliation=request.GET['affiliation'])
         return JsonResponse({'annotators': list({'id': a.id, 'user': str(a)} for a in annotators)})
+
+
+class VideoAutoAssignView(View):
+    def get(self, request, trip_id):
+        # TODO auto assign videos here
+        messages.success(request, 'Videos auto assigned!')
+        return HttpResponseRedirect(reverse_lazy('video_annotator_list', kwargs={'trip_id': trip_id}))
