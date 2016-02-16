@@ -54,6 +54,7 @@ var finprint = finprint || {};  //namespace if necessary...
         });
 
         initAdjustAnnotator();
+        initAssignButtons();
     });
 
     function getCSRF() {
@@ -64,6 +65,27 @@ var finprint = finprint || {};  //namespace if necessary...
                 return cookies[i].trim().split('=')[1];
             }
         }
+    }
+
+    function initAssignButtons() {
+      var $form = $('form.video-annotator-trip-select');
+      $form.submit(function() { return false; });
+
+      $form.find('a.manual-assign').click(function(e) {
+        e.preventDefault();
+        var id = $form.find('#id_trip').val();
+        if (id) {
+          window.location.href = '/assignment/' + id;
+        }
+      });
+
+      $form.find('a.auto-assign').click(function(e) {
+        e.preventDefault();
+        var id = $form.find('#id_trip').val();
+        if (id) {
+          window.location.href = '/assignment/auto/' + id;
+        }
+      });
     }
 
     function initAdjustAnnotator() {

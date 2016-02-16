@@ -85,7 +85,8 @@ class SelectTripForm(forms.Form):
         self.helper.form_class = 'form-inline video-annotator-trip-select'
         self.helper.layout.append(
                 FormActions(
-                        HTML("""<a role="button" class="btn btn-default"
-                        href="#">Auto-assign</a>"""),
-                        HTML("""<a role="button" class="btn btn-default"
-                        href="#">Auto-assign</a>""")))
+                        HTML("""<a role="button" class="btn btn-info manual-assign"
+                        href="#">Manual assign</a>"""),
+                        HTML("""<a role="button" class="btn btn-primary auto-assign"
+                        href="#">Auto assign</a>""")
+                ))
