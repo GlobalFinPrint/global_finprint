@@ -21,8 +21,6 @@ class VideoForm(forms.ModelForm):
 
 
 class VideoAnnotatorSearchForm(forms.Form):
-    trip = forms.ModelChoiceField(required=False,
-                                  queryset=Trip.objects.all())
     team = forms.ModelChoiceField(required=False,
                                   queryset=Team.objects.all())
     location = forms.ModelChoiceField(required=False,
@@ -38,15 +36,16 @@ class VideoAnnotatorSearchForm(forms.Form):
                                         choices=[(None, '----'), (0, 0), (1, 1), (2, 2), ('3+', '3+')])
 
     def __init__(self, *args, **kwargs):
+        trip_id = kwargs.pop('trip_id')
+        reset_url = reverse('video_annotator_list', kwargs={'trip_id': trip_id})
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_class = 'form-inline video-annotator-search'
-        self.helper.form_action = reverse('video_annotator_list')
+        self.helper.form_action = reverse('video_annotator_list', kwargs={'trip_id': trip_id})
         self.helper.form_method = "get"
         self.helper.layout.append(
                 FormActions(HTML("""<a role="button" class="btn btn-default cancel-button"
-                href="{% url "video_annotator_list" %}">Reset search</a>"""),
-                            Submit('', 'Search videos')))
+                href="{0}">Reset search</a>""".format(reset_url)), Submit('', 'Search videos')))
 
 
 class VideoAnnotatorForm(forms.ModelForm):
@@ -58,14 +57,15 @@ class VideoAnnotatorForm(forms.ModelForm):
         widgets = {'assigned_by': forms.HiddenInput()}
 
     def __init__(self, *args, **kwargs):
+        trip_id = kwargs.pop('trip_id')
+        reset_url = reverse('video_annotator_list', kwargs={'trip_id': trip_id})
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_class = 'form-inline video-annotator'
-        self.helper.form_action = reverse('video_annotator_list')
+        self.helper.form_action = reverse('video_annotator_list', kwargs={'trip_id': trip_id})
         self.helper.layout.append(
                 FormActions(HTML("""<a role="button" class="btn btn-default cancel-button"
-            href="{% url "video_annotator_list" %}">Cancel</a>"""),
-                            Submit('save', 'Assign video')))
+                href="{0}">Cancel</a>""".format(reset_url)), Submit('save', 'Assign video')))
 
     def save(self, *args, **kwargs):
         try:
@@ -73,3 +73,19 @@ class VideoAnnotatorForm(forms.ModelForm):
                                               annotator=self.cleaned_data['annotator'])
         except VideoAnnotator.DoesNotExist:
             return super().save(*args, **kwargs)
+
+
+class SelectTripForm(forms.Form):
+    trip = forms.ModelChoiceField(required=False,
+                                  queryset=Trip.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_class = 'form-inline video-annotator-trip-select'
+        self.helper.layout.append(
+                FormActions(
+                        HTML("""<a role="button" class="btn btn-default"
+                        href="#">Auto-assign</a>"""),
+                        HTML("""<a role="button" class="btn btn-default"
+                        href="#">Auto-assign</a>""")))

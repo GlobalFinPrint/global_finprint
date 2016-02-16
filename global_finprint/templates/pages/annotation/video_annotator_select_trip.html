@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row">
+    <h3>Select a trip</h3>
+    <div class="well clearfix">
+        {% crispy select_trip_form %}
+    </div>
+</div>
+{% endblock %}

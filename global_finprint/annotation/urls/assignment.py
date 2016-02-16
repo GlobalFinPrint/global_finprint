@@ -1,10 +1,11 @@
 from django.conf.urls import url
 from global_finprint.annotation.views.assignment import \
     VideoAnnotatorListView, RemoveVideoAnnotatorView, DisableVideoAnnotatorView, \
-    EnableVideoAnnotatorView, VideoAnnotatorJSONListView
+    EnableVideoAnnotatorView, VideoAnnotatorJSONListView, VideoAnnotatorSelectTripView
 
 urlpatterns = [
-    url(r"^$", VideoAnnotatorListView.as_view(), name='video_annotator_list'),
+    url(r"^$", VideoAnnotatorSelectTripView.as_view(), name='video_annotator_select_trip'),
+    url(r"^(?P<trip_id>\d+)$", VideoAnnotatorListView.as_view(), name='video_annotator_list'),
     url(r"^remove/$", RemoveVideoAnnotatorView.as_view(), name='remove_video_annotator'),
     url(r"^disable/$", DisableVideoAnnotatorView.as_view(), name='disable_video_annotator'),
     url(r"^enable/$", EnableVideoAnnotatorView.as_view(), name='disable_video_annotator'),

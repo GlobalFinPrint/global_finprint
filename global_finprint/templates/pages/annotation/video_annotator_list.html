@@ -10,12 +10,14 @@
     </div>
 
     <div class="row">
+        <h3 class="inline">Videos from {{ trip_name }}</h3>
+        <a href="{% url 'video_annotator_select_trip' %}">Select a different trip</a>
+        <br />
         <table class="table table-bordered table-condensed video-annotator-table" cellspacing="0" width="100%">
             <thead>
             <tr class="success">
                 <th>Video</th>
                 <th>Set</th>
-                <th>Trip</th>
                 <th>Team</th>
                 <th>Location</th>
                 <th>Region</th>
@@ -27,7 +29,6 @@
                 <tr>
                     <td>{{ v.file }}</td>
                     <td>{{ v.set }}</td>
-                    <td>{{ v.set.trip }}</td>
                     <td>{{ v.set.trip.team }}</td>
                     <td>{{ v.set.trip.location }}</td>
                     <td>{{ v.set.trip.region }}</td>
