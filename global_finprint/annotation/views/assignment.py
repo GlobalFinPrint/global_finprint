@@ -80,7 +80,7 @@ class VideoAnnotatorListView(LoginRequiredMixin, CreateView):
         return context
 
 
-class RemoveVideoAnnotatorView(View):
+class RemoveVideoAnnotatorView(LoginRequiredMixin, View):
     def post(self, request):
         try:
             Lead.objects.get(user=request.user)
@@ -97,7 +97,7 @@ class RemoveVideoAnnotatorView(View):
         return HttpResponse('ok')
 
 
-class DisableVideoAnnotatorView(View):
+class DisableVideoAnnotatorView(LoginRequiredMixin, View):
     def post(self, request):
         try:
             Lead.objects.get(user=request.user)
@@ -111,7 +111,7 @@ class DisableVideoAnnotatorView(View):
         return HttpResponse('ok')
 
 
-class EnableVideoAnnotatorView(View):
+class EnableVideoAnnotatorView(LoginRequiredMixin, View):
     def post(self, request):
         try:
             Lead.objects.get(user=request.user)
@@ -125,7 +125,7 @@ class EnableVideoAnnotatorView(View):
         return HttpResponse('ok')
 
 
-class VideoAnnotatorJSONListView(View):
+class VideoAnnotatorJSONListView(LoginRequiredMixin, View):
     def get(self, request):
         annotators = Annotator.objects.all()
         if request.GET.get('affiliation', None):
@@ -133,13 +133,26 @@ class VideoAnnotatorJSONListView(View):
         return JsonResponse({'annotators': list({'id': a.id, 'user': str(a)} for a in annotators)})
 
 
-class VideoAutoAssignView(View):
+class VideoAutoAssignView(LoginRequiredMixin, View):
+    def assign_video(self, annotators, video):
+        avail = list(a for a in annotators if video not in a.videos_assigned())
+        assigned_by = Lead.objects.get(user_id=self.request.user)
+        while len(video.annotators_assigned()) < 2 and len(annotators) > 1:
+            ann = min(avail, key=lambda a: len(a.videos_assigned()))
+            VideoAnnotator(annotator=ann, video=video, assigned_by=assigned_by).save()
+            avail.remove(ann)
+
     def get(self, request, ids):
         trip_id, aff_id = ids.split('_')
+        annotators = Annotator.objects.filter(affiliation_id=aff_id).all()
         try:
-            videos = Video.objects.filter(set__trip_id=trip_id).all()
-            annotators = Annotator.objects.filter(affiliation_id=aff_id).all()
+            for video in Video.objects.filter(set__trip_id=trip_id).all():
+                self.assign_video(annotators, video)
             messages.success(request, 'Videos auto assigned!')
-        except Exception:  # TODO need to be more specific
-            messages.error(request, 'Error auto assigning videos')
+
+        except Lead.DoesNotExist:
+            messages.error(request, 'Logged in user must be a Lead to assign videos')
+        except Exception as e:  # TODO need to be more specific (?)
+            messages.error(request, 'Error auto assigning videos: {}'.format(e))
+
         return HttpResponseRedirect(reverse_lazy('video_annotator_list', kwargs={'trip_id': trip_id}))

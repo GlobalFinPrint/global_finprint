@@ -81,6 +81,9 @@ class AnimalBehavior(models.Model):
 class Video(AuditableModel):
     file = models.FileField(null=True, blank=True)
 
+    def annotators_assigned(self):
+        return VideoAnnotator.objects.filter(video=self).filter(~models.Q(status='D')).all()
+
     def __str__(self):
         return u"{0}".format(self.file)
 
