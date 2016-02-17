@@ -14,8 +14,8 @@
         <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}"/>
         <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap-theme.min.css' %}"/>
         <link rel="stylesheet" href="{% static 'bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css' %}"/>
-        {% leaflet_js %}
-{#        <link rel="stylesheet" href="{% static 'bower_components/leaflet/dist/leaflet.css' %}"/>#}
+        <link rel="stylesheet" href="{% static 'bower_components/bootstrap-multiselect/dist/css/bootstrap-multiselect.css' %}"/>
+        {% leaflet_css %}
         <link href="{% static 'css/project.css' %}" rel="stylesheet"/>
     {% endblock %}
 
@@ -26,14 +26,10 @@
         <script type="text/javascript" src="{% static 'bower_components/moment/min/moment.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js' %}"></script>
-        {% leaflet_css %}
-{#        <script type="text/javascript" src="{% static 'bower_components/leaflet/dist/leaflet.js' %}"></script>#}
+        <script type="text/javascript" src="{% static 'bower_components/bootstrap-multiselect/dist/js/bootstrap-multiselect.js' %}"></script>
+        {% leaflet_js %}
         <script src="{% static 'js/finprint.js' %}"></script>
     {% endblock javascript %}
-
-    {% block angular %}
-        <script src="{% static 'bower_components/angular/angular.min.js' %}"></script>
-    {% endblock %}
 
 </head>
 
