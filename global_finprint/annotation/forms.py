@@ -76,8 +76,10 @@ class VideoAnnotatorForm(forms.ModelForm):
 
 
 class SelectTripForm(forms.Form):
-    trip = forms.ModelChoiceField(required=False,
-                                  queryset=Trip.objects.all())
+    trip = forms.ModelChoiceField(required=True, queryset=Trip.objects.all())
+    affiliation = forms.ModelChoiceField(required=False,
+                                         queryset=Affiliation.objects.all(),
+                                         help_text='Required for auto assign')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

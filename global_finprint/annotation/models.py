@@ -90,7 +90,8 @@ class Lead(FinprintUser):
 
 
 class Annotator(FinprintUser):
-    pass
+    def videos_assigned(self):
+        return VideoAnnotator.objects.filter(annotator=self).all()
 
 
 class VideoAnnotator(AuditableModel):

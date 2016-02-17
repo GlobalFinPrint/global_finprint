@@ -134,7 +134,12 @@ class VideoAnnotatorJSONListView(View):
 
 
 class VideoAutoAssignView(View):
-    def get(self, request, trip_id):
-        # TODO auto assign videos here
-        messages.success(request, 'Videos auto assigned!')
+    def get(self, request, ids):
+        trip_id, aff_id = ids.split('_')
+        try:
+            videos = Video.objects.filter(set__trip_id=trip_id).all()
+            annotators = Annotator.objects.filter(affiliation_id=aff_id).all()
+            messages.success(request, 'Videos auto assigned!')
+        except Exception:  # TODO need to be more specific
+            messages.error(request, 'Error auto assigning videos')
         return HttpResponseRedirect(reverse_lazy('video_annotator_list', kwargs={'trip_id': trip_id}))

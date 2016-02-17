@@ -81,9 +81,10 @@ var finprint = finprint || {};  //namespace if necessary...
 
       $form.find('a.auto-assign').click(function(e) {
         e.preventDefault();
-        var id = $form.find('#id_trip').val();
-        if (id) {
-          window.location.href = '/assignment/auto/' + id;
+        var tripId = $form.find('#id_trip').val();
+        var affId = $form.find('#id_affiliation').val();
+        if (tripId && affId) {
+          window.location.href = '/assignment/auto/' + tripId + '_' + affId;
         }
       });
     }
