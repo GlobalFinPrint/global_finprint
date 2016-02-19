@@ -1,5 +1,6 @@
 from django import forms
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ValidationError
 from crispy_forms.helper import FormHelper
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.layout import Submit, HTML
@@ -49,11 +50,12 @@ class VideoAnnotatorSearchForm(forms.Form):
 
 
 class VideoAnnotatorForm(forms.ModelForm):
-    affiliation = forms.ModelChoiceField(required=False, queryset=Affiliation.objects.order_by('name').all())
+    affiliation = forms.ModelChoiceField(queryset=Affiliation.objects.order_by('name'))
+    annotators = forms.ModelMultipleChoiceField(queryset=Annotator.objects.order_by('user__last_name'))
 
     class Meta:
         model = VideoAnnotator
-        fields = ['video', 'affiliation', 'annotator', 'assigned_by']
+        fields = ['video', 'affiliation', 'annotators', 'assigned_by']
         widgets = {'assigned_by': forms.HiddenInput()}
 
     def __init__(self, *args, **kwargs):
@@ -65,14 +67,18 @@ class VideoAnnotatorForm(forms.ModelForm):
         self.helper.form_action = reverse('video_annotator_list', kwargs={'trip_id': trip_id})
         self.helper.layout.append(
                 FormActions(HTML("""<a role="button" class="btn btn-default cancel-button"
-                href="{0}">Cancel</a>""".format(reset_url)), Submit('save', 'Assign video')))
+                href="{0}">Cancel</a>""".format(reset_url)), Submit('save', 'Add annotators')))
 
     def save(self, *args, **kwargs):
-        try:
-            return VideoAnnotator.objects.get(video=self.cleaned_data['video'],
-                                              annotator=self.cleaned_data['annotator'])
-        except VideoAnnotator.DoesNotExist:
-            return super().save(*args, **kwargs)
+        existing_ann = self.cleaned_data['video'].annotators_assigned()
+        return list(
+            VideoAnnotator(video=self.cleaned_data['video'],
+                           annotator=ann,
+                           assigned_by=self.cleaned_data['assigned_by']
+                           ).save()
+            for ann in self.cleaned_data['annotators']
+            if ann not in existing_ann
+        )
 
 
 class SelectTripForm(forms.Form):

@@ -24,16 +24,18 @@ class VideoAnnotatorListView(LoginRequiredMixin, CreateView):
     form_class = VideoAnnotatorForm
     context_object_name = 'video_annotator'
     template_name = 'pages/annotation/video_annotator_list.html'
-    success_msg = 'Video annotator assigned'
+    success_msg = 'Annotator(s) added'
 
     def get_success_url(self):
+        messages.success(self.request, self.success_msg)
         return reverse_lazy('video_annotator_list', kwargs={'trip_id': self.kwargs['trip_id']})
 
-    def get_form_kwargs(self):
-        return {'trip_id': self.kwargs['trip_id']}
+    def get_form(self, **kwargs):
+        return self.form_class(self.request.POST or None, trip_id=self.kwargs['trip_id'])
 
     def form_invalid(self, form):
-        messages.error(self.request, 'Form errors found')
+        errors = ' ,'.join(list(str(e) for e in form.errors.items() + form.non_field_errors()))
+        messages.error(self.request, 'Form errors found: {}'.format(errors))
         return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
@@ -127,10 +129,17 @@ class EnableVideoAnnotatorView(LoginRequiredMixin, View):
 
 class VideoAnnotatorJSONListView(LoginRequiredMixin, View):
     def get(self, request):
-        annotators = Annotator.objects.all()
+        annotators = []
+        selected_annotators = []
+
+        if request.GET.get('video', None):
+            selected_annotators = Annotator.objects.filter(videoannotator__video_id=request.GET['video'])
         if request.GET.get('affiliation', None):
-            annotators = annotators.filter(affiliation=request.GET['affiliation'])
-        return JsonResponse({'annotators': list({'id': a.id, 'user': str(a)} for a in annotators)})
+            annotators = Annotator.objects.filter(affiliation_id=request.GET['affiliation']) \
+                .order_by('user__last_name')
+
+        return JsonResponse({'annotators': list({'id': a.id, 'user': str(a)} for a
+                                                in annotators if a not in selected_annotators)})
 
 
 class VideoAutoAssignView(LoginRequiredMixin, View):
