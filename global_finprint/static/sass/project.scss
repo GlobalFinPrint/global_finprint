@@ -52,6 +52,17 @@
     padding-bottom: 15px;
     margin-right: 5px;
 
+    &.has-error {
+      position: relative;
+      padding-bottom: 30px;
+
+      span.help-block {
+        position: absolute;
+        top: 55px;
+        left: 0;
+      }
+    }
+
     p.help-block {
       display: inline;
     }
