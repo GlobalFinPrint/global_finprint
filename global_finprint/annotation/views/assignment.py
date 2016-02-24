@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.db.models import Count
 from django.http.response import HttpResponseForbidden, HttpResponseNotFound, \
     HttpResponse, JsonResponse, HttpResponseRedirect
+from django.template import RequestContext
 from ...bruv.models import Trip
 from ..models import VideoAnnotator, Video, Lead, Annotator
 from ..forms import VideoAnnotatorForm, VideoAnnotatorSearchForm, SelectTripForm
@@ -15,7 +16,7 @@ class VideoAnnotatorSelectTripView(LoginRequiredMixin, View):
     template = 'pages/annotation/video_annotator_select_trip.html'
 
     def get(self, request):
-        context = {'select_trip_form': SelectTripForm}
+        context = RequestContext(request, {'select_trip_form': SelectTripForm})
         return render_to_response(self.template, context=context)
 
 
