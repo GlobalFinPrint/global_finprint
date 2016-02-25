@@ -146,7 +146,8 @@ class SetListView(LoginRequiredMixin, View):
             else:
                 edited_set = get_object_or_404(Set, pk=set_pk)
                 for k, v in set_form.cleaned_data.items():
-                    setattr(edited_set, k, v)
+                    if k not in ('reef', 'habitat'):
+                        setattr(edited_set, k, v)
                 for k, v in bait_form.cleaned_data.items():
                     setattr(edited_set.bait, k, v)
                 for k, v in drop_form.cleaned_data.items():
