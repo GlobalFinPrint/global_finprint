@@ -140,7 +140,7 @@ class SetListView(LoginRequiredMixin, View):
                 new_set.video = video_form.save()
                 new_set.save()
 
-                messages.success(self.request, 'Set and drop/haul measures created')
+                messages.success(self.request, 'Set created')
 
             # edit existing set and env measures
             else:
@@ -163,7 +163,7 @@ class SetListView(LoginRequiredMixin, View):
                 edited_set.haul_measure.save()
                 edited_set.video.save()
 
-                messages.success(self.request, 'Set and drop/haul measures updated')
+                messages.success(self.request, 'Set updated')
 
             # navigate back to set list
             success_url = reverse_lazy('trip_set_list', args=trip_pk)
