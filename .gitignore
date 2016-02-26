@@ -63,4 +63,4 @@ deploy/fabfile.py
 deploy/set_env.sh
 
 global_finprint/static/bower_components
-
+global_finprint/media/
