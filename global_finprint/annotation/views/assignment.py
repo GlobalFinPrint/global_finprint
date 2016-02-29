@@ -61,12 +61,6 @@ class VideoAnnotatorListView(LoginRequiredMixin, CreateView):
         if self.request.GET and context['search_form'].is_valid():
             search_values = context['search_form'].cleaned_data
             query = Video.objects.filter(set__trip=self.kwargs['trip_id'])
-            if search_values['team'] is not None:
-                query = query.filter(set__trip__team=search_values['team'])
-            if search_values['location'] is not None:
-                query = query.filter(set__trip__location=search_values['location'])
-            if search_values['region'] is not None:
-                query = query.filter(set__trip__location__region=search_values['region'])
             if search_values['annotator'] is not None:
                 query = query.filter(videoannotator__annotator=search_values['annotator'])
             if search_values['affiliation'] is not None:

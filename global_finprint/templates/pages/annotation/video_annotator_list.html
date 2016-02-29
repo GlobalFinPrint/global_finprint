@@ -19,8 +19,6 @@
                 <th>Video</th>
                 <th>Set</th>
                 <th>Team</th>
-                <th>Location</th>
-                <th>Region</th>
                 <th>Annotators</th>
             </tr>
             </thead>
@@ -28,10 +26,8 @@
             {% for v in videos %}
                 <tr>
                     <td>{{ v.file }}</td>
-                    <td>{{ v.set }}</td>
+                    <td>{{ v.set.code }}</td>
                     <td>{{ v.set.trip.team }}</td>
-                    <td>{{ v.set.trip.location }}</td>
-                    <td>{{ v.set.trip.region }}</td>
                     <td>
                     <ul class="annotators">
                         {% if v.videoannotator_set %}

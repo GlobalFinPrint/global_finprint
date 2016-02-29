@@ -22,12 +22,6 @@ class VideoForm(forms.ModelForm):
 
 
 class VideoAnnotatorSearchForm(forms.Form):
-    team = forms.ModelChoiceField(required=False,
-                                  queryset=Team.objects.all())
-    location = forms.ModelChoiceField(required=False,
-                                      queryset=Location.objects.all())
-    region = forms.ModelChoiceField(required=False,
-                                    queryset=Region.objects.all())
     annotator = forms.ModelChoiceField(required=False,
                                        queryset=Annotator.objects.all(),
                                        label='Assigned annotator')
