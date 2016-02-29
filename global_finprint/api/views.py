@@ -109,7 +109,7 @@ class AnimalList(APIView):
 
 
 class BehaviorList(APIView):
-    def get(self, reqeust):
+    def get(self, request):
         return JsonResponse({'behaviors': list(AnimalBehavior.objects.all().values())})
 
 
