@@ -1,6 +1,13 @@
 [
   {
     "model": "core.affiliation",
+    "pk": 0,
+    "fields": {
+      "name": "(No affiliation)"
+    }
+  },
+  {
+    "model": "core.affiliation",
     "pk": 1,
     "fields": {
       "name": "Global Finprint"
