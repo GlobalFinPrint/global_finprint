@@ -1,4 +1,3 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView, View
 from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
@@ -8,11 +7,12 @@ from django.http.response import HttpResponseForbidden, HttpResponseNotFound, \
     HttpResponse, JsonResponse, HttpResponseRedirect
 from django.template import RequestContext
 from ...bruv.models import Trip
+from ...core.mixins import UserAllowedMixin
 from ..models import VideoAnnotator, Video, Lead, Annotator
 from ..forms import VideoAnnotatorForm, VideoAnnotatorSearchForm, SelectTripForm
 
 
-class VideoAnnotatorSelectTripView(LoginRequiredMixin, View):
+class VideoAnnotatorSelectTripView(UserAllowedMixin, View):
     template = 'pages/annotation/video_annotator_select_trip.html'
 
     def get(self, request):
@@ -20,7 +20,7 @@ class VideoAnnotatorSelectTripView(LoginRequiredMixin, View):
         return render_to_response(self.template, context=context)
 
 
-class VideoAnnotatorListView(LoginRequiredMixin, CreateView):
+class VideoAnnotatorListView(UserAllowedMixin, CreateView):
     model = VideoAnnotator
     form_class = VideoAnnotatorForm
     context_object_name = 'video_annotator'
@@ -77,7 +77,7 @@ class VideoAnnotatorListView(LoginRequiredMixin, CreateView):
         return context
 
 
-class RemoveVideoAnnotatorView(LoginRequiredMixin, View):
+class RemoveVideoAnnotatorView(UserAllowedMixin, View):
     def post(self, request):
         try:
             Lead.objects.get(user=request.user)
@@ -94,7 +94,7 @@ class RemoveVideoAnnotatorView(LoginRequiredMixin, View):
         return HttpResponse('ok')
 
 
-class DisableVideoAnnotatorView(LoginRequiredMixin, View):
+class DisableVideoAnnotatorView(UserAllowedMixin, View):
     def post(self, request):
         try:
             Lead.objects.get(user=request.user)
@@ -108,7 +108,7 @@ class DisableVideoAnnotatorView(LoginRequiredMixin, View):
         return HttpResponse('ok')
 
 
-class EnableVideoAnnotatorView(LoginRequiredMixin, View):
+class EnableVideoAnnotatorView(UserAllowedMixin, View):
     def post(self, request):
         try:
             Lead.objects.get(user=request.user)
@@ -122,7 +122,7 @@ class EnableVideoAnnotatorView(LoginRequiredMixin, View):
         return HttpResponse('ok')
 
 
-class VideoAnnotatorJSONListView(LoginRequiredMixin, View):
+class VideoAnnotatorJSONListView(UserAllowedMixin, View):
     def get(self, request):
         annotators = []
         selected_annotators = []
@@ -137,7 +137,7 @@ class VideoAnnotatorJSONListView(LoginRequiredMixin, View):
                                                 in annotators if a not in selected_annotators)})
 
 
-class VideoAutoAssignView(LoginRequiredMixin, View):
+class VideoAutoAssignView(UserAllowedMixin, View):
     def assign_video(self, annotators, video):
         avail = list(a for a in annotators if video not in a.videos_assigned())
         assigned_by = Lead.objects.get(user_id=self.request.user)

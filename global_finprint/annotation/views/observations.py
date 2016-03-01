@@ -1,11 +1,11 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404
 
 from global_finprint.annotation.models import Observation, VideoAnnotator
 from global_finprint.bruv.models import Set, Trip
+from global_finprint.core.mixins import UserAllowedMixin
 
 
 # deprecated:
@@ -30,7 +30,7 @@ def observation_post(request):
     pass
 
 
-class ObservationListView(LoginRequiredMixin, ListView):
+class ObservationListView(UserAllowedMixin, ListView):
     model = Observation
     context_object_name = 'observations'
     template_name = 'pages/observations/observation_list.html'

@@ -1,5 +1,4 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import View
 from django.contrib import messages
 from django.http.response import JsonResponse
@@ -14,6 +13,7 @@ from ..models import Set
 from ..forms import SetForm, EnvironmentMeasureForm, BaitForm
 from ...annotation.forms import VideoForm
 from ...habitat.models import ReefHabitat
+from ...core.mixins import UserAllowedMixin
 
 from datetime import datetime
 
@@ -32,7 +32,7 @@ def set_detail(request, pk):
     return JsonResponse(data)
 
 
-class SetListView(LoginRequiredMixin, View):
+class SetListView(UserAllowedMixin, View):
     template = 'pages/sets/set_list.html'
 
     def _common_context(self, request, parent_trip):

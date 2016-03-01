@@ -1,12 +1,13 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import UpdateView, CreateView
 from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
+
 from ..models import EnvironmentMeasure, Set, Trip
 from ..forms import EnvironmentMeasureForm
+from ...core.mixins import UserAllowedMixin
 
 
-class EnvironmentMeasureCreateView(LoginRequiredMixin, CreateView):
+class EnvironmentMeasureCreateView(UserAllowedMixin, CreateView):
     success_msg = 'Environment measure created!'
     model = EnvironmentMeasure
     form_class = EnvironmentMeasureForm
@@ -34,7 +35,7 @@ class EnvironmentMeasureCreateView(LoginRequiredMixin, CreateView):
         return context
 
 
-class EnvironmentMeasureUpdateView(LoginRequiredMixin, UpdateView):
+class EnvironmentMeasureUpdateView(UserAllowedMixin, UpdateView):
     success_msg = 'Environment Measure Created!'
     model = EnvironmentMeasure
     form_class = EnvironmentMeasureForm
