@@ -122,7 +122,7 @@ class Observation(AuditableModel):
     length = models.IntegerField(null=True, help_text='centimeters')
 
     behaviors = models.ManyToManyField(to=AnimalBehavior)
-    duration = models.PositiveIntegerField()
+    duration = models.PositiveIntegerField(null=True, blank=True)
     comment = models.CharField(max_length=256, null=True)
 
     gear_on_animal = models.BooleanField(default=False)
