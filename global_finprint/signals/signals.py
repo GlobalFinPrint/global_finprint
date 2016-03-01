@@ -7,5 +7,6 @@ from django.dispatch import receiver
 
 @receiver(post_save, sender=User)
 def create_annotator(**kwargs):
-    new_annotator = Annotator(user=kwargs['instance'], affiliation=Affiliation.objects.get(pk=0))
-    new_annotator.save()
+    if kwargs['created']:
+        new_annotator = Annotator(user=kwargs['instance'], affiliation=Affiliation.objects.get(pk=0))
+        new_annotator.save()
