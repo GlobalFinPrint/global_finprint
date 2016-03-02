@@ -1,5 +1,5 @@
 from django.views.generic.base import View
-from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotFound
+from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotFound, HttpResponseBadRequest
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
 from ..annotation.models import Annotator, VideoAnnotator, Observation, Animal, AnimalBehavior
@@ -95,10 +95,30 @@ class ObservationUpdate(APIView):
         obs = get_object_or_404(Observation, pk=obs_id, video_annotator=request.va)
         params = dict((key, val) for key, val in request.POST.items() if key in Observation.valid_fields())
         params['user'] = request.annotator.user
-        for key, val in params.items():
-            if key == 'behaviors':
-                val = val.split(',') if val != '' else []
-            setattr(obs, key, val)
+
+        if params.get('type', False) and obs.type != params['type']:
+            return HttpResponseBadRequest('Not allowed to change Observation type')
+
+        if obs.type == 'I':
+            for key, val in params.items():
+                setattr(obs, key, val)
+
+        elif obs.type == 'A':
+            animal_obs = obs.animalobservation
+            for key, val in params.items():
+                if key == 'user':
+                    setattr(obs, 'user', val)
+                    setattr(animal_obs, 'user', val)
+                elif key == 'behaviors':
+                    setattr(animal_obs, 'behaviors', val.split(',') if val != '' else [])
+                elif key in ['animal_id', 'sex', 'stage', 'length', 'gear_on_animal',
+                             'gear_fouled', 'tag', 'external_parasites']:
+                    setattr(animal_obs, key, val)
+                else:
+                    setattr(obs, key, val)
+
+            animal_obs.save()
+
         obs.save()
         return JsonResponse({'observations': Observation.get_for_api(request.va)})
 

@@ -52,6 +52,7 @@ Provides details for the specified set along with data used for annotation tool 
 - file: (string)
 - observations: (array)
     - id: (integer)
+    - type: ("I" or "A")
     - initial_observation_time: (integer)
     - animal: (string)
     - sex: (string)
@@ -94,6 +95,7 @@ Provides a list of observations for the specified set.
 **Returns** (JSON):
 - observations: (array)
     - id: (integer)
+    - type: ("I" or "A")
     - initial_observation_time: (integer)
     - animal: (string)
     - sex: (string)
@@ -119,6 +121,7 @@ Creates a new observation for the specified set.
 
 **Expects** (POST):
 - token (string)
+- type: ("I" or "A")
 - initial_observation_time: (integer)
 - animal_id: (integer)
 - sex: ("M", "F", or "U")
@@ -135,6 +138,7 @@ Creates a new observation for the specified set.
 **Returns** (JSON):
 - observations: (array)
     - id: (integer)
+    - type: ("I" or "A")
     - initial_observation_time: (integer)
     - animal: (string)
     - sex: (string)
@@ -151,9 +155,9 @@ Creates a new observation for the specified set.
     - comment: (string)
 
 
-### New observation
+### Edit observation
 `POST /api/set/:id/obs/:obs_id`
-Creates a new observation for the specified set.
+Edit an existing observation for the specified set (NOTE: cannot change observation type).
 
 **Expects** (URL):
 - id (integer)
@@ -177,6 +181,7 @@ Creates a new observation for the specified set.
 **Returns** (JSON):
 - observations: (array)
     - id: (integer)
+    - type: ("I" or "A")
     - initial_observation_time: (integer)
     - animal: (string)
     - sex: (string)
@@ -207,6 +212,7 @@ Delete an observation for the specified set.
 **Returns** (JSON):
 - observations: (array)
     - id: (integer)
+    - type: ("I" or "A")
     - initial_observation_time: (integer)
     - animal: (string)
     - sex: (string)
