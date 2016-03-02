@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import timedelta
 
 from global_finprint.core.models import AuditableModel, FinprintUser
 from global_finprint.habitat.models import Region
@@ -121,6 +122,53 @@ class Observation(AuditableModel):
     initial_observation_time = models.DurationField(help_text='ms')
     duration = models.PositiveIntegerField(null=True, blank=True)
     comment = models.CharField(max_length=256, null=True)
+
+    @staticmethod
+    def create(**kwargs):
+        kwargs['initial_observation_time'] = timedelta(milliseconds=int(kwargs['initial_observation_time']))
+
+        animal_fields = {
+            'animal_id': kwargs.pop('animal_id', None),
+            'sex': kwargs.pop('sex', None),
+            'stage': kwargs.pop('stage', None),
+            'length': kwargs.pop('length', None),
+            'behaviors': kwargs.pop('behavior_ids', None),
+            'gear_on_animal': kwargs.pop('gear_on_animal', None),
+            'gear_fouled': kwargs.pop('gear_fouled', None),
+            'tag': kwargs.pop('tag', None),
+            'external_parasites': kwargs.pop('external_parasites', None),
+            'user': kwargs['user']
+        }
+        animal_fields = dict((k, v) for k, v in animal_fields.items() if v is not None)
+
+        obs = Observation(**kwargs)
+        obs.save()
+
+        if kwargs.get('type') == 'A':
+            animal_fields['observation'] = obs
+            animal_obs = AnimalObservation(**animal_fields)
+            animal_obs.save()
+
+        return obs
+
+    @staticmethod
+    def valid_fields():
+        return [
+            'type',
+            'initial_observation_time',
+            'duration',
+            'comment',
+            'animal_id',
+            'sex',
+            'stage',
+            'duration',
+            'behavior_ids',
+            'length',
+            'gear_on_animal',
+            'gear_fouled',
+            'tag',
+            'external_parasites'
+        ]
 
     @classmethod
     def get_for_api(cls, video_annotator):

@@ -77,10 +77,10 @@ class Observations(APIView):
         return JsonResponse({'observations': Observation.get_for_api(request.va)})
 
     def post(self, request, set_id):
-        params = dict((key, val) for key, val in request.POST.items() if key in Observation._meta.get_all_field_names())
+        params = dict((key, val) for key, val in request.POST.items() if key in Observation.valid_fields())
         params['video_annotator'] = request.va
         params['user'] = request.annotator.user
-        Observation(**params).save()
+        Observation.create(**params)
         request.va.status = 'I'
         request.va.save()
         return JsonResponse({'observations': Observation.get_for_api(request.va)})
@@ -93,7 +93,7 @@ class Observations(APIView):
 class ObservationUpdate(APIView):
     def post(self, request, set_id, obs_id):
         obs = get_object_or_404(Observation, pk=obs_id, video_annotator=request.va)
-        params = dict((key, val) for key, val in request.POST.items() if key in Observation._meta.get_all_field_names())
+        params = dict((key, val) for key, val in request.POST.items() if key in Observation.valid_fields())
         params['user'] = request.annotator.user
         for key, val in params.items():
             if key == 'behaviors':
