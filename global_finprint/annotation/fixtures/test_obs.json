@@ -32,14 +32,34 @@
       "create_datetime": "2015-11-03T19:00:22.080Z",
       "last_modified_datetime": "2015-11-03T19:03:16.655Z",
       "initial_observation_time": "12345",
-      "animal": 1,
-      "sex": "F",
-      "stage": "AD",
-      "length": 250,
-      "behaviors": [1],
+      "type": "A",
       "duration": 15,
       "video_annotator": 1,
       "user": 1
+    }
+  },
+  {
+    "model": "annotation.observation",
+    "pk": 2,
+    "fields": {
+      "create_datetime": "2015-11-03T19:00:22.080Z",
+      "last_modified_datetime": "2015-11-03T19:03:16.655Z",
+      "initial_observation_time": "0",
+      "type": "I",
+      "video_annotator": 1,
+      "user": 1,
+      "comment": "something interesting!"
+    }
+  },
+  {
+    "model": "annotation.animalobservation",
+    "pk": 1,
+    "fields": {
+      "create_datetime": "2015-11-03T19:00:22.080Z",
+      "last_modified_datetime": "2015-11-03T19:03:16.655Z",
+      "user": 1,
+      "observation": 1,
+      "animal": 1
     }
   }
 ]

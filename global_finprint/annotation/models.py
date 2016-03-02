@@ -26,6 +26,10 @@ TAG_CHOICES = {
     ('R', 'Roto tag'),
     ('O', 'Other')
 }
+OBSERVATION_TYPE_CHOICES = {
+    ('I', 'Of interest'),
+    ('A', 'Animal'),
+}
 
 class AnimalGroup(models.Model):
     name = models.CharField(max_length=24)
@@ -112,25 +116,11 @@ class VideoAnnotator(AuditableModel):
 
 
 class Observation(AuditableModel):
+    video_annotator = models.ForeignKey(VideoAnnotator)
+    type = models.CharField(max_length=1, choices=OBSERVATION_TYPE_CHOICES, default='I')
     initial_observation_time = models.DurationField(help_text='ms')
-
-    animal = models.ForeignKey(Animal)
-    sex = models.CharField(max_length=1,
-                           choices=ANIMAL_SEX_CHOICES, default='U')
-    stage = models.CharField(max_length=2,
-                             choices=ANIMAL_STAGE_CHOICES, default='U')
-    length = models.IntegerField(null=True, help_text='centimeters')
-
-    behaviors = models.ManyToManyField(to=AnimalBehavior)
     duration = models.PositiveIntegerField(null=True, blank=True)
     comment = models.CharField(max_length=256, null=True)
-
-    gear_on_animal = models.BooleanField(default=False)
-    gear_fouled = models.BooleanField(default=False)
-    tag = models.CharField(max_length=1, choices=TAG_CHOICES, default='N')
-    external_parasites = models.BooleanField(default=False)
-
-    video_annotator = models.ForeignKey(VideoAnnotator)
 
     @classmethod
     def get_for_api(cls, video_annotator):
@@ -140,27 +130,51 @@ class Observation(AuditableModel):
         return self.video_annotator.video.set
 
     def to_json(self):
-        return {
+        json = {
             'id': self.id,
+            'type': self.get_type_display(),
+            'type_choice': self.type,
             'initial_observation_time': (self.initial_observation_time.total_seconds() * 1000),
-            'animal': str(self.animal),
-            'animal_id': self.animal_id,
-            'sex': self.get_sex_display(),
-            'sex_choice': self.sex,
-            'stage': self.get_stage_display(),
-            'stage_choice': self.stage,
-            'length': self.length,
-            'behaviors': list({'id': b.pk, 'type': b.type} for b in self.behaviors.all()),
             'duration': self.duration,
-            'gear_on_animal': self.gear_on_animal,
-            'gear_fouled': self.gear_fouled,
-            'tag': self.get_tag_display(),
-            'external_parasites': self.external_parasites,
             'comment': self.comment
         }
 
+        if self.type == 'A':
+            animal = self.animalobservation
+            json.update({
+                'animal': str(animal.animal),
+                'animal_id': animal.animal_id,
+                'sex': animal.get_sex_display(),
+                'sex_choice': animal.sex,
+                'stage': animal.get_stage_display(),
+                'stage_choice': animal.stage,
+                'length': animal.length,
+                'behaviors': list({'id': b.pk, 'type': b.type} for b in animal.behaviors.all()),
+                'gear_on_animal': animal.gear_on_animal,
+                'gear_fouled': animal.gear_fouled,
+                'tag': animal.get_tag_display(),
+                'external_parasites': animal.external_parasites,
+            })
+
+        return json
+
     def __str__(self):
         return u"{0}".format(self.initial_observation_time.total_seconds() * 1000)
+
+
+class AnimalObservation(AuditableModel):
+    observation = models.OneToOneField(to=Observation)
+    animal = models.ForeignKey(Animal)
+    sex = models.CharField(max_length=1,
+                           choices=ANIMAL_SEX_CHOICES, default='U')
+    stage = models.CharField(max_length=2,
+                             choices=ANIMAL_STAGE_CHOICES, default='U')
+    length = models.IntegerField(null=True, help_text='centimeters')
+    behaviors = models.ManyToManyField(to=AnimalBehavior)
+    gear_on_animal = models.BooleanField(default=False)
+    gear_fouled = models.BooleanField(default=False)
+    tag = models.CharField(max_length=1, choices=TAG_CHOICES, default='N')
+    external_parasites = models.BooleanField(default=False)
 
 
 class Image(AuditableModel):
