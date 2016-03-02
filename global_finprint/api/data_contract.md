@@ -246,6 +246,29 @@ Provides a list of animals that can be observed for the specified set.
     - sealifebase_key: (integer)
 
 
+### Animal detail
+`GET /api/animal/:id`
+Provides detail for a specific animal given an id.
+
+**Expects** (URL):
+- id (integer)
+
+**Expects** (GET):
+- token (string)
+
+**Returns** (JSON):
+- animal: (object)
+    - id: (integer)
+    - rank: (integer)
+    - group: (string)
+    - common_name: (string)
+    - family: (string)
+    - genus: (string)
+    - species: (string)
+    - fishbase_key: (integer)
+    - sealifebase_key: (integer)
+
+
 ### Behavior list
 `GET /api/behaviors`
 Provides a list of animal behaviors.

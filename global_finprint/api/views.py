@@ -108,6 +108,11 @@ class AnimalList(APIView):
         return JsonResponse({'animals': Animal.get_for_api(request.va)})
 
 
+class AnimalDetail(APIView):
+    def get(self, request, animal_id):
+        return JsonResponse({'animal': get_object_or_404(Animal, pk=animal_id).to_json()})
+
+
 class BehaviorList(APIView):
     def get(self, request):
         return JsonResponse({'behaviors': list(AnimalBehavior.objects.all().values())})

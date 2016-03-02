@@ -35,4 +35,5 @@ urlpatterns = [
         name='api_observation_update'),
     url(r"^set/(?P<set_id>\d+)/animals", csrf_exempt(views.AnimalList.as_view()), name='api_animal_list'),
     url(r"^set/(?P<set_id>\d+)/done", csrf_exempt(views.StatusUpdate.as_view()), name='api_status_update'),
+    url(r"^animal/(?P<animal_id>\d+)$", csrf_exempt(views.AnimalDetail.as_view()), name='api_animal_detail'),
 ]
