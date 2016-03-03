@@ -115,11 +115,19 @@ class SetListView(UserAllowedMixin, View):
         parent_trip = get_object_or_404(Trip, pk=kwargs['trip_pk'])
         context = self._common_context(request, parent_trip)
 
-        set_form = SetForm(request.POST, trip_pk=trip_pk)
-        bait_form = BaitForm(request.POST)
-        drop_form = EnvironmentMeasureForm(request.POST, prefix='drop')
-        haul_form = EnvironmentMeasureForm(request.POST, prefix='haul')
-        video_form = VideoForm(request.POST, request.FILES)
+        if set_pk is None:
+            set_form = SetForm(request.POST, trip_pk=trip_pk)
+            bait_form = BaitForm(request.POST)
+            drop_form = EnvironmentMeasureForm(request.POST, prefix='drop')
+            haul_form = EnvironmentMeasureForm(request.POST, prefix='haul')
+            video_form = VideoForm(request.POST, request.FILES)
+        else:
+            edited_set = get_object_or_404(Set, pk=set_pk)
+            set_form = SetForm(request.POST, trip_pk=trip_pk, instance=edited_set)
+            bait_form = BaitForm(request.POST, instance=edited_set.bait)
+            drop_form = EnvironmentMeasureForm(request.POST, prefix='drop', instance=edited_set.drop_measure)
+            haul_form = EnvironmentMeasureForm(request.POST, prefix='haul', instance=edited_set.haul_measure)
+            video_form = VideoForm(request.POST, request.FILES, instance=edited_set.video)
 
         # forms are valid
         if all(form.is_valid() for form in [set_form, bait_form, drop_form, haul_form, video_form]):
@@ -144,7 +152,6 @@ class SetListView(UserAllowedMixin, View):
 
             # edit existing set and env measures
             else:
-                edited_set = get_object_or_404(Set, pk=set_pk)
                 for k, v in set_form.cleaned_data.items():
                     if k not in ('reef', 'habitat'):
                         setattr(edited_set, k, v)

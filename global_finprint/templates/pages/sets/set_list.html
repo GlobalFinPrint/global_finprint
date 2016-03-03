@@ -86,7 +86,7 @@
                     </tr>
                     {# for each environmental measure: #}
                     <tr class="info env-headers set-{{ set.id }}">
-                        <th></th>
+                        <th colspan="3"></th>
                         <th class="haul-drop">Drop/haul</th>
                         <th class="temperature">Temp</th>
                         <th class="salinity">Salinity</th>
@@ -103,7 +103,7 @@
                     {% if set.drop_measure %}
                     {% with env=set.drop_measure %}
                         <tr class="env-row set-{{ set.id }} drop">
-                            <td></td>
+                            <td colspan="3"></td>
                             <td>Drop measure</td>
                             <td>{{ env.water_temperature }}</td>
                             <td>{{ env.salinity }}</td>
@@ -129,7 +129,7 @@
                     {% if set.haul_measure %}
                     {% with env=set.haul_measure %}
                         <tr class="env-row set-{{ set.id }} haul">
-                            <td></td>
+                            <td colspan="3"></td>
                             <td>Haul measure</td>
                             <td>{{ env.water_temperature }}</td>
                             <td>{{ env.salinity }}</td>
