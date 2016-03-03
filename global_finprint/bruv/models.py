@@ -183,9 +183,10 @@ class Set(AuditableModel):
             self.code = u'{}{}_xxx'.format(self.reef().site.code, self.reef().code)
         super(Set, self).save(*args, **kwargs)
         self.refresh_from_db()
-        next_id = str(len(Set.objects.filter(trip=self.trip, reef_habitat__reef=self.reef()))).zfill(3)
-        self.code = self.code.replace('_xxx', u'_{}'.format(next_id))
-        super(Set, self).save(*args, **kwargs)
+        if self.code == u'{}{}_xxx'.format(self.reef().site.code, self.reef().code):
+            next_id = str(len(Set.objects.filter(trip=self.trip, reef_habitat__reef=self.reef()))).zfill(3)
+            self.code = self.code.replace('_xxx', u'_{}'.format(next_id))
+            super(Set, self).save(*args, **kwargs)
 
     def reef(self):
         return self.reef_habitat.reef
