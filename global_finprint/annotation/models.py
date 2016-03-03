@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import timedelta
+from django.contrib.gis.db import models as geomodels
 
 from global_finprint.core.models import AuditableModel, FinprintUser
 from global_finprint.habitat.models import Region
@@ -31,6 +32,7 @@ OBSERVATION_TYPE_CHOICES = {
     ('I', 'Of interest'),
     ('A', 'Animal'),
 }
+
 
 class AnimalGroup(models.Model):
     name = models.CharField(max_length=24)
@@ -122,6 +124,7 @@ class Observation(AuditableModel):
     initial_observation_time = models.DurationField(help_text='ms')
     duration = models.PositiveIntegerField(null=True, blank=True)
     comment = models.CharField(max_length=256, null=True)
+    extent = geomodels.PolygonField(null=True)
 
     @staticmethod
     def create(**kwargs):
@@ -167,7 +170,8 @@ class Observation(AuditableModel):
             'gear_on_animal',
             'gear_fouled',
             'tag',
-            'external_parasites'
+            'external_parasites',
+            'extent'
         ]
 
     @classmethod

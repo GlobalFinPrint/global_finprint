@@ -67,6 +67,7 @@ Provides details for the specified set along with data used for annotation tool 
     - tag: (string)
     - external_parasites: (boolean)
     - comment: (string)
+    - extent: (array of normalized (0.0-1.0) points)
 - animals: (array)
     - id: (integer)
     - rank: (integer)
@@ -110,6 +111,7 @@ Provides a list of observations for the specified set.
     - tag: (string)
     - external_parasites: (boolean)
     - comment: (string)
+    - extent: (array of normalized (0.0-1.0) points)
 
 
 ### New observation
@@ -134,6 +136,7 @@ Creates a new observation for the specified set.
 - tag: ("N", "D", "R", or "O") (optional)
 - external_parasites: (boolean) (optional)
 - comment: (string) (optional)
+- extent: (array of normalized (0.0-1.0) points) (optional)
 
 **Returns** (JSON):
 - observations: (array)
@@ -153,6 +156,7 @@ Creates a new observation for the specified set.
     - tag: (string)
     - external_parasites: (boolean)
     - comment: (string)
+    - extent: (array of normalized (0.0-1.0) points)
 
 
 ### Edit observation
@@ -177,6 +181,7 @@ Edit an existing observation for the specified set (NOTE: cannot change observat
 - tag: ("N", "D", "R", or "O") (optional)
 - external_parasites: (boolean) (optional)
 - comment: (string) (optional)
+- extent: (array of normalized (0.0-1.0) points) (optional)
 
 **Returns** (JSON):
 - observations: (array)
@@ -196,6 +201,7 @@ Edit an existing observation for the specified set (NOTE: cannot change observat
     - tag: (string)
     - external_parasites: (boolean)
     - comment: (string)
+    - extent: (array of normalized (0.0-1.0) points)
 
 
 ### Delete observation
@@ -227,6 +233,7 @@ Delete an observation for the specified set.
     - tag: (string)
     - external_parasites: (boolean)
     - comment: (string)
+    - extent: (array of normalized (0.0-1.0) points)
 
 
 ### Animal list
