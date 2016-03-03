@@ -169,9 +169,6 @@ class Set(AuditableModel):
         related_name='set'
     )
 
-    class Meta:
-        unique_together = ('trip', 'code')
-
     @property
     def environmentmeasure_set(self):
         return [x for x in [self.haul_measure, self.drop_measure] if x is not None]
