@@ -21,6 +21,14 @@ class TripListView(UserAllowedMixin, CreateView):
     success_msg = 'Trip created'
     success_url = reverse_lazy('trip_list')
 
+    def get_form(self, **kwargs):
+        if 'trip_pk' in self.kwargs:
+            edited_trip = get_object_or_404(Trip, pk=self.kwargs['trip_pk'])
+            form = TripForm(self.request.POST or None, instance=edited_trip)
+        else:
+            form = TripForm(self.request.POST or None)
+        return form
+
     def form_invalid(self, form):
         messages.error(self.request, 'Form errors found')
         return super().form_invalid(form)
@@ -66,9 +74,6 @@ class TripListView(UserAllowedMixin, CreateView):
             context['trip_pk'] = self.kwargs['trip_pk']
             trip = get_object_or_404(Trip, pk=self.kwargs['trip_pk'])
             context['trip_name'] = str(trip)
-            context['trip_form'] = TripForm(instance=trip)
-        else:
-            context['trip_form'] = TripForm(self.request.POST or None)
         return context
 
 
