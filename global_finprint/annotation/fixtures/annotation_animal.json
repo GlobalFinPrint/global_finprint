@@ -54,5 +54,47 @@
     "fields": {
       "type": "interaction"
     }
+  },
+  {
+    "model": "annotation.observationfeature",
+    "pk": 1,
+    "fields": {
+      "feature": "Gear on animal"
+    }
+  },
+  {
+    "model": "annotation.observationfeature",
+    "pk": 2,
+    "fields": {
+      "feature": "Gear fouled"
+    }
+  },
+  {
+    "model": "annotation.observationfeature",
+    "pk": 3,
+    "fields": {
+      "feature": "Dart tag"
+    }
+  },
+  {
+    "model": "annotation.observationfeature",
+    "pk": 4,
+    "fields": {
+      "feature": "Roto tag"
+    }
+  },
+  {
+    "model": "annotation.observationfeature",
+    "pk": 5,
+    "fields": {
+      "feature": "Other tag"
+    }
+  },
+  {
+    "model": "annotation.observationfeature",
+    "pk": 6,
+    "fields": {
+      "feature": "External parasites"
+    }
   }
 ]

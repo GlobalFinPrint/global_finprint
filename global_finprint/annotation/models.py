@@ -22,12 +22,6 @@ VIDEO_ANNOTATOR_CHOICES = {
     ('C', 'Competed'),
     ('D', 'Disabled')
 }
-TAG_CHOICES = {
-    ('N', 'None'),
-    ('D', 'Dart tag'),
-    ('R', 'Roto tag'),
-    ('O', 'Other')
-}
 OBSERVATION_TYPE_CHOICES = {
     ('I', 'Of interest'),
     ('A', 'Animal'),
@@ -116,6 +110,11 @@ class VideoAnnotator(AuditableModel):
     @classmethod
     def get_active_for_annotator(cls, annotator):
         return cls.objects.filter(annotator=annotator, status__in=['N', 'I'])
+
+
+class ObservationFeature(models.Model):
+    id = models.AutoField(primary_key=True)
+    feature = models.CharField(max_length=50, unique=True)
 
 
 class Observation(AuditableModel):
@@ -223,10 +222,7 @@ class AnimalObservation(AuditableModel):
                              choices=ANIMAL_STAGE_CHOICES, default='U')
     length = models.IntegerField(null=True, help_text='centimeters')
     behaviors = models.ManyToManyField(to=AnimalBehavior)
-    gear_on_animal = models.BooleanField(default=False)
-    gear_fouled = models.BooleanField(default=False)
-    tag = models.CharField(max_length=1, choices=TAG_CHOICES, default='N')
-    external_parasites = models.BooleanField(default=False)
+    features = models.ManyToManyField(to=ObservationFeature)
 
 
 class Image(AuditableModel):
