@@ -34,6 +34,7 @@ Provides a list of unfinished sets assigned to an annotator for review.
 **Returns** (JSON):
 - sets (array)
     - id: (integer)
+    - set_code: (string)
     - file: (string)
 
 
@@ -50,33 +51,8 @@ Provides details for the specified set along with data used for annotation tool 
 **Returns** (JSON):
 - id: (integer)
 - file: (string)
-- observations: (array)
-    - id: (integer)
-    - type: ("I" or "A")
-    - initial_observation_time: (integer)
-    - animal: (string)
-    - sex: (string)
-    - stage: (string)
-    - length: (integer)
-    - behaviors: (array)
-        - id: (integer)
-        - type: (string)
-    - duration: (integer)
-    - features: (array)
-        - id: (integer)
-        - feature: (string)
-    - comment: (string)
-    - extent: (array of normalized (0.0-1.0) points)
-- animals: (array)
-    - id: (integer)
-    - rank: (integer)
-    - group: (string)
-    - common_name: (string)
-    - family: (string)
-    - genus: (string)
-    - species: (string)
-    - fishbase_key: (integer)
-    - sealifebase_key: (integer)
+- observations: (array of [observation objects](#observation-response-object))
+- animals: (array of [animal objects](#animal-response-object))
 - behaviors: (array)
     - id (integer)
     - type (string)
@@ -96,23 +72,7 @@ Provides a list of observations for the specified set.
 - token (string)
 
 **Returns** (JSON):
-- observations: (array)
-    - id: (integer)
-    - type: ("I" or "A")
-    - initial_observation_time: (integer)
-    - animal: (string)
-    - sex: (string)
-    - stage: (string)
-    - length: (integer)
-    - behaviors: (array)
-        - id: (integer)
-        - type: (string)
-    - duration: (integer)
-    - features: (array)
-        - id: (integer)
-        - feature: (string)
-    - comment: (string)
-    - extent: (array of normalized (0.0-1.0) points)
+- observations: (array of [observation objects](#observation-response-object))
 
 
 ### New observation
@@ -124,36 +84,9 @@ Creates a new observation for the specified set.
 
 **Expects** (POST):
 - token (string)
-- type: ("I" or "A")
-- initial_observation_time: (integer)
-- animal_id: (integer)
-- sex: ("M", "F", or "U")
-- stage: ("AD", "JD", or "U")
-- duration: (integer) (optional)
-- behavior_ids: (comma separated list of integers) (optional)
-- feature_ids: (comma separated list of integers) (optional)
-- length: (integer) (optional)
-- comment: (string) (optional)
-- extent: (array of normalized (0.0-1.0) points) (optional)
-
+- [observation request fields](#observation-request-fields)
 **Returns** (JSON):
-- observations: (array)
-    - id: (integer)
-    - type: ("I" or "A")
-    - initial_observation_time: (integer)
-    - animal: (string)
-    - sex: (string)
-    - stage: (string)
-    - length: (integer)
-    - behaviors: (array)
-        - id: (integer)
-        - type: (string)
-    - duration: (integer)
-    - features: (array)
-        - id: (integer)
-        - feature: (string)
-    - comment: (string)
-    - extent: (array of normalized (0.0-1.0) points)
+- observations: (array of [observation objects](#observation-response-object))
 
 
 ### Edit observation
@@ -166,35 +99,10 @@ Edit an existing observation for the specified set (NOTE: cannot change observat
 
 **Expects** (POST):
 - token (string)
-- initial_observation_time: (integer)
-- animal_id: (integer)
-- sex: ("M", "F", or "U")
-- stage: ("AD", "JD", or "U")
-- duration: (integer) (optional)
-- behavior_ids: (array of integers) (optional)
-- length: (integer) (optional)
-- feature_ids: (array of integers) (optional)
-- comment: (string) (optional)
-- extent: (array of normalized (0.0-1.0) points) (optional)
+- [observation request fields](#observation-request-fields) 
 
 **Returns** (JSON):
-- observations: (array)
-    - id: (integer)
-    - type: ("I" or "A")
-    - initial_observation_time: (integer)
-    - animal: (string)
-    - sex: (string)
-    - stage: (string)
-    - length: (integer)
-    - behaviors: (array)
-        - id: (integer)
-        - type: (string)
-    - duration: (integer)
-    - features: (array)
-        - id: (integer)
-        - feature: (string)
-    - comment: (string)
-    - extent: (array of normalized (0.0-1.0) points)
+- observations: (array of [observation objects](#observation-response-object))
 
 
 ### Delete observation
@@ -209,23 +117,7 @@ Delete an observation for the specified set.
 - obs_id (integer)
 
 **Returns** (JSON):
-- observations: (array)
-    - id: (integer)
-    - type: ("I" or "A")
-    - initial_observation_time: (integer)
-    - animal: (string)
-    - sex: (string)
-    - stage: (string)
-    - length: (integer)
-    - behaviors: (array)
-        - id: (integer)
-        - type: (string)
-    - duration: (integer)
-    - features: (array)
-        - id: (integer)
-        - feature: (string)
-    - comment: (string)
-    - extent: (array of normalized (0.0-1.0) points)
+- observations: (array of [observation objects](#observation-response-object))
 
 
 ### Animal list
@@ -239,16 +131,7 @@ Provides a list of animals that can be observed for the specified set.
 - token (string)
 
 **Returns** (JSON):
-- animals: (array)
-    - id: (integer)
-    - rank: (integer)
-    - group: (string)
-    - common_name: (string)
-    - family: (string)
-    - genus: (string)
-    - species: (string)
-    - fishbase_key: (integer)
-    - sealifebase_key: (integer)
+- animals: (array of [animal objects](#animal-response-object))
 
 
 ### Animal detail
@@ -262,16 +145,7 @@ Provides detail for a specific animal given an id.
 - token (string)
 
 **Returns** (JSON):
-- animal: (object)
-    - id: (integer)
-    - rank: (integer)
-    - group: (string)
-    - common_name: (string)
-    - family: (string)
-    - genus: (string)
-    - species: (string)
-    - fishbase_key: (integer)
-    - sealifebase_key: (integer)
+- animals: [animal object](#animal-response-object)
 
 
 ### Behavior list
@@ -312,3 +186,63 @@ Updates the status for the specified set to "Ready for review".
 
 **Returns**:
 - status: "OK"
+
+
+### Observation response object
+All returned observation objects will follow this standard:
+- observation: (object)
+    - id: (integer)
+    - type: (string)
+    - type_choice: ("I" or "A")
+    - initial_observation_time: (integer)
+    - duration: (integer)
+    - extent: (array of normalized (0.0-1.0) points)
+    - comment: (string)
+    *fields below are only for animal observations*
+    - animal: (string)
+    - animal_id: (integer)
+    - sex: (string)
+    - sex_choice: ("M", "F", or "U")
+    - stage: (string)
+    - stage_choice: ("AD", "JU", or "U")
+    - length: (integer)
+    - behaviors: (array)
+        - id: (integer)
+        - type: (string)
+    - features: (array)
+        - id: (integer)
+        - feature: (string)
+
+
+### Observation request fields
+All POSTed observations are expected to follow this standard:
+- type_choice: ("I" or "A") *NOTE: type cannot be changed during an edit*
+- initial_observation_time: (integer)
+- duration: (integer) (optional)
+- extent: (array of normalized (0.0-1.0) points) (optional)
+- comment: (string) (optional)
+*fields below are only for animal observations*
+- animal_id: (integer)
+- sex_choice: ("M", "F", or "U") (optional)
+- stage_choice: ("AD", "JD", or "U") (optional)
+- length: (integer) (optional)
+- behavior_ids: (comma separated list of integers) (optional)
+- feature_ids: (comma separated list of integers) (optional)
+
+
+### Animal response object
+All returned animal objects will follow this standard:
+- animal: (object)
+    - id: (integer)
+    - rank: (integer)
+    - group: (string)
+    - group_id: (integer)
+    - common_name: (string)
+    - family: (string)
+    - genus: (string)
+    - species: (string)
+    - fishbase_key: (integer)
+    - sealifebase_key: (integer)
+    - region: (array)
+        - id: (integer)
+        - region: (string)

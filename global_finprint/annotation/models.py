@@ -64,7 +64,8 @@ class Animal(models.Model):
             'genus': self.genus,
             'species': self.species,
             'fishbase_key': self.fishbase_key,
-            'sealifebase_key': self.sealifebase_key
+            'sealifebase_key': self.sealifebase_key,
+            'regions': list({'id': r.id, 'region': str(r)} for r in self.regions.all())
         }
 
     def __str__(self):
@@ -131,11 +132,12 @@ class Observation(AuditableModel):
     @staticmethod
     def create(**kwargs):
         kwargs['initial_observation_time'] = timedelta(milliseconds=int(kwargs['initial_observation_time']))
+        kwargs['type'] = kwargs.pop('type_choice', None)
 
         animal_fields = {
             'animal_id': kwargs.pop('animal_id', None),
-            'sex': kwargs.pop('sex', None),
-            'stage': kwargs.pop('stage', None),
+            'sex': kwargs.pop('sex_choice', None),
+            'stage': kwargs.pop('stage_choice', None),
             'length': kwargs.pop('length', None),
             'behaviors': kwargs.pop('behavior_ids', None),
             'features': kwargs.pop('feature_ids', None),
@@ -163,17 +165,16 @@ class Observation(AuditableModel):
     @staticmethod
     def valid_fields():
         return [
-            'type',
+            'type_choice',
             'initial_observation_time',
             'duration',
+            'extent',
             'comment',
             'animal_id',
-            'sex',
-            'stage',
-            'duration',
-            'behavior_ids',
+            'sex_choice',
+            'stage_choice',
             'length',
-            'extent',
+            'behavior_ids',
             'feature_ids',
         ]
 
@@ -191,8 +192,8 @@ class Observation(AuditableModel):
             'type_choice': self.type,
             'initial_observation_time': self.initial_observation_time.total_seconds(),
             'duration': self.duration,
+            'extent': None if self.extent is None else str(self.extent),
             'comment': self.comment,
-            'extent': str(self.extent)
         }
 
         if self.type == 'A':
