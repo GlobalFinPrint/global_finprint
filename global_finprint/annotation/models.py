@@ -226,6 +226,9 @@ class AnimalObservation(AuditableModel):
     behaviors = models.ManyToManyField(to=AnimalBehavior)
     features = models.ManyToManyField(to=ObservationFeature)
 
+    def behavior_display(self):
+        return list()
+
 
 class Image(AuditableModel):
     # todo:  placeholder!  this should be filesystem / S3 ...

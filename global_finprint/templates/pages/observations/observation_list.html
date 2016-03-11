@@ -17,27 +17,33 @@
         <table class="table table-bordered table-condensed obs-table" cellspacing="0" width="100%">
             <thead>
             <tr class="success">
-                <th>Initial observation time</th>
+                <th>Type</th>
+                <th>Time</th>
+                <th>Duration</th>
                 <th>Animal</th>
                 <th>Sex</th>
                 <th>Stage</th>
                 <th>Length</th>
                 <th>Behavior</th>
-                <th>Duration</th>
-                <th>Video annotator</th>
+                <th>Features</th>
+                <th>Annotator</th>
+                <th>Comment</th>
             </tr>
             </thead>
             <tbody>
             {% for obs in observations %}
             <tr>
+                <td>{{ obs.get_type_display }}</td>
                 <td>{{ obs.initial_observation_time }}</td>
-                <td>{{ obs.animal }}</td>
-                <td>{{ obs.get_sex_display }}</td>
-                <td>{{ obs.get_stage_display }}</td>
-                <td>{{ obs.length }}</td>
-                <td>{{ obs.behavior }}</td>
                 <td>{{ obs.duration }}</td>
+                <td>{{ obs.animalobservation.animal }}</td>
+                <td>{{ obs.animalobservation.get_sex_display }}</td>
+                <td>{{ obs.animalobservation.get_stage_display }}</td>
+                <td>{{ obs.animalobservation.length }}</td>
+                <td>{{ obs.animalobservation.behaviors.all|join:', ' }}</td>
+                <td>{{ obs.animalobservation.features.all|join:', ' }}</td>
                 <td>{{ obs.video_annotator.annotator }}</td>
+                <td>{{ obs.comment }}</td>
             </tr>
             {% endfor %}
             </tbody>
