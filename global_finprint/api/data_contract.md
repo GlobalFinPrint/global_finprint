@@ -198,7 +198,9 @@ All returned observation objects will follow this standard:
     - duration: (integer)
     - extent: (array of normalized (0.0-1.0) points)
     - comment: (string)
+
     *fields below are only for animal observations*
+
     - animal: (string)
     - animal_id: (integer)
     - sex: (string)
@@ -221,7 +223,9 @@ All POSTed observations are expected to follow this standard:
 - duration: (integer) (optional)
 - extent: (array of normalized (0.0-1.0) points) (optional)
 - comment: (string) (optional)
+
 *fields below are only for animal observations*
+
 - animal_id: (integer)
 - sex_choice: ("M", "F", or "U") (optional)
 - stage_choice: ("AD", "JD", or "U") (optional)
