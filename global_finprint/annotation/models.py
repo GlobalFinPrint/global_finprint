@@ -116,6 +116,9 @@ class ObservationFeature(models.Model):
     id = models.AutoField(primary_key=True)
     feature = models.CharField(max_length=50, unique=True)
 
+    def __str__(self):
+        return u"{0}".format(self.feature)
+
 
 class Observation(AuditableModel):
     video_annotator = models.ForeignKey(VideoAnnotator)
@@ -135,10 +138,7 @@ class Observation(AuditableModel):
             'stage': kwargs.pop('stage', None),
             'length': kwargs.pop('length', None),
             'behaviors': kwargs.pop('behavior_ids', None),
-            'gear_on_animal': kwargs.pop('gear_on_animal', None),
-            'gear_fouled': kwargs.pop('gear_fouled', None),
-            'tag': kwargs.pop('tag', None),
-            'external_parasites': kwargs.pop('external_parasites', None),
+            'features': kwargs.pop('feature_ids', None),
             'user': kwargs['user']
         }
         animal_fields = dict((k, v) for k, v in animal_fields.items() if v is not None)
@@ -147,8 +147,15 @@ class Observation(AuditableModel):
         obs.save()
 
         if kwargs.get('type') == 'A':
+            behaviors = animal_fields.pop('behaviors')
+            features = animal_fields.pop('features')
+
             animal_fields['observation'] = obs
             animal_obs = AnimalObservation(**animal_fields)
+            animal_obs.save()
+
+            animal_obs.behaviors = [] if behaviors is None else list(int(b) for b in behaviors.split(','))
+            animal_obs.features = [] if features is None else list(int(f) for f in features.split(','))
             animal_obs.save()
 
         return obs
@@ -166,11 +173,8 @@ class Observation(AuditableModel):
             'duration',
             'behavior_ids',
             'length',
-            'gear_on_animal',
-            'gear_fouled',
-            'tag',
-            'external_parasites',
-            'extent'
+            'extent',
+            'feature_ids',
         ]
 
     @classmethod
@@ -187,7 +191,8 @@ class Observation(AuditableModel):
             'type_choice': self.type,
             'initial_observation_time': self.initial_observation_time.total_seconds(),
             'duration': self.duration,
-            'comment': self.comment
+            'comment': self.comment,
+            'extent': str(self.extent)
         }
 
         if self.type == 'A':
@@ -201,10 +206,7 @@ class Observation(AuditableModel):
                 'stage_choice': animal.stage,
                 'length': animal.length,
                 'behaviors': list({'id': b.pk, 'type': b.type} for b in animal.behaviors.all()),
-                'gear_on_animal': animal.gear_on_animal,
-                'gear_fouled': animal.gear_fouled,
-                'tag': animal.get_tag_display(),
-                'external_parasites': animal.external_parasites,
+                'features': list({'id': f.pk, 'feature': f.feature} for f in animal.features.all()),
             })
 
         return json

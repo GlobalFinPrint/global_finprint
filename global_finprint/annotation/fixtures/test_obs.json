@@ -12,7 +12,7 @@
       "user": 2
     }
   },
-    {
+  {
     "model": "annotation.videoannotator",
     "pk": 2,
     "fields": {
@@ -20,6 +20,19 @@
       "last_modified_datetime": "2015-11-03T19:03:16.655Z",
       "annotator": 3,
       "video": 1,
+      "assigned_by": 2,
+      "status": "N",
+      "user": 2
+    }
+  },
+  {
+    "model": "annotation.videoannotator",
+    "pk": 3,
+    "fields": {
+      "create_datetime": "2015-11-03T19:00:22.080Z",
+      "last_modified_datetime": "2015-11-03T19:03:16.655Z",
+      "annotator": 1,
+      "video": 2,
       "assigned_by": 2,
       "status": "N",
       "user": 2

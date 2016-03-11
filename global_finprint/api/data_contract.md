@@ -62,10 +62,9 @@ Provides details for the specified set along with data used for annotation tool 
         - id: (integer)
         - type: (string)
     - duration: (integer)
-    - gear_on_animal: (boolean)
-    - gear_fouled: (boolean)
-    - tag: (string)
-    - external_parasites: (boolean)
+    - features: (array)
+        - id: (integer)
+        - feature: (string)
     - comment: (string)
     - extent: (array of normalized (0.0-1.0) points)
 - animals: (array)
@@ -81,6 +80,9 @@ Provides details for the specified set along with data used for annotation tool 
 - behaviors: (array)
     - id (integer)
     - type (string)
+- features: (array)
+    - id (integer)
+    - feature (string)
 
 
 ### Observation listing
@@ -106,10 +108,9 @@ Provides a list of observations for the specified set.
         - id: (integer)
         - type: (string)
     - duration: (integer)
-    - gear_on_animal: (boolean)
-    - gear_fouled: (boolean)
-    - tag: (string)
-    - external_parasites: (boolean)
+    - features: (array)
+        - id: (integer)
+        - feature: (string)
     - comment: (string)
     - extent: (array of normalized (0.0-1.0) points)
 
@@ -129,12 +130,9 @@ Creates a new observation for the specified set.
 - sex: ("M", "F", or "U")
 - stage: ("AD", "JD", or "U")
 - duration: (integer) (optional)
-- behaviors: (comma separated list of integers) (optional)
+- behavior_ids: (comma separated list of integers) (optional)
+- feature_ids: (comma separated list of integers) (optional)
 - length: (integer) (optional)
-- gear_on_animal: (boolean) (optional)
-- gear_fouled: (boolean) (optional)
-- tag: ("N", "D", "R", or "O") (optional)
-- external_parasites: (boolean) (optional)
 - comment: (string) (optional)
 - extent: (array of normalized (0.0-1.0) points) (optional)
 
@@ -151,10 +149,9 @@ Creates a new observation for the specified set.
         - id: (integer)
         - type: (string)
     - duration: (integer)
-    - gear_on_animal: (boolean)
-    - gear_fouled: (boolean)
-    - tag: (string)
-    - external_parasites: (boolean)
+    - features: (array)
+        - id: (integer)
+        - feature: (string)
     - comment: (string)
     - extent: (array of normalized (0.0-1.0) points)
 
@@ -176,10 +173,7 @@ Edit an existing observation for the specified set (NOTE: cannot change observat
 - duration: (integer) (optional)
 - behavior_ids: (array of integers) (optional)
 - length: (integer) (optional)
-- gear_on_animal: (boolean) (optional)
-- gear_fouled: (boolean) (optional)
-- tag: ("N", "D", "R", or "O") (optional)
-- external_parasites: (boolean) (optional)
+- feature_ids: (array of integers) (optional)
 - comment: (string) (optional)
 - extent: (array of normalized (0.0-1.0) points) (optional)
 
@@ -196,10 +190,9 @@ Edit an existing observation for the specified set (NOTE: cannot change observat
         - id: (integer)
         - type: (string)
     - duration: (integer)
-    - gear_on_animal: (boolean)
-    - gear_fouled: (boolean)
-    - tag: (string)
-    - external_parasites: (boolean)
+    - features: (array)
+        - id: (integer)
+        - feature: (string)
     - comment: (string)
     - extent: (array of normalized (0.0-1.0) points)
 
@@ -228,10 +221,9 @@ Delete an observation for the specified set.
         - id: (integer)
         - type: (string)
     - duration: (integer)
-    - gear_on_animal: (boolean)
-    - gear_fouled: (boolean)
-    - tag: (string)
-    - external_parasites: (boolean)
+    - features: (array)
+        - id: (integer)
+        - feature: (string)
     - comment: (string)
     - extent: (array of normalized (0.0-1.0) points)
 
@@ -293,6 +285,19 @@ Provides a list of animal behaviors.
 - behaviors: (array)
     - id (integer)
     - type (string)
+
+
+### Feature list
+`GET /api/features`
+Provides list of observation features.
+
+**Expects** (GET):
+- token (string)
+
+**Returns** (JSON):
+- features: (array)
+    - id (integer)
+    - feature (string)
 
 
 ### Mark set as done

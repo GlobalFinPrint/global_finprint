@@ -2,7 +2,7 @@ from django.views.generic.base import View
 from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotFound, HttpResponseBadRequest
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
-from ..annotation.models import Annotator, VideoAnnotator, Observation, Animal, AnimalBehavior
+from ..annotation.models import Annotator, VideoAnnotator, Observation, Animal, AnimalBehavior, ObservationFeature
 
 
 class APIView(View):
@@ -69,7 +69,8 @@ class SetDetail(APIView):
                                      'file': str(request.va.video.file),
                                      'observations': Observation.get_for_api(request.va),
                                      'animals': Animal.get_for_api(request.va),
-                                     'behaviors': list(AnimalBehavior.objects.all().values())}})
+                                     'behaviors': list(AnimalBehavior.objects.all().values()),
+                                     'features': list(ObservationFeature.objects.all().values())}})
 
 
 class Observations(APIView):
@@ -109,8 +110,10 @@ class ObservationUpdate(APIView):
                 if key == 'user':
                     setattr(obs, 'user', val)
                     setattr(animal_obs, 'user', val)
-                elif key == 'behaviors':
+                elif key == 'behavior_ids':
                     setattr(animal_obs, 'behaviors', val.split(',') if val != '' else [])
+                elif key == 'feature_ids':
+                    setattr(animal_obs, 'features', val.split(',') if val != '' else [])
                 elif key in ['animal_id', 'sex', 'stage', 'length', 'gear_on_animal',
                              'gear_fouled', 'tag', 'external_parasites']:
                     setattr(animal_obs, key, val)
@@ -138,7 +141,13 @@ class BehaviorList(APIView):
         return JsonResponse({'behaviors': list(AnimalBehavior.objects.all().values())})
 
 
+class FeatureList(APIView):
+    def get(self, request):
+        return JsonResponse({'features': list(ObservationFeature.objects.all().values())})
+
+
 class StatusUpdate(APIView):
     def post(self, request, set_id):
-        request.va.update(status='R')
+        request.va.status = 'R'
+        request.va.save()
         return JsonResponse({'status': 'OK'})
