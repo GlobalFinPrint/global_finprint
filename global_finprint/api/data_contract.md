@@ -1,3 +1,6 @@
+# Data contract
+Guide for the tool used by the annotator API to interact with the website.
+
 ### Login
 `POST /api/login`
 Logs an annotator into the API and provides an auth token and the list of unfinished sets assigned.
