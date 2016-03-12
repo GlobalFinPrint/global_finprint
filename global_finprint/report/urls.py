@@ -1,8 +1,8 @@
 from django.conf.urls import url
-from django.views.generic import TemplateView
+from .views import CustomReportListView, CustomReportView
 
 
 urlpatterns = [
-    url(r"", TemplateView.as_view(template_name='pages/reports/report_home.html'),
-        name="report_home"),
+    url(r"custom/(?P<report>\w+)$", CustomReportView.as_view(), name="report_custom"),
+    url(r"$", CustomReportListView.as_view(), name="report_home"),
 ]

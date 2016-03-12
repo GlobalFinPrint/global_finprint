@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="col-md-12">
+    <div class="row">
+        <h3>{{ report | title }}</h3>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                {% for head in headers %}
+                    <th>{{ head }}</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in rows %}
+                <tr>
+                    {% for field in row %}
+                        <td>{{ field }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
