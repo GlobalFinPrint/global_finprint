@@ -149,8 +149,8 @@ class Observation(AuditableModel):
         obs.save()
 
         if kwargs.get('type') == 'A':
-            behaviors = animal_fields.pop('behaviors')
-            features = animal_fields.pop('features')
+            behaviors = animal_fields.pop('behaviors', None)
+            features = animal_fields.pop('features', None)
 
             animal_fields['observation'] = obs
             animal_obs = AnimalObservation(**animal_fields)
