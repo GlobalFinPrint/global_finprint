@@ -37,7 +37,7 @@ class AnimalGroup(models.Model):
 
 class Animal(models.Model):
     regions = models.ManyToManyField(Region)
-    rank = models.PositiveIntegerField()
+    rank = models.PositiveIntegerField(null=True, blank=True)
     group = models.ForeignKey(to=AnimalGroup)
     common_name = models.CharField(max_length=100)
     family = models.CharField(max_length=100)
