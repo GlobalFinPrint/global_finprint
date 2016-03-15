@@ -17,7 +17,7 @@ class Region(models.Model):
 
 class Location(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    code = models.CharField(max_length=2, unique=True, help_text='3166-1 alpha-2, if applicable.')
+    code = models.CharField(max_length=4, unique=True, help_text='3166-1 alpha-2, if applicable.')
     region = models.ForeignKey(to=Region)
 
     @property
@@ -37,7 +37,7 @@ SITE_TYPE_CHOICES = {
 
 class Site(models.Model):
     name = models.CharField(max_length=100, help_text='Must be unique for site location.')
-    code = models.CharField(max_length=2, help_text='Must be unique for site location.')
+    code = models.CharField(max_length=4, help_text='Must be unique for site location.')
     location = models.ForeignKey(Location)
     boundary = models.MultiPolygonField(srid=4326, null=True, blank=True)
     type = models.CharField(max_length=1, choices=SITE_TYPE_CHOICES)
@@ -165,7 +165,7 @@ class FishingRestrictions(models.Model):
 
 class Reef(models.Model):
     name = models.CharField(max_length=100, help_text='Must be unique for reef site.')
-    code = models.CharField(max_length=2, help_text='Must be unique for reef site.')
+    code = models.CharField(max_length=4, help_text='Must be unique for reef site.')
     site = models.ForeignKey(Site)
 
     boundary = models.MultiPolygonField(srid=4326, null=True, blank=True)
