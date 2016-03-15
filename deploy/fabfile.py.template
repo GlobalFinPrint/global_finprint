@@ -123,7 +123,6 @@ def deploy():
         sudo('chown -R www-data:www-data ./global_finprint/static')
         collect_static()
         apply_migrations()
-        load_data()
 
 
 def deploy_test():
@@ -135,8 +134,6 @@ def deploy_test():
         sudo('chown -R www-data:www-data ./global_finprint/static')
         collect_static()
         apply_migrations()
-        load_data()
-        load_test_data()
 
 
 def configure_gunicorn():
