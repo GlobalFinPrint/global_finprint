@@ -44,7 +44,7 @@
     "fields": {
       "create_datetime": "2015-11-03T19:00:22.080Z",
       "last_modified_datetime": "2015-11-03T19:03:16.655Z",
-      "initial_observation_time": "12345",
+      "initial_observation_time": 12345,
       "type": "A",
       "duration": 15,
       "video_annotator": 1,
@@ -57,7 +57,7 @@
     "fields": {
       "create_datetime": "2015-11-03T19:00:22.080Z",
       "last_modified_datetime": "2015-11-03T19:03:16.655Z",
-      "initial_observation_time": "0",
+      "initial_observation_time": 0,
       "type": "I",
       "video_annotator": 1,
       "user": 1,

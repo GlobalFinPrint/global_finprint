@@ -1,5 +1,4 @@
 from django.db import models
-from datetime import timedelta
 from django.contrib.gis.db import models as geomodels
 
 from global_finprint.core.models import AuditableModel, FinprintUser
@@ -124,14 +123,14 @@ class ObservationFeature(models.Model):
 class Observation(AuditableModel):
     video_annotator = models.ForeignKey(VideoAnnotator)
     type = models.CharField(max_length=1, choices=OBSERVATION_TYPE_CHOICES, default='I')
-    initial_observation_time = models.DurationField(help_text='ms')
+    initial_observation_time = models.IntegerField(help_text='ms')
     duration = models.PositiveIntegerField(null=True, blank=True)
     comment = models.CharField(max_length=256, null=True)
     extent = geomodels.PolygonField(null=True)
 
     @staticmethod
     def create(**kwargs):
-        kwargs['initial_observation_time'] = timedelta(milliseconds=int(kwargs['initial_observation_time']))
+        kwargs['initial_observation_time'] = int(kwargs['initial_observation_time'])
         kwargs['type'] = kwargs.pop('type_choice', None)
 
         animal_fields = {
