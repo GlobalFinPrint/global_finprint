@@ -199,7 +199,7 @@ All returned observation objects will follow this standard:
     - type_choice: ("I" or "A")
     - initial_observation_time: (integer)
     - duration: (integer)
-    - extent: (array of normalized (0.0-1.0) points)
+    - extent: ([WKT format string](#extent-format))
     - comment: (string)
 
     *fields below are only for animal observations*
@@ -224,7 +224,7 @@ All POSTed observations are expected to follow this standard:
 - type_choice: ("I" or "A") *NOTE: type cannot be changed during an edit*
 - initial_observation_time: (integer)
 - duration: (integer) (optional)
-- extent: (array of normalized (0.0-1.0) points) (optional)
+- extent: ([WKT format string](#extent-format)) (optional)
 - comment: (string) (optional)
 
 *fields below are only for animal observations*
@@ -253,3 +253,11 @@ All returned animal objects will follow this standard:
     - region: (array)
         - id: (integer)
         - region: (string)
+
+
+### Extent format
+For the extent field we are saving the data in a PostGIS PolygonField so we are expecting a Polygon in [WKT format](https://en.wikipedia.org/wiki/Well-known_text) from the API request (and will provide one in the API response). The following string template can be used: 
+
+`POLYGON ((X1 Y1, X2 Y1, X2 Y2, X1 Y2, X1 Y1))`
+
+`X1` and `Y1` should be one corner of the extent, with `X2` and `Y2` representing the opposite corner. Coordinates should be divided by their respective maximum (resolution of the video) so they are all between 0 and 1. Using this relative measure saves the coordinates independent of resolution and is easily reversible (multiple value by current resolution).

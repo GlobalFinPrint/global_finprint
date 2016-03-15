@@ -149,8 +149,8 @@ class Observation(AuditableModel):
         obs.save()
 
         if kwargs.get('type') == 'A':
-            behaviors = animal_fields.pop('behaviors')
-            features = animal_fields.pop('features')
+            behaviors = animal_fields.pop('behaviors', None)
+            features = animal_fields.pop('features', None)
 
             animal_fields['observation'] = obs
             animal_obs = AnimalObservation(**animal_fields)
@@ -190,7 +190,7 @@ class Observation(AuditableModel):
             'id': self.id,
             'type': self.get_type_display(),
             'type_choice': self.type,
-            'initial_observation_time': self.initial_observation_time.total_seconds(),
+            'initial_observation_time': self.initial_observation_time,
             'duration': self.duration,
             'extent': None if self.extent is None else str(self.extent),
             'comment': self.comment,
@@ -213,7 +213,7 @@ class Observation(AuditableModel):
         return json
 
     def __str__(self):
-        return u"{0}".format(self.initial_observation_time.total_seconds())
+        return u"{0}".format(self.initial_observation_time)
 
 
 class AnimalObservation(AuditableModel):
