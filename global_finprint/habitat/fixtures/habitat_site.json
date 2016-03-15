@@ -383,5 +383,467 @@
       "boundary": null,
       "type": "I"
     }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 120,
+    "fields": {
+      "name": "A",
+      "code": "A",
+      "location": 100,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 121,
+    "fields": {
+      "name": "Antongil Bay",
+      "code": "AB",
+      "location": 97,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 122,
+    "fields": {
+      "name": "Ashmore",
+      "code": "AS",
+      "location": 85,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 123,
+    "fields": {
+      "name": "B",
+      "code": "B",
+      "location": 93,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 124,
+    "fields": {
+      "name": "B",
+      "code": "B",
+      "location": 100,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 125,
+    "fields": {
+      "name": "C",
+      "code": "C",
+      "location": 93,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 126,
+    "fields": {
+      "name": "C",
+      "code": "C",
+      "location": 100,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 127,
+    "fields": {
+      "name": "Cocos-Keeling",
+      "code": "CK",
+      "location": 85,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 128,
+    "fields": {
+      "name": "D",
+      "code": "D",
+      "location": 93,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 129,
+    "fields": {
+      "name": "E",
+      "code": "E",
+      "location": 93,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 130,
+    "fields": {
+      "name": "Fernando de Noronha",
+      "code": "FN",
+      "location": 75,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 131,
+    "fields": {
+      "name": "Gili Islands",
+      "code": "GI",
+      "location": 93,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 132,
+    "fields": {
+      "name": "Guadeloupe",
+      "code": "GP",
+      "location": 79,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 133,
+    "fields": {
+      "name": "Hainan",
+      "code": "HN",
+      "location": 77,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 134,
+    "fields": {
+      "name": "Jamaica",
+      "code": "JM",
+      "location": 7,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 135,
+    "fields": {
+      "name": "Jarvis",
+      "code": "JV",
+      "location": 66,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 136,
+    "fields": {
+      "name": "Kavieng",
+      "code": "KV",
+      "location": 95,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 137,
+    "fields": {
+      "name": "Kimbe Bay",
+      "code": "KB",
+      "location": 95,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 138,
+    "fields": {
+      "name": "Line Islands",
+      "code": "LI",
+      "location": 84,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 139,
+    "fields": {
+      "name": "Mainland",
+      "code": "M",
+      "location": 75,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 140,
+    "fields": {
+      "name": "Maldives",
+      "code": "M",
+      "location": 91,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 141,
+    "fields": {
+      "name": "Martinique",
+      "code": "MQ",
+      "location": 79,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 142,
+    "fields": {
+      "name": "Milne Bay",
+      "code": "MB",
+      "location": 95,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 143,
+    "fields": {
+      "name": "Nosy Be",
+      "code": "NB",
+      "location": 97,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 144,
+    "fields": {
+      "name": "Okinawa",
+      "code": "OK",
+      "location": 63,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 145,
+    "fields": {
+      "name": "Palymyra atoll",
+      "code": "PY",
+      "location": 66,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 146,
+    "fields": {
+      "name": "Phillipines",
+      "code": "PH",
+      "location": 74,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 147,
+    "fields": {
+      "name": "Puerto Rico",
+      "code": "PR",
+      "location": 96,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 148,
+    "fields": {
+      "name": "Raja Ampat",
+      "code": "RA",
+      "location": 93,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 149,
+    "fields": {
+      "name": "Rowleys",
+      "code": "RW",
+      "location": 85,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 150,
+    "fields": {
+      "name": "SW Madagascar",
+      "code": "SW",
+      "location": 97,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 151,
+    "fields": {
+      "name": "Solomon Islands A",
+      "code": "A",
+      "location": 62,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 152,
+    "fields": {
+      "name": "Solomon Islands B",
+      "code": "B",
+      "location": 62,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 153,
+    "fields": {
+      "name": "Torres Strait A",
+      "code": "A",
+      "location": 73,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 154,
+    "fields": {
+      "name": "Torres Strait B",
+      "code": "B",
+      "location": 73,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 155,
+    "fields": {
+      "name": "Torres Strait C",
+      "code": "C",
+      "location": 73,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 156,
+    "fields": {
+      "name": "Torres Strait D",
+      "code": "D",
+      "location": 73,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 157,
+    "fields": {
+      "name": "Torres Strait E",
+      "code": "E",
+      "location": 73,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 158,
+    "fields": {
+      "name": "Vanuatu A",
+      "code": "A",
+      "location": 87,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 159,
+    "fields": {
+      "name": "Vanuatu B",
+      "code": "B",
+      "location": 87,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 160,
+    "fields": {
+      "name": "Viti Levu",
+      "code": "VL",
+      "location": 68,
+      "boundary": null,
+      "type": "C"
+    }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 161,
+    "fields": {
+      "name": "Western Madagascar",
+      "code": "W",
+      "location": 97,
+      "boundary": null,
+      "type": "C"
+    }
   }
 ]

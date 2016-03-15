@@ -1,138 +1,489 @@
 [
-    {
+  {
+    "model": "habitat.region",
+    "pk": 1,
     "fields": {
       "name": "Western Atlantic"
-    },
-    "model": "habitat.region",
-    "pk": 1
+    }
   },
   {
+    "model": "habitat.region",
+    "pk": 2,
     "fields": {
       "name": "Coral Triangle"
-    },
-    "model": "habitat.region",
-    "pk": 2
+    }
   },
   {
+    "model": "habitat.region",
+    "pk": 3,
     "fields": {
       "name": "Pacific"
-    },
-    "model": "habitat.region",
-    "pk": 3
+    }
   },
   {
+    "model": "habitat.region",
+    "pk": 4,
     "fields": {
       "name": "Indian Ocean"
-    },
-    "model": "habitat.region",
-    "pk": 4
+    }
   },
   {
+    "model": "habitat.location",
+    "pk": 1,
     "fields": {
       "name": "Belize",
       "code": "BZ",
       "region": 1
-    },
-    "model": "habitat.location",
-    "pk": 1
+    }
   },
   {
+    "model": "habitat.location",
+    "pk": 2,
     "fields": {
       "name": "Cuba",
       "code": "CU",
       "region": 1
-    },
-    "model": "habitat.location",
-    "pk": 2
+    }
   },
   {
+    "model": "habitat.location",
+    "pk": 3,
     "fields": {
       "name": "Bahamas",
       "code": "BS",
       "region": 1
-    },
-    "model": "habitat.location",
-    "pk": 3
+    }
   },
   {
+    "model": "habitat.location",
+    "pk": 4,
     "fields": {
       "name": "New Caledonia",
       "code": "NC",
       "region": 3
-    },
-    "model": "habitat.location",
-    "pk": 4
+    }
   },
   {
+    "model": "habitat.location",
+    "pk": 5,
     "fields": {
       "name": "Honduras",
       "code": "HN",
       "region": 1
-    },
-    "model": "habitat.location",
-    "pk": 5
+    }
   },
   {
+    "model": "habitat.location",
+    "pk": 6,
     "fields": {
       "name": "Mexico",
       "code": "MX",
       "region": 1
-    },
-    "model": "habitat.location",
-    "pk": 6
+    }
   },
   {
+    "model": "habitat.location",
+    "pk": 7,
     "fields": {
       "name": "Jamaica",
       "code": "JM",
       "region": 1
-    },
-    "model": "habitat.location",
-    "pk": 7
+    }
   },
   {
+    "model": "habitat.location",
+    "pk": 8,
     "fields": {
       "name": "Cayman Islands",
       "code": "KY",
       "region": 1
-    },
-    "model": "habitat.location",
-    "pk": 8
+    }
   },
   {
+    "model": "habitat.location",
+    "pk": 9,
     "fields": {
       "name": "Turks and Caicos",
       "code": "TC",
       "region": 1
-    },
-    "model": "habitat.location",
-    "pk": 9
+    }
   },
   {
+    "model": "habitat.location",
+    "pk": 10,
     "fields": {
       "name": "Barbados",
       "code": "BB",
       "region": 1
-    },
-    "model": "habitat.location",
-    "pk": 10
+    }
   },
   {
+    "model": "habitat.location",
+    "pk": 11,
     "fields": {
       "name": "Trinidad and Tobago",
       "code": "TT",
       "region": 1
-    },
-    "model": "habitat.location",
-    "pk": 11
+    }
   },
   {
-    "fields": {
-      "name": "USA",
-      "code": "US",
-      "region": 1
-    },
     "model": "habitat.location",
-    "pk": 12
+    "pk": 12,
+    "fields": {
+      "name": "USA-Western Atlantic",
+      "code": "US-A",
+      "region": 1
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 61,
+    "fields": {
+      "name": "Thailand",
+      "code": "TH",
+      "region": 4
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 62,
+    "fields": {
+      "name": "Solomon Islands",
+      "code": "SB",
+      "region": 2
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 63,
+    "fields": {
+      "name": "Japan",
+      "code": "JP",
+      "region": 2
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 64,
+    "fields": {
+      "name": "Saudi Arabia",
+      "code": "SA",
+      "region": 4
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 65,
+    "fields": {
+      "name": "UAE",
+      "code": "AE",
+      "region": 4
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 66,
+    "fields": {
+      "name": "USA-Pacific",
+      "code": "US-P",
+      "region": 3
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 67,
+    "fields": {
+      "name": "Mauritius",
+      "code": "MU",
+      "region": 4
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 68,
+    "fields": {
+      "name": "Fiji",
+      "code": "FJ",
+      "region": 3
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 69,
+    "fields": {
+      "name": "Mozambique",
+      "code": "MZ",
+      "region": 4
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 70,
+    "fields": {
+      "name": "Marshall Islands",
+      "code": "MH",
+      "region": 3
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 71,
+    "fields": {
+      "name": "Taiwan",
+      "code": "TW",
+      "region": 2
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 72,
+    "fields": {
+      "name": "American Samoa",
+      "code": "AS",
+      "region": 3
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 73,
+    "fields": {
+      "name": "Australia-Pacific",
+      "code": "AU-P",
+      "region": 3
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 74,
+    "fields": {
+      "name": "Phillipines",
+      "code": "PH",
+      "region": 2
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 75,
+    "fields": {
+      "name": "Brazil",
+      "code": "BR",
+      "region": 1
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 76,
+    "fields": {
+      "name": "Timor-Leste",
+      "code": "TL",
+      "region": 4
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 77,
+    "fields": {
+      "name": "China",
+      "code": "CN",
+      "region": 2
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 78,
+    "fields": {
+      "name": "Guam",
+      "code": "GU",
+      "region": 3
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 79,
+    "fields": {
+      "name": "French West Indies",
+      "code": "FR",
+      "region": 1
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 80,
+    "fields": {
+      "name": "Tanzania",
+      "code": "TZ",
+      "region": 4
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 81,
+    "fields": {
+      "name": "Sri Lanka",
+      "code": "LK",
+      "region": 4
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 82,
+    "fields": {
+      "name": "Seychelles",
+      "code": "SC",
+      "region": 4
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 83,
+    "fields": {
+      "name": "Hong Kong",
+      "code": "HK",
+      "region": 2
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 84,
+    "fields": {
+      "name": "Kiribati",
+      "code": "KI",
+      "region": 3
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 85,
+    "fields": {
+      "name": "Australia-Indian Ocean",
+      "code": "AU-I",
+      "region": 4
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 86,
+    "fields": {
+      "name": "Marianas",
+      "code": "MP",
+      "region": 3
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 87,
+    "fields": {
+      "name": "Vanuatu",
+      "code": "VU",
+      "region": 2
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 88,
+    "fields": {
+      "name": "Palau",
+      "code": "PW",
+      "region": 3
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 89,
+    "fields": {
+      "name": "Federated States of Micronesia",
+      "code": "FM",
+      "region": 3
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 90,
+    "fields": {
+      "name": "Mayotte",
+      "code": "YT",
+      "region": 4
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 91,
+    "fields": {
+      "name": "Maldives",
+      "code": "MV",
+      "region": 4
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 92,
+    "fields": {
+      "name": "French Polynesia",
+      "code": "PF",
+      "region": 3
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 93,
+    "fields": {
+      "name": "Indonesia",
+      "code": "ID",
+      "region": 2
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 94,
+    "fields": {
+      "name": "Tonga",
+      "code": "TO",
+      "region": 3
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 95,
+    "fields": {
+      "name": "PNG",
+      "code": "PG",
+      "region": 2
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 96,
+    "fields": {
+      "name": "Puerto Rico",
+      "code": "PR",
+      "region": 1
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 97,
+    "fields": {
+      "name": "Madagascar",
+      "code": "MG",
+      "region": 4
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 98,
+    "fields": {
+      "name": "Oman",
+      "code": "OM",
+      "region": 4
+    }
+  },
+  {
+    "model": "habitat.location",
+    "pk": 100,
+    "fields": {
+      "name": "Malaysia",
+      "code": "MY",
+      "region": 2
+    }
   }
 ]
