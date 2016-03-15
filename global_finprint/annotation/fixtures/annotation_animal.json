@@ -17,21 +17,21 @@
     "model": "annotation.animalgroup",
     "pk": 3,
     "fields": {
-      "name": "Other target"
+      "name": "Reptile"
     }
   },
   {
     "model": "annotation.animalgroup",
     "pk": 4,
     "fields": {
-      "name": "Groupers and jacks"
+      "name": "Bony fish"
     }
   },
   {
     "model": "annotation.animalgroup",
     "pk": 5,
     "fields": {
-      "name": "n/a"
+      "name": "Mammal"
     }
   },
   {
