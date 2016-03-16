@@ -68,7 +68,7 @@ class Animal(models.Model):
         }
 
     def __str__(self):
-        return u"{0} {1} ({2})".format(self.genus, self.species, self.common_name)
+        return u"{0} ({1} {2})".format(self.common_name, self.genus, self.species)
 
 
 class AnimalBehavior(models.Model):
