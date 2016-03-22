@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load time_display %}
 {% block content %}
 
 <div class="col-md-12">
@@ -19,7 +20,7 @@
             <tr class="success">
                 <th>Type</th>
                 <th>Time</th>
-                <th>Duration</th>
+                <th>Duration (ms)</th>
                 <th>Animal</th>
                 <th>Sex</th>
                 <th>Stage</th>
@@ -34,7 +35,7 @@
             {% for obs in observations %}
             <tr>
                 <td>{{ obs.get_type_display }}</td>
-                <td>{{ obs.initial_observation_time }}</td>
+                <td>{{ obs.initial_observation_time|time_display }}</td>
                 <td>{{ obs.duration }}</td>
                 <td>{{ obs.animalobservation.animal }}</td>
                 <td>{{ obs.animalobservation.get_sex_display }}</td>
