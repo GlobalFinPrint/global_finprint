@@ -151,3 +151,9 @@ class StatusUpdate(APIView):
         request.va.status_id = 3
         request.va.save()
         return JsonResponse({'status': 'OK'})
+
+
+class ProgressUpdate(APIView):
+    def post(self, request, set_id):
+        new_progress = request.va.update_progress(int(request.POST.get('progress')))
+        return JsonResponse({'progress': new_progress})

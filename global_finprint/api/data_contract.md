@@ -184,11 +184,26 @@ Updates the status for the specified set to "Ready for review".
 **Expects** (URL):
 - id: (integer)
 
-**Expects** (GET):
+**Expects** (POST):
 - token (string)
 
-**Returns**:
+**Returns** (JSON):
 - status: "OK"
+
+
+### Update progress on video
+`POST /api/set/:id/progress`
+Updates the progress (latest second watched) for the specified set.
+
+**Expects** (URL):
+- id: (integer)
+
+**Expects** (POST):
+- token (string)
+- progress (integer)
+
+**Returns** (JSON):
+- progress: (integer) (NOTE: progress will only update if new value is greater than old value)
 
 
 ### Observation response object

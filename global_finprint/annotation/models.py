@@ -119,6 +119,7 @@ class VideoAnnotator(AuditableModel):
         if seconds > self.progress:
             self.progress = seconds
             self.save()
+        return self.progress
 
     @classmethod
     def get_active_for_annotator(cls, annotator):
