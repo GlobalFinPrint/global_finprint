@@ -110,9 +110,15 @@ class VideoAnnotator(AuditableModel):
     video = models.ForeignKey(to=Video)
     assigned_by = models.ForeignKey(to=Lead, related_name='assigned_by')
     status = models.ForeignKey(to=AnnotationState, default=1)
+    progress = models.IntegerField(default=0)
 
     def set(self):
         return self.video.set
+
+    def update_progress(self, seconds):
+        if seconds > self.progress:
+            self.progress = seconds
+            self.save()
 
     @classmethod
     def get_active_for_annotator(cls, annotator):
