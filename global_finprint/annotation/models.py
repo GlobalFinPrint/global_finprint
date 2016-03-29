@@ -98,6 +98,12 @@ class AnnotationState(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
 
+    def __str__(self):
+        return u'{0}'.format(self.name)
+
+    class Meta:
+        ordering = ['id']
+
 
 class VideoAnnotator(AuditableModel):
     annotator = models.ForeignKey(to=Annotator)
