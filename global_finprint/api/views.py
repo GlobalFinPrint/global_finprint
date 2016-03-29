@@ -82,7 +82,7 @@ class Observations(APIView):
         params['video_annotator'] = request.va
         params['user'] = request.annotator.user
         Observation.create(**params)
-        request.va.status = 'I'
+        request.va.status_id = 2
         request.va.save()
         return JsonResponse({'observations': Observation.get_for_api(request.va)})
 
@@ -148,6 +148,6 @@ class FeatureList(APIView):
 
 class StatusUpdate(APIView):
     def post(self, request, set_id):
-        request.va.status = 'R'
+        request.va.status_id = 3
         request.va.save()
         return JsonResponse({'status': 'OK'})

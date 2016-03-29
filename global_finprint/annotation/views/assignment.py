@@ -86,7 +86,7 @@ class RemoveVideoAnnotatorView(UserAllowedMixin, View):
 
         va = get_object_or_404(VideoAnnotator, pk=request.POST.get('id'))
 
-        if va.status != 'N':
+        if va.status_id != 1:
             return HttpResponseNotFound()
 
         va.delete()
@@ -102,7 +102,7 @@ class DisableVideoAnnotatorView(UserAllowedMixin, View):
             return HttpResponseForbidden()
 
         va = get_object_or_404(VideoAnnotator, pk=request.POST.get('id'))
-        va.status = 'D'
+        va.status_id = 5
         va.save()
 
         return HttpResponse('ok')
@@ -116,7 +116,7 @@ class EnableVideoAnnotatorView(UserAllowedMixin, View):
             return HttpResponseForbidden()
 
         va = get_object_or_404(VideoAnnotator, pk=request.POST.get('id'))
-        va.status = 'I'
+        va.status_id = 2
         va.save()
 
         return HttpResponse('ok')

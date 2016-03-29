@@ -14,13 +14,6 @@ ANIMAL_STAGE_CHOICES = {
     ('JU', 'Juvenile'),
     ('U', 'Unknown'),
 }
-VIDEO_ANNOTATOR_CHOICES = {
-    ('N', 'Not started'),
-    ('I', 'In progress'),
-    ('R', 'Ready for review'),
-    ('C', 'Competed'),
-    ('D', 'Disabled')
-}
 OBSERVATION_TYPE_CHOICES = {
     ('I', 'Of interest'),
     ('A', 'Animal'),
@@ -83,7 +76,7 @@ class Video(AuditableModel):
     file = models.FileField(null=True, blank=True)
 
     def annotators_assigned(self):
-        return VideoAnnotator.objects.filter(video=self).filter(~models.Q(status='D')).all()
+        return VideoAnnotator.objects.filter(video=self).filter(~models.Q(status_id=5)).all()
 
     def __str__(self):
         return u"{0}".format(self.file)
@@ -98,18 +91,26 @@ class Annotator(FinprintUser):
         return VideoAnnotator.objects.filter(annotator=self).all()
 
 
+# 1 = Not Started, 2 = In progress, 3 = Ready for review
+# 4 = Completed, 5 = Disabled, 6 = Rejected
+class AnnotationState(models.Model):
+
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+
+
 class VideoAnnotator(AuditableModel):
     annotator = models.ForeignKey(to=Annotator)
     video = models.ForeignKey(to=Video)
     assigned_by = models.ForeignKey(to=Lead, related_name='assigned_by')
-    status = models.CharField(max_length=1, choices=VIDEO_ANNOTATOR_CHOICES, default='N')
+    status = models.ForeignKey(to=AnnotationState, default=1)
 
     def set(self):
         return self.video.set
 
     @classmethod
     def get_active_for_annotator(cls, annotator):
-        return cls.objects.filter(annotator=annotator, status__in=['N', 'I'])
+        return cls.objects.filter(annotator=annotator, status_id__in=[1, 2])
 
 
 class ObservationFeature(models.Model):

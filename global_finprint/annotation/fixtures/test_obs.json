@@ -8,7 +8,7 @@
       "annotator": 4,
       "video": 1,
       "assigned_by": 2,
-      "status": "I",
+      "status_id": 2,
       "user": 2
     }
   },
@@ -21,7 +21,7 @@
       "annotator": 3,
       "video": 1,
       "assigned_by": 2,
-      "status": "N",
+      "status_id": 1,
       "user": 2
     }
   },
@@ -34,7 +34,7 @@
       "annotator": 1,
       "video": 2,
       "assigned_by": 2,
-      "status": "N",
+      "status_id": 1,
       "user": 2
     }
   },
