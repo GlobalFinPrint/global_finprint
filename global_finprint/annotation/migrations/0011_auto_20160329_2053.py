@@ -6,42 +6,6 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 
-def load_data(apps, schema_editor):
-    AnnotationState = apps.get_model("annotation", "AnnotationState")
-    AnnotationState(
-        id=1,
-        name='Not started',
-        description='The annotator has not started this annotation'
-    ).save()
-    AnnotationState(
-        id=2,
-        name='In progress',
-        description='The annotator has saved at least one observation'
-    ).save()
-    AnnotationState(
-        id=3,
-        name='Ready for review',
-        description='The annotator completed the work and submitted this video annotation for review'
-    ).save()
-    AnnotationState(
-        id=4,
-        name='Complete',
-        description='The lead reviewed the annotation, made edits and judged the '
-                    'annotation of this video by this annotator to be complete'
-    ).save()
-    AnnotationState(
-        id=5,
-        name='Disabled',
-        description='This annotation and all of its observations have been excluded'
-    ).save()
-    AnnotationState(
-        id=6,
-        name='Rejected',
-        description='​This annotation has been rejected and all of its observations '
-                    'are excluded. The history is still visible to leads'
-    ).save()
-
-
 class Migration(migrations.Migration):
     dependencies = [
         ('annotation', '0010_auto_20160315_1757'),
@@ -63,5 +27,4 @@ class Migration(migrations.Migration):
                                     on_delete=django.db.models.deletion.CASCADE,
                                     to='annotation.AnnotationState'),
         ),
-        migrations.RunPython(load_data)
     ]
