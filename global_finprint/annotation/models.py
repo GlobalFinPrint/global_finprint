@@ -125,6 +125,12 @@ class VideoAnnotator(AuditableModel):
     def get_active_for_annotator(cls, annotator):
         return cls.objects.filter(annotator=annotator, status_id__in=[1, 2])
 
+    def to_json(self):
+        return {'id': self.id,
+                'set_code': str(self.set()),
+                'file': str(self.video.file),
+                'progress': self.progress}
+
 
 class ObservationFeature(models.Model):
     id = models.AutoField(primary_key=True)

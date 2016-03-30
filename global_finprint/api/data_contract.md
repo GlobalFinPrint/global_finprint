@@ -11,9 +11,7 @@ Logs an annotator into the API and provides an auth token and the list of unfini
 
 **Returns** (JSON):
 - token: (string)
-- sets (array)
-    - id: (integer)
-    - file: (string)
+- sets (array of [set list objects](#set-list-response-object))
 
 
 ### Logout
@@ -35,10 +33,7 @@ Provides a list of unfinished sets assigned to an annotator for review.
 - token: (string)
 
 **Returns** (JSON):
-- sets (array)
-    - id: (integer)
-    - set_code: (string)
-    - file: (string)
+- sets (array of [set list objects](#set-list-response-object))
 
 
 ### Set detail
@@ -53,7 +48,9 @@ Provides details for the specified set along with data used for annotation tool 
 
 **Returns** (JSON):
 - id: (integer)
+- set_code: (string)
 - file: (string)
+- progress: (integer)
 - observations: (array of [observation objects](#observation-response-object))
 - animals: (array of [animal objects](#animal-response-object))
 - behaviors: (array)
@@ -204,6 +201,15 @@ Updates the progress (latest second watched) for the specified set.
 
 **Returns** (JSON):
 - progress: (integer) (NOTE: progress will only update if new value is greater than old value)
+
+
+### Set list response object
+Set objects returned in lists (not when getting set detail) will follow this standard:
+- set: (object)
+    - id: (integer)
+    - set_code: (string)
+    - file: (string)
+    - progress: (integer)
 
 
 ### Observation response object
