@@ -57,6 +57,8 @@ class VideoAnnotatorListView(UserAllowedMixin, CreateView):
             context['form'] = None
             context['is_lead'] = False
 
+        context['assignments'] = VideoAnnotator.objects.filter(video__set__trip=self.kwargs['trip_id']).order_by('pk')
+
         context['search_form'] = VideoAnnotatorSearchForm(self.request.GET, trip_id=(self.kwargs['trip_id']))
         if self.request.GET and context['search_form'].is_valid():
             search_values = context['search_form'].cleaned_data

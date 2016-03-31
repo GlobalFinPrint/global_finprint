@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load time_display %}
 {% load crispy_forms_tags %}
 
 {% block content %}
@@ -18,42 +19,23 @@
             <tr class="success">
                 <th>Video</th>
                 <th>Set</th>
-                <th>Team</th>
-                <th>Annotators</th>
+                <th>Annotator</th>
+                <th>Status</th>
+                <th>Progress</th>
+                <th># of Obs</th>
+                <th>Manage assignment</th>
             </tr>
             </thead>
             <tbody>
-            {% for v in videos %}
+            {% for a in assignments %}
                 <tr>
-                    <td>{{ v.file }}</td>
-                    <td>{{ v.set.code }}</td>
-                    <td>{{ v.set.trip.team }}</td>
-                    <td>
-                    <ul class="annotators">
-                        {% if v.videoannotator_set %}
-                            {% for va in v.videoannotator_set.all %}
-                                <li>
-                                    <span class="va {% if va.status_id == 5 %}disabled{% endif %}">
-                                        {{ va.annotator.user }} (<span class="status">{{ va.status.name }}</span>)
-                                    </span>
-
-                                    {% if is_lead %}
-                                        {% if va.status_id == 1 %}
-                                            <a class="adjust-annotator remove" data-id="{{ va.id }}" data-name="{{ va.annotator.user }}" href="#">Remove</a>
-                                        {% elif va.status_id == 5 %}
-                                            <a class="adjust-annotator enable" data-id="{{ va.id }}" data-name="{{ va.annotator.user }}" href="#">Enable</a>
-                                        {% elif va.status_id == 2 %}
-                                            <a class="adjust-annotator disable" data-id="{{ va.id }}" data-name="{{ va.annotator.user }}" href="#">Disable</a>
-                                        {% endif %}
-                                    {% endif %}
-                                </li>
-                            {% endfor %}
-                        {% else %}
-                            <li><i>Unassigned</i></li>
-                        {% endif %}
-                        <li><a href="?video={{ v.id }}">Assign</a></li>
-                    </ul>
-                    </td>
+                    <td>{{ a.video }}</td>
+                    <td>{{ a.video.set }}</td>
+                    <td>{{ a.annotator }}</td>
+                    <td>{{ a.status }}</td>
+                    <td>{{ a.progress|time_display }}</td>
+                    <td>{{ a.observation_set.all|length }}</td>
+                    <td><a href="#">Manage</a></td>
                 </tr>
             {% endfor %}
             </tbody>
