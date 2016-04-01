@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load time_display %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="row">
+        <h3>Manage video assignment</h3>
+        <div class="pull-right">
+            {% if assignment.status_id == 1 %}
+                <button class="btn btn-danger">Delete</button>
+            {% elif assignment.status_id == 2 %}
+                <button class="btn btn-warning">Disable</button>
+            {% elif assignment.status_id == 3 %}
+                <button class="btn btn-success">Accept</button>
+                <button class="btn btn-warning">Reject</button>
+            {% elif assignment.status_id == 5 %}
+                <button class="btn btn-primary">Enable</button>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <h3>Observations</h3>
+        <table class="table table-bordered table-condensed assignment-obseration-table" cellspacing="0" width="100%">
+            <thead>
+                <tr class="success">
+                    <th>Initial observation time</th>
+                    <th>Type</th>
+                    <th>Duration</th>
+                    <th>Comment</th>
+                    <th>Screen capture</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for o in observations %}
+                <tr>
+                    <td>{{ o.initial_observation_time|time_display }}</td>
+                    <td>{{ o.get_type_display }}</td>
+                    <td>{{ o.duration|default_if_none:"<i>None</i>" }}</td>
+                    <td>{{ o.comment|default_if_none:"<i>None</i>"  }}</td>
+                    <td><i>TODO</i></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

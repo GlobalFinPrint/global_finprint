@@ -35,7 +35,7 @@
                     <td>{{ a.status }}</td>
                     <td>{{ a.progress|time_display }}</td>
                     <td>{{ a.observation_set.all|length }}</td>
-                    <td><a href="#">Manage</a></td>
+                    <td><a href="{% url 'assignment_manage' a.id %}">Manage</a></td>
                 </tr>
             {% endfor %}
             </tbody>

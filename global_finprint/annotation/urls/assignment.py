@@ -2,7 +2,7 @@ from django.conf.urls import url
 from global_finprint.annotation.views.assignment import \
     VideoAnnotatorListView, RemoveVideoAnnotatorView, DisableVideoAnnotatorView, \
     EnableVideoAnnotatorView, VideoAnnotatorJSONListView, VideoAnnotatorSelectTripView, \
-    VideoAutoAssignView
+    VideoAutoAssignView, AssignmentManageView
 
 urlpatterns = [
     url(r"^$", VideoAnnotatorSelectTripView.as_view(), name='video_annotator_select_trip'),
@@ -12,4 +12,5 @@ urlpatterns = [
     url(r"^disable/$", DisableVideoAnnotatorView.as_view(), name='disable_video_annotator'),
     url(r"^enable/$", EnableVideoAnnotatorView.as_view(), name='disable_video_annotator'),
     url(r"^list/$", VideoAnnotatorJSONListView.as_view(), name='video_annotator_json_list'),
+    url(r"^manage/(?P<assignment_id>\d+)$", AssignmentManageView.as_view(), name='assignment_manage')
 ]

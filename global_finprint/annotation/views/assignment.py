@@ -8,7 +8,7 @@ from django.http.response import HttpResponseForbidden, HttpResponseNotFound, \
 from django.template import RequestContext
 from ...bruv.models import Trip
 from ...core.mixins import UserAllowedMixin
-from ..models import VideoAnnotator, Video, Lead, Annotator
+from ..models import VideoAnnotator, Video, Lead, Annotator, Observation
 from ..forms import VideoAnnotatorForm, VideoAnnotatorSearchForm, SelectTripForm
 
 
@@ -162,3 +162,17 @@ class VideoAutoAssignView(UserAllowedMixin, View):
             messages.error(request, 'Error auto assigning videos: {}'.format(e))
 
         return HttpResponseRedirect(reverse_lazy('video_annotator_list', kwargs={'trip_id': trip_id}))
+
+
+class AssignmentManageView(UserAllowedMixin, View):
+    template_name = 'pages/annotation/assignment_manage.html'
+
+    def get(self, request, assignment_id):
+        context = RequestContext(request, {
+            'assignment': VideoAnnotator.objects.get(id=assignment_id),
+            'observations': Observation.objects.filter(video_annotator_id=assignment_id)
+        })
+        return render_to_response(self.template_name, context=context)
+
+    def post(self, request):
+        pass
