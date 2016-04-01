@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="row">
+        <h3>Video assignments</h3>
+        <form id="assignment-search-form" class="clearfix">
+            <div class="col-md-4">
+                <label for="select-trip">Trip</label>
+                <select id="select-trip" name="trip[]" multiple="multiple" placeholder="Select one or more trips">
+                    {% for t in trips %}
+                        <option value="{{ t.id }}">{{ t }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label for="select-set">Set</label>
+                <select id="select-set" name="set[]" multiple="multiple" placeholder="Select one or more sets">
+                    {% for s in sets %}
+                        <option value="{{ s.id }}">{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label for="select-anno">Annotator</label>
+                <select id="select-anno" name="anno[]" multiple="multiple" placeholder="Select one or more annotators">
+                    {% for a in annos %}
+                        <option value="{{ a.id }}">{{ a }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            {% csrf_token %}
+
+            <button id="search" class="btn btn-primary pull-right">Search assignments</button>
+        </form>
+    </div>
+
+    <div class="row">
+        <table class="table table-bordered table-condensed assignment-list-table" cellspacing="0" width="100%">
+            <thead>
+                <tr class="success">
+                    <th>Video</th>
+                    <th>Trip</th>
+                    <th>Set</th>
+                    <th>Annotator</th>
+                    <th>Status</th>
+                    <th>Progress</th>
+                    <th># of Obs</th>
+                    <th>Manage assignment</th>
+                </tr>
+            </thead>
+            <tbody id="assignment-target">
+                <tr><td colspan="8">
+                    <h4 class="text-center">Use the form above to limit selection</h4>
+                </td></tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

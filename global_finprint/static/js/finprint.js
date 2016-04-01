@@ -46,6 +46,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initAssignForm();
         initAdjustAnnotator();
         initAssignButtons();
+        initAssignmentSearch();
     });
 
     function getCSRF() {
@@ -56,6 +57,27 @@ var finprint = finprint || {};  //namespace if necessary...
                 return cookies[i].trim().split('=')[1];
             }
         }
+    }
+
+    function initAssignmentSearch() {
+        var $form = $('#assignment-search-form');
+        var $target = $('tbody#assignment-target');
+        var options = { plugins: ['remove_button', 'restore_on_backspace'] };
+        var fields = [
+            '#select-trip',
+            '#select-set',
+            '#select-anno'
+        ];
+
+        $form.submit(false);
+        fields.forEach(function(selector) {
+            $form.find(selector).selectize(options);
+        });
+        $form.find('button#search').click(function() {
+            $.post('/assignment/search', $form.serialize(), function(res) {
+                $target.html(res);
+            });
+        });
     }
 
     function initAssignForm() {

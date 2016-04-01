@@ -6,7 +6,7 @@ from django.db.models import Count
 from django.http.response import HttpResponseForbidden, HttpResponseNotFound, \
     HttpResponse, JsonResponse, HttpResponseRedirect
 from django.template import RequestContext
-from ...bruv.models import Trip
+from ...bruv.models import Trip, Set
 from ...core.mixins import UserAllowedMixin
 from ..models import VideoAnnotator, Video, Lead, Annotator, Observation
 from ..forms import VideoAnnotatorForm, VideoAnnotatorSearchForm, SelectTripForm
@@ -162,6 +162,41 @@ class VideoAutoAssignView(UserAllowedMixin, View):
             messages.error(request, 'Error auto assigning videos: {}'.format(e))
 
         return HttpResponseRedirect(reverse_lazy('video_annotator_list', kwargs={'trip_id': trip_id}))
+
+
+class AssignmentListView(UserAllowedMixin, View):
+    template_name = 'pages/annotation/assignment_list.html'
+
+    def get(self, request):
+        context = RequestContext(request, {
+            'trips': Trip.objects.all(),
+            'sets': Set.objects.all(),
+            'annos': Annotator.objects.all(),
+        })
+        return render_to_response(self.template_name, context=context)
+
+
+class AssignmentListTbodyView(UserAllowedMixin, View):
+    template_name = 'pages/annotation/assignment_list_tbody.html'
+
+    def post(self, request):
+        query = VideoAnnotator.objects.all()
+
+        trips = request.POST.getlist('trip[]')
+        sets = request.POST.getlist('set[]')
+        annos = request.POST.getlist('anno[]')
+
+        if trips:
+            query = query.filter(video__set__trip_id__in=(int(t) for t in trips))
+
+        if sets:
+            query = query.filter(video__set__id__in=(int(s) for s in sets))
+
+        if annos:
+            query = query.filter(annotator_id__in=(int(a) for a in annos))
+
+        context = RequestContext(request, {'assignments': query})
+        return render_to_response(self.template_name, context=context)
 
 
 class AssignmentManageView(UserAllowedMixin, View):
