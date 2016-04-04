@@ -191,6 +191,7 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
         trips = request.POST.getlist('trip[]')
         sets = request.POST.getlist('set[]')
         annos = request.POST.getlist('anno[]')
+        status = request.POST.getlist('status[]')
 
         if trips:
             query = query.filter(video__set__trip_id__in=(int(t) for t in trips))
@@ -204,6 +205,10 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
             query = query.filter(annotator_id__in=(int(a) for a in annos))
             unassigned = []
 
+        if status:
+            query = query.filter(status_id__in=(int(s) for s in status))
+            unassigned = []
+
         context = RequestContext(request, {'assignments': query, 'unassigned': unassigned})
         return render_to_response(self.template_name, context=context)
 
@@ -212,7 +217,7 @@ class AssignmentModalBodyView(UserAllowedMixin, View):
     template_name = 'pages/annotation/assignment_modal_body.html'
 
     def get(self, request, set_id):
-        set = Set.objects.get(id=set_id)
+        set = get_object_or_404(Set, id=set_id)
         current_assignments = set.video.videoannotator_set.all()
         context = RequestContext(request, {
             'set': set,
@@ -223,14 +228,14 @@ class AssignmentModalBodyView(UserAllowedMixin, View):
         return render_to_response(self.template_name, context=context)
 
     def post(self, request, set_id):
-        set = Set.objects.get(id=set_id)
+        set = get_object_or_404(Set, id=set_id)
         for anno_id in request.POST.getlist('anno[]'):
             VideoAnnotator(
                 annotator=Annotator.objects.get(id=anno_id),
                 video=set.video,
                 assigned_by=Lead.objects.get(user_id=request.user),
             ).save()
-        return render_to_response(self.template_name, context=RequestContext(request, {}))
+        return JsonResponse({'status': 'ok'})
 
 
 class AssignmentManageView(UserAllowedMixin, View):
@@ -238,10 +243,20 @@ class AssignmentManageView(UserAllowedMixin, View):
 
     def get(self, request, assignment_id):
         context = RequestContext(request, {
-            'assignment': VideoAnnotator.objects.get(id=assignment_id),
+            'assignment': get_object_or_404(VideoAnnotator, id=assignment_id),
             'observations': Observation.objects.filter(video_annotator_id=assignment_id)
         })
         return render_to_response(self.template_name, context=context)
 
-    def post(self, request):
-        pass
+    def post(self, request, assignment_id):
+        action = request.POST.get('action')
+        new_state = request.POST.get('new')
+        assignment = get_object_or_404(VideoAnnotator, id=assignment_id)
+
+        if action == 'delete' and assignment.status_id == 1:
+            assignment.delete()
+        elif action == 'update' and new_state is not None:
+            assignment.status_id = int(new_state)
+            assignment.save()
+
+        return JsonResponse({'status': 'ok'})

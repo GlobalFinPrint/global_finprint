@@ -48,6 +48,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initAssignButtons();
         initAssignmentSearch();
         initAssignmentModals();
+        initManageStateButtons();
     });
 
     function getCSRF() {
@@ -101,6 +102,26 @@ var finprint = finprint || {};  //namespace if necessary...
                 $modal.modal('hide');
                 $('form#assignment-search-form button#search').click();
             });
+        });
+    }
+
+    function initManageStateButtons() {
+        var $buttons = $('div.manage-state-buttons');
+        var assignmentId = $buttons.data('id');
+
+        $buttons.find('form').submit(function() {
+            var action = $(this).find('input[name="action"]').val();
+            if (action === 'delete' && confirm('Are you sure you wish to delete this assignment?')) {
+                $.post('/assignment/manage/' + assignmentId, $(this).serialize(), function() {
+                    $('.manage-content')
+                        .html('<div class="row"><h3 class="text-center">Assignment deleted</h3></div>');
+                });
+            } else if (action !== 'delete') {
+                $.post('/assignment/manage/' + assignmentId, $(this).serialize(), function() {
+                    window.location.reload(true);
+                });
+            }
+            return false;
         });
     }
 
