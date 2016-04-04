@@ -84,7 +84,7 @@ var finprint = finprint || {};  //namespace if necessary...
 
     function initAssignmentModals() {
         var $target = $('tbody#assignment-target');
-        $target.on('click', 'button.open-assign-modal', function() {
+        $target.on('click', 'a.open-assign-modal', function() {
             //TODO
         });
     }

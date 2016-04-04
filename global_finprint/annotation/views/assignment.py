@@ -7,6 +7,7 @@ from django.http.response import HttpResponseForbidden, HttpResponseNotFound, \
     HttpResponse, JsonResponse, HttpResponseRedirect
 from django.template import RequestContext
 from ...trip.models import Trip
+from ...bruv.models import Set
 from ...habitat.models import Location
 from ...core.mixins import UserAllowedMixin
 from ..models import VideoAnnotator, Video, Lead, Annotator, Observation, AnnotationState
@@ -184,6 +185,8 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
 
     def post(self, request):
         query = VideoAnnotator.objects.all()
+        unassigned = Set.objects.annotate(Count('video__videoannotator')) \
+                                .filter(video__videoannotator__count=0)
 
         trips = request.POST.getlist('trip[]')
         sets = request.POST.getlist('set[]')
@@ -191,14 +194,16 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
 
         if trips:
             query = query.filter(video__set__trip_id__in=(int(t) for t in trips))
+            unassigned = unassigned.filter(trip_id__in=(int(t) for t in trips))
 
         if sets:
             query = query.filter(video__set__id__in=(int(s) for s in sets))
+            unassigned = unassigned.filter(set_id__in=(int(s) for s in sets))
 
         if annos:
             query = query.filter(annotator_id__in=(int(a) for a in annos))
 
-        context = RequestContext(request, {'assignments': query})
+        context = RequestContext(request, {'assignments': query, 'unassigned': unassigned})
         return render_to_response(self.template_name, context=context)
 
 
