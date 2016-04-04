@@ -43,7 +43,7 @@
     "model": "annotation.annotationstate",
     "pk": 6,
     "fields": {
-      "name": "Not started",
+      "name": "Rejected",
       "description": "This annotation has been rejected and all of its observations are excluded. The history is still visible to leads"
     }
   },
