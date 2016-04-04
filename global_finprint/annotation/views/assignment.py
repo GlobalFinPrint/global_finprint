@@ -222,6 +222,16 @@ class AssignmentModalBodyView(UserAllowedMixin, View):
         })
         return render_to_response(self.template_name, context=context)
 
+    def post(self, request, set_id):
+        set = Set.objects.get(id=set_id)
+        for anno_id in request.POST.getlist('anno[]'):
+            VideoAnnotator(
+                annotator=Annotator.objects.get(id=anno_id),
+                video=set.video,
+                assigned_by=Lead.objects.get(user_id=request.user),
+            ).save()
+        return render_to_response(self.template_name, context=RequestContext(request, {}))
+
 
 class AssignmentManageView(UserAllowedMixin, View):
     template_name = 'pages/annotation/assignment_manage.html'

@@ -30,18 +30,21 @@
                 </tbody>
             </table>
 
-            <label for="new-annotators">New annotator(s) <i>(other assignment count in parenthesis)</i></label>
-            <select id="new-annotators" name="anno[]" multiple="multiple" placeholder="Select one or more annotators">
-                {% for af in affiliations %}
-                <optgroup label="{{ af }}">
-                    {% for a in af.annotator_set.all %}
-                    {% if a not in current_annos %}
-                    <option value="{{ a.id }}">{{ a }} ({{ a.videos_assigned.count }})</option>
-                    {% endif %}
+            <form>
+                {% csrf_token %}
+                <label for="new-annotators">New annotator(s) <i>(other assignment count in parenthesis)</i></label>
+                <select id="new-annotators" name="anno[]" multiple="multiple" placeholder="Select one or more annotators">
+                    {% for af in affiliations %}
+                    <optgroup label="{{ af }}">
+                        {% for a in af.annotator_set.all %}
+                        {% if a not in current_annos %}
+                        <option value="{{ a.id }}">{{ a }} ({{ a.videos_assigned.count }})</option>
+                        {% endif %}
+                        {% endfor %}
+                    </optgroup>
                     {% endfor %}
-                </optgroup>
-                {% endfor %}
-            </select>
+                </select>
+            </form>
         </div>
     </div>
 </div>

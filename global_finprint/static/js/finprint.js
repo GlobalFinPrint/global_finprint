@@ -90,15 +90,17 @@ var finprint = finprint || {};  //namespace if necessary...
             e.preventDefault();
             $.get('/assignment/modal/' + $(this).data('id'), function(html) {
                 $modal.find('div.modal-content').html(html);
+                $modal.find('form').submit(false);
                 $modal.find('#new-annotators').selectize({ plugins: ['remove_button', 'restore_on_backspace'] });
                 $modal.modal('show');
             });
         });
 
         $modal.on('click', 'button#save-changes', function() {
-            //TODO POST new assignments
-            $modal.modal('hide');
-            $('form#assignment-search-form button#search').click();
+            $.post('/assignment/modal/' + $(this).data('id'), $modal.find('form').serialize(), function() {
+                $modal.modal('hide');
+                $('form#assignment-search-form button#search').click();
+            });
         });
     }
 
