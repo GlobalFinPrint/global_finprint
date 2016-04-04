@@ -212,9 +212,11 @@ class AssignmentModalBodyView(UserAllowedMixin, View):
 
     def get(self, request, set_id):
         set = Set.objects.get(id=set_id)
+        current_assignments = set.video.videoannotator_set.all()
         context = RequestContext(request, {
             'set': set,
-            'current': set.video.videoannotator_set.all,
+            'current': current_assignments,
+            'current_annos': [a.annotator for a in current_assignments],
             'affiliations': Affiliation.objects.order_by('name').all()
         })
         return render_to_response(self.template_name, context=context)

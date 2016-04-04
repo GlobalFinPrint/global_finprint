@@ -35,7 +35,9 @@
                 {% for af in affiliations %}
                 <optgroup label="{{ af }}">
                     {% for a in af.annotator_set.all %}
+                    {% if a not in current_annos %}
                     <option value="{{ a.id }}">{{ a }} ({{ a.videos_assigned.count }})</option>
+                    {% endif %}
                     {% endfor %}
                 </optgroup>
                 {% endfor %}
