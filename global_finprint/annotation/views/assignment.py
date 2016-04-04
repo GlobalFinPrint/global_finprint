@@ -202,6 +202,7 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
 
         if annos:
             query = query.filter(annotator_id__in=(int(a) for a in annos))
+            unassigned = []
 
         context = RequestContext(request, {'assignments': query, 'unassigned': unassigned})
         return render_to_response(self.template_name, context=context)
