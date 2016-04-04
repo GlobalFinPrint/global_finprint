@@ -61,7 +61,7 @@ var finprint = finprint || {};  //namespace if necessary...
     }
 
     function initAssignmentSearch() {
-        var $form = $('#assignment-search-form');
+        var $form = $('form#assignment-search-form');
         var $target = $('tbody#assignment-target');
         var options = { plugins: ['remove_button', 'restore_on_backspace'] };
         var fields = [
@@ -83,9 +83,22 @@ var finprint = finprint || {};  //namespace if necessary...
     }
 
     function initAssignmentModals() {
-        var $target = $('tbody#assignment-target');
-        $target.on('click', 'a.open-assign-modal', function() {
-            //TODO
+        var $buttons = $('tbody#assignment-target');
+        var $modal = $('div#assign-modal');
+
+        $buttons.on('click', 'a.open-assign-modal', function(e) {
+            e.preventDefault();
+            $.get('/assignment/modal/' + $(this).data('id'), function(html) {
+                $modal.find('div.modal-content').html(html);
+                $modal.find('#new-annotators').selectize({ plugins: ['remove_button', 'restore_on_backspace'] });
+                $modal.modal('show');
+            });
+        });
+
+        $modal.on('click', 'button#save-changes', function() {
+            //TODO POST new assignments
+            $modal.modal('hide');
+            $('form#assignment-search-form button#search').click();
         });
     }
 

@@ -1,0 +1,56 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h4 class="modal-title">Assign annotators to "{{ set.video }}" ({{ set }})</h4>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-12">
+            <label>Current annotators</label>
+            <table class="table table-bordered table-condensed" cellspacing="0" width="100%">
+                <thead>
+                    <tr class="success">
+                        <th>Annotator</th>
+                        <th>Status</th>
+                        <th>Other assignments</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for a in current %}
+                    <tr>
+                        <td>{{ a.annotator }}</td>
+                        <td>{{ a.status }}</td>
+                        <td>{{ a.annotator.videos_assigned.count }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center"><i>No annotators assigned</i></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <label for="new-annotators">New annotator(s) <i>(other assignment count in parenthesis)</i></label>
+            <select id="new-annotators" name="anno[]" multiple="multiple" placeholder="Select one or more annotators">
+                {% for af in affiliations %}
+                <optgroup label="{{ af }}">
+                    {% for a in af.annotator_set.all %}
+                    <option value="{{ a.id }}">{{ a }} ({{ a.videos_assigned.count }})</option>
+                    {% endfor %}
+                </optgroup>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="save-changes" data-id="{{ set.id }}">
+                Save changes
+            </button>
+        </div>
+    </div>
+</div>

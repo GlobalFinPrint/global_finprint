@@ -88,7 +88,7 @@ class Lead(FinprintUser):
 
 class Annotator(FinprintUser):
     def videos_assigned(self):
-        return VideoAnnotator.objects.filter(annotator=self).all()
+        return VideoAnnotator.objects.filter(annotator=self, status__in=[1,2]).all()
 
 
 # 1 = Not Started, 2 = In progress, 3 = Ready for review

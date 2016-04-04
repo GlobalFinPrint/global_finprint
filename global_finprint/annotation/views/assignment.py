@@ -207,6 +207,19 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
         return render_to_response(self.template_name, context=context)
 
 
+class AssignmentModalBodyView(UserAllowedMixin, View):
+    template_name = 'pages/annotation/assignment_modal_body.html'
+
+    def get(self, request, set_id):
+        set = Set.objects.get(id=set_id)
+        context = RequestContext(request, {
+            'set': set,
+            'current': set.video.videoannotator_set.all,
+            'affiliations': Affiliation.objects.order_by('name').all()
+        })
+        return render_to_response(self.template_name, context=context)
+
+
 class AssignmentManageView(UserAllowedMixin, View):
     template_name = 'pages/annotation/assignment_manage.html'
 
