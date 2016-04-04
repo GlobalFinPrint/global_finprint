@@ -6,9 +6,11 @@ from django.db.models import Count
 from django.http.response import HttpResponseForbidden, HttpResponseNotFound, \
     HttpResponse, JsonResponse, HttpResponseRedirect
 from django.template import RequestContext
-from ...bruv.models import Trip, Set
+from ...trip.models import Trip
+from ...habitat.models import Location
 from ...core.mixins import UserAllowedMixin
-from ..models import VideoAnnotator, Video, Lead, Annotator, Observation
+from ..models import VideoAnnotator, Video, Lead, Annotator, Observation, AnnotationState
+from ...core.models import Affiliation
 from ..forms import VideoAnnotatorForm, VideoAnnotatorSearchForm, SelectTripForm
 
 
@@ -169,9 +171,10 @@ class AssignmentListView(UserAllowedMixin, View):
 
     def get(self, request):
         context = RequestContext(request, {
-            'trips': Trip.objects.all(),
-            'sets': Set.objects.all(),
-            'annos': Annotator.objects.all(),
+            'locations': Location.objects.order_by('name').all(),
+            'trips': Trip.objects.order_by('start_date').all(),
+            'affils': Affiliation.objects.order_by('name').all(),
+            'statuses': AnnotationState.objects.all()
         })
         return render_to_response(self.template_name, context=context)
 

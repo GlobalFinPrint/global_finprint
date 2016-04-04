@@ -5,36 +5,61 @@
     <div class="row">
         <h3>Video assignments</h3>
         <form id="assignment-search-form" class="clearfix">
-            <div class="col-md-4">
-                <label for="select-trip">Trip</label>
-                <select id="select-trip" name="trip[]" multiple="multiple" placeholder="Select one or more trips">
-                    {% for t in trips %}
-                        <option value="{{ t.id }}">{{ t }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div class="col-md-4">
-                <label for="select-set">Set</label>
-                <select id="select-set" name="set[]" multiple="multiple" placeholder="Select one or more sets">
-                    {% for s in sets %}
-                        <option value="{{ s.id }}">{{ s }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div class="col-md-4">
-                <label for="select-anno">Annotator</label>
-                <select id="select-anno" name="anno[]" multiple="multiple" placeholder="Select one or more annotators">
-                    {% for a in annos %}
-                        <option value="{{ a.id }}">{{ a }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
             {% csrf_token %}
 
-            <button id="search" class="btn btn-primary pull-right">Search assignments</button>
+            <div class="row">
+                <div class="col-md-3">
+                    <label for="select-trip">Trip(s)</label>
+                    <select id="select-trip" name="trip[]" multiple="multiple" placeholder="Select one or more trips">
+                        {% for l in locations %}
+                        <optgroup label="{{ l }}">
+                        {% for t in l.trip_set.all %}
+                            <option value="{{ t.id }}">{{ t }}</option>
+                        {% endfor %}
+                        </optgroup>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="select-set">Set(s)</label>
+                    <select id="select-set" name="set[]" multiple="multiple" placeholder="Select one or more sets">
+                        {% for t in trips %}
+                        <optgroup label="{{ t }}">
+                        {% for s in t.set_set.all %}
+                            <option value="{{ s.id }}">{{ s.code }}</option>
+                        {% endfor %}
+                        </optgroup>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="select-anno">Annotator(s)</label>
+                    <select id="select-anno" name="anno[]" multiple="multiple" placeholder="Select one or more annotators">
+                        {% for a in affils %}
+                            <optgroup label="{{ a }}">
+                            {% for an in a.annotator_set.all %}
+                                <option value="{{ an.id }}">{{ an }}</option>
+                            {% endfor %}
+                            </optgroup>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="select-status">Status(es)</label>
+                    <select id="select-status" name="status[]" multiple="multiple" placeholder="Select one or more statuses">
+                        {% for s in statuses %}
+                            <option value="{{ s.id }}">{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <button id="search" class="btn btn-primary pull-right">Search assignments</button>
+            </div>
         </form>
     </div>
 
@@ -58,5 +83,25 @@
                 </td></tr>
             </tbody>
         </table>
+    </div>
+
+    <div class="modal fade" id="assign-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title">Assign annotators</h4>
+          </div>
+          <div class="modal-body">
+            ...
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
     </div>
 {% endblock %}

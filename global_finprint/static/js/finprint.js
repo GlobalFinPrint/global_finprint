@@ -47,6 +47,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initAdjustAnnotator();
         initAssignButtons();
         initAssignmentSearch();
+        initAssignmentModals();
     });
 
     function getCSRF() {
@@ -66,7 +67,8 @@ var finprint = finprint || {};  //namespace if necessary...
         var fields = [
             '#select-trip',
             '#select-set',
-            '#select-anno'
+            '#select-anno',
+            '#select-status'
         ];
 
         $form.submit(false);
@@ -77,6 +79,13 @@ var finprint = finprint || {};  //namespace if necessary...
             $.post('/assignment/search', $form.serialize(), function(res) {
                 $target.html(res);
             });
+        });
+    }
+
+    function initAssignmentModals() {
+        var $target = $('tbody#assignment-target');
+        $target.on('click', 'button.open-assign-modal', function() {
+            //TODO
         });
     }
 
