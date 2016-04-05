@@ -200,7 +200,7 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
 
         if sets:
             query = query.filter(video__set__id__in=(int(s) for s in sets))
-            unassigned = unassigned.filter(set_id__in=(int(s) for s in sets))
+            unassigned = unassigned.filter(id__in=(int(s) for s in sets))
 
         if annos:
             query = query.filter(annotator_id__in=(int(a) for a in annos))
