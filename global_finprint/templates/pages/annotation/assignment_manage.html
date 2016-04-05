@@ -6,7 +6,7 @@
     <div class="manage-content">
         <div class="row">
             <h3>Manage video assignment</h3>
-            <div class="pull-right manage-state-buttons" data-id="{{ assignment.id }}">
+            <div class="text-right manage-state-buttons" data-id="{{ assignment.id }}">
                 {% if assignment.status_id == 1 %}
                     <form>
                         {% csrf_token %}
