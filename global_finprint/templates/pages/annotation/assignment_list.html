@@ -135,7 +135,7 @@
                                     <option value="">---</option>
                                     {% for t in trips %}
                                     {% if t.set_set.all|length > 0 %}
-                                    <option id="{{ t.id }}">{{ t }}</option>
+                                    <option value="{{ t.id }}">{{ t }}</option>
                                     {% endif %}
                                     {% endfor %}
                                 </select>
@@ -147,7 +147,7 @@
                                     <option value="">---</option>
                                     {% for a in affils %}
                                     {% if a.annotator_set.all|length > 0 %}
-                                    <option id="{{ a.id }}">{{ a }}</option>
+                                    <option value="{{ a.id }}">{{ a }}</option>
                                     {% endif %}
                                     {% endfor %}
                                 </select>
@@ -162,6 +162,7 @@
                 </div>
 
                 <div class="modal-footer">
+                    <span class="success-message">Successfully assigned videos</span>
                     <button class="btn btn-default" id="cancel-auto" data-dismiss="modal">Cancel</button>
                     <button class="btn btn-primary" id="assign-auto">Assign</button>
                 </div>

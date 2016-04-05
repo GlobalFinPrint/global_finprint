@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import get_object_or_404, render_to_response
 from django.db.models import Count
-from django.http.response import JsonResponse, HttpResponseRedirect
+from django.http.response import JsonResponse
 from django.template import RequestContext
 from ...trip.models import Trip
 from ...bruv.models import Set
@@ -14,28 +14,24 @@ from ...core.models import Affiliation
 
 
 class VideoAutoAssignView(UserAllowedMixin, View):
-    def assign_video(self, annotators, video):
+    def assign_video(self, annotators, video, num):
         avail = list(a for a in annotators if video not in a.videos_assigned())
         assigned_by = Lead.objects.get(user_id=self.request.user)
-        while len(video.annotators_assigned()) < 2 and len(annotators) > 1:
+        while len(video.annotators_assigned()) < num and len(annotators) > 0 and len(avail) > 0:
             ann = min(avail, key=lambda a: len(a.videos_assigned()))
             VideoAnnotator(annotator=ann, video=video, assigned_by=assigned_by).save()
             avail.remove(ann)
 
-    def get(self, request, ids):
-        trip_id, aff_id = ids.split('_')
+    def post(self, request):
+        trip_id = request.POST.get('trip')
+        aff_id = request.POST.get('affiliation')
+        num = int(request.POST.get('num'))
+
         annotators = Annotator.objects.filter(affiliation_id=aff_id).all()
-        try:
-            for video in Video.objects.filter(set__trip_id=trip_id).all():
-                self.assign_video(annotators, video)
-            messages.success(request, 'Videos auto assigned!')
+        for video in Video.objects.filter(set__trip_id=trip_id).all():
+            self.assign_video(annotators, video, num)
 
-        except Lead.DoesNotExist:
-            messages.error(request, 'Logged in user must be a Lead to assign videos')
-        except Exception as e:  # TODO need to be more specific (?)
-            messages.error(request, 'Error auto assigning videos: {}'.format(e))
-
-        return HttpResponseRedirect(reverse_lazy('video_annotator_list', kwargs={'trip_id': trip_id}))
+        return JsonResponse({'status': 'ok'})
 
 
 class AssignmentListView(UserAllowedMixin, View):

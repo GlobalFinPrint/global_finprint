@@ -137,6 +137,13 @@ var finprint = finprint || {};  //namespace if necessary...
             e.preventDefault();
             $modal.modal('show');
         });
+
+        $modal.find('#assign-auto').click(function() {
+            $.post('/assignment/auto', $modalForm.serialize(), function() {
+                console.log($modal.find('div.modal-footer span.success-message'));
+                $modal.find('div.modal-footer span.success-message').fadeIn().delay(1000).fadeOut();
+            });
+        });
     }
 
     function initAssignForm() {
