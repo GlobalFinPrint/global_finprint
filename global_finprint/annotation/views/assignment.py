@@ -11,7 +11,6 @@ from ...habitat.models import Location
 from ...core.mixins import UserAllowedMixin
 from ..models import VideoAnnotator, Video, Lead, Annotator, Observation, AnnotationState
 from ...core.models import Affiliation
-from ..forms import VideoAnnotatorForm, VideoAnnotatorSearchForm, SelectTripForm
 
 
 class VideoAutoAssignView(UserAllowedMixin, View):
