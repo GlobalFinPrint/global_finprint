@@ -49,6 +49,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initAssignmentSearch();
         initAssignmentModals();
         initManageStateButtons();
+        initAutomaticAssignment();
     });
 
     function getCSRF() {
@@ -69,7 +70,7 @@ var finprint = finprint || {};  //namespace if necessary...
             '#select-trip',
             '#select-set',
             '#select-anno',
-            '#select-status',
+            '#select-status'
         ];
 
         $form.submit(false);
@@ -122,6 +123,19 @@ var finprint = finprint || {};  //namespace if necessary...
                 });
             }
             return false;
+        });
+    }
+
+    function initAutomaticAssignment() {
+        var $openLink = $('#open-auto-modal');
+        var $modal = $('#automatic-modal');
+        var $modalForm = $modal.find('form');
+
+        $modalForm.submit(false);
+
+        $openLink.click(function(e) {
+            e.preventDefault();
+            $modal.modal('show');
         });
     }
 
