@@ -192,6 +192,7 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
         sets = request.POST.getlist('set[]')
         annos = request.POST.getlist('anno[]')
         status = request.POST.getlist('status[]')
+        assigned = request.POST.get('assigned')
 
         if trips:
             query = query.filter(video__set__trip_id__in=(int(t) for t in trips))
@@ -208,6 +209,17 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
         if status:
             query = query.filter(status_id__in=(int(s) for s in status))
             unassigned = []
+
+        if assigned != '':
+            if assigned == '5+':
+                query = query.annotate(Count('video__videoannotator')).filter(video__videoannotator__gte=5)
+                unassigned = []
+            elif int(assigned) == 0:
+                query = []
+            else:
+                query = query.annotate(Count('video__videoannotator')) \
+                    .filter(video__videoannotator__count=int(assigned))
+                unassigned = []
 
         context = RequestContext(request, {'assignments': query, 'unassigned': unassigned})
         return render_to_response(self.template_name, context=context)

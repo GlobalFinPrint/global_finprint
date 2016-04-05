@@ -64,12 +64,12 @@ var finprint = finprint || {};  //namespace if necessary...
     function initAssignmentSearch() {
         var $form = $('form#assignment-search-form');
         var $target = $('tbody#assignment-target');
-        var options = { plugins: ['remove_button', 'restore_on_backspace'] };
+        var options = { allowEmptyOption: true, plugins: ['remove_button', 'restore_on_backspace'] };
         var fields = [
             '#select-trip',
             '#select-set',
             '#select-anno',
-            '#select-status'
+            '#select-status',
         ];
 
         $form.submit(false);
