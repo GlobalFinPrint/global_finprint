@@ -11,6 +11,7 @@ Logs an annotator into the API and provides an auth token and the list of unfini
 
 **Returns** (JSON):
 - token: (string)
+- role: ("annotator" or "lead")
 - sets (array of [set list objects](#set-list-response-object))
 
 

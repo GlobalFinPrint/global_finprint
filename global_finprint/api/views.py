@@ -2,7 +2,15 @@ from django.views.generic.base import View
 from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotFound, HttpResponseBadRequest
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
-from ..annotation.models import Annotator, VideoAnnotator, Observation, Animal, AnimalBehavior, ObservationFeature
+from ..annotation.models import Annotator, Lead, VideoAnnotator, Observation, Animal, \
+    AnimalBehavior, ObservationFeature
+
+
+def is_lead(user):
+    try:
+        return True if user.lead else False
+    except Lead.DoesNotExist:
+        return False
 
 
 class APIView(View):
@@ -45,7 +53,11 @@ class Login(View):
 
         va_list = list(va.to_json() for va in VideoAnnotator.get_active_for_annotator(annotator))
 
-        return JsonResponse({'token': token, 'sets': va_list})
+        return JsonResponse({
+            'token': token,
+            'role': 'lead' if is_lead(user) else 'annotator',
+            'sets': va_list
+        })
 
 
 class Logout(APIView):
