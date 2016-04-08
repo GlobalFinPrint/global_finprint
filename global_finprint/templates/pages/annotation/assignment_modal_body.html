@@ -36,7 +36,7 @@
                 <select id="new-annotators" name="anno[]" multiple="multiple" placeholder="Select one or more annotators">
                     {% for af in affiliations %}
                     <optgroup label="{{ af }}">
-                        {% for a in af.annotator_set.all %}
+                        {% for a in af.annotators %}
                         {% if a not in current_annos %}
                         <option value="{{ a.id }}">{{ a }} ({{ a.active_assignments.count }})</option>
                         {% endif %}

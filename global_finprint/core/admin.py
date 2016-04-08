@@ -1,5 +1,6 @@
 from django.contrib.admin import site
 from django.contrib.auth import admin, forms, models
+from .models import Affiliation
 
 
 class UserCreationForm(forms.UserCreationForm):
@@ -25,3 +26,4 @@ class UserAdmin(admin.UserAdmin):
 
 site.unregister(models.User)
 site.register(models.User, UserAdmin)
+site.register(Affiliation)

@@ -26,6 +26,12 @@ class Affiliation(models.Model):
     def __str__(self):
         return u"{0}".format(self.name)
 
+    def annotators(self):
+        return self.finprintuser_set.all()
+
+    class Meta:
+        ordering = ['name']
+
 
 class FinprintUser(models.Model):
     user = models.OneToOneField(to=User)
@@ -44,6 +50,12 @@ class FinprintUser(models.Model):
 
     def active_assignments(self):
         return apps.get_model('annotation', 'Assignment').objects.filter(annotator=self, status__in=[1, 2, 5]).all()
+
+    def is_annotator(self):
+        pass
+
+    def is_lead(self):
+        pass
 
     def __str__(self):
         return u"{0}, {1} ({2})".format(self.user.last_name, self.user.first_name, self.affiliation.name)
