@@ -51,11 +51,11 @@ class FinprintUser(models.Model):
     def active_assignments(self):
         return apps.get_model('annotation', 'Assignment').objects.filter(annotator=self, status__in=[1, 2, 5]).all()
 
-    def is_annotator(self):
-        pass
-
     def is_lead(self):
-        pass
+        return self.user.groups.filter(id=1).exists()
+
+    def is_superuser(self):
+        return self.user.is_superuser
 
     def __str__(self):
         return u"{0}, {1} ({2})".format(self.user.last_name, self.user.first_name, self.affiliation.name)

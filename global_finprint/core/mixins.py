@@ -8,4 +8,4 @@ class UserAllowedMixin(UserPassesTestMixin):
 
     @staticmethod
     def user_allowed(user):
-        return user.is_authenticated() and (user.is_superuser or FinprintUser.objects.filter(user=user).exists())
+        return user.is_authenticated() and (user.is_superuser or user.groups.filter(id=1).exists())
