@@ -1,7 +1,7 @@
 {% load time_display %}
 {% for a in assignments %}
 <tr>
-    <td>{{ a.video }}</td>
+    <td>{{ a.video.file|default:"<i>None</i>" }}</td>
     <td>{{ a.video.set.trip.code }}</td>
     <td>{{ a.video.set.code }}</td>
     <td>{{ a.annotator }}</td>
@@ -16,7 +16,7 @@
 {% endfor %}
 {% for u in unassigned %}
 <tr>
-    <td>{{ u.video }}</td>
+    <td>{{ u.video.file|default:"<i>None</i>" }}</td>
     <td>{{ u.trip.code }}</td>
     <td>{{ u.code }}</td>
     <td><i>None</i></td>
