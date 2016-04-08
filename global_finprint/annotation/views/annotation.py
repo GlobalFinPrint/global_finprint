@@ -5,7 +5,7 @@ from django.http.response import HttpResponse
 
 from global_finprint.annotation.models import AnimalGroup
 from global_finprint.habitat.models import Region, Site, Location
-from ..models import Animal, Video, VideoAnnotator
+from ..models import Animal, Video, Assignment
 
 
 def site_animal_list(request, site_id, *args, **kwargs):
@@ -53,4 +53,4 @@ def site_animal_list(request, site_id, *args, **kwargs):
 
 
 def annotator_video_list(request, annotator_id):
-    videos = Video.objects.filter(pk=VideoAnnotator(annotator=annotator_id))
+    videos = Video.objects.filter(pk=Assignment(annotator=annotator_id))

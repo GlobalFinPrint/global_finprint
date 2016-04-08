@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.contrib.gis.db import models
 from django.contrib.auth.models import User
 from config.current_user import get_current_user
@@ -41,8 +42,19 @@ class FinprintUser(models.Model):
         self.save()
         return True
 
+    def active_assignments(self):
+        return apps.get_model('annotation', 'Assignment').objects.filter(annotator=self, status__in=[1, 2, 5]).all()
+
     def __str__(self):
         return u"{0}, {1} ({2})".format(self.user.last_name, self.user.first_name, self.affiliation.name)
 
+
+class Team(AuditableModel):
+    sampler_collaborator = models.CharField(max_length=100)
+    lead = models.ForeignKey(to=FinprintUser, related_name='POC')
+
     class Meta:
-        abstract = True
+        unique_together = ('lead', 'sampler_collaborator')
+
+    def __str__(self):
+        return u"{0} - {1}".format(self.sampler_collaborator, self.lead.user.username)
