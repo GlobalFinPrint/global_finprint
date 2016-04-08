@@ -76,7 +76,7 @@ class Video(AuditableModel):
     file = models.FileField(null=True, blank=True)
 
     def annotators_assigned(self):
-        return Assignment.objects.filter(video=self).filter(~models.Q(status_id=5)).all()
+        return Assignment.objects.filter(video=self).exclude(status=5)
 
     def __str__(self):
         return u"{0}".format(self.file)
