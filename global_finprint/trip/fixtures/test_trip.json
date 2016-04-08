@@ -1,28 +1,6 @@
 [
   {
     "fields": {
-      "user": 1,
-      "lead": 5,
-      "last_modified_datetime": "2015-08-12T18:06:32.221Z",
-      "sampler_collaborator": "Whitman",
-      "create_datetime": "2015-08-12T18:06:32.221Z"
-    },
-    "model": "trip.team",
-    "pk": 1
-  },
-  {
-    "fields": {
-      "user": 1,
-      "lead": 6,
-      "last_modified_datetime": "2015-08-12T18:06:32.221Z",
-      "sampler_collaborator": "Bond/CONCH",
-      "create_datetime": "2015-08-12T18:06:32.221Z"
-    },
-    "model": "trip.team",
-    "pk": 2
-  },
-  {
-    "fields": {
       "code": "FP_2015_BZ_01",
       "team": 2,
       "boat": "RV Minnow",

@@ -1,39 +1,41 @@
 [
   {
-    "model": "annotation.observation",
+    "model": "annotation.assignment",
     "pk": 1,
     "fields": {
       "create_datetime": "2015-11-03T19:00:22.080Z",
       "last_modified_datetime": "2015-11-03T19:03:16.655Z",
-      "initial_observation_time": 12345,
-      "type": "A",
-      "duration": 15,
-      "assignment": 1,
-      "user": 1
+      "annotator": 4,
+      "video": 1,
+      "assigned_by": 2,
+      "status_id": 2,
+      "user": 2
     }
   },
   {
-    "model": "annotation.observation",
+    "model": "annotation.assignment",
     "pk": 2,
     "fields": {
       "create_datetime": "2015-11-03T19:00:22.080Z",
       "last_modified_datetime": "2015-11-03T19:03:16.655Z",
-      "initial_observation_time": 0,
-      "type": "I",
-      "assignment": 1,
-      "user": 1,
-      "comment": "something interesting!"
+      "annotator": 3,
+      "video": 1,
+      "assigned_by": 2,
+      "status_id": 1,
+      "user": 2
     }
   },
   {
-    "model": "annotation.animalobservation",
-    "pk": 1,
+    "model": "annotation.assignment",
+    "pk": 3,
     "fields": {
       "create_datetime": "2015-11-03T19:00:22.080Z",
       "last_modified_datetime": "2015-11-03T19:03:16.655Z",
-      "user": 1,
-      "observation": 1,
-      "animal": 16
+      "annotator": 1,
+      "video": 2,
+      "assigned_by": 2,
+      "status_id": 1,
+      "user": 2
     }
   }
 ]

@@ -6,7 +6,8 @@
       "username": "Emily Sinico",
       "email": "emily@sharkspotters.org",
       "last_name": "Sinico",
-      "first_name": "Emily"
+      "first_name": "Emily",
+      "groups": [2]
     }
   },
   {
@@ -16,7 +17,8 @@
       "username": "Jimmy Doyle",
       "email": "jd@manta.edu",
       "last_name": "Doyle",
-      "first_name": "Jimmy"
+      "first_name": "Jimmy",
+      "groups": [2]
     }
   },
   {
@@ -26,7 +28,8 @@
       "username": "Mat O'Connor",
       "email": "md@manta.edu",
       "last_name": "O'Connor",
-      "first_name": "Mat"
+      "first_name": "Mat",
+      "groups": [2]
     }
   },
   {
@@ -36,7 +39,8 @@
       "username": "Charles Parnell",
       "email": "c.parnell@sharkspotters.org",
       "last_name": "Parnell",
-      "first_name": "Charles"
+      "first_name": "Charles",
+      "groups": [2]
     }
   },
   {
@@ -46,7 +50,8 @@
       "username": "Richard Tierney",
       "email": "r.tierney@ucd.ie",
       "last_name": "Tierney",
-      "first_name": "Richard"
+      "first_name": "Richard",
+      "groups": [2]
     }
   },
   {
@@ -56,7 +61,8 @@
       "username": "Ginger Mooney",
       "email": "gingerm@ucd.ie",
       "last_name": "Ginger",
-      "first_name": "Mooney"
+      "first_name": "Mooney",
+      "groups": [2]
     }
   },
   {
@@ -66,7 +72,8 @@
       "username": "Andre Riviere",
       "email": "andrer@ucd.ie",
       "last_name": "Andre",
-      "first_name": "Riviere"
+      "first_name": "Riviere",
+      "groups": [2]
     }
   },
   {
@@ -76,7 +83,8 @@
       "username": "Joe Hynes",
       "email": "joeh@ucd.ie",
       "last_name": "Joe",
-      "first_name": "Hynes"
+      "first_name": "Hynes",
+      "groups": [2]
     }
   },
   {
@@ -86,7 +94,8 @@
       "username": "John Henchy",
       "email": "johnh@ucd.ie",
       "last_name": "John",
-      "first_name": "Henchy"
+      "first_name": "Henchy",
+      "groups": [2]
     }
   },
   {
@@ -96,7 +105,8 @@
       "username": "Charles Segouin",
       "email": "csegouin@ndscs.edu",
       "last_name": "Charles",
-      "first_name": "Segouin"
+      "first_name": "Segouin",
+      "groups": [2]
     }
   },
   {
@@ -106,7 +116,8 @@
       "username": "Gabriel Conroy",
       "email": "gconroy@ndscs.edu",
       "last_name": "Gabriel",
-      "first_name": "Conroy"
+      "first_name": "Conroy",
+      "groups": [2]
     }
   },
   {
@@ -116,7 +127,8 @@
       "username": "Bartell D'Arcy",
       "email": "bdarcy@ndscs.edu",
       "last_name": "Bartell",
-      "first_name": "D'Arcy"
+      "first_name": "D'Arcy",
+      "groups": [2]
     }
   },
   {
@@ -126,49 +138,12 @@
       "username": "Freddy Malins",
       "email": "fmalins@ndscs.edu",
       "last_name": "Freddy",
-      "first_name": "Malins"
-    }
-  },
-
-  {
-    "model": "core.affiliation",
-    "pk": 6,
-    "fields": {
-      "name": "SharkSpotters *"
+      "first_name": "Malins",
+      "groups": [2]
     }
   },
   {
-    "model": "core.affiliation",
-    "pk": 7,
-    "fields": {
-      "name": "Manta College *"
-    }
-  },
-  {
-    "model": "core.affiliation",
-    "pk": 8,
-    "fields": {
-      "name": "UCD *"
-    }
-  },
-  {
-    "model": "core.affiliation",
-    "pk": 9,
-    "fields": {
-      "name": "NDSCS *"
-    }
-  },
-
-  {
-    "model": "annotation.annotator",
-    "pk": 1,
-    "fields": {
-      "user": 1,
-      "affiliation": 1
-    }
-  },
-  {
-    "model": "annotation.annotator",
+    "model": "core.finprintuser",
     "pk": 2,
     "fields": {
       "user": 2,
@@ -176,7 +151,7 @@
     }
   },
   {
-    "model": "annotation.annotator",
+    "model": "core.finprintuser",
     "pk": 3,
     "fields": {
       "user": 3,
@@ -184,7 +159,7 @@
     }
   },
   {
-    "model": "annotation.annotator",
+    "model": "core.finprintuser",
     "pk": 4,
     "fields": {
       "user": 4,
@@ -192,7 +167,7 @@
     }
   },
   {
-    "model": "annotation.annotator",
+    "model": "core.finprintuser",
     "pk": 5,
     "fields": {
       "user": 5,
@@ -200,7 +175,7 @@
     }
   },
   {
-    "model": "annotation.annotator",
+    "model": "core.finprintuser",
     "pk": 6,
     "fields": {
       "user": 6,
@@ -208,7 +183,7 @@
     }
   },
   {
-    "model": "annotation.annotator",
+    "model": "core.finprintuser",
     "pk": 7,
     "fields": {
       "user": 7,
@@ -217,7 +192,7 @@
   },
 
    {
-    "model": "annotation.annotator",
+    "model": "core.finprintuser",
     "pk": 8,
     "fields": {
       "user": 8,
@@ -225,7 +200,7 @@
     }
   },
   {
-    "model": "annotation.annotator",
+    "model": "core.finprintuser",
     "pk": 9,
     "fields": {
       "user": 9,
@@ -233,7 +208,7 @@
     }
   },
   {
-    "model": "annotation.annotator",
+    "model": "core.finprintuser",
     "pk": 10,
     "fields": {
       "user": 10,
@@ -241,7 +216,7 @@
     }
   },
   {
-    "model": "annotation.annotator",
+    "model": "core.finprintuser",
     "pk": 11,
     "fields": {
       "user": 11,
@@ -249,7 +224,7 @@
     }
   },
   {
-    "model": "annotation.annotator",
+    "model": "core.finprintuser",
     "pk": 12,
     "fields": {
       "user": 12,
@@ -257,7 +232,7 @@
     }
   },
   {
-    "model": "annotation.annotator",
+    "model": "core.finprintuser",
     "pk": 13,
     "fields": {
       "user": 13,
@@ -265,32 +240,11 @@
     }
   },
   {
-    "model": "annotation.annotator",
+    "model": "core.finprintuser",
     "pk": 14,
     "fields": {
       "user": 14,
       "affiliation": 9
-    }
-  },
-
-  {
-    "model": "annotation.video",
-    "pk": 1,
-    "fields": {
-      "create_datetime": "2015-11-03T19:00:22.080Z",
-      "last_modified_datetime": "2015-11-03T19:03:16.655Z",
-      "user": 2,
-      "file": "video1.avi"
-    }
-  },
-  {
-    "model": "annotation.video",
-    "pk": 2,
-    "fields": {
-      "create_datetime": "2015-11-03T19:00:22.080Z",
-      "last_modified_datetime": "2015-11-03T19:03:16.655Z",
-      "user": 3,
-      "file": "video2.avi"
     }
   }
 ]

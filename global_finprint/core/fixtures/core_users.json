@@ -13,7 +13,7 @@
       "is_staff": true,
       "is_active": true,
       "date_joined": "2016-01-29T22:06:41Z",
-      "groups": [],
+      "groups": [1, 2],
       "user_permissions": []
     }
   },
@@ -31,7 +31,7 @@
       "is_staff": true,
       "is_active": true,
       "date_joined": "2016-01-29T22:07:06Z",
-      "groups": [],
+      "groups": [1, 2],
       "user_permissions": []
     }
   },
@@ -49,7 +49,7 @@
       "is_staff": true,
       "is_active": true,
       "date_joined": "2016-01-29T22:07:06Z",
-      "groups": [],
+      "groups": [1, 2],
       "user_permissions": []
     }
   },
@@ -67,7 +67,7 @@
       "is_staff": true,
       "is_active": true,
       "date_joined": "2016-01-29T22:07:06Z",
-      "groups": [],
+      "groups": [1, 2],
       "user_permissions": []
     }
   },
@@ -85,7 +85,7 @@
       "is_staff": true,
       "is_active": true,
       "date_joined": "2016-01-29T22:07:06Z",
-      "groups": [],
+      "groups": [1, 2],
       "user_permissions": []
     }
   },
@@ -103,7 +103,7 @@
       "is_staff": true,
       "is_active": true,
       "date_joined": "2016-01-29T22:07:06Z",
-      "groups": [],
+      "groups": [1, 2],
       "user_permissions": []
     }
   },
@@ -121,7 +121,7 @@
       "is_staff": true,
       "is_active": true,
       "date_joined": "2016-01-29T22:07:07Z",
-      "groups": [],
+      "groups": [1, 2],
       "user_permissions": []
     }
   },
@@ -139,7 +139,7 @@
       "is_staff": true,
       "is_active": true,
       "date_joined": "2016-01-29T22:07:07Z",
-      "groups": [],
+      "groups": [1, 2],
       "user_permissions": []
     }
   },
@@ -157,7 +157,7 @@
       "is_staff": true,
       "is_active": true,
       "date_joined": "2016-01-29T22:07:07Z",
-      "groups": [],
+      "groups": [1, 2],
       "user_permissions": []
     }
   },
@@ -175,7 +175,7 @@
       "is_staff": true,
       "is_active": true,
       "date_joined": "2016-01-29T22:07:07Z",
-      "groups": [],
+      "groups": [1, 2],
       "user_permissions": []
     }
   },
@@ -193,7 +193,7 @@
       "is_staff": true,
       "is_active": true,
       "date_joined": "2016-01-29T23:46:04Z",
-      "groups": [],
+      "groups": [1, 2],
       "user_permissions": []
     }
   },
@@ -211,7 +211,7 @@
       "is_staff": true,
       "is_active": true,
       "date_joined": "2016-01-30T18:35:17Z",
-      "groups": [],
+      "groups": [1, 2],
       "user_permissions": []
     }
   },
@@ -229,7 +229,7 @@
       "is_staff": true,
       "is_active": true,
       "date_joined": "2016-01-30T18:36:01Z",
-      "groups": [],
+      "groups": [1, 2],
       "user_permissions": []
     }
   },
@@ -247,8 +247,120 @@
       "is_staff": true,
       "is_active": true,
       "date_joined": "2016-01-30T18:36:35Z",
-      "groups": [],
+      "groups": [1, 2],
       "user_permissions": []
+    }
+  },
+  {
+    "model": "core.finprintuser",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "affiliation": 1
+    }
+  },
+  {
+    "model": "core.finprintuser",
+    "pk": 2,
+    "fields": {
+      "user": 15,
+      "affiliation": 2
+    }
+  },
+  {
+    "model": "core.finprintuser",
+    "pk": 3,
+    "fields": {
+      "user": 16,
+      "affiliation": 3
+    }
+  },
+  {
+    "model": "core.finprintuser",
+    "pk": 4,
+    "fields": {
+      "user": 17,
+      "affiliation": 3
+    }
+  },
+  {
+    "model": "core.finprintuser",
+    "pk": 5,
+    "fields": {
+      "user": 18,
+      "affiliation": 2
+    }
+  },
+  {
+    "model": "core.finprintuser",
+    "pk": 6,
+    "fields": {
+      "user": 19,
+      "affiliation": 4
+    }
+  },
+  {
+    "model": "core.finprintuser",
+    "pk": 7,
+    "fields": {
+      "user": 20,
+      "affiliation": 3
+    }
+  },
+  {
+    "model": "core.finprintuser",
+    "pk": 8,
+    "fields": {
+      "user": 21,
+      "affiliation": 3
+    }
+  },
+  {
+    "model": "core.finprintuser",
+    "pk": 9,
+    "fields": {
+      "user": 22,
+      "affiliation": 3
+    }
+  },
+  {
+    "model": "core.finprintuser",
+    "pk": 10,
+    "fields": {
+      "user": 23,
+      "affiliation": 5
+    }
+  },
+  {
+    "model": "core.finprintuser",
+    "pk": 10,
+    "fields": {
+      "user": 24,
+      "affiliation": 0
+    }
+  },
+  {
+    "model": "core.finprintuser",
+    "pk": 10,
+    "fields": {
+      "user": 25,
+      "affiliation": 0
+    }
+  },
+  {
+    "model": "core.finprintuser",
+    "pk": 10,
+    "fields": {
+      "user": 26,
+      "affiliation": 0
+    }
+  },
+  {
+    "model": "core.finprintuser",
+    "pk": 10,
+    "fields": {
+      "user": 27,
+      "affiliation": 0
     }
   }
 ]
