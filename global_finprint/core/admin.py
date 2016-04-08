@@ -18,6 +18,7 @@ class UserCreationForm(forms.UserCreationForm):
         super(UserCreationForm, self).__init__(*args, **kwargs)
         for field in ['first_name', 'last_name', 'email', 'role']:
             self.fields[field].required = True
+        self.fields['role'].initial = 'annotator'
 
     def save(self, commit=True):
         user = super(UserCreationForm, self).save(commit=True)
