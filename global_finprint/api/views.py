@@ -5,12 +5,6 @@ from django.shortcuts import get_object_or_404
 from ..annotation.models import Assignment, Observation, Animal, AnimalBehavior, ObservationFeature
 from ..core.models import FinprintUser
 
-def is_lead(user):
-    try:
-        return True if user.lead else False
-    except FinprintUser.DoesNotExist:
-        return False
-
 
 class APIView(View):
     def dispatch(self, request, *args, **kwargs):
@@ -54,7 +48,7 @@ class Login(View):
 
         return JsonResponse({
             'token': token,
-            'role': 'lead' if is_lead(user) else 'annotator',
+            'role': 'lead' if user.finprintuser.is_lead() else 'annotator',
             'sets': va_list
         })
 
