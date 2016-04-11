@@ -333,7 +333,7 @@
   },
   {
     "model": "core.finprintuser",
-    "pk": 10,
+    "pk": 11,
     "fields": {
       "user": 24,
       "affiliation": 0
@@ -341,7 +341,7 @@
   },
   {
     "model": "core.finprintuser",
-    "pk": 10,
+    "pk": 12,
     "fields": {
       "user": 25,
       "affiliation": 0
@@ -349,7 +349,7 @@
   },
   {
     "model": "core.finprintuser",
-    "pk": 10,
+    "pk": 13,
     "fields": {
       "user": 26,
       "affiliation": 0
@@ -357,7 +357,7 @@
   },
   {
     "model": "core.finprintuser",
-    "pk": 10,
+    "pk": 14,
     "fields": {
       "user": 27,
       "affiliation": 0
