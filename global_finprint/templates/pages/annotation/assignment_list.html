@@ -42,7 +42,7 @@
                     <select id="select-anno" name="anno[]" multiple="multiple" placeholder="Select one or more annotators">
                         {% for a in affils %}
                             <optgroup label="{{ a }}">
-                            {% for an in a.annotator_set.all %}
+                            {% for an in a.annotators %}
                                 <option value="{{ an.id }}">{{ an }}</option>
                             {% endfor %}
                             </optgroup>
@@ -146,7 +146,7 @@
                                 <select class="form-control" id="auto-affiliation" name="affiliation">
                                     <option value="">---</option>
                                     {% for a in affils %}
-                                    {% if a.annotator_set.all|length > 0 %}
+                                    {% if a.annotators|length > 0 %}
                                     <option value="{{ a.id }}">{{ a }}</option>
                                     {% endif %}
                                     {% endfor %}

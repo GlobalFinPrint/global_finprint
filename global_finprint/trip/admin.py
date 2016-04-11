@@ -1,6 +1,2 @@
-from django.contrib import admin
+# nothing here for now
 
-from global_finprint.trip import models
-
-
-admin.site.register(models.Team)

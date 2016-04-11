@@ -1,0 +1,50 @@
+[
+  {
+    "model": "annotation.annotationstate",
+    "pk": 1,
+    "fields": {
+      "name": "Not started",
+      "description": "The annotator has not started this annotation"
+    }
+  },
+  {
+    "model": "annotation.annotationstate",
+    "pk": 2,
+    "fields": {
+      "name": "In progress",
+      "description": "The annotator has saved at least one observation"
+    }
+  },
+  {
+    "model": "annotation.annotationstate",
+    "pk": 3,
+    "fields": {
+      "name": "Ready for review",
+      "description": "The annotator completed the work and submitted this video annotation for review"
+    }
+  },
+  {
+    "model": "annotation.annotationstate",
+    "pk": 4,
+    "fields": {
+      "name": "Complete",
+      "description": "The lead reviewed the annotation, made edits and judged the annotation of this video by this annotator to be complete"
+    }
+  },
+  {
+    "model": "annotation.annotationstate",
+    "pk": 5,
+    "fields": {
+      "name": "Disabled",
+      "description": "This annotation and all of its observations have been excluded"
+    }
+  },
+  {
+    "model": "annotation.annotationstate",
+    "pk": 6,
+    "fields": {
+      "name": "Rejected",
+      "description": "This annotation has been rejected and all of its observations are excluded. The history is still visible to leads"
+    }
+  }
+]

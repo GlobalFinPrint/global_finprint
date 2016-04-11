@@ -1,5 +1,10 @@
 loaddata
-    global_finprint/annotation/fixtures/test_annotator
+    global_finprint/core/fixtures/test_users
+    global_finprint/core/fixtures/test_teams
+    global_finprint/annotation/fixtures/test_animal
+    global_finprint/habitat/fixtures/test_reefhabitat
     global_finprint/trip/fixtures/test_trip
     global_finprint/bruv/fixtures/test_set
+    global_finprint/annotation/fixtures/test_videos
+    global_finprint/annotation/fixtures/test_assignment
     global_finprint/annotation/fixtures/test_obs

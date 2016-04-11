@@ -195,7 +195,7 @@ class Set(AuditableModel):
         return reverse('set_update', args=[str(self.id)])
 
     def observations(self):
-        return Observation.objects.filter(video_annotator__in=self.video.videoannotator_set.all())
+        return Observation.objects.filter(assignment__in=self.video.assignment_set.all())
 
     def __str__(self):
         return u"{0}_{1}".format(self.trip.code, self.code)

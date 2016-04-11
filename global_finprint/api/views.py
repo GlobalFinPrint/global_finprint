@@ -2,14 +2,13 @@ from django.views.generic.base import View
 from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotFound, HttpResponseBadRequest
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
-from ..annotation.models import Annotator, Lead, VideoAnnotator, Observation, Animal, \
-    AnimalBehavior, ObservationFeature
-
+from ..annotation.models import Assignment, Observation, Animal, AnimalBehavior, ObservationFeature
+from ..core.models import FinprintUser
 
 def is_lead(user):
     try:
         return True if user.lead else False
-    except Lead.DoesNotExist:
+    except FinprintUser.DoesNotExist:
         return False
 
 
@@ -23,14 +22,14 @@ class APIView(View):
             return HttpResponseForbidden()
 
         try:
-            request.annotator = Annotator.objects.get(token=token)
-        except Annotator.DoesNotExist:
+            request.annotator = FinprintUser.objects.get(token=token)
+        except FinprintUser.DoesNotExist:
             return HttpResponseForbidden()
 
         if 'set_id' in kwargs:
             try:
-                request.va = VideoAnnotator.get_active_for_annotator(request.annotator).get(pk=kwargs['set_id'])
-            except VideoAnnotator.DoesNotExist:
+                request.va = Assignment.get_active_for_annotator(request.annotator).get(pk=kwargs['set_id'])
+            except Assignment.DoesNotExist:
                 return HttpResponseNotFound()
 
         return super().dispatch(request, *args, **kwargs)
@@ -46,12 +45,12 @@ class Login(View):
             return HttpResponseForbidden()
 
         try:
-            annotator = user.annotator
+            annotator = user.finprintuser
             token = annotator.set_token()
-        except Annotator.DoesNotExist:
+        except FinprintUser.DoesNotExist:
             return HttpResponseForbidden()
 
-        va_list = list(va.to_json() for va in VideoAnnotator.get_active_for_annotator(annotator))
+        va_list = list(va.to_json() for va in Assignment.get_active_for_annotator(annotator))
 
         return JsonResponse({
             'token': token,
@@ -68,7 +67,7 @@ class Logout(APIView):
 
 class SetList(APIView):
     def get(self, request):
-        va_list = list(va.to_json() for va in VideoAnnotator.get_active_for_annotator(request.annotator))
+        va_list = list(va.to_json() for va in Assignment.get_active_for_annotator(request.annotator))
         return JsonResponse({'sets': va_list})
 
 
@@ -90,7 +89,7 @@ class Observations(APIView):
 
     def post(self, request, set_id):
         params = dict((key, val) for key, val in request.POST.items() if key in Observation.valid_fields())
-        params['video_annotator'] = request.va
+        params['assignment'] = request.va
         params['user'] = request.annotator.user
         Observation.create(**params)
         request.va.status_id = 2
@@ -98,13 +97,13 @@ class Observations(APIView):
         return JsonResponse({'observations': Observation.get_for_api(request.va)})
 
     def delete(self, request, set_id):
-        Observation.objects.filter(video_annotator=request.va).get(pk=request.GET.get('obs_id')).delete()
+        Observation.objects.filter(assignment=request.va).get(pk=request.GET.get('obs_id')).delete()
         return JsonResponse({'observations': Observation.get_for_api(request.va)})
 
 
 class ObservationUpdate(APIView):
     def post(self, request, set_id, obs_id):
-        obs = get_object_or_404(Observation, pk=obs_id, video_annotator=request.va)
+        obs = get_object_or_404(Observation, pk=obs_id, assignment=request.va)
         params = dict((key, val) for key, val in request.POST.items() if key in Observation.valid_fields())
         params['user'] = request.annotator.user
 

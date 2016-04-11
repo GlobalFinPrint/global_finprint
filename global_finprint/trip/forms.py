@@ -6,7 +6,8 @@ from crispy_forms.layout import Submit, HTML
 from crispy_forms.bootstrap import FormActions
 from bootstrap3_datetime.widgets import DateTimePicker
 from ..habitat.models import Location, Region
-from .models import Team, Trip
+from .models import Trip
+from ..core.models import Team
 
 
 datepicker_opts = {"format": "MMMM DD YYYY"}

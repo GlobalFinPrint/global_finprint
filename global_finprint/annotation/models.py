@@ -42,8 +42,8 @@ class Animal(models.Model):
         unique_together = ('genus', 'species')
 
     @staticmethod
-    def get_for_api(video_annotator):
-        return list(a.to_json() for a in video_annotator.video.set.trip.region.animal_set.all())
+    def get_for_api(assignment):
+        return list(a.to_json() for a in assignment.video.set.trip.region.animal_set.all())
 
     def to_json(self):
         return {
@@ -76,19 +76,10 @@ class Video(AuditableModel):
     file = models.FileField(null=True, blank=True)
 
     def annotators_assigned(self):
-        return VideoAnnotator.objects.filter(video=self).filter(~models.Q(status_id=5)).all()
+        return Assignment.objects.filter(video=self).exclude(status=5)
 
     def __str__(self):
         return u"{0}".format(self.file)
-
-
-class Lead(FinprintUser):
-    pass
-
-
-class Annotator(FinprintUser):
-    def videos_assigned(self):
-        return VideoAnnotator.objects.filter(annotator=self, status__in=[1, 2, 5]).all()
 
 
 # 1 = Not Started, 2 = In progress, 3 = Ready for review
@@ -105,10 +96,10 @@ class AnnotationState(models.Model):
         ordering = ['id']
 
 
-class VideoAnnotator(AuditableModel):
-    annotator = models.ForeignKey(to=Annotator)
+class Assignment(AuditableModel):
+    annotator = models.ForeignKey(to=FinprintUser)
     video = models.ForeignKey(to=Video)
-    assigned_by = models.ForeignKey(to=Lead, related_name='assigned_by')
+    assigned_by = models.ForeignKey(to=FinprintUser, related_name='assigned_by')
     status = models.ForeignKey(to=AnnotationState, default=1)
     progress = models.IntegerField(default=0)
 
@@ -141,7 +132,7 @@ class ObservationFeature(models.Model):
 
 
 class Observation(AuditableModel):
-    video_annotator = models.ForeignKey(VideoAnnotator)
+    assignment = models.ForeignKey(Assignment)
     type = models.CharField(max_length=1, choices=OBSERVATION_TYPE_CHOICES, default='I')
     initial_observation_time = models.IntegerField(help_text='ms')
     duration = models.PositiveIntegerField(null=True, blank=True)
@@ -198,11 +189,11 @@ class Observation(AuditableModel):
         ]
 
     @classmethod
-    def get_for_api(cls, video_annotator):
-        return list(ob.to_json() for ob in cls.objects.filter(video_annotator=video_annotator))
+    def get_for_api(cls, assignment):
+        return list(ob.to_json() for ob in cls.objects.filter(assignment=assignment))
 
     def set(self):
-        return self.video_annotator.video.set
+        return self.assignment.video.set
 
     def to_json(self):
         json = {

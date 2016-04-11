@@ -20,7 +20,7 @@
                     <tr>
                         <td>{{ a.annotator }}</td>
                         <td>{{ a.status }}</td>
-                        <td>{{ a.annotator.videos_assigned.count }}</td>
+                        <td>{{ a.annotator.active_assignments.count }}</td>
                     </tr>
                 {% empty %}
                     <tr>
@@ -36,9 +36,9 @@
                 <select id="new-annotators" name="anno[]" multiple="multiple" placeholder="Select one or more annotators">
                     {% for af in affiliations %}
                     <optgroup label="{{ af }}">
-                        {% for a in af.annotator_set.all %}
+                        {% for a in af.annotators %}
                         {% if a not in current_annos %}
-                        <option value="{{ a.id }}">{{ a }} ({{ a.videos_assigned.count }})</option>
+                        <option value="{{ a.id }}">{{ a }} ({{ a.active_assignments.count }})</option>
                         {% endif %}
                         {% endfor %}
                     </optgroup>
