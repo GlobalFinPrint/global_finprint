@@ -50,8 +50,9 @@ class Login(View):
             else Assignment.get_active_for_annotator(annotator)
 
         return JsonResponse({
+            'user_id': annotator.id,
             'token': token,
-            'role': 'lead' if user.finprintuser.is_lead() else 'annotator',
+            'role': 'lead' if annotator.is_lead() else 'annotator',
             'sets': list(va.to_json() for va in assignments)
         })
 

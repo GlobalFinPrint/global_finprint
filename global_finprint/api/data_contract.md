@@ -10,6 +10,7 @@ Logs an annotator into the API and provides an auth token and the list of unfini
 - password: (string)
 
 **Returns** (JSON):
+- user_id: (integer)
 - token: (string)
 - role: ("annotator" or "lead")
 - sets (array of [set list objects](#set-list-response-object))
