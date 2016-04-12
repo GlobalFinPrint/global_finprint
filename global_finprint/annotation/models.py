@@ -143,11 +143,15 @@ class Observation(AuditableModel):
     duration = models.PositiveIntegerField(null=True, blank=True)
     comment = models.CharField(max_length=256, null=True)
     extent = geomodels.PolygonField(null=True)
+    created_by = models.ForeignKey(to=FinprintUser, related_name='observations_created', null=True)
+    updated_by = models.ForeignKey(to=FinprintUser, related_name='observations_updated', null=True)
 
     @staticmethod
     def create(**kwargs):
         kwargs['initial_observation_time'] = int(kwargs['initial_observation_time'])
         kwargs['type'] = kwargs.pop('type_choice', None)
+        kwargs['created_by'] = kwargs['user'].finprintuser
+        kwargs['updated_by'] = kwargs['user'].finprintuser
 
         animal_fields = {
             'animal_id': kwargs.pop('animal_id', None),

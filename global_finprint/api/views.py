@@ -106,6 +106,7 @@ class ObservationUpdate(APIView):
         obs = get_object_or_404(Observation, pk=obs_id, assignment=request.va)
         params = dict((key, val) for key, val in request.POST.items() if key in Observation.valid_fields())
         params['user'] = request.annotator.user
+        params['updated_by'] = request.annotator
 
         if params.get('type', False) and obs.type != params['type']:
             return HttpResponseBadRequest('Not allowed to change Observation type')
