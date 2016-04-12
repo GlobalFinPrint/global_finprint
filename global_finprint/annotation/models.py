@@ -113,13 +113,18 @@ class Assignment(AuditableModel):
         return self.progress
 
     @classmethod
+    def get_active(cls):
+        return cls.objects.filter(status_id__in=[1, 2])
+
+    @classmethod
     def get_active_for_annotator(cls, annotator):
-        return cls.objects.filter(annotator=annotator, status_id__in=[1, 2])
+        return cls.get_active().filter(annotator=annotator)
 
     def to_json(self):
         return {'id': self.id,
                 'set_code': str(self.set()),
                 'file': str(self.video.file),
+                'assigned_to': {'id': self.annotator.id, 'user': str(self.annotator)},
                 'progress': self.progress}
 
 

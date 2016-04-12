@@ -22,7 +22,9 @@ class APIView(View):
 
         if 'set_id' in kwargs:
             try:
-                request.va = Assignment.get_active_for_annotator(request.annotator).get(pk=kwargs['set_id'])
+                assignments = Assignment.get_active() if request.annotator.is_lead() \
+                    else Assignment.get_active_for_annotator(request.annotator)
+                request.va = assignments.get(pk=kwargs['set_id'])
             except Assignment.DoesNotExist:
                 return HttpResponseNotFound()
 
@@ -44,12 +46,13 @@ class Login(View):
         except FinprintUser.DoesNotExist:
             return HttpResponseForbidden()
 
-        va_list = list(va.to_json() for va in Assignment.get_active_for_annotator(annotator))
+        assignments = Assignment.get_active() if annotator.is_lead() \
+            else Assignment.get_active_for_annotator(annotator)
 
         return JsonResponse({
             'token': token,
             'role': 'lead' if user.finprintuser.is_lead() else 'annotator',
-            'sets': va_list
+            'sets': list(va.to_json() for va in assignments)
         })
 
 
@@ -61,8 +64,9 @@ class Logout(APIView):
 
 class SetList(APIView):
     def get(self, request):
-        va_list = list(va.to_json() for va in Assignment.get_active_for_annotator(request.annotator))
-        return JsonResponse({'sets': va_list})
+        assignments = Assignment.get_active() if request.annotator.is_lead() \
+            else Assignment.get_active_for_annotator(request.annotator)
+        return JsonResponse({'sets': list(va.to_json() for va in assignments)})
 
 
 class SetDetail(APIView):
@@ -70,6 +74,7 @@ class SetDetail(APIView):
         return JsonResponse({'set': {'id': request.va.id,
                                      'set_code': str(request.va.set()),
                                      'file': str(request.va.video.file),
+                                     'assigned_to': {'id': request.va.id, 'user': str(request.va)},
                                      'progress': request.va.progress,
                                      'observations': Observation.get_for_api(request.va),
                                      'animals': Animal.get_for_api(request.va),

@@ -51,6 +51,9 @@ Provides details for the specified set along with data used for annotation tool 
 - id: (integer)
 - set_code: (string)
 - file: (string)
+- assigned_to: (object)
+    - id: (integer)
+    - user: (string)
 - progress: (integer)
 - observations: (array of [observation objects](#observation-response-object))
 - animals: (array of [animal objects](#animal-response-object))
@@ -210,6 +213,9 @@ Set objects returned in lists (not when getting set detail) will follow this sta
     - id: (integer)
     - set_code: (string)
     - file: (string)
+    - assigned_to: (object)
+        - id: (integer)
+        - user: (string)
     - progress: (integer)
 
 
