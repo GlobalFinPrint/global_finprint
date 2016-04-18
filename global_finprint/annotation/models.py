@@ -73,7 +73,7 @@ class AnimalBehavior(models.Model):
 
 
 class Video(AuditableModel):
-    file = models.FileField(null=True, blank=True)
+    file = models.CharField(max_length=100, null=True, blank=True)
 
     def annotators_assigned(self):
         return Assignment.objects.filter(video=self).exclude(status=5)
