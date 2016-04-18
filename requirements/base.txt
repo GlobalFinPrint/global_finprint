@@ -30,6 +30,5 @@ pytz==2015.7
 
 # AWS, S3
 boto==2.38.0
-django-storages-redux==1.3
 
 gunicorn==19.3.0

@@ -31,7 +31,6 @@ THIRD_PARTY_APPS = (
     'bootstrap3_datetime',
     'braces',
     'leaflet',
-    'storages'
 )
 
 # Apps specific for this project go here.
