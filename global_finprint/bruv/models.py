@@ -106,7 +106,7 @@ class EnvironmentMeasure(AuditableModel):
     tide_state = models.CharField(max_length=3,
                                   null=True, blank=True,
                                   choices=TIDE_CHOICES)
-    estimated_wind_speed = models.IntegerField(null=True, blank=True)
+    estimated_wind_speed = models.IntegerField(null=True, blank=True, help_text='Beaufort')
     wind_direction = models.CharField(max_length=2,
                                       null=True, blank=True,
                                       choices=CURRENT_DIRECTION,
