@@ -1,3 +1,4 @@
+-- noinspection SqlNoDataSourceInspectionForFile
 CREATE OR REPLACE VIEW public.v_report_sitelist_summary AS
   SELECT
     r.id              AS reef_id,
