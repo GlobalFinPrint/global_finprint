@@ -28,7 +28,7 @@ class TripForm(forms.ModelForm):
 
     class Meta:
         model = Trip
-        fields = ['code', 'team', 'start_date', 'end_date', 'location', 'boat']
+        fields = ['source', 'code', 'team', 'start_date', 'end_date', 'location', 'boat']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

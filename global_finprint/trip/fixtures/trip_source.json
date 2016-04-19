@@ -1,0 +1,11 @@
+[
+  {
+    "model": "trip.source",
+    "pk": 1,
+    "fields": {
+      "name": "Global Finprint",
+      "code": "FP",
+      "data_embargo_length":  12
+    }
+  }
+]
