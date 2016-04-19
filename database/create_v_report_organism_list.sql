@@ -1,3 +1,4 @@
+-- noinspection SqlNoDataSourceInspectionForFile
 CREATE OR REPLACE VIEW public.v_report_organism_list AS
   SELECT
     a.id,
