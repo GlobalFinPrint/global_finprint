@@ -11,7 +11,7 @@ from django.contrib.auth.views import login, logout, password_change, password_c
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views.defaults import bad_request, permission_denied, page_not_found, server_error
 
-from global_finprint.core.views import UrlRedirect
+from global_finprint.core.views import UrlRedirect, UserInfoView
 
 
 urlpatterns = [
@@ -27,6 +27,8 @@ urlpatterns = [
         name='set_annotation'),
 
     url(r"^about/$", TemplateView.as_view(template_name='pages/about.html'), name="about"),
+
+    url(r"^user/info/(?P<id>\d+)$", UserInfoView.as_view(), name="user_info_view"),
 
     # User management
     url(r'^accounts/login/$', login, {'template_name': 'registration/login.html'}, name='finprint_login'),

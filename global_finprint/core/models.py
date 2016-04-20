@@ -60,6 +60,17 @@ class FinprintUser(models.Model):
     def __str__(self):
         return u"{0}, {1} ({2})".format(self.user.last_name, self.user.first_name, self.affiliation.name)
 
+    def to_json(self):
+        return {
+            'id': self.id,
+            'name': "{0}, {1}".format(self.user.last_name, self.user.first_name),
+            'affiliation': self.affiliation.name,
+            'assignments': [{'id': a.id, 'set': a.set().code, 'status': str(a.status)}
+                            for a in self.assignment_set.all()],
+            'observations': [{'id': o.id, 'time': o.initial_observation_time}
+                             for o in self.observations_created.all()]
+        }
+
 
 class Team(AuditableModel):
     sampler_collaborator = models.CharField(max_length=100)
