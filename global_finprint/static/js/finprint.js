@@ -50,6 +50,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initAssignmentModals();
         initManageStateButtons();
         initAutomaticAssignment();
+        initAnnotatorPopover();
     });
 
     function getCSRF() {
@@ -60,6 +61,27 @@ var finprint = finprint || {};  //namespace if necessary...
                 return cookies[i].trim().split('=')[1];
             }
         }
+    }
+
+    function initAnnotatorPopover() {
+        $('body').on('click', 'a[data-annotator-id][href="#"]', function(e) {
+            var $this = $(this);
+            var annoId = $this.data('annotator-id');
+            e.preventDefault();
+            $this.removeAttr('data-annotator-id');
+            $.get('/user/info/' + annoId, function(res) {
+                $this.popover({
+                    title: res.name + ' (' + res.affiliation + ')',
+                    content: res.content,
+                    html: true,
+                    placement: 'top'
+                });
+                $this.on('click', function(e) {
+                    e.preventDefault();
+                });
+                $this.click();
+            });
+        });
     }
 
     function initAssignmentSearch() {

@@ -26,4 +26,7 @@ class UrlRedirect(View):
 class UserInfoView(View):
     def get(self, request, id):
         user = get_object_or_404(FinprintUser, pk=id)
-        return JsonResponse(user.to_json())
+        json = user.to_json()
+        json['content'] = '{0} observations submit in {1} assignments ({2} active)' \
+            .format(len(json['observations']), len(json['assignments']), len(user.active_assignments()))
+        return JsonResponse(json)

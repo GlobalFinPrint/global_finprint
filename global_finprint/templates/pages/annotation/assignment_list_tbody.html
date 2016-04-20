@@ -4,7 +4,7 @@
     <td>{{ a.video.file|default:"<i>None</i>" }}</td>
     <td>{{ a.video.set.trip.code }}</td>
     <td>{{ a.video.set.code }}</td>
-    <td>{{ a.annotator }}</td>
+    <td><a href="#" data-annotator-id="{{ a.annotator.id }}">{{ a.annotator }}</a></td>
     <td>{{ a.status }}</td>
     <td>{{ a.progress|time_display }}</td>
     <td>{{ a.observation_set.all|length }}</td>
