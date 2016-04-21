@@ -44,4 +44,5 @@ class ObservationListView(UserAllowedMixin, ListView):
         context['set_pk'] = self.kwargs['set_pk']
         context['trip_name'] = str(Trip.objects.get(pk=self.kwargs['trip_pk']))
         context['set_name'] = str(Set.objects.get(pk=self.kwargs['set_pk']))
+        context['for'] = ' for {0}'.format(context['set_name'])
         return context

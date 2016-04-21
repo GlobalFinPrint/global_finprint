@@ -119,9 +119,13 @@ class AssignmentManageView(UserAllowedMixin, View):
     template_name = 'pages/annotation/assignment_manage.html'
 
     def get(self, request, assignment_id):
+        assignment = get_object_or_404(Assignment, id=assignment_id)
         context = RequestContext(request, {
-            'assignment': get_object_or_404(Assignment, id=assignment_id),
-            'observations': Observation.objects.filter(assignment_id=assignment_id)
+            'assignment': assignment,
+            'trip': assignment.video.set.trip,
+            'set': assignment.video.set,
+            'observations': assignment.observation_set.all(),
+            'for': ' for {0} by {1}'.format(assignment.video.set, assignment.annotator)
         })
         return render_to_response(self.template_name, context=context)
 

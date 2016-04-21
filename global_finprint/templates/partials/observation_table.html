@@ -1,0 +1,34 @@
+{% load time_display %}
+<h3>Observations{{ for }}</h3>
+<table class="table table-bordered table-condensed assignment-obseration-table" cellspacing="0" width="100%">
+    <thead>
+    <tr class="success">
+        <th>Annotator</th>
+        <th>Initial observation time</th>
+        <th>Duration (ms)</th>
+        <th>Type</th>
+        <th>Animal</th>
+        <th>Comment</th>
+        <th>Screen capture</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for o in observations %}
+        <tr>
+            <td>{{ o.assignment.annotator }}</td>
+            <td>{{ o.initial_observation_time|time_display }}</td>
+            <td>{{ o.duration|default_if_none:"<i>None</i>" }}</td>
+            <td>{{ o.get_type_display }}</td>
+            <td>{{ o.animalobservation.animal|default_if_none:"<i>N/A</i>" }}</td>
+            <td>{{ o.comment|default_if_none:"<i>None</i>"  }}</td>
+            <td><i>TODO</i></td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center">
+                <h4>{{ assignment.annotator }} has not yet submitted any observations for this video</h4>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
