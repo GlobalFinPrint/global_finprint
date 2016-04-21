@@ -77,7 +77,7 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
 
         if assigned != '':
             if assigned == '5+':
-                query = query.annotate(Count('video__assignment')).filter(video__assignment__gte=5)
+                query = query.annotate(Count('video__assignment')).filter(video__assignment__count__gte=5)
                 unassigned = []
             elif int(assigned) == 0:
                 query = []
