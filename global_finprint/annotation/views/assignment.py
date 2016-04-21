@@ -13,8 +13,8 @@ from ...core.models import Affiliation, FinprintUser
 
 class VideoAutoAssignView(UserAllowedMixin, View):
     def assign_video(self, annotators, video, num):
-        avail = list(a for a in annotators if video not in a.active_assignments())
-        assigned_by = FinprintUser.objects.get(user_id=self.request.user)
+        avail = list(a for a in annotators if a not in video.annotators_assigned())
+        assigned_by = FinprintUser.objects.get(user=self.request.user)
         while len(video.annotators_assigned()) < num and len(annotators) > 0 and len(avail) > 0:
             ann = min(avail, key=lambda a: len(a.active_assignments()))
             Assignment(annotator=ann, video=video, assigned_by=assigned_by).save()
