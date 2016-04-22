@@ -62,7 +62,7 @@ BAIT_TYPE_CHOICES = {
 class FrameType(models.Model):
     # starting seed:  rebar, stainless rebar, PVC, mixed
     type = models.CharField(max_length=16)
-    image = models.ImageField(null=True)
+    image = models.ImageField(null=True, blank=True)
 
     def __str__(self):
         return u"{0}".format(self.type)
