@@ -13,7 +13,7 @@
     </tr>
     </thead>
     <tbody>
-    {% for o in observations %}
+    {% for o in observations|dictsortreversed:'initial_observation_time' %}
         <tr>
             <td>{{ o.assignment.annotator }}</td>
             <td>{{ o.initial_observation_time|time_display }}</td>
