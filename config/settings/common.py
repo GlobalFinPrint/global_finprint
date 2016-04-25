@@ -20,9 +20,7 @@ DJANGO_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.gis',
-    # Useful template tags:
-    # 'django.contrib.humanize',
-
+    'django.contrib.humanize',
     # Admin
     'django.contrib.admin',
 )
