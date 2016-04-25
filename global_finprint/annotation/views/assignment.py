@@ -7,8 +7,9 @@ from ...trip.models import Trip
 from ...bruv.models import Set
 from ...habitat.models import Location
 from ...core.mixins import UserAllowedMixin
-from ..models import Assignment, Video, Observation, AnnotationState
+from ..models import Assignment, Video, AnnotationState
 from ...core.models import Affiliation, FinprintUser
+from datetime import date, timedelta
 
 
 class VideoAutoAssignView(UserAllowedMixin, View):
@@ -58,6 +59,7 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
         annos = request.POST.getlist('anno[]')
         status = request.POST.getlist('status[]')
         assigned = request.POST.get('assigned')
+        assigned_ago = request.POST.get('assigned-ago')
 
         if trips:
             query = query.filter(video__set__trip_id__in=(int(t) for t in trips))
@@ -69,22 +71,29 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
 
         if annos:
             query = query.filter(annotator_id__in=(int(a) for a in annos))
-            unassigned = []
+            unassigned = unassigned.none()
 
         if status:
             query = query.filter(status_id__in=(int(s) for s in status))
-            unassigned = []
+            unassigned = unassigned.none()
 
         if assigned != '':
             if assigned == '5+':
                 query = query.annotate(Count('video__assignment')).filter(video__assignment__count__gte=5)
-                unassigned = []
+                unassigned = unassigned.none()
             elif int(assigned) == 0:
-                query = []
+                query = query.none()
             else:
                 query = query.annotate(Count('video__assignment')) \
                     .filter(video__assignment__count=int(assigned))
-                unassigned = []
+                unassigned = unassigned.none()
+
+        if assigned_ago != '':
+            try:
+                query = query.filter(create_datetime__gte=(date.today() - timedelta(days=int(assigned_ago))))
+                unassigned = unassigned.none()
+            except ValueError:
+                pass
 
         context = RequestContext(request, {'assignments': query, 'unassigned': unassigned})
         return render_to_response(self.template_name, context=context)
