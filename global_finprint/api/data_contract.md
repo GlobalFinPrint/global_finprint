@@ -29,13 +29,31 @@ Logs an annotator out of the API.
 
 ### Set listing
 `GET /api/set`
-Provides a list of unfinished sets assigned to an annotator for review. 
+Provides a list of unfinished sets assigned to an annotator for review (optionally filtered by set and trip for lead). 
+
+**Expects** (GET):
+- token: (string)
+- trip_id: (integer) (optional)
+- set_id: (integer) (optional)
+
+**Returns** (JSON):
+- sets (array of [set list objects](#set-list-response-object))
+
+
+### Trip listing
+`GET /api/trip`
+Provides a list of trips (for use in lead assignment filtering). 
 
 **Expects** (GET):
 - token: (string)
 
 **Returns** (JSON):
-- sets (array of [set list objects](#set-list-response-object))
+- trips: (array)
+    - id: (integer)  
+    - trip: (string)
+    - sets: (array)
+        - id: (integer)
+        - set: (string)
 
 
 ### Set detail

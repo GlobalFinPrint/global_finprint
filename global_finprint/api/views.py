@@ -2,6 +2,7 @@ from django.views.generic.base import View
 from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotFound, HttpResponseBadRequest
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
+from ..trip.models import Trip
 from ..annotation.models import Assignment, Observation, Animal, AnimalBehavior, ObservationFeature
 from ..core.models import FinprintUser
 
@@ -67,7 +68,18 @@ class SetList(APIView):
     def get(self, request):
         assignments = Assignment.get_active() if request.annotator.is_lead() \
             else Assignment.get_active_for_annotator(request.annotator)
+        if 'trip_id' in request.GET:
+            assignments = assignments.filter(video__set__trip__id=request.GET.get('trip_id'))
+        if 'set_id' in request.GET:
+            assignments = assignments.filter(video__set__id=request.GET.get('set_id'))
         return JsonResponse({'sets': list(va.to_json() for va in assignments)})
+
+
+class TripList(APIView):
+    def get(self, request):
+        return JsonResponse({'trips': list({'id': t.id, 'trip': str(t),
+                                            'sets': list({'id': s.id, 'set': str(s)} for s in t.set_set.all())}
+                                           for t in Trip.objects.all())})
 
 
 class SetDetail(APIView):
