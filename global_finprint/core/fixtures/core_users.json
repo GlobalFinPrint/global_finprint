@@ -261,7 +261,7 @@
   },
   {
     "model": "core.finprintuser",
-    "pk": 2,
+    "pk": 15,
     "fields": {
       "user": 15,
       "affiliation": 2
@@ -269,7 +269,7 @@
   },
   {
     "model": "core.finprintuser",
-    "pk": 3,
+    "pk": 16,
     "fields": {
       "user": 16,
       "affiliation": 3
@@ -277,7 +277,7 @@
   },
   {
     "model": "core.finprintuser",
-    "pk": 4,
+    "pk": 17,
     "fields": {
       "user": 17,
       "affiliation": 3
@@ -285,7 +285,7 @@
   },
   {
     "model": "core.finprintuser",
-    "pk": 5,
+    "pk": 18,
     "fields": {
       "user": 18,
       "affiliation": 2
@@ -293,7 +293,7 @@
   },
   {
     "model": "core.finprintuser",
-    "pk": 6,
+    "pk": 19,
     "fields": {
       "user": 19,
       "affiliation": 4
@@ -301,7 +301,7 @@
   },
   {
     "model": "core.finprintuser",
-    "pk": 7,
+    "pk": 20,
     "fields": {
       "user": 20,
       "affiliation": 3
@@ -309,7 +309,7 @@
   },
   {
     "model": "core.finprintuser",
-    "pk": 8,
+    "pk": 21,
     "fields": {
       "user": 21,
       "affiliation": 3
@@ -317,7 +317,7 @@
   },
   {
     "model": "core.finprintuser",
-    "pk": 9,
+    "pk": 22,
     "fields": {
       "user": 22,
       "affiliation": 3
@@ -325,7 +325,7 @@
   },
   {
     "model": "core.finprintuser",
-    "pk": 10,
+    "pk": 23,
     "fields": {
       "user": 23,
       "affiliation": 5
@@ -333,7 +333,7 @@
   },
   {
     "model": "core.finprintuser",
-    "pk": 11,
+    "pk": 24,
     "fields": {
       "user": 24,
       "affiliation": 0
@@ -341,7 +341,7 @@
   },
   {
     "model": "core.finprintuser",
-    "pk": 12,
+    "pk": 25,
     "fields": {
       "user": 25,
       "affiliation": 0
@@ -349,7 +349,7 @@
   },
   {
     "model": "core.finprintuser",
-    "pk": 13,
+    "pk": 26,
     "fields": {
       "user": 26,
       "affiliation": 0
@@ -357,7 +357,7 @@
   },
   {
     "model": "core.finprintuser",
-    "pk": 14,
+    "pk": 27,
     "fields": {
       "user": 27,
       "affiliation": 0
