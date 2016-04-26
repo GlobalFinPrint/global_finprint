@@ -1,3 +1,6 @@
+import csv
+
+from django.http import HttpResponse
 from django.views.generic import View
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -26,3 +29,17 @@ class CustomReportView(UserAllowedMixin, View):
             'rows': results[1:]
         })
         return render_to_response(self.template, context=context)
+
+
+class CustomReportFileView(UserAllowedMixin, View):
+    # todo:  always csv right now ... handle other formats?
+    def get(self, request, report, format):
+        report = Report(report)
+        results = report.results()
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="{0}.csv"'.format(report)
+
+        writer = csv.writer(response)
+        writer.writerows(results)
+
+        return response
