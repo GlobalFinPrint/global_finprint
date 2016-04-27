@@ -29,7 +29,8 @@ Logs an annotator out of the API.
 
 ### Set listing
 `GET /api/set`
-Provides a list of unfinished sets assigned to an annotator for review (optionally filtered by set and trip for lead). 
+Provides a list of unfinished sets assigned to an annotator for review, or a list of 
+"ready for review" sets to a lead (optionally filtered by set and trip). 
 
 **Expects** (GET):
 - token: (string)

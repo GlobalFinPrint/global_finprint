@@ -23,7 +23,7 @@ class APIView(View):
 
         if 'set_id' in kwargs:
             try:
-                assignments = Assignment.get_active() if request.annotator.is_lead() \
+                assignments = Assignment.objects.all() if request.annotator.is_lead() \
                     else Assignment.get_active_for_annotator(request.annotator)
                 request.va = assignments.get(pk=kwargs['set_id'])
             except Assignment.DoesNotExist:
@@ -66,7 +66,7 @@ class Logout(APIView):
 
 class SetList(APIView):
     def get(self, request):
-        assignments = Assignment.get_active() if request.annotator.is_lead() \
+        assignments = Assignment.objects.filter(status_id=3) if request.annotator.is_lead() \
             else Assignment.get_active_for_annotator(request.annotator)
         if 'trip_id' in request.GET:
             assignments = assignments.filter(video__set__trip__id=request.GET.get('trip_id'))
