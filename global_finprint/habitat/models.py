@@ -1,5 +1,7 @@
 from django.contrib.gis.db import models
 
+from ..core.models import Team
+
 
 class Substrate(models.Model):
     type = models.CharField(max_length=24, unique=True)
@@ -41,6 +43,8 @@ class Site(models.Model):
     location = models.ForeignKey(Location)
     boundary = models.MultiPolygonField(srid=4326, null=True, blank=True)
     type = models.CharField(max_length=1, choices=SITE_TYPE_CHOICES)
+
+    planned_team = models.ForeignKey(to=Team, null=True)
 
     objects = models.GeoManager()
 

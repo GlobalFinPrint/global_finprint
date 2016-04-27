@@ -9,3 +9,4 @@ loaddata
     global_finprint/annotation/fixtures/annotation_status
     global_finprint/annotation/fixtures/annotation_animal
     global_finprint/bruv/fixtures/bruv_equipment
+    global_finprint/trip/fixtures/trip_source

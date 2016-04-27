@@ -11,7 +11,8 @@ class Report:
     def view_list(cls):
         with connection.cursor() as cursor:
             query = "SELECT table_name FROM INFORMATION_SCHEMA.views " \
-                    "WHERE table_name LIKE '{}%%'".format(REPORT_PREFIX)
+                    "WHERE table_name LIKE '{}%%'" \
+                    "ORDER BY table_name".format(REPORT_PREFIX)
             cursor.execute(query)
             return list(cls(row[0]) for row in cursor.fetchall())
 

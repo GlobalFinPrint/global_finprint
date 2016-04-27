@@ -21,6 +21,7 @@
                 <thead>
                 <tr class="success">
                     <th>Code</th>
+                    <th>Source</th>
                     <th>Start date</th>
                     <th>End date</th>
                     <th>Region</th>
@@ -35,6 +36,7 @@
                 {% for trip in trips %}
                 <tr>
                     <td>{{ trip.code }}</td>
+                    <td>{{ trip.source }}</td>
                     <td>{{ trip.start_date|date:"F d Y" }}</td>
                     <td>{{ trip.end_date|date:"F d Y" }}</td>
                     <td>{{ trip.region }}</td>

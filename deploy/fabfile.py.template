@@ -76,7 +76,9 @@ def collect_static():
 
 def apply_migrations():
     with cd(remote_django_dir):
+        sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py dropviews', user='www-data')
         sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py migrate', user='www-data')
+        sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py createviews', user='www-data')
 
 
 def check_settings():
