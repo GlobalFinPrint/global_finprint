@@ -135,7 +135,8 @@ def deploy_test(version):
     s3_file = 'finprint-builds/master/global_finprint/files/global_finprint-{0}.tar.gz'.format(version)
     build_file = 'global_finprint-{0}.tar.gz'.format(version)
     with cd(remote_builds_dir):
-        sudo('mkdir {0}'.format(version), user='www-data')
+        if not exists(version):
+            sudo('mkdir {0}'.format(version), user='www-data')
         sudo('aws s3 cp s3://{0} {1} --region us-west-2'.format(s3_file, build_file))
         sudo('chown www-data:www-data {0}'.format(build_file))
         sudo('tar -xzf {0} -C {1}'.format(build_file, version), user='www-data')
