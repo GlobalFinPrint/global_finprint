@@ -11,6 +11,7 @@ local_settings = './settings'
 
 remote_app_dir = '/var/opt/finprint_web'
 remote_django_dir = remote_app_dir + '/global_finprint'
+remote_builds_dir = remote_app_dir + '/builds'
 remote_venv_dir = remote_app_dir + '/venv'
 remote_log_dir = '/var/log/global_finprint'
 remote_nginx_dir = '/etc/nginx'
@@ -57,6 +58,9 @@ def create_remote():
     if not exists(remote_log_dir):
         sudo('mkdir ' + remote_log_dir)
         sudo('chown -R www-data:www-data ' + remote_log_dir)
+    if not exists(remote_builds_dir):
+        sudo('mkdir ' + remote_builds_dir)
+        sudo('chown -R www-data:www-data ' + remote_builds_dir)
     if not exists(remote_django_dir):
         with cd(remote_app_dir):
             sudo('git clone https://github.com/GlobalFinPrint/global_finprint', user='www-data')
@@ -76,9 +80,9 @@ def collect_static():
 
 def apply_migrations():
     with cd(remote_django_dir):
-        sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py dropviews', user='www-data')
-        sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py migrate', user='www-data')
-        sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py createviews', user='www-data')
+        sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py dropviews --noinput', user='www-data')
+        sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py migrate --noinput', user='www-data')
+        sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py createviews --noinput', user='www-data')
 
 
 def check_settings():
@@ -127,15 +131,26 @@ def deploy():
         apply_migrations()
 
 
-def deploy_test():
-    with cd(remote_django_dir):
-        sudo('git pull', user='www-data')
-        sudo('source ../venv/bin/activate')
-        sudo('../venv/bin/pip3 install -r ./requirements/local.txt', user='www-data')
-        sudo('bower install --allow-root --config.interactive=false')
-        sudo('chown -R www-data:www-data ./global_finprint/static')
-        collect_static()
-        apply_migrations()
+def deploy_test(version):
+    s3_file = 'finprint-builds/master/global_finprint/files/global_finprint-{0}.tar.gz'.format(version)
+    build_file = 'global_finprint-{0}.tar.gz'.format(version)
+    with cd(remote_builds_dir):
+        sudo('mkdir {0}'.format(version), user='www-data')
+        sudo('aws s3 cp s3://{0} {1} --region us-west-2'.format(s3_file, build_file))
+        sudo('chown www-data:www-data {0}'.format(build_file))
+        sudo('tar -xzf {0} -C {1}'.format(build_file, version), user='www-data')
+        sudo('rm {0}'.format(build_file))
+        with cd('{0}/global_finprint'.format(version)):
+            sudo('source {0}/venv/bin/activate'.format(remote_app_dir))
+            sudo('{0}/venv/bin/pip3 install -r ./requirements/local.txt'.format(remote_app_dir), user='www-data')
+            sudo('bower install --allow-root --config.interactive=false')
+            sudo('chown -R www-data:www-data ./global_finprint/static')
+            sudo('ln -s -f {0}/{1}/global_finprint {2}'.format(remote_builds_dir, version, remote_app_dir), user='www-data')
+    sudo('cp {0}/environment_scripts/set_env.sh {1}/'.format(remote_app_dir, remote_django_dir),user='www-data')
+    sudo('cp {0}/environment_scripts/run_gunicorn.sh {1}/'.format(remote_app_dir, remote_django_dir),user='www-data')
+    sudo('cp {0}/environment_scripts/gunicorn.conf.py {1}/config/'.format(remote_app_dir, remote_django_dir),user='www-data')
+    collect_static()
+    apply_migrations()
 
 
 def configure_gunicorn():
@@ -188,17 +203,17 @@ def update():
     restart_nginx()
 
 
-def create_test():
+def create_test(version):
     install_requirements()
     create_remote()
-    deploy_test()
+    deploy_test(version)
     configure_gunicorn()
     configure_init()
     configure_nginx()
     restart_nginx()
 
 
-def update_test():
-    deploy_test()
+def update_test(version):
+    deploy_test(version)
     restart_gunicorn()
     restart_nginx()
