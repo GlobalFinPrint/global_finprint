@@ -66,12 +66,14 @@ class Logout(APIView):
 
 class SetList(APIView):
     def get(self, request):
-        assignments = Assignment.objects.filter(status_id=3) if request.annotator.is_lead() \
-            else Assignment.get_active_for_annotator(request.annotator)
-        if 'trip_id' in request.GET:
-            assignments = assignments.filter(video__set__trip__id=request.GET.get('trip_id'))
-        if 'set_id' in request.GET:
-            assignments = assignments.filter(video__set__id=request.GET.get('set_id'))
+        if request.annotator.is_lead() and 'for_review' in request.GET:
+            assignments = Assignment.objects.filter(status_id=3)
+            if 'trip_id' in request.GET:
+                assignments = assignments.filter(video__set__trip__id=request.GET.get('trip_id'))
+            if 'set_id' in request.GET:
+                assignments = assignments.filter(video__set__id=request.GET.get('set_id'))
+        else:
+            assignments = Assignment.get_active_for_annotator(request.annotator)
         return JsonResponse({'sets': list(va.to_json() for va in assignments)})
 
 
