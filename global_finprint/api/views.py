@@ -106,8 +106,9 @@ class Observations(APIView):
         params['assignment'] = request.va
         params['user'] = request.annotator.user
         Observation.create(**params)
-        request.va.status_id = 2
-        request.va.save()
+        if request.va.status_id == 1:
+            request.va.status_id = 2
+            request.va.save()
         return JsonResponse({'observations': Observation.get_for_api(request.va)})
 
     def delete(self, request, set_id):
