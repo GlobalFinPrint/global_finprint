@@ -21,7 +21,7 @@ CREATE OR REPLACE VIEW public.v_report_species_observation_counts AS
   SELECT
     r.name                                                                    AS region_name,
     coalesce(o.common_name || ' (' || o.genus || ' ' || o.species || ')', '') AS animal,
-    count(DISTINCT o.animal_id)                                               AS animal_count
+    count(1)                                                                  AS animal_count
   FROM habitat_region r
     INNER JOIN habitat_location l ON l.region_id = r.id
     INNER JOIN animal_observations o ON o.location_id = l.id
