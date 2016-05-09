@@ -2,7 +2,7 @@ from django.contrib.gis.db import models
 from django.core.urlresolvers import reverse
 from django.contrib.gis.geos import Point
 
-from global_finprint.annotation.models import Observation
+from global_finprint.annotation.models.observation import Observation
 from global_finprint.core.models import AuditableModel
 from global_finprint.trip.models import Trip
 from global_finprint.habitat.models import ReefHabitat

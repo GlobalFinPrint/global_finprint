@@ -3,7 +3,10 @@ from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotFoun
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
 from ..trip.models import Trip
-from ..annotation.models import Assignment, Observation, Animal, AnimalBehavior, ObservationFeature
+from ..annotation.models.animal import Animal
+from ..annotation.models.video import Assignment
+from ..annotation.models.annotation import AnimalBehavior
+from ..annotation.models.observation import Observation, ObservationFeature
 from ..core.models import FinprintUser
 
 

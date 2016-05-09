@@ -3,7 +3,7 @@ from django.views.generic import ListView
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404
 
-from global_finprint.annotation.models import Observation
+from global_finprint.annotation.models.observation import Observation
 from global_finprint.bruv.models import Set, Trip
 from global_finprint.core.mixins import UserAllowedMixin
 

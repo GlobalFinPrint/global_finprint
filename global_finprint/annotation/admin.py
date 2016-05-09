@@ -1,9 +1,8 @@
 from django.contrib import admin
 
-from global_finprint.annotation import models
+from global_finprint.annotation.models import animal, video
 
 
-admin.site.register(models.AnimalBehavior)
-admin.site.register(models.AnimalGroup)
-admin.site.register(models.Animal)
-admin.site.register(models.AnnotationState)
+admin.site.register(animal.AnimalGroup)
+admin.site.register(animal.Animal)
+admin.site.register(video.AnnotationState)
