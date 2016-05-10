@@ -204,7 +204,7 @@ def create():
 
 
 def update(version):
-    deploy_from_jenkins(version,'production')
+    deploy_from_s3(version,'production')
     restart_gunicorn()
     restart_nginx()
 
@@ -220,6 +220,6 @@ def create_test(version):
 
 
 def update_test(version):
-    deploy_from_jenkins(version,'local')
+    deploy_from_s3(version,'local')
     restart_gunicorn()
     restart_nginx()
