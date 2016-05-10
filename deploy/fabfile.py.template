@@ -121,17 +121,22 @@ def load_test_data():
 
 
 def deploy():
+    deploy_from_git('production')
+    
+def deploy_test(version):
+    deploy_from_s3(version,'local')
+    
+def deploy_from_git(environment):
     with cd(remote_django_dir):
         sudo('git pull', user='www-data')
         sudo('source ../venv/bin/activate')
-        sudo('../venv/bin/pip3 install -r ./requirements/production.txt', user='www-data')
+        sudo('../venv/bin/pip3 install -r ./requirements/{0}.txt'.format(environment), user='www-data')
         sudo('bower install --allow-root --config.interactive=false')
         sudo('chown -R www-data:www-data ./global_finprint/static')
         collect_static()
         apply_migrations()
 
-
-def deploy_test(version):
+def deploy_from_s3(version,environment):
     s3_file = 'finprint-builds/master/global_finprint/files/global_finprint-{0}.tar.gz'.format(version)
     build_file = 'global_finprint-{0}.tar.gz'.format(version)
     with cd(remote_builds_dir):
@@ -143,7 +148,7 @@ def deploy_test(version):
         sudo('rm {0}'.format(build_file))
         with cd('{0}/global_finprint'.format(version)):
             sudo('source {0}/venv/bin/activate'.format(remote_app_dir))
-            sudo('{0}/venv/bin/pip3 install -r ./requirements/local.txt'.format(remote_app_dir), user='www-data')
+            sudo('{0}/venv/bin/pip3 install -r ./requirements/{1}.txt'.format(remote_app_dir,environment), user='www-data')
             sudo('bower install --allow-root --config.interactive=false')
             sudo('chown -R www-data:www-data ./global_finprint/static')
             sudo('ln -s -f {0}/{1}/global_finprint {2}'.format(remote_builds_dir, version, remote_app_dir), user='www-data')
@@ -198,8 +203,8 @@ def create():
     restart_nginx()
 
 
-def update():
-    deploy()
+def update(version):
+    deploy_from_jenkins(version,'production')
     restart_gunicorn()
     restart_nginx()
 
@@ -215,6 +220,6 @@ def create_test(version):
 
 
 def update_test(version):
-    deploy_test(version)
+    deploy_from_jenkins(version,'local')
     restart_gunicorn()
     restart_nginx()
