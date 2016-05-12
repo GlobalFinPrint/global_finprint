@@ -1,17 +1,13 @@
 from django.db import models
+from mptt.models import MPTTModel, TreeForeignKey
 
 
-class AnimalBehavior(models.Model):
-    #    swim by, stimulated, interaction
-    type = models.CharField(max_length=16)
+class Attribute(MPTTModel):
+    name = models.CharField(max_length=50, unique=True)
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
 
-    def __str__(self):
-        return u"{0}".format(self.type)
-
-
-class ObservationFeature(models.Model):
-    id = models.AutoField(primary_key=True)
-    feature = models.CharField(max_length=50, unique=True)
+    class MPTTMeta:
+        order_insertion_by = ['name']
 
     def __str__(self):
-        return u"{0}".format(self.feature)
+        return u"{0}".format(self.name)
