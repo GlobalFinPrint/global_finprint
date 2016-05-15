@@ -17,15 +17,13 @@ OBSERVATION_TYPE_CHOICES = {
 class Observation(AuditableModel):
     assignment = models.ForeignKey(Assignment)
     type = models.CharField(max_length=1, choices=OBSERVATION_TYPE_CHOICES, default='I')
-    initial_observation_time = models.IntegerField(help_text='ms')
     duration = models.PositiveIntegerField(null=True, blank=True)
-    comment = models.CharField(max_length=256, null=True)
+    comment = models.TextField(null=True)
     created_by = models.ForeignKey(to=FinprintUser, related_name='observations_created', null=True)
     updated_by = models.ForeignKey(to=FinprintUser, related_name='observations_updated', null=True)
 
     @staticmethod
     def create(**kwargs):
-        kwargs['initial_observation_time'] = int(kwargs['initial_observation_time'])
         kwargs['type'] = kwargs.pop('type_choice', None)
         kwargs['created_by'] = kwargs['user'].finprintuser
         kwargs['updated_by'] = kwargs['user'].finprintuser
@@ -53,7 +51,6 @@ class Observation(AuditableModel):
     def valid_fields():
         return [
             'type_choice',
-            'initial_observation_time',
             'duration',
             'comment',
             'animal_id',
@@ -74,7 +71,6 @@ class Observation(AuditableModel):
             'id': self.id,
             'type': self.get_type_display(),
             'type_choice': self.type,
-            'initial_observation_time': self.initial_observation_time,
             'duration': self.duration,
             'comment': self.comment,
         }
@@ -94,7 +90,8 @@ class Observation(AuditableModel):
         return json
 
     def __str__(self):
-        return u"{0}".format(self.initial_observation_time)
+        # todo:  update to first event?
+        return u"{0}".format(self.type)
 
 
 class AnimalObservation(AuditableModel):
@@ -111,5 +108,10 @@ class AnimalObservation(AuditableModel):
 
 
 class Event(AuditableModel):
+
+    observation_id = models.ForeignKey(to=Observation)
+
+    event_time = models.IntegerField(help_text='ms')
     extent = geomodels.PolygonField(null=True)
     attribute = models.ManyToManyField(to=Attribute)
+    note = models.TextField(null=True)
