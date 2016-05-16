@@ -14,7 +14,7 @@ def observation_detail(request, pk):
     observation = Observation.objects.get(pk=pk)
     data = {
             'id': str(observation.id),
-            'initial_observation_time': observation.initial_observation_time.isoformat(),
+            # 'initial_observation_time': observation.initial_observation_time.isoformat(),
             'animal': str(observation.animal),
             'sex': observation.sex,
             'stage': observation.stage,

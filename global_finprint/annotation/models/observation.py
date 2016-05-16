@@ -108,10 +108,9 @@ class AnimalObservation(AuditableModel):
 
 
 class Event(AuditableModel):
+    observation = models.ForeignKey(to=Observation)
 
-    observation_id = models.ForeignKey(to=Observation)
-
-    event_time = models.IntegerField(help_text='ms')
+    event_time = models.IntegerField(help_text='ms', default=0)
     extent = geomodels.PolygonField(null=True)
     attribute = models.ManyToManyField(to=Attribute)
     note = models.TextField(null=True)
