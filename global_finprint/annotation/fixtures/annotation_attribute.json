@@ -1,101 +1,240 @@
 [
-   {
-      "model":"annotation.animalbehavior",
-      "pk":1,
-      "fields":{
-         "type":"swim by"
-      }
-   },
-   {
-      "model":"annotation.animalbehavior",
-      "pk":2,
-      "fields":{
-         "type":"stimulated"
-      }
-   },
-   {
-      "model":"annotation.animalbehavior",
-      "pk":3,
-      "fields":{
-         "type":"interaction"
-      }
-   },
-   {
-      "model":"annotation.observationfeature",
-      "pk":1,
-      "fields":{
-         "feature":"Gear on animal"
-      }
-   },
-   {
-      "model":"annotation.observationfeature",
-      "pk":2,
-      "fields":{
-         "feature":"Gear fouled"
-      }
-   },
-   {
-      "model":"annotation.observationfeature",
-      "pk":3,
-      "fields":{
-         "feature":"Dart tag"
-      }
-   },
-   {
-      "model":"annotation.observationfeature",
-      "pk":4,
-      "fields":{
-         "feature":"Roto tag"
-      }
-   },
-   {
-      "model":"annotation.observationfeature",
-      "pk":5,
-      "fields":{
-         "feature":"Other tag"
-      }
-   },
-   {
-      "model":"annotation.observationfeature",
-      "pk":6,
-      "fields":{
-         "feature":"External parasites"
-      }
-   },
-   {
-      "model":"annotation.attribute",
-      "pk":1,
-      "fields":{
-         "name":"Behavior",
-         "parent":null,
-         "lft":1,
-         "rght":6,
-         "tree_id":1,
-         "level":0
-      }
-   },
-   {
-      "model":"annotation.attribute",
-      "pk":2,
-      "fields":{
-         "name":"Fighting",
-         "parent":1,
-         "lft":2,
-         "rght":3,
-         "tree_id":1,
-         "level":1
-      }
-   },
-   {
-      "model":"annotation.attribute",
-      "pk":3,
-      "fields":{
-         "name":"Mating",
-         "parent":1,
-         "lft":4,
-         "rght":5,
-         "tree_id":1,
-         "level":1
-      }
-   }
+  {
+    "model": "annotation.attribute",
+    "pk": 1,
+    "fields": {
+      "name": "Behavior",
+      "description": "",
+      "active": true,
+      "parent": null,
+      "lft": 1,
+      "rght": 14,
+      "tree_id": 1,
+      "level": 0
+    }
+  },
+  {
+    "model": "annotation.attribute",
+    "pk": 2,
+    "fields": {
+      "name": "Co\u200burtship",
+      "description": "",
+      "active": true,
+      "parent": 12,
+      "lft": 9,
+      "rght": 10,
+      "tree_id": 1,
+      "level": 2
+    }
+  },
+  {
+    "model": "annotation.attribute",
+    "pk": 3,
+    "fields": {
+      "name": "Mating",
+      "description": "",
+      "active": true,
+      "parent": 12,
+      "lft": 11,
+      "rght": 12,
+      "tree_id": 1,
+      "level": 2
+    }
+  },
+  {
+    "model": "annotation.attribute",
+    "pk": 4,
+    "fields": {
+      "name": "Aggressive",
+      "description": "",
+      "active": true,
+      "parent": 11,
+      "lft": 3,
+      "rght": 4,
+      "tree_id": 1,
+      "level": 2
+    }
+  },
+  {
+    "model": "annotation.attribute",
+    "pk": 5,
+    "fields": {
+      "name": "Territorial",
+      "description": "",
+      "active": true,
+      "parent": 11,
+      "lft": 5,
+      "rght": 6,
+      "tree_id": 1,
+      "level": 2
+    }
+  },
+  {
+    "model": "annotation.attribute",
+    "pk": 6,
+    "fields": {
+      "name": "Wounded",
+      "description": "",
+      "active": true,
+      "parent": null,
+      "lft": 1,
+      "rght": 2,
+      "tree_id": 5,
+      "level": 0
+    }
+  },
+  {
+    "model": "annotation.attribute",
+    "pk": 7,
+    "fields": {
+      "name": "Gear",
+      "description": "",
+      "active": true,
+      "parent": null,
+      "lft": 1,
+      "rght": 10,
+      "tree_id": 2,
+      "level": 0
+    }
+  },
+  {
+    "model": "annotation.attribute",
+    "pk": 8,
+    "fields": {
+      "name": "Clean",
+      "description": "",
+      "active": true,
+      "parent": 7,
+      "lft": 2,
+      "rght": 5,
+      "tree_id": 2,
+      "level": 1
+    }
+  },
+  {
+    "model": "annotation.attribute",
+    "pk": 9,
+    "fields": {
+      "name": "Fouled",
+      "description": "",
+      "active": true,
+      "parent": 7,
+      "lft": 6,
+      "rght": 9,
+      "tree_id": 2,
+      "level": 1
+    }
+  },
+  {
+    "model": "annotation.attribute",
+    "pk": 10,
+    "fields": {
+      "name": "Hook and line",
+      "description": "",
+      "active": true,
+      "parent": 9,
+      "lft": 7,
+      "rght": 8,
+      "tree_id": 2,
+      "level": 2
+    }
+  },
+  {
+    "model": "annotation.attribute",
+    "pk": 11,
+    "fields": {
+      "name": "Negative",
+      "description": "",
+      "active": true,
+      "parent": 1,
+      "lft": 2,
+      "rght": 7,
+      "tree_id": 1,
+      "level": 1
+    }
+  },
+  {
+    "model": "annotation.attribute",
+    "pk": 12,
+    "fields": {
+      "name": "Positive",
+      "description": "",
+      "active": true,
+      "parent": 1,
+      "lft": 8,
+      "rght": 13,
+      "tree_id": 1,
+      "level": 1
+    }
+  },
+  {
+    "model": "annotation.attribute",
+    "pk": 13,
+    "fields": {
+      "name": "Hook an line",
+      "description": "",
+      "active": true,
+      "parent": 8,
+      "lft": 3,
+      "rght": 4,
+      "tree_id": 2,
+      "level": 2
+    }
+  },
+  {
+    "model": "annotation.attribute",
+    "pk": 14,
+    "fields": {
+      "name": "Parasites",
+      "description": "",
+      "active": true,
+      "parent": null,
+      "lft": 1,
+      "rght": 2,
+      "tree_id": 3,
+      "level": 0
+    }
+  },
+  {
+    "model": "annotation.attribute",
+    "pk": 15,
+    "fields": {
+      "name": "Tag",
+      "description": "",
+      "active": true,
+      "parent": null,
+      "lft": 1,
+      "rght": 6,
+      "tree_id": 4,
+      "level": 0
+    }
+  },
+  {
+    "model": "annotation.attribute",
+    "pk": 16,
+    "fields": {
+      "name": "Dart tag",
+      "description": "",
+      "active": true,
+      "parent": 15,
+      "lft": 2,
+      "rght": 3,
+      "tree_id": 4,
+      "level": 1
+    }
+  },
+  {
+    "model": "annotation.attribute",
+    "pk": 17,
+    "fields": {
+      "name": "Roto tag",
+      "description": "",
+      "active": true,
+      "parent": 15,
+      "lft": 4,
+      "rght": 5,
+      "tree_id": 4,
+      "level": 1
+    }
+  }
 ]

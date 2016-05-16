@@ -4,7 +4,7 @@
     <thead>
     <tr class="success">
         <th>Annotator</th>
-        <th>Initial observation time</th>
+{#        <th>Initial observation time</th>#}
         <th>Duration (ms)</th>
         <th>Type</th>
         <th>Animal</th>
@@ -16,7 +16,7 @@
     {% for o in observations|dictsortreversed:'initial_observation_time' %}
         <tr>
             <td>{{ o.assignment.annotator }}</td>
-            <td>{{ o.initial_observation_time|time_display }}</td>
+{#            <td>{{ o.initial_observation_time|time_display }}</td>#}
             <td>{{ o.duration|default_if_none:"<i>None</i>" }}</td>
             <td>{{ o.get_type_display }}</td>
             <td>{{ o.animalobservation.animal|default_if_none:"<i>N/A</i>" }}</td>

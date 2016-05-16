@@ -10,6 +10,7 @@ python manage.py loaddata global_finprint/habitat/fixtures/habitat_site
 python manage.py loaddata global_finprint/habitat/fixtures/habitat_reef
 python manage.py loaddata global_finprint/annotation/fixtures/annotation_status
 python manage.py loaddata global_finprint/annotation/fixtures/annotation_animal
+python manage.py loaddata global_finprint/annotation/fixtures/annotation_attribute
 python manage.py loaddata global_finprint/bruv/fixtures/bruv_equipment
 python manage.py loaddata global_finprint/trip/fixtures/trip_source
 
