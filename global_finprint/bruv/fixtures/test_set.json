@@ -1,6 +1,6 @@
 [
   {
-    "pk": 1,
+    "pk": 2,
     "model": "bruv.bait",
     "fields": {
       "description": "spaghetti",
@@ -12,7 +12,7 @@
     }
   },
   {
-    "pk": 2,
+    "pk": 3,
     "model": "bruv.bait",
     "fields": {
       "description": "ravioli",
