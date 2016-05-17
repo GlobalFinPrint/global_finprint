@@ -80,4 +80,4 @@ class Team(AuditableModel):
         unique_together = ('lead', 'sampler_collaborator')
 
     def __str__(self):
-        return u"{0} - {1}".format(self.sampler_collaborator, self.lead.user.username)
+        return u"{0}{1}{2}".format(self.lead.user.username, (' - ' if self.sampler_collaborator else ''), self.sampler_collaborator)
