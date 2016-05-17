@@ -95,35 +95,40 @@
   },
   {
     "fields": {
-      "type": "slope"
+      "type": "slope",
+      "code": "S"
     },
     "model": "habitat.reeftype",
     "pk": 1
   },
   {
     "fields": {
-      "type": "crest"
+      "type": "crest",
+      "code": "C"
     },
     "model": "habitat.reeftype",
     "pk": 2
   },
   {
     "fields": {
-      "type": "flat"
+      "type": "flat",
+      "code": "T"
     },
     "model": "habitat.reeftype",
     "pk": 3
   },
   {
     "fields": {
-      "type": "back reef"
+      "type": "back reef",
+      "code": "B"
     },
     "model": "habitat.reeftype",
     "pk": 4
   },
   {
     "fields": {
-      "type": "lagoon"
+      "type": "lagoon",
+      "code": "L"
     },
     "model": "habitat.reeftype",
     "pk": 5
