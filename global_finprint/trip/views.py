@@ -62,9 +62,9 @@ class TripListView(UserAllowedMixin, CreateView):
                 search_terms['location__in'] = Region.objects.get(pk=search_values['region'].id) \
                     .location_set.values_list('id', flat=True)
 
-            return Trip.objects.filter(**search_terms)
+            return Trip.objects.filter(**search_terms).order_by('start_date')
         else:
-            return Trip.objects.all()
+            return Trip.objects.all().order_by('start_date')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
