@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.gis.geos import Point
 
 from global_finprint.annotation.models.observation import Observation
+from global_finprint.annotation.models.video import Video
 from global_finprint.core.models import AuditableModel
 from global_finprint.trip.models import Trip
 from global_finprint.habitat.models import ReefHabitat
@@ -141,7 +142,7 @@ class Set(AuditableModel):
     haul_time = models.TimeField()
     visibility = models.CharField(max_length=3, choices=VISIBILITY_CHOICES)
     depth = models.FloatField(null=True, help_text='m')
-    comments = models.CharField(max_length=255, null=True, blank=True)
+    comments = models.TextField(null=True, blank=True)
 
     equipment = models.ForeignKey(Equipment)
     reef_habitat = models.ForeignKey(ReefHabitat, blank=True)
@@ -163,7 +164,7 @@ class Set(AuditableModel):
         null=True,
         related_name='haul_parent_set')
     video = models.OneToOneField(
-        'annotation.Video',
+        Video,
         on_delete=models.CASCADE,
         null=True,
         related_name='set'
