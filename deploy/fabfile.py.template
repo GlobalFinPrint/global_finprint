@@ -136,8 +136,8 @@ def deploy_from_git(environment):
         collect_static()
         apply_migrations()
 
-def deploy_from_s3(version,environment):
-    s3_file = 'finprint-builds/master/global_finprint/files/global_finprint-{0}.tar.gz'.format(version)
+def deploy_from_s3(version,environment,branch):
+    s3_file = 'finprint-builds/{0}/global_finprint/files/global_finprint-{1}.tar.gz'.format(branch,version)
     build_file = 'global_finprint-{0}.tar.gz'.format(version)
     with cd(remote_builds_dir):
         if not exists(version):
@@ -204,7 +204,7 @@ def create():
 
 
 def update(version):
-    deploy_from_s3(version,'production')
+    deploy_from_s3(version,'production','production')
     restart_gunicorn()
     restart_nginx()
 
@@ -220,6 +220,6 @@ def create_test(version):
 
 
 def update_test(version):
-    deploy_from_s3(version,'local')
+    deploy_from_s3(version,'local','master')
     restart_gunicorn()
     restart_nginx()
