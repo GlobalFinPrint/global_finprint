@@ -144,15 +144,12 @@ class Set(AuditableModel):
     depth = models.FloatField(null=True, help_text='m')
     comments = models.TextField(null=True, blank=True)
 
+    # todo:  need some form changes here ...
+    bait = models.ForeignKey(Bait, null=True)
     equipment = models.ForeignKey(Equipment)
     reef_habitat = models.ForeignKey(ReefHabitat, blank=True)
     trip = models.ForeignKey(Trip)
 
-    bait = models.OneToOneField(
-        Bait,
-        on_delete=models.CASCADE,
-        null=True,
-        related_name='bait_parent_set')
     drop_measure = models.OneToOneField(
         EnvironmentMeasure,
         on_delete=models.CASCADE,
