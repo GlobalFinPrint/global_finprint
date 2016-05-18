@@ -109,6 +109,9 @@ def load_data():
                         'global_finprint/annotation/fixtures/annotation_fp_leads',
                         'global_finprint/trip/fixtures/trip_source',
                         'global_finprint/trip/fixtures/trip_trip',
+                        'global_finprint/bruv/fixtures/bruv_environmentmeasure',
+                        'global_finprint/trip/fixtures/bruv_set',
+                        'global_finprint/trip/fixtures/annotation_video',
                         ]:
             sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py loaddata {0}'.format(fixture),
                 user='www-data')
@@ -117,10 +120,9 @@ def load_data():
 def load_test_data():
     with cd(remote_django_dir):
         for fixture in [
-                        'global_finprint/annotation/fixtures/test_animal',
-                        'global_finprint/annotation/fixtures/test_annotator',
-                        'global_finprint/bruv/fixtures/test_set',
+                        'global_finprint/annotation/fixtures/test_users',
                         'global_finprint/annotation/fixtures/test_obs',
+                        'global_finprint/annotation/fixtures/test_assignment',
                         ]:
             sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py loaddata {0}'.format(fixture),
              user='www-data')

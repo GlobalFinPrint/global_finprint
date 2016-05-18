@@ -14,3 +14,6 @@ loaddata
     global_finprint/bruv/fixtures/bruv_equipment
     global_finprint/trip/fixtures/trip_source
     global_finprint/trip/fixtures/trip_trip
+    global_finprint/bruv/fixtures/bruv_environmentmeasure
+    global_finprint/bruv/fixtures/bruv_set
+    global_finprint/annotation/fixtures/annotation_video

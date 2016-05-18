@@ -16,11 +16,11 @@ python manage.py loaddata global_finprint/annotation/fixtures/annotation_attribu
 python manage.py loaddata global_finprint/bruv/fixtures/bruv_equipment
 python manage.py loaddata global_finprint/trip/fixtures/trip_source
 python manage.py loaddata global_finprint/trip/fixtures/trip_trip
+python manage.py loaddata global_finprint/bruv/fixtures/bruv_environmentmeasure
+python manage.py loaddata global_finprint/trip/fixtures/bruv_set
+python manage.py loaddata global_finprint/trip/fixtures/annotation_video
 
 # load test data
 python manage.py loaddata global_finprint/core/fixtures/test_users
-python manage.py loaddata global_finprint/annotation/fixtures/test_animal
-python manage.py loaddata global_finprint/bruv/fixtures/test_set
-python manage.py loaddata global_finprint/annotation/fixtures/test_videos
 python manage.py loaddata global_finprint/annotation/fixtures/test_assignment
 python manage.py loaddata global_finprint/annotation/fixtures/test_obs
