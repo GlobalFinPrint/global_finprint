@@ -17,6 +17,7 @@ OBSERVATION_TYPE_CHOICES = {
 class Observation(AuditableModel):
     assignment = models.ForeignKey(Assignment)
     type = models.CharField(max_length=1, choices=OBSERVATION_TYPE_CHOICES, default='I')
+    # duration could be redundant ... at best it's an optimization:
     duration = models.PositiveIntegerField(null=True, blank=True)
     comment = models.TextField(null=True)
     created_by = models.ForeignKey(to=FinprintUser, related_name='observations_created', null=True)
