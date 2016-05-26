@@ -24,6 +24,7 @@ CURRENT_DIRECTION = {
     ('NW', 'Northwest'),
 }
 VISIBILITY_CHOICES = {
+    ('0', 'LEGACY'),
     ('1', '1'),
     ('2', '2'),
     ('3', '3'),
