@@ -107,6 +107,7 @@ Creates a new observation for the specified set.
 **Expects** (POST):
 - token (string)
 - [observation request fields](#observation-request-fields)
+
 **Returns** (JSON):
 - observations: (array of [observation objects](#observation-response-object))
 
@@ -139,7 +140,56 @@ Delete an observation for the specified set.
 - obs_id (integer)
 
 **Returns** (JSON):
+- observations: (array of [observation objects](#observation-response-object)
+
+
+### Create observation event
+`POST /api/set/:set_id/obs/:obs_id/event`
+Create a new event on an observation.
+
+**Expects** (URL):
+- set_id: (integer)
+- obs_id: (integer)
+
+**Expects** (POST):
+- token: (string)
+- [event request fields](#event-request-fields)
+
+**Returns** (JSON):
 - observations: (array of [observation objects](#observation-response-object))
+
+
+### Edit observation event
+`POST /api/set/:set_id/obs/:obs_id/event/:evt_id`
+Edit an existing observation event.
+
+**Expects** (URL):
+- set_id: (integer)
+- obs_id: (integer)
+- evt_id: (integer)
+
+**Expects** (POST):
+- token: (string)
+- [event request fields](#event-request-fields)
+
+**Returns** (JSON):
+- observations: (array of [observation objects](#observation-response-object))
+
+
+### Delete observation event
+`DELETE /api/set/:set_id/obs/:obs_id/event`
+Delete the specified observation event.
+
+**Expects** (URL):
+- set_id: (integer)
+- obs_id: (integer)
+
+**Expects** (POST):
+- token: (string)
+- evt_id: (integer)
+
+**Returns** (JSON):
+- observations: (array of [observation objects](#observation-response-object)
 
 
 ### Animal list
@@ -264,7 +314,7 @@ All POSTed observations are expected to follow this standard:
 - initial_observation_time: (integer)
 - duration: (integer) (optional)
 - comment: (string) (optional)
-- event: ([event request fields](#event-request-fields))
+- event: ([event request fields](#event-request-fields)) *NOTE: exclude for observation edit* 
 
 *fields below are only for animal observations*
 

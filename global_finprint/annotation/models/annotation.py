@@ -14,3 +14,10 @@ class Attribute(MPTTModel):
 
     def __str__(self):
         return u"{0}".format(self.name)
+
+    def to_json(self):
+        return {
+            'id': self.pk,
+            'name': self.name,
+            'description': self.description
+        }

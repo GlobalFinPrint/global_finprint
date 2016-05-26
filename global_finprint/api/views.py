@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from ..trip.models import Trip
 from ..annotation.models.animal import Animal
 from ..annotation.models.video import Assignment
-from ..annotation.models.observation import Observation
+from ..annotation.models.observation import Observation, Attribute
 from ..core.models import FinprintUser
 
 
@@ -136,12 +136,7 @@ class ObservationUpdate(APIView):
                 if key == 'user':
                     setattr(obs, 'user', val)
                     setattr(animal_obs, 'user', val)
-                elif key == 'behavior_ids':
-                    setattr(animal_obs, 'behaviors', val.split(',') if val != '' else [])
-                elif key == 'feature_ids':
-                    setattr(animal_obs, 'features', val.split(',') if val != '' else [])
-                elif key in ['animal_id', 'sex', 'stage', 'length', 'gear_on_animal',
-                             'gear_fouled', 'tag', 'external_parasites']:
+                elif key in ['animal_id', 'sex', 'stage', 'length']:
                     setattr(animal_obs, key, val)
                 else:
                     setattr(obs, key, val)
@@ -173,3 +168,8 @@ class ProgressUpdate(APIView):
     def post(self, request, set_id):
         new_progress = request.va.update_progress(int(request.POST.get('progress')))
         return JsonResponse({'progress': new_progress})
+
+
+class AttributeListView(APIView):
+    def get(self, request, set_id):
+        return JsonResponse({'attributes': [a.to_json() for a in Attribute.objects.all()]})

@@ -74,6 +74,7 @@ class Observation(AuditableModel):
             'type_choice': self.type,
             'duration': self.duration,
             'comment': self.comment,
+            'events': [e.to_json() for e in self.event_set]
         }
 
         if self.type == 'A':
@@ -115,3 +116,12 @@ class Event(AuditableModel):
     extent = geomodels.PolygonField(null=True)
     attribute = models.ManyToManyField(to=Attribute)
     note = models.TextField(null=True)
+
+    def to_json(self):
+        return {
+            'id': self.pk,
+            'event_time': self.event_time,
+            'extent': None if self.extent is None else str(self.extent),
+            'note': self.note,
+            'attributes': [a.to_json() for a in self.attribute_set]
+        }
