@@ -33,7 +33,7 @@ class SetForm(forms.ModelForm):
     class Meta:
         model = Set
         fields = ['trip', 'code', 'set_date', 'latitude', 'longitude', 'depth',
-                  'drop_time', 'haul_time', 'reef', 'habitat', 'equipment', 'visibility',
+                  'drop_time', 'haul_time', 'reef', 'habitat', 'equipment', 'bait', 'visibility',
                   'reef_habitat',]
         exclude = ('reef_habitat',)
         widgets = {
@@ -56,17 +56,6 @@ class SetForm(forms.ModelForm):
                    key=lambda _: _[0].isdigit() and int(_[0]) or _[0] == '' and -1 or 100)
         self.fields['visibility'].choices[0] = (None, '---')
 
-        self.helper = FormHelper(self)
-        self.helper.form_tag = False
-
-
-class BaitForm(forms.ModelForm):
-    class Meta:
-        model = Bait
-        fields = ['description', 'type', 'oiled']
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 

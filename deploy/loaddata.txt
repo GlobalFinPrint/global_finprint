@@ -2,11 +2,18 @@ loaddata
     global_finprint/core/fixtures/core_groups
     global_finprint/core/fixtures/core_affiliations
     global_finprint/core/fixtures/core_users
+    global_finprint/core/fixtures/core_teams
     global_finprint/habitat/fixtures/habitat_locations
     global_finprint/habitat/fixtures/habitat_reef_mpa_substrate
     global_finprint/habitat/fixtures/habitat_site
     global_finprint/habitat/fixtures/habitat_reef
+    global_finprint/habitat/fixtures/habitat_reefhabitat
     global_finprint/annotation/fixtures/annotation_status
     global_finprint/annotation/fixtures/annotation_animal
+    global_finprint/annotation/fixtures/annotation_attribute
     global_finprint/bruv/fixtures/bruv_equipment
     global_finprint/trip/fixtures/trip_source
+    global_finprint/trip/fixtures/trip_trip
+    global_finprint/bruv/fixtures/bruv_environmentmeasure
+    global_finprint/bruv/fixtures/bruv_set
+    global_finprint/annotation/fixtures/annotation_video

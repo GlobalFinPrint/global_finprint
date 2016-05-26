@@ -18,7 +18,7 @@ class Source(models.Model):
 class Trip(AuditableModel):
     # suggested code pattern:
     # [source]_[location.code]_[start_date.year]_[trip number within location / year]
-    code = models.CharField(max_length=32, help_text='FP_[year]_[loc code]_xx', unique=True, null=True, blank=True)
+    code = models.CharField(max_length=32, help_text='[source code]_[year]_[loc code]_xx', unique=True, null=True, blank=True)
     team = models.ForeignKey(Team)
     location = models.ForeignKey(Location)
     boat = models.CharField(max_length=100, blank=True, null=True)

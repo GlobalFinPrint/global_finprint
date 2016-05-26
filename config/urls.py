@@ -9,6 +9,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import login, logout, password_change, password_change_done
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.sites.models import Site
 from django.views.defaults import bad_request, permission_denied, page_not_found, server_error
 
 from global_finprint.core.views import UrlRedirect, UserInfoView
@@ -42,6 +43,9 @@ urlpatterns = [
     url(r'^accounts/profile/$', UrlRedirect.as_view()),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# remove confusing 'Sites' from admin page:
+admin.site.unregister(Site)
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit

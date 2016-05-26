@@ -1,11 +1,11 @@
 import json
 
-from django.contrib.auth.decorators import login_required
 from django.http.response import HttpResponse
 
-from global_finprint.annotation.models import AnimalGroup
 from global_finprint.habitat.models import Region, Site, Location
-from ..models import Animal, Video, Assignment
+
+from ..models.animal import Animal, AnimalGroup
+from ..models.video import Video, Assignment
 
 
 def site_animal_list(request, site_id, *args, **kwargs):

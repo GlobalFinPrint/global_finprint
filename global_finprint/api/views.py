@@ -3,7 +3,9 @@ from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotFoun
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
 from ..trip.models import Trip
-from ..annotation.models import Assignment, Observation, Animal, AnimalBehavior, ObservationFeature
+from ..annotation.models.animal import Animal
+from ..annotation.models.video import Assignment
+from ..annotation.models.observation import Observation
 from ..core.models import FinprintUser
 
 
@@ -92,9 +94,7 @@ class SetDetail(APIView):
                                      'assigned_to': {'id': request.va.annotator_id, 'user': str(request.va.annotator)},
                                      'progress': request.va.progress,
                                      'observations': Observation.get_for_api(request.va),
-                                     'animals': Animal.get_for_api(request.va),
-                                     'behaviors': list(AnimalBehavior.objects.all().values()),
-                                     'features': list(ObservationFeature.objects.all().values())}})
+                                     'animals': Animal.get_for_api(request.va)}})
 
 
 class Observations(APIView):
@@ -160,16 +160,6 @@ class AnimalList(APIView):
 class AnimalDetail(APIView):
     def get(self, request, animal_id):
         return JsonResponse({'animal': get_object_or_404(Animal, pk=animal_id).to_json()})
-
-
-class BehaviorList(APIView):
-    def get(self, request):
-        return JsonResponse({'behaviors': list(AnimalBehavior.objects.all().values())})
-
-
-class FeatureList(APIView):
-    def get(self, request):
-        return JsonResponse({'features': list(ObservationFeature.objects.all().values())})
 
 
 class StatusUpdate(APIView):

@@ -41,32 +41,11 @@
       "name": "JCU"
     }
   },
-    {
-    "model": "core.affiliation",
-    "pk": 6,
-    "fields": {
-      "name": "SharkSpotters *"
-    }
-  },
   {
     "model": "core.affiliation",
-    "pk": 7,
+    "pk": 10,
     "fields": {
-      "name": "Manta College *"
-    }
-  },
-  {
-    "model": "core.affiliation",
-    "pk": 8,
-    "fields": {
-      "name": "UCD *"
-    }
-  },
-  {
-    "model": "core.affiliation",
-    "pk": 9,
-    "fields": {
-      "name": "NDSCS *"
+      "name": "Vulcan"
     }
   }
 ]

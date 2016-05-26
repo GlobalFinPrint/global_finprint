@@ -1,15 +1,17 @@
+from datetime import date, timedelta
+
 from django.views.generic import View
 from django.shortcuts import get_object_or_404, render_to_response
 from django.db.models import Count
 from django.http.response import JsonResponse
 from django.template import RequestContext
+
+from ...core.mixins import UserAllowedMixin
 from ...trip.models import Trip
 from ...bruv.models import Set
 from ...habitat.models import Location
-from ...core.mixins import UserAllowedMixin
-from ..models import Assignment, Video, AnnotationState
 from ...core.models import Affiliation, FinprintUser
-from datetime import date, timedelta
+from ..models.video import Assignment, Video, AnnotationState
 
 
 class VideoAutoAssignView(UserAllowedMixin, View):

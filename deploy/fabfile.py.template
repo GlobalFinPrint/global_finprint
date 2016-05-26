@@ -93,14 +93,25 @@ def check_settings():
 def load_data():
     with cd(remote_django_dir):
         for fixture in [
+                        'global_finprint/core/fixtures/core_groups',
+                        'global_finprint/core/fixtures/core_affiliations',
                         'global_finprint/core/fixtures/core_users',
+                        'global_finprint/core/fixtures/core_teams',
                         'global_finprint/habitat/fixtures/habitat_locations',
                         'global_finprint/habitat/fixtures/habitat_reef_mpa_substrate',
                         'global_finprint/habitat/fixtures/habitat_site',
                         'global_finprint/habitat/fixtures/habitat_reef',
+                        'global_finprint/habitat/fixtures/habitat_reefhabitat',
+                        'global_finprint/annotation/fixtures/annotation_status',
                         'global_finprint/annotation/fixtures/annotation_animal',
+                        'global_finprint/annotation/fixtures/annotation_attribute',
                         'global_finprint/bruv/fixtures/bruv_equipment',
                         'global_finprint/annotation/fixtures/annotation_fp_leads',
+                        'global_finprint/trip/fixtures/trip_source',
+                        'global_finprint/trip/fixtures/trip_trip',
+                        'global_finprint/bruv/fixtures/bruv_environmentmeasure',
+                        'global_finprint/trip/fixtures/bruv_set',
+                        'global_finprint/trip/fixtures/annotation_video',
                         ]:
             sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py loaddata {0}'.format(fixture),
                 user='www-data')
@@ -109,12 +120,8 @@ def load_data():
 def load_test_data():
     with cd(remote_django_dir):
         for fixture in [
-                        'global_finprint/annotation/fixtures/test_animal',
-                        'global_finprint/annotation/fixtures/test_annotator',
-                        'global_finprint/habitat/fixtures/test_reefhabitat',
-                        'global_finprint/trip/fixtures/test_trip',
-                        'global_finprint/bruv/fixtures/test_set',
-                        'global_finprint/annotation/fixtures/test_obs',
+                        'global_finprint/annotation/fixtures/test_users',
+                        'global_finprint/annotation/fixtures/test_assignment',
                         ]:
             sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py loaddata {0}'.format(fixture),
              user='www-data')
