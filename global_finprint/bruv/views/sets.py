@@ -36,11 +36,21 @@ class SetListView(UserAllowedMixin, View):
     template = 'pages/sets/set_list.html'
 
     def _common_context(self, request, parent_trip):
+        prefetch = [
+            'trip',
+            'drop_measure',
+            'haul_measure',
+            'video',
+            'user',
+            'bait',
+            'equipment',
+            'reef_habitat',
+        ]
         return RequestContext(request, {
             'request': request,
             'trip_pk': parent_trip.pk,
             'trip_name': str(parent_trip),
-            'sets': Set.objects.filter(trip=parent_trip).order_by('set_date', 'drop_time'),
+            'sets': Set.objects.filter(trip=parent_trip).prefetch_related(*prefetch).order_by('set_date', 'drop_time'),
         })
 
     def _get_set_form_defaults(self, parent_trip):
