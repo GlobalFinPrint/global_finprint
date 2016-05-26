@@ -32,13 +32,16 @@ class Migration(migrations.Migration):
               user_id
             from annotation_observation;
 
+
+        --skipping these for now, as there should be no data there:
+
         -- migrate behaviors to event attributes
         --INSERT INTO annotation_eventattribute () select ...;
 
         --migrate gear to event attributes
         --INSERT INTO annotation_eventattribute () select ...;
 
-        --migrate gear to event attributes
+        -- migrate features to event attributes
         --INSERT INTO annotation_eventattribute () select ...;
 
         '''),

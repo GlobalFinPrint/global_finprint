@@ -23,4 +23,3 @@ python manage.py loaddata global_finprint/trip/fixtures/annotation_video
 # load test data
 python manage.py loaddata global_finprint/core/fixtures/test_users
 python manage.py loaddata global_finprint/annotation/fixtures/test_assignment
-python manage.py loaddata global_finprint/annotation/fixtures/test_obs

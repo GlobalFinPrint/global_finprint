@@ -1,4 +1,3 @@
 loaddata
     global_finprint/core/fixtures/test_users
     global_finprint/annotation/fixtures/test_assignment
-    global_finprint/annotation/fixtures/test_obs

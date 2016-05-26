@@ -121,7 +121,6 @@ def load_test_data():
     with cd(remote_django_dir):
         for fixture in [
                         'global_finprint/annotation/fixtures/test_users',
-                        'global_finprint/annotation/fixtures/test_obs',
                         'global_finprint/annotation/fixtures/test_assignment',
                         ]:
             sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py loaddata {0}'.format(fixture),

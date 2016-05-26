@@ -17,7 +17,7 @@
     "model": "annotation.attribute",
     "pk": 2,
     "fields": {
-      "name": "Co\u200burtship",
+      "name": "Courtship",
       "description": "",
       "active": true,
       "parent": 12,
