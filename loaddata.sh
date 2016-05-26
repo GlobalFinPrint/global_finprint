@@ -17,8 +17,8 @@ python manage.py loaddata global_finprint/bruv/fixtures/bruv_equipment
 python manage.py loaddata global_finprint/trip/fixtures/trip_source
 python manage.py loaddata global_finprint/trip/fixtures/trip_trip
 python manage.py loaddata global_finprint/bruv/fixtures/bruv_environmentmeasure
-python manage.py loaddata global_finprint/trip/fixtures/bruv_set
-python manage.py loaddata global_finprint/trip/fixtures/annotation_video
+python manage.py loaddata global_finprint/annotation/fixtures/annotation_video
+python manage.py loaddata global_finprint/bruv/fixtures/bruv_set
 
 # load test data
 python manage.py loaddata global_finprint/core/fixtures/test_users
