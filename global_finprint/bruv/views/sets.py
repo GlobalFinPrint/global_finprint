@@ -173,7 +173,7 @@ class SetListView(UserAllowedMixin, View):
                 messages.success(self.request, 'Set updated')
 
             # navigate back to set list
-            success_url = reverse_lazy('trip_set_list', args=trip_pk)
+            success_url = reverse_lazy('trip_set_list', args=[trip_pk])
             return HttpResponseRedirect(success_url)
 
         # one or more forms have errors
