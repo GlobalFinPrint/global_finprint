@@ -46,6 +46,8 @@ class Observation(AuditableModel):
             animal_obs = AnimalObservation(**animal_fields)
             animal_obs.save()
 
+        # TODO create event here too
+
         return obs
 
     @staticmethod
@@ -74,7 +76,7 @@ class Observation(AuditableModel):
             'type_choice': self.type,
             'duration': self.duration,
             'comment': self.comment,
-            'events': [e.to_json() for e in self.event_set]
+            'events': [e.to_json() for e in self.event_set.all()]
         }
 
         if self.type == 'A':
@@ -117,11 +119,27 @@ class Event(AuditableModel):
     attribute = models.ManyToManyField(to=Attribute)
     note = models.TextField(null=True)
 
+    @classmethod
+    def create(cls, **kwargs):
+        evt = cls(**kwargs)
+        evt.save()
+        return evt
+
+    @staticmethod
+    def valid_fields():
+        # attributes are added separately via event.attribute.add()
+        return [
+            'observation',
+            'event_time',
+            'extent',
+            'note'
+        ]
+
     def to_json(self):
         return {
             'id': self.pk,
             'event_time': self.event_time,
             'extent': None if self.extent is None else str(self.extent),
             'note': self.note,
-            'attributes': [a.to_json() for a in self.attribute_set]
+            'attributes': [a.to_json() for a in self.attribute.all()]
         }

@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from ..trip.models import Trip
 from ..annotation.models.animal import Animal
 from ..annotation.models.video import Assignment
-from ..annotation.models.observation import Observation, Attribute
+from ..annotation.models.observation import Observation, Attribute, Event
 from ..core.models import FinprintUser
 
 
@@ -170,6 +170,32 @@ class ProgressUpdate(APIView):
         return JsonResponse({'progress': new_progress})
 
 
-class AttributeListView(APIView):
+class AttributeList(APIView):
     def get(self, request, set_id):
         return JsonResponse({'attributes': [a.to_json() for a in Attribute.objects.all()]})
+
+
+class Events(APIView):
+    def post(self, request, set_id, obs_id):
+        obs = get_object_or_404(Observation, pk=obs_id, assignment=request.va)
+        params = dict((key, val) for key, val in request.POST.items() if key in Event.valid_fields())
+        params['observation'] = obs
+        params['user'] = request.annotator.user
+        attributes = [get_object_or_404(Attribute, pk=att_id) for att_id in request.POST.getlist('attribute')]
+        evt = Event.create(**params)
+        for att in attributes:
+            evt.attribute.add(att)
+        return JsonResponse({'observations': Observation.get_for_api(request.va)})
+
+    def delete(self, request, set_id, obs_id):
+        obs = get_object_or_404(Observation, pk=obs_id, assignment=request.va)
+        get_object_or_404(Event, pk=request.GET.get('evt_id'), observation=obs).delete()
+        return JsonResponse({'observations': Observation.get_for_api(request.va)})
+
+
+class EventUpdate(APIView):
+    def post(self, request, set_id, obs_id, evt_id):
+        obs = get_object_or_404(Observation, pk=obs_id, assignment=request.va)
+        evt = get_object_or_404(Event, pk=evt_id, observation=obs)
+        # TODO update the event
+        return JsonResponse({'observations': Observation.get_for_api(request.va)})

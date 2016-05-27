@@ -135,7 +135,7 @@ Delete an observation for the specified set.
 **Expects** (URL):
 - id (integer)
 
-**Expects** (POST):
+**Expects** (GET):
 - token (string)
 - obs_id (integer)
 
@@ -184,7 +184,7 @@ Delete the specified observation event.
 - set_id: (integer)
 - obs_id: (integer)
 
-**Expects** (POST):
+**Expects** (GET):
 - token: (string)
 - evt_id: (integer)
 
@@ -326,11 +326,10 @@ All POSTed observations are expected to follow this standard:
 
 ### Event request fields
 All POSTed events are expected to follow this standard:
-- observation_id: (integer)
 - event_time: (integer)
 - extent: ([WKT format string](#extent-format))
 - note: (string)
-- attributes: (array of integers)
+- attribute: (array of integers)
 
 
 ### Animal response object
