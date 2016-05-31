@@ -196,5 +196,12 @@ class EventUpdate(APIView):
     def post(self, request, set_id, obs_id, evt_id):
         obs = get_object_or_404(Observation, pk=obs_id, assignment=request.va)
         evt = get_object_or_404(Event, pk=evt_id, observation=obs)
-        # TODO update the event
+        params = dict((key, val) for key, val in request.POST.items() if key in Event.valid_fields())
+        params['user'] = request.annotator.user
+        for key, val in params.items():
+            setattr(evt, key, val)
+        evt.attribute = []
+        for att_id in request.POST.getlist('attribute', []):
+            evt.attribute.add(get_object_or_404(Attribute, pk=att_id))
+        evt.save()
         return JsonResponse({'observations': Observation.get_for_api(request.va)})
