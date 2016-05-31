@@ -105,6 +105,7 @@ class Observations(APIView):
         params = dict((key, val) for key, val in request.POST.items() if key in Observation.valid_fields())
         params['assignment'] = request.va
         params['user'] = request.annotator.user
+        params['attribute'] = request.POST.getlist('attribute')
         Observation.create(**params)
         if request.va.status_id == 1:
             request.va.status_id = 2
@@ -181,10 +182,8 @@ class Events(APIView):
         params = dict((key, val) for key, val in request.POST.items() if key in Event.valid_fields())
         params['observation'] = obs
         params['user'] = request.annotator.user
-        attributes = [get_object_or_404(Attribute, pk=att_id) for att_id in request.POST.getlist('attribute')]
-        evt = Event.create(**params)
-        for att in attributes:
-            evt.attribute.add(att)
+        params['attribute'] = request.POST.getlist('attribute')
+        Event.create(**params)
         return JsonResponse({'observations': Observation.get_for_api(request.va)})
 
     def delete(self, request, set_id, obs_id):

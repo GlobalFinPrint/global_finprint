@@ -38,15 +38,24 @@ class Observation(AuditableModel):
         }
         animal_fields = dict((k, v) for k, v in animal_fields.items() if v is not None)
 
+        evt_fields = {
+            'event_time': kwargs.pop('event_time', None),
+            'extent': kwargs.pop('extent', None),
+            'note': kwargs.pop('note', None),
+            'attribute': kwargs.pop('attribute', None),
+            'user': kwargs['user']
+        }
+
         obs = Observation(**kwargs)
         obs.save()
+
+        evt_fields['observation'] = obs
+        Event.create(**evt_fields)
 
         if kwargs.get('type') == 'A':
             animal_fields['observation'] = obs
             animal_obs = AnimalObservation(**animal_fields)
             animal_obs.save()
-
-        # TODO create event here too
 
         return obs
 
@@ -60,6 +69,11 @@ class Observation(AuditableModel):
             'sex_choice',
             'stage_choice',
             'length',
+            # event fields
+            'event_time',
+            'extent',
+            'note',
+            'attribute'
         ]
 
     @classmethod
@@ -121,8 +135,12 @@ class Event(AuditableModel):
 
     @classmethod
     def create(cls, **kwargs):
+        att_ids = kwargs.pop('attribute', [])
         evt = cls(**kwargs)
         evt.save()
+        attributes = [Attribute.objects.get(pk=att_id) for att_id in att_ids]
+        for att in attributes:
+            evt.attribute.add(att)
         return evt
 
     @staticmethod

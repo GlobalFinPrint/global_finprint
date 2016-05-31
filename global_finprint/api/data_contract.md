@@ -314,7 +314,7 @@ All POSTed observations are expected to follow this standard:
 - initial_observation_time: (integer)
 - duration: (integer) (optional)
 - comment: (string) (optional)
-- event: ([event request fields](#event-request-fields)) *NOTE: exclude for observation edit* 
+- [event request fields](#event-request-fields) *NOTE: exclude for observation edit* 
 
 *fields below are only for animal observations*
 
