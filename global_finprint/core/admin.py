@@ -1,5 +1,5 @@
 from django.forms import ChoiceField, ModelChoiceField, RadioSelect
-from django.contrib.admin import site
+from django.contrib.admin import site, ModelAdmin
 from django.contrib.auth import admin, forms, models
 from .models import Affiliation, FinprintUser, Team
 
@@ -50,7 +50,13 @@ class UserAdmin(admin.UserAdmin):
     add_form = UserCreationForm
 
 
+class FinprintUserAdmin(ModelAdmin):
+    actions = None
+    fields = ('user', 'affiliation')
+
+
 site.unregister(models.User)
 site.register(models.User, UserAdmin)
 site.register(Affiliation)
 site.register(Team)
+site.register(FinprintUser, FinprintUserAdmin)
