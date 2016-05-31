@@ -46,7 +46,7 @@
       "species": "tiburo",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -61,7 +61,7 @@
       "species": "sp.",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -76,7 +76,7 @@
       "species": "acronotus",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -91,7 +91,7 @@
       "species": "cuvier",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -106,7 +106,7 @@
       "species": "brevirostris",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -121,7 +121,7 @@
       "species": "mokarran ",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -136,7 +136,7 @@
       "species": "limbatus",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -151,7 +151,7 @@
       "species": "cirratum",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -166,7 +166,7 @@
       "species": "perezi",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -181,7 +181,7 @@
       "species": "narinari",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -196,7 +196,7 @@
       "species": "jamaicensis",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -211,7 +211,7 @@
       "species": "schmardae",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -226,7 +226,7 @@
       "species": "americana",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -241,7 +241,7 @@
       "species": "caretta",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -256,7 +256,7 @@
       "species": "imbricate",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -271,7 +271,7 @@
       "species": "mydas",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -286,7 +286,7 @@
       "species": "striatus",
       "fishbase_key": 18,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -301,7 +301,7 @@
       "species": "cruentata",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -316,7 +316,7 @@
       "species": "fulva",
       "fishbase_key": 8816,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -331,7 +331,7 @@
       "species": "guttatus",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -346,7 +346,7 @@
       "species": "adscensionis",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -361,7 +361,7 @@
       "species": "bonaci",
       "fishbase_key": 1209,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -376,7 +376,7 @@
       "species": "venenosa",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -391,7 +391,7 @@
       "species": "barracuda",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -406,7 +406,7 @@
       "species": "analis",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -421,7 +421,7 @@
       "species": "chrysurus",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -436,7 +436,7 @@
       "species": "ruber",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -451,7 +451,7 @@
       "species": "dumerili",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -466,7 +466,7 @@
       "species": "fasciata",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -481,7 +481,7 @@
       "species": "bartholomaei",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -496,7 +496,7 @@
       "species": "latus",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -511,7 +511,7 @@
       "species": "maculatus",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -526,7 +526,7 @@
       "species": "moringa",
       "fishbase_key": 7547,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   },
   {
@@ -541,7 +541,7 @@
       "species": "funebris",
       "fishbase_key": 7546,
       "sealifebase_key": null,
-      "regions": []
+      "regions": [1]
     }
   }
 ]
