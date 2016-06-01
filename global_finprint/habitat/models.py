@@ -169,7 +169,7 @@ class FishingRestrictions(models.Model):
 
 class Reef(models.Model):
     name = models.CharField(max_length=100, help_text='Must be unique for reef site.')
-    code = models.CharField(max_length=4, help_text='Must be unique for reef site.')
+    code = models.CharField(max_length=5, help_text='Must be unique for reef site.')
     site = models.ForeignKey(Site)
 
     boundary = models.MultiPolygonField(srid=4326, null=True, blank=True)
