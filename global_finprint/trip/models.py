@@ -7,9 +7,9 @@ from global_finprint.habitat.models import Location
 
 
 class Source(models.Model):
-    name = models.CharField(max_length=100, null=True)
-    data_embargo_length = models.IntegerField(null=True, help_text='days to embargo data after trip ends')
-    code = models.CharField(max_length=3)
+    name = models.TextField(null=True)
+    data_embargo_length = models.PositiveIntegerField(null=True, help_text='days to embargo data after trip ends')
+    code = models.CharField(max_length=3, unique=True)
 
     def __str__(self):
         return u"{0}".format(self.name)
@@ -17,11 +17,11 @@ class Source(models.Model):
 
 class Trip(AuditableModel):
     # suggested code pattern:
-    # [source]_[location.code]_[start_date.year]_[trip number within location / year]
+    # [source]_[start_date.year]_[location.code]_[trip number within location / year]
     code = models.CharField(max_length=32, help_text='[source code]_[year]_[loc code]_xx', unique=True, null=True, blank=True)
     team = models.ForeignKey(Team)
     location = models.ForeignKey(Location)
-    boat = models.CharField(max_length=100, blank=True, null=True)
+    boat = models.TextField(blank=True, null=True)
     start_date = models.DateField()
     end_date = models.DateField()
 
