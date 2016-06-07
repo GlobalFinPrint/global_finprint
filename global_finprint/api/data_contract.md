@@ -284,7 +284,6 @@ All returned observation objects will follow this standard:
     - id: (integer)
     - type: (string)
     - type_choice: ("I" or "A")
-    - initial_observation_time: (integer)
     - duration: (integer)
     - comment: (string)
     - events:
@@ -311,7 +310,6 @@ All returned observation objects will follow this standard:
 ### Observation request fields
 All POSTed observations are expected to follow this standard:
 - type_choice: ("I" or "A") *NOTE: type cannot be changed during an edit*
-- initial_observation_time: (integer)
 - duration: (integer) (optional)
 - comment: (string) (optional)
 - [event request fields](#event-request-fields) *NOTE: exclude for observation edit* 
