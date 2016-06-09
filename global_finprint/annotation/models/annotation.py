@@ -15,9 +15,16 @@ class Attribute(MPTTModel):
     def __str__(self):
         return u"{0}".format(self.name)
 
-    def to_json(self):
-        return {
+    def to_json(self, children=False):
+        json = {
             'id': self.pk,
             'name': self.name,
-            'description': self.description
+            'description': self.description,
         }
+        if children and not self.is_leaf_node():
+            json['children'] = list(a.to_json() for a in self.get_children())
+        return json
+
+    @classmethod
+    def tree_json(cls):
+        return list(a.to_json(children=True) for a in Attribute.objects.root_nodes())

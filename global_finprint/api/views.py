@@ -173,7 +173,7 @@ class ProgressUpdate(APIView):
 
 class AttributeList(APIView):
     def get(self, request, set_id):
-        return JsonResponse({'attributes': [a.to_json() for a in Attribute.objects.all()]})
+        return JsonResponse({'attributes': Attribute.tree_json()})
 
 
 class Events(APIView):
