@@ -4,37 +4,31 @@
     <thead>
     <tr class="success">
         <th>Annotator</th>
-        <th>Duration (ms)</th>
-        <th>Type</th>
         <th>Organism</th>
-        <th>Comment</th>
+        <th>Observation comment</th>
+        <th>Frame capture</th>
+        <th>Time</th>
+        <th>Duration</th>
+        <th>Event notes</th>
+        <th>Attributes</th>
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
     {% for o in observations|dictsortreversed:'initial_observation_time' %}
-        <tr>
-            <td>{{ o.assignment.annotator }}</td>
-            <td>{{ o.duration|default_if_none:"<i>None</i>" }}</td>
-            <td>{{ o.get_type_display }}</td>
-            <td>{{ o.animalobservation.animal|default_if_none:"<i>N/A</i>" }}</td>
-            <td>{{ o.comment|default_if_none:"<i>None</i>" }}</td>
-        </tr>
-        {% if o.event_set.all %}
+        {% for e in o.event_set.all|dictsortreversed:'event_time' %}
             <tr>
-                <th colspan="2">Frame capture</th>
-                <th>Time (ms)</th>
-                <th>Attributes</th>
-                <th>Note</th>
+                <td>{{ o.assignment.annotator }}</td>
+                <td>{{ o.animalobservation.animal|default_if_none:"<i>N/A</i>" }}</td>
+                <td>{{ o.comment|default_if_none:"<i>None</i>" }}</td>
+                <td><i>TODO screen grab + extent</i></td>
+                <td>{{ e.event_time }}</td>
+                <td>{{ o.duration }}</td>
+                <td>{{ e.notes }}</td>
+                <td>{{ e.attribute.all|join:', ' }}</td>
+                <td><a href="#">Edit</a></td>
             </tr>
-            {% for e in o.event_set.all|dictsortreversed:'event_time' %}
-                <tr>
-                    <td colspan="2"><i>TODO EVENT SCREEN WITH EXTENT</i></td>
-                    <td>{{ e.event_time }}</td>
-                    <td>{{ e.attribute.all|join:', ' }}</td>
-                    <td>{{ e.note }}</td>
-                </tr>
-            {% endfor %}
-        {% endif %}
+        {% endfor %}
     {% empty %}
         <tr>
             <td colspan="7" class="text-center">
