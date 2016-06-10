@@ -20,6 +20,7 @@ class Attribute(MPTTModel):
             'id': self.pk,
             'name': self.name,
             'description': self.description,
+            'level': self.get_level()
         }
         if children and not self.is_leaf_node():
             json['children'] = list(a.to_json() for a in self.get_children())
