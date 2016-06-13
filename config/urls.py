@@ -24,8 +24,6 @@ urlpatterns = [
     url(r'^reports/', include('global_finprint.report.urls')),
     url(r'^api/', include('global_finprint.api.urls')),
     url(r"^assignment/", include('global_finprint.annotation.urls.assignment')),
-    url(r"^annotation/", TemplateView.as_view(template_name='pages/sets/set_annotation.html'),
-        name='set_annotation'),
 
     url(r"^about/$", TemplateView.as_view(template_name='pages/about.html'), name="about"),
 
