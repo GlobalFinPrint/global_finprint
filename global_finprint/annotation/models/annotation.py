@@ -6,6 +6,7 @@ class Attribute(MPTTModel):
     name = models.CharField(max_length=50, unique=True)
     description = models.TextField(null=True, blank=True)
     active = models.BooleanField(default=True)
+    lead_only = models.BooleanField(default=False)
 
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
 
