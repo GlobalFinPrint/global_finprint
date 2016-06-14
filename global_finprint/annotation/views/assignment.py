@@ -27,8 +27,11 @@ class VideoAutoAssignView(UserAllowedMixin, View):
         trip_id = request.POST.get('trip')
         aff_id = request.POST.get('affiliation')
         num = int(request.POST.get('num'))
+        include_leads = bool(request.POST.get('include_leads', False))
 
         annotators = FinprintUser.objects.filter(affiliation_id=aff_id).all()
+        if not include_leads:
+            annotators = list(a for a in annotators if not a.is_lead())
         for video in Video.objects.filter(set__trip_id=trip_id).all():
             self.assign_video(annotators, video, num)
 

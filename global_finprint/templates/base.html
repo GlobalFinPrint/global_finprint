@@ -1,5 +1,6 @@
 {% load staticfiles i18n %}
 {% load leaflet_tags %}
+{% load version_info %}
 <!DOCTYPE html>
 <html lang="en" ng-app>
 <head>
@@ -59,25 +60,17 @@
                     <li><a href="{% url 'report_home' %}">Reports</a></li>
                 </ul>
                 <ul class="nav navbar-nav">
-                    <li><a href="{% url 'trip_list' %}">Manage trips</a></li>
+                    <li><a href="{% url 'trip_list' %}">Trips</a></li>
                 </ul>
                 <ul class="nav navbar-nav">
-                    <li><a href="{% url 'assignment_list' %}">Manage videos</a></li>
+                    <li><a href="{% url 'assignment_list' %}">Videos</a></li>
                 </ul>
                 <ul class="nav navbar-nav">
-                    <li><a href="{% url 'set_annotation' %}">Annotate videos</a></li>
-                </ul>
-                <ul class="nav navbar-nav">
-                    <li><a href="/admin"> Admin </a></li>
+                    <li><a href="/admin">Admin</a></li>
                 </ul>
             {% endif %}
             <ul class="nav navbar-nav navbar-right">
-                {% if request.user.is_authenticated %}
-                    <li><a href="{% url 'password_change' %}"> {{ request.user.username }} </a></li>
-                    <li><a href="{% url 'finprint_logout' %}">{% trans "Logout" %}</a></li>
-                {% else %}
-                    <li><a href="{% url 'finprint_login' %}">{% trans "Log In" %}</a></li>
-                {% endif %}
+                <li><p class="navbar-text">{% current_version %} ({% release_date %})</p></li>
             </ul>
         </div>
     </div>

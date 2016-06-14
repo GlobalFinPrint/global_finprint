@@ -19,13 +19,12 @@ class VideoForm(forms.ModelForm):
         self.fields['file'] = forms.ChoiceField(choices=self.get_filenames())
 
     def get_filenames(self):
-        pattern = re.compile('\.avi$')
+        pattern = re.compile('\.\w+$')
         file_names = [('', '---')]
         try:
             conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
             files = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME).list()
             file_names += [(f.name, f.name) for f in files if pattern.search(f.name)]
         except BotoException.S3ResponseError:
-           pass
-
+            pass
         return file_names
