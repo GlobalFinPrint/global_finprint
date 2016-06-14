@@ -173,7 +173,7 @@ class ProgressUpdate(APIView):
 
 class AttributeList(APIView):
     def get(self, request, set_id):
-        return JsonResponse({'attributes': Attribute.tree_json()})
+        return JsonResponse({'attributes': Attribute.tree_json(is_lead=request.annotator.is_lead())})
 
 
 class Events(APIView):
