@@ -2,10 +2,10 @@
 <h3>Observations{{ for }}</h3>
 <table class="table table-bordered table-condensed assignment-observation-table" id="observation-table" cellspacing="0" width="100%">
     <thead>
-    <tr class="success">
+    <tr>
         <th>Annotator</th>
         <th>Organism</th>
-        <th>Observation comment</th>
+        <th>Obs. comment</th>
         <th>Duration</th>
         <th>Frame capture</th>
         <th>Time</th>
@@ -18,21 +18,23 @@
     {% for o in observations|dictsortreversed:'initial_observation_time' %}
         {% with firstevent=o.event_set.last rowspan=o.event_set.count %}
         {% for e in o.event_set.all|dictsortreversed:'event_time' %}
-            <tr>
-                {% if e.id == firstevent.id %}
-                    <td rowspan="{{ rowspan }}">{{ o.assignment.annotator }}</td>
-                    {% if o.type == 'I' %}
-                        <td rowspan="{{ rowspan }}"><i>N/A</i></td>
-                    {% else %}
-                        <td rowspan="{{ rowspan }}">{{ o.animalobservation.animal }}</td>
-                    {% endif %}
-                    <td rowspan="{{ rowspan }}">{{ o.comment|default_if_none:"<i>None</i>" }}</td>
-                    <td rowspan="{{ rowspan }}">{{ o.duration }}</td>
+            {% if e.id == firstevent.id %}
+            <tr class="first-event" data-toggle="collapse" data-target=".children-{{ o.id }}">
+                <td rowspan="{{ rowspan }}">{{ o.assignment.annotator }}</td>
+                {% if o.type == 'I' %}
+                    <td rowspan="{{ rowspan }}"><i>N/A</i></td>
+                {% else %}
+                    <td rowspan="{{ rowspan }}">{{ o.animalobservation.animal }}</td>
                 {% endif %}
+                <td rowspan="{{ rowspan }}">{{ o.comment|default_if_none:"<i>None</i>" }}</td>
+                <td rowspan="{{ rowspan }}">{{ o.duration }}</td>
+            {% else %}
+            <tr class="children-{{ o.id }} child-row collapse">
+            {% endif %}
                 <td><i>TODO screen grab + extent</i></td>
                 <td>{{ e.event_time }}</td>
                 <td>{{ e.note }}</td>
-                <td>{{ e.attribute.all|join:', ' }}</td>
+                <td class="attributes">{{ e.attribute.all|join:', ' }}</td>
                 <td><a href="#">Edit</a></td>
             </tr>
         {% endfor %}
