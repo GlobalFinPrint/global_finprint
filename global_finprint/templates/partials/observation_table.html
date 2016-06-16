@@ -14,12 +14,12 @@
         <th>Actions</th>
     </tr>
     </thead>
-    <tbody>
+    <tbody id="collapse-parent">
     {% for o in observations|dictsortreversed:'initial_observation_time' %}
         {% with firstevent=o.event_set.last rowspan=o.event_set.count %}
         {% for e in o.event_set.all|dictsortreversed:'event_time' %}
             {% if e.id == firstevent.id %}
-            <tr class="first-event" data-toggle="collapse" data-target=".children-{{ o.id }}">
+            <tr class="first-event accordion-toggle" data-toggle="collapse" data-target=".children-{{ o.id }}">
                 <td rowspan="{{ rowspan }}">{{ o.assignment.annotator }}</td>
                 {% if o.type == 'I' %}
                     <td rowspan="{{ rowspan }}"><i>N/A</i></td>
@@ -29,7 +29,7 @@
                 <td rowspan="{{ rowspan }}">{{ o.comment|default_if_none:"<i>None</i>" }}</td>
                 <td rowspan="{{ rowspan }}">{{ o.duration }}</td>
             {% else %}
-            <tr class="children-{{ o.id }} child-row collapse">
+            <tr class="children-{{ o.id }} child-row collapse" data-parent="#collapse-parent">
             {% endif %}
                 <td><i>TODO screen grab + extent</i></td>
                 <td>{{ e.event_time }}</td>
