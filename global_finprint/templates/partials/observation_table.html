@@ -32,7 +32,7 @@
             <tr class="children-{{ o.id }} child-row collapse" data-parent="#collapse-parent">
             {% endif %}
                 <td><i>TODO screen grab + extent</i></td>
-                <td>{{ e.event_time }}</td>
+                <td>{{ e.event_time|time_display }}</td>
                 <td>{{ e.note }}</td>
                 <td class="attributes">{{ e.attribute.all|join:', ' }}</td>
                 <td><a href="#">Edit</a></td>
