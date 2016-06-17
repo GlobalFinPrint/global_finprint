@@ -271,9 +271,15 @@ var finprint = finprint || {};  //namespace if necessary...
 
     function initCollapse() {
         $('tr[data-toggle="collapse"]').on('click', function() {
-            $('tr[data-toggle="collapse"]').removeClass('selected');
+            $('tr[data-toggle="collapse"]')
+                .removeClass('selected')
+                .find('td.rowspan')
+                    .removeAttr('rowspan');
             $('.collapse.in').removeClass('in');
-            $(this).addClass('selected');
+            $(this)
+                .addClass('selected')
+                .find('td.rowspan')
+                    .attr('rowspan', $(this).data('rowspan'));
         });
     }
 

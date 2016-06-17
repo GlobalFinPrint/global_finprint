@@ -110,6 +110,9 @@ class Observation(AuditableModel):
     def initial_observation_time(self):
         return self.event_set.order_by('event_time').first().event_time
 
+    def events_for_table(self):
+        return self.event_set.order_by('event_time').all()
+
     def __str__(self):
         # todo:  update to first event?
         return u"{0}".format(self.type)
