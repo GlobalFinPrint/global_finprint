@@ -13,6 +13,7 @@ from django.contrib.sites.models import Site
 from django.views.defaults import bad_request, permission_denied, page_not_found, server_error
 
 from global_finprint.core.views import UrlRedirect, UserInfoView
+from global_finprint.core.forms import FinprintAuthenticationForm
 
 
 urlpatterns = [
@@ -30,7 +31,8 @@ urlpatterns = [
     url(r"^user/info/(?P<id>\d+)$", UserInfoView.as_view(), name="user_info_view"),
 
     # User management
-    url(r'^accounts/login/$', login, {'template_name': 'registration/login.html'}, name='finprint_login'),
+    url(r'^accounts/login/$', login, {'template_name': 'registration/login.html',
+                                      'authentication_form': FinprintAuthenticationForm}, name='finprint_login'),
     url(r'^accounts/logout/$', logout, {'template_name': 'registration/logged_out.html'}, name='finprint_logout'),
     url(r'^accounts/password_change/$', login_required(password_change),
         {'password_change_form': PasswordChangeForm},
