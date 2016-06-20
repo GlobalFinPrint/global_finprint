@@ -169,4 +169,10 @@ class Event(AuditableModel):
         }
 
     def filename(self):
-        return '{0}_{1}.png'.format(self.observation_id, self.id)
+        set = self.observation.set()
+        server_env = 'local'  # TODO detect this
+        return '/{0}/{1}/{2}/{3}_{4}.png'.format(server_env,
+                                                 set.trip.code,
+                                                 set.code,
+                                                 self.observation_id,
+                                                 self.id)
