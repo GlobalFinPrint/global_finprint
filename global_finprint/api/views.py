@@ -183,8 +183,8 @@ class Events(APIView):
         params['observation'] = obs
         params['user'] = request.annotator.user
         params['attribute'] = request.POST.getlist('attribute')
-        Event.create(**params)
-        return JsonResponse({'observations': Observation.get_for_api(request.va)})
+        evt = Event.create(**params)
+        return JsonResponse({'observations': Observation.get_for_api(request.va), 'filename': evt.filename()})
 
     def delete(self, request, set_id, obs_id):
         obs = get_object_or_404(Observation, pk=obs_id, assignment=request.va)

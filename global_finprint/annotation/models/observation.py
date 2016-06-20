@@ -167,3 +167,6 @@ class Event(AuditableModel):
             'note': self.note,
             'attributes': [a.to_json() for a in self.attribute.all()]
         }
+
+    def filename(self):
+        return '{0}_{1}.png'.format(self.observation_id, self.id)

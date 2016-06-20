@@ -157,6 +157,7 @@ Create a new event on an observation.
 
 **Returns** (JSON):
 - observations: (array of [observation objects](#observation-response-object))
+- filename: (string for use in frame capture file naming)
 
 
 ### Edit observation event
