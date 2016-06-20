@@ -258,3 +258,6 @@ LEAFLET_CONFIG = {
 }
 
 DJANGO_SERVER_ENV = env('DJANGO_SERVER_ENV', default='local')
+
+# Custom auth backend
+AUTHENTICATION_BACKENDS = ['global_finprint.core.backends.FinprintAuth']
