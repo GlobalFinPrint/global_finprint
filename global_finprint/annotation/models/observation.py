@@ -6,6 +6,7 @@ from global_finprint.core.models import AuditableModel, FinprintUser
 from .video import Assignment
 from .animal import Animal, ANIMAL_SEX_CHOICES, ANIMAL_STAGE_CHOICES
 from .annotation import Attribute
+from ...core.version import VersionInfo
 
 
 OBSERVATION_TYPE_CHOICES = {
@@ -170,7 +171,7 @@ class Event(AuditableModel):
 
     def filename(self):
         set = self.observation.set()
-        server_env = 'local'  # TODO detect this
+        server_env = VersionInfo.get_server_env()
         return '/{0}/{1}/{2}/{3}_{4}.png'.format(server_env,
                                                  set.trip.code,
                                                  set.code,

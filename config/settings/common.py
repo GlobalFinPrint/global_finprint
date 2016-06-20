@@ -256,3 +256,5 @@ LEAFLET_CONFIG = {
     'MIN_ZOOM': 3,
     'MAX_ZOOM': 18,
 }
+
+DJANGO_SERVER_ENV = env('DJANGO_SERVER_ENV', default='local')
