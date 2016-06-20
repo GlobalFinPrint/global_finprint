@@ -106,11 +106,12 @@ class Observations(APIView):
         params['assignment'] = request.va
         params['user'] = request.annotator.user
         params['attribute'] = request.POST.getlist('attribute')
-        Observation.create(**params)
+        obs = Observation.create(**params)
+        evt = obs.event_set.first()
         if request.va.status_id == 1:
             request.va.status_id = 2
             request.va.save()
-        return JsonResponse({'observations': Observation.get_for_api(request.va)})
+        return JsonResponse({'observations': Observation.get_for_api(request.va), 'filename': evt.filename()})
 
     def delete(self, request, set_id):
         Observation.objects.filter(assignment=request.va).get(pk=request.GET.get('obs_id')).delete()
