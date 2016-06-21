@@ -31,7 +31,13 @@
             {% else %}
             <tr class="children-{{ o.id }} child-row collapse" data-parent="#collapse-parent">
             {% endif %}
-                <td><i>TODO screen grab + extent</i></td>
+                {% with imageurl=e.image_url %}
+                {% if imageurl %}
+                    <td><img height="90" width="160" src="{{ e.image_url }}" /></td>
+                {% else %}
+                    <td><i>N/A</i></td>
+                {% endif %}
+                {% endwith %}
                 <td>{{ e.event_time|time_display }}</td>
                 <td>{{ e.note }}</td>
                 <td class="attributes">{{ e.attribute.all|join:', ' }}</td>
