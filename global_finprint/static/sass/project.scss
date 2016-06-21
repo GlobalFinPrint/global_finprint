@@ -202,5 +202,11 @@ a.manual-assign {
     tr.child-row {
       background-color: $child-row;
     }
+
+    td div.annotool-thumbnail {
+      width: 160px;
+      height: 90px;
+      background-size: 160px 90px;
+    }
   }
 }

@@ -180,7 +180,10 @@ class Event(AuditableModel):
                                                  self.id)
 
     def image_url(self):
-        conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
-        bucket = conn.get_bucket(settings.FRAME_CAPTURE_BUCKET)
-        key = bucket.get_key(self.filename())
-        return key.generate_url(expires_in=300) if key else None
+        try:
+            conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+            bucket = conn.get_bucket(settings.FRAME_CAPTURE_BUCKET)
+            key = bucket.get_key(self.filename())
+            return key.generate_url(expires_in=300, query_auth=False) if key else None
+        except S3ResponseError:
+            return None

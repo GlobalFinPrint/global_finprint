@@ -33,7 +33,9 @@
             {% endif %}
                 {% with imageurl=e.image_url %}
                 {% if imageurl %}
-                    <td><img height="90" width="160" src="{{ e.image_url }}" /></td>
+                    <td>
+                        <div class="annotool-thumbnail" style="background-image:url('{{ e.image_url }}')">&nbsp;</div>
+                    </td>
                 {% else %}
                     <td><i>N/A</i></td>
                 {% endif %}
