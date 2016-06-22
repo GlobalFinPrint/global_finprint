@@ -187,3 +187,14 @@ class Event(AuditableModel):
             return key.generate_url(expires_in=300, query_auth=False) if key else None
         except S3ResponseError:
             return None
+
+    def extent_to_css(self):
+        x = self.extent.boundary.x
+        y = self.extent.boundary.y
+        css = 'width: {0}%; height: {1}%; left: {2}%; top: {3}%;'.format(
+            int(abs(x[1] - x[0]) * 100),
+            int(abs(y[2] - y[1]) * 100),
+            int(x[0] * 100),
+            int(y[1] * 100)
+        )
+        return css

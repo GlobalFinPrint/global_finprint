@@ -204,9 +204,15 @@ a.manual-assign {
     }
 
     td div.annotool-thumbnail {
+      position: relative;
       width: 160px;
       height: 90px;
       background-size: 160px 90px;
+
+      div.extent {
+        position: absolute;
+        border: 1px solid lightgreen;
+      }
     }
   }
 }
