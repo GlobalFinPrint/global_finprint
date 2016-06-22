@@ -1,3 +1,25 @@
+// stylesheet variables
+$blue: #29566D;
+$green: #7ED321;
+$gray: #838C9E;
+$black: #4A4A4A;
+$link: #4A90E2;
+$table-header: transparentize($blue, 0.8);
+$parent-row: transparentize($green, 0.5);
+$child-row: transparentize($green, 0.75);
+$table-border: transparentize($blue, 0.95);
+
+@mixin glyphicon($code) {
+  content: $code;
+  font-family: 'Glyphicons Halflings';
+  font-size: 12px;
+  padding-left: 5px;
+}
+
+a {
+  color: $link;
+}
+
 // project specific CSS goes here
 
 // bootstrap alert CSS, translated to the django-standard levels of
@@ -147,5 +169,50 @@ a.manual-assign {
 .manage-state-buttons {
   form {
     display: inline;
+  }
+}
+
+#observation-table {
+  border-color: $table-border;
+
+  thead tr {
+    background-color: $table-header;
+    font-weight:bold;
+    font-size: 16px;
+    color: $blue;
+  }
+
+  tbody {
+    tr.first-event {
+      cursor: pointer;
+
+      td.attributes:after {
+        @include glyphicon('\e257');
+      }
+
+      &.selected {
+        background-color: $parent-row;
+
+        td.attributes:after {
+          @include glyphicon('\e259');
+        }
+      }
+    }
+
+    tr.child-row {
+      background-color: $child-row;
+    }
+
+    td div.annotool-thumbnail {
+      position: relative;
+      width: 160px;
+      height: 90px;
+      background-size: 160px 90px;
+
+      div.extent {
+        position: absolute;
+        border: 1px solid lightgreen;
+      }
+    }
   }
 }

@@ -10,8 +10,11 @@
                     <form>
                         {% csrf_token %}
                         <input type="hidden" name="action" value="delete" />
-                        <button class="btn btn-danger">Delete</button>
+                        <button class="btn btn-danger">Delete*</button>
                     </form>
+
+                    <br />
+                    <i>NOTE: * denotes a permanent status</i>
 
                 {% elif assignment.status_id == 2 %}
                     <form>
@@ -26,15 +29,25 @@
                         {% csrf_token %}
                         <input type="hidden" name="action" value="update" />
                         <input type="hidden" name="new" value="4" />
-                        <button class="btn btn-success">Accept</button>
+                        <button class="btn btn-success">Accept*</button>
                     </form>
 
                     <form>
                         {% csrf_token %}
                         <input type="hidden" name="action" value="update" />
                         <input type="hidden" name="new" value="6" />
-                        <button class="btn btn-warning">Reject</button>
+                        <button class="btn btn-warning">Reject*</button>
                     </form>
+
+                    <form>
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="update" />
+                        <input type="hidden" name="new" value="2" />
+                        <button class="btn btn-info">Back to In Progress</button>
+                    </form>
+
+                    <br />
+                    <i>NOTE: * denotes a permanent status</i>
 
                 {% elif assignment.status_id == 5 %}
                     <form>

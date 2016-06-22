@@ -51,6 +51,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initManageStateButtons();
         initAutomaticAssignment();
         initAnnotatorPopover();
+        initCollapse();
     });
 
     function getCSRF() {
@@ -265,6 +266,20 @@ var finprint = finprint || {};  //namespace if necessary...
                     xhr.setRequestHeader('X-CSRFToken', getCSRF());
                 }
             }).done(cb);
+        });
+    }
+
+    function initCollapse() {
+        $('tr[data-toggle="collapse"]').on('click', function() {
+            $('tr[data-toggle="collapse"]')
+                .removeClass('selected')
+                .find('td.rowspan')
+                    .removeAttr('rowspan');
+            $('.collapse.in').removeClass('in');
+            $(this)
+                .addClass('selected')
+                .find('td.rowspan')
+                    .attr('rowspan', $(this).data('rowspan'));
         });
     }
 

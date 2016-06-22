@@ -106,11 +106,12 @@ class Observations(APIView):
         params['assignment'] = request.va
         params['user'] = request.annotator.user
         params['attribute'] = request.POST.getlist('attribute')
-        Observation.create(**params)
+        obs = Observation.create(**params)
+        evt = obs.event_set.first()
         if request.va.status_id == 1:
             request.va.status_id = 2
             request.va.save()
-        return JsonResponse({'observations': Observation.get_for_api(request.va)})
+        return JsonResponse({'observations': Observation.get_for_api(request.va), 'filename': evt.filename()})
 
     def delete(self, request, set_id):
         Observation.objects.filter(assignment=request.va).get(pk=request.GET.get('obs_id')).delete()
@@ -173,7 +174,7 @@ class ProgressUpdate(APIView):
 
 class AttributeList(APIView):
     def get(self, request, set_id):
-        return JsonResponse({'attributes': Attribute.tree_json()})
+        return JsonResponse({'attributes': Attribute.tree_json(is_lead=request.annotator.is_lead())})
 
 
 class Events(APIView):
@@ -183,12 +184,13 @@ class Events(APIView):
         params['observation'] = obs
         params['user'] = request.annotator.user
         params['attribute'] = request.POST.getlist('attribute')
-        Event.create(**params)
-        return JsonResponse({'observations': Observation.get_for_api(request.va)})
+        evt = Event.create(**params)
+        return JsonResponse({'observations': Observation.get_for_api(request.va), 'filename': evt.filename()})
 
     def delete(self, request, set_id, obs_id):
         obs = get_object_or_404(Observation, pk=obs_id, assignment=request.va)
         get_object_or_404(Event, pk=request.GET.get('evt_id'), observation=obs).delete()
+        # TODO delete frame capture file
         return JsonResponse({'observations': Observation.get_for_api(request.va)})
 
 

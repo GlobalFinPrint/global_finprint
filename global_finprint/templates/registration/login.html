@@ -5,9 +5,13 @@
         <div class="row">
             <div class="center span4 well">
                 <legend>Please Sign In (Lead or SuperUser only)</legend>
-                {% if form.errors %}
+                {% if form.non_field_errors %}
                     <div class="alert alert-error">
-                        <p class="text-warning">Your username and password didn't match. Please try again.</p>
+                        <p class="text-warning">{{ form.non_field_errors|join:',' }}</p>
+                    </div>
+                {% elif form.errors %}
+                    <div class="alert alert-error">
+                        <p class="text-warning">Invalid username or password. Please try again</p>
                     </div>
                 {% endif %}
                 <div>

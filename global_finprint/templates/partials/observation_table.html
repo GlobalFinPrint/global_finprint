@@ -2,10 +2,10 @@
 <h3>Observations{{ for }}</h3>
 <table class="table table-bordered table-condensed assignment-observation-table" id="observation-table" cellspacing="0" width="100%">
     <thead>
-    <tr class="success">
+    <tr>
         <th>Annotator</th>
         <th>Organism</th>
-        <th>Observation comment</th>
+        <th>Obs. comment</th>
         <th>Duration</th>
         <th>Frame capture</th>
         <th>Time</th>
@@ -14,25 +14,37 @@
         <th>Actions</th>
     </tr>
     </thead>
-    <tbody>
+    <tbody id="collapse-parent">
     {% for o in observations|dictsortreversed:'initial_observation_time' %}
-        {% with firstevent=o.event_set.last rowspan=o.event_set.count %}
-        {% for e in o.event_set.all|dictsortreversed:'event_time' %}
-            <tr>
-                {% if e.id == firstevent.id %}
-                    <td rowspan="{{ rowspan }}">{{ o.assignment.annotator }}</td>
-                    {% if o.type == 'I' %}
-                        <td rowspan="{{ rowspan }}"><i>N/A</i></td>
-                    {% else %}
-                        <td rowspan="{{ rowspan }}">{{ o.animalobservation.animal }}</td>
-                    {% endif %}
-                    <td rowspan="{{ rowspan }}">{{ o.comment|default_if_none:"<i>None</i>" }}</td>
-                    <td rowspan="{{ rowspan }}">{{ o.duration }}</td>
+        {% with firstevent=o.events_for_table.first rowspan=o.events_for_table.count %}
+        {% for e in o.events_for_table %}
+            {% if e.id == firstevent.id %}
+            <tr class="first-event accordion-toggle" data-toggle="collapse" data-target=".children-{{ o.id }}" data-rowspan="{{ rowspan }}">
+                <td class="rowspan">{{ o.assignment.annotator }}</td>
+                {% if o.type == 'I' %}
+                    <td class="rowspan"><i>N/A</i></td>
+                {% else %}
+                    <td class="rowspan">{{ o.animalobservation.animal }}</td>
                 {% endif %}
-                <td><i>TODO screen grab + extent</i></td>
-                <td>{{ e.event_time }}</td>
+                <td class="rowspan">{{ o.comment|default_if_none:"<i>None</i>" }}</td>
+                <td class="rowspan">{{ o.duration }}</td>
+            {% else %}
+            <tr class="children-{{ o.id }} child-row collapse" data-parent="#collapse-parent">
+            {% endif %}
+                {% with imageurl=e.image_url %}
+                {% if imageurl %}
+                    <td>
+                        <div class="annotool-thumbnail" style="background-image:url('{{ e.image_url }}')">
+                            <div class="extent" style="{{ e.extent_to_css }}">&nbsp;</div>
+                        </div>
+                    </td>
+                {% else %}
+                    <td><i>N/A</i></td>
+                {% endif %}
+                {% endwith %}
+                <td>{{ e.event_time|time_display }}</td>
                 <td>{{ e.note }}</td>
-                <td>{{ e.attribute.all|join:', ' }}</td>
+                <td class="attributes">{{ e.attribute.all|join:', ' }}</td>
                 <td><a href="#">Edit</a></td>
             </tr>
         {% endfor %}

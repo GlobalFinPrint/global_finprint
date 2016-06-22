@@ -1,11 +1,13 @@
 from django.db import models
 from django.contrib.gis.db import models as geomodels
-
 from global_finprint.core.models import AuditableModel, FinprintUser
-
+from django.conf import settings
+from boto.s3.connection import S3Connection
+from boto.exception import S3ResponseError
 from .video import Assignment
 from .animal import Animal, ANIMAL_SEX_CHOICES, ANIMAL_STAGE_CHOICES
 from .annotation import Attribute
+from ...core.version import VersionInfo
 
 
 OBSERVATION_TYPE_CHOICES = {
@@ -110,6 +112,9 @@ class Observation(AuditableModel):
     def initial_observation_time(self):
         return self.event_set.order_by('event_time').first().event_time
 
+    def events_for_table(self):
+        return self.event_set.order_by('event_time').all()
+
     def __str__(self):
         # todo:  update to first event?
         return u"{0}".format(self.type)
@@ -164,3 +169,32 @@ class Event(AuditableModel):
             'note': self.note,
             'attributes': [a.to_json() for a in self.attribute.all()]
         }
+
+    def filename(self):
+        set = self.observation.set()
+        server_env = VersionInfo.get_server_env()
+        return '/{0}/{1}/{2}/{3}_{4}.png'.format(server_env,
+                                                 set.trip.code,
+                                                 set.code,
+                                                 self.observation_id,
+                                                 self.id)
+
+    def image_url(self):
+        try:
+            conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+            bucket = conn.get_bucket(settings.FRAME_CAPTURE_BUCKET)
+            key = bucket.get_key(self.filename())
+            return key.generate_url(expires_in=300, query_auth=False) if key else None
+        except S3ResponseError:
+            return None
+
+    def extent_to_css(self):
+        x = self.extent.boundary.x
+        y = self.extent.boundary.y
+        css = 'width: {0}%; height: {1}%; left: {2}%; top: {3}%;'.format(
+            int(abs(x[1] - x[0]) * 100),
+            int(abs(y[2] - y[1]) * 100),
+            int(x[0] * 100),
+            int(y[1] * 100)
+        )
+        return css
