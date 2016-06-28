@@ -189,7 +189,10 @@ class Events(APIView):
 
     def delete(self, request, set_id, obs_id):
         obs = get_object_or_404(Observation, pk=obs_id, assignment=request.va)
-        get_object_or_404(Event, pk=request.GET.get('evt_id'), observation=obs).delete()
+        evt = get_object_or_404(Event, pk=request.GET.get('evt_id'), observation=obs)
+        evt.delete()
+        if len(obs.event_set.all()) == 0:
+            obs.delete()
         # TODO delete frame capture file
         return JsonResponse({'observations': Observation.get_for_api(request.va)})
 
