@@ -201,7 +201,8 @@ class EventUpdate(APIView):
     def post(self, request, set_id, obs_id, evt_id):
         obs = get_object_or_404(Observation, pk=obs_id, assignment=request.va)
         evt = get_object_or_404(Event, pk=evt_id, observation=obs)
-        params = dict((key, val) for key, val in request.POST.items() if key in Event.valid_fields())
+        params = dict((key, val) for key, val in request.POST.items()
+                      if key in Event.valid_fields() and key not in ['extent', 'event_time'])
         params['user'] = request.annotator.user
         for key, val in params.items():
             setattr(evt, key, val)
