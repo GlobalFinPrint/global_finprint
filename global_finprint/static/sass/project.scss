@@ -200,6 +200,7 @@ a.manual-assign {
     }
 
     tr.child-row {
+      display: none;
       background-color: $child-row;
     }
 

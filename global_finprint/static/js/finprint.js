@@ -270,16 +270,32 @@ var finprint = finprint || {};  //namespace if necessary...
     }
 
     function initCollapse() {
-        $('tr[data-toggle="collapse"]').on('click', function() {
-            $('tr[data-toggle="collapse"]')
-                .removeClass('selected')
-                .find('td.rowspan')
-                    .removeAttr('rowspan');
-            $('.collapse.in').removeClass('in');
-            $(this)
-                .addClass('selected')
-                .find('td.rowspan')
-                    .attr('rowspan', $(this).data('rowspan'));
+        var $parent = $('tbody#collapse-parent');
+
+        $parent.find('tr.first-event').on('click', function() {
+            var target, rowspan;
+            var alreadyToggled = $(this).hasClass('selected');
+
+            // hide all children and deselect everything
+            $parent
+                .find('tr.child-row')
+                    .hide()
+                    .end()
+                .find('tr.first-event')
+                    .removeClass('selected')
+                    .find('td.rowspan')
+                        .removeAttr('rowspan');
+
+            // select the current and show children (if its not already selected)
+            if (!alreadyToggled) {
+                target = $(this).data('target');
+                rowspan = $(this).data('rowspan');
+                $(this)
+                    .addClass('selected')
+                    .find('td.rowspan')
+                        .attr('rowspan', rowspan);
+                $parent.find(target).show();
+            }
         });
     }
 
