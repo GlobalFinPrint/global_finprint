@@ -74,6 +74,14 @@
   },
   {
     "fields": {
+      "description": "",
+      "type": "unknown"
+    },
+    "model": "habitat.mpacompliance",
+    "pk": 4
+  },
+  {
+    "fields": {
       "type": "continuous"
     },
     "model": "habitat.mpaisolation",
@@ -92,6 +100,13 @@
     },
     "model": "habitat.mpaisolation",
     "pk": 3
+  },
+  {
+    "fields": {
+      "type": "unknown"
+    },
+    "model": "habitat.mpaisolation",
+    "pk": 4
   },
   {
     "fields": {
