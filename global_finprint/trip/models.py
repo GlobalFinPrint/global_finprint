@@ -10,6 +10,7 @@ class Source(models.Model):
     name = models.CharField(max_length=32)
     data_embargo_length = models.PositiveIntegerField(null=True, default=9999, help_text='Days to embargo data after trip ends. 9999 = "embargo forever"')
     code = models.CharField(max_length=3, unique=True)
+    legacy = models.BooleanField(default=False)
 
     def __str__(self):
         return u"{0}".format(self.name)
