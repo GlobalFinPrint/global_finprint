@@ -32,7 +32,7 @@ class VideoAutoAssignView(UserAllowedMixin, View):
         annotators = FinprintUser.objects.filter(affiliation_id=aff_id).all()
         if not include_leads:
             annotators = list(a for a in annotators if not a.is_lead())
-        for video in Video.objects.filter(set__trip_id=trip_id).all():
+        for video in Video.objects.filter(set__trip_id=trip_id).exclude(file__isnull=True).exclude(file='').all():
             self.assign_video(annotators, video, num)
 
         return JsonResponse({'status': 'ok'})
@@ -57,7 +57,8 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
     def post(self, request):
         query = Assignment.objects.all()
         unassigned = Set.objects.annotate(Count('video__assignment')) \
-                                .filter(video__assignment__count=0)
+                                .filter(video__assignment__count=0) \
+                                .exclude(video__file__isnull=True).exclude(video__file='')
 
         trips = request.POST.getlist('trip[]')
         sets = request.POST.getlist('set[]')
