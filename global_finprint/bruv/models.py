@@ -1,4 +1,7 @@
+from decimal import Decimal
+
 from django.contrib.gis.db import models
+from django.core.validators import MinValueValidator
 from django.core.urlresolvers import reverse
 from django.contrib.gis.geos import Point
 
@@ -142,7 +145,7 @@ class Set(AuditableModel):
     drop_time = models.TimeField()
     haul_time = models.TimeField()
     visibility = models.CharField(max_length=3, choices=VISIBILITY_CHOICES)
-    depth = models.FloatField(null=True, help_text='m')
+    depth = models.DecimalField(null=True, help_text='m', decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0.01'))])
     comments = models.TextField(null=True, blank=True)
 
     # todo:  need some form changes here ...

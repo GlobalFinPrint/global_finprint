@@ -98,7 +98,6 @@ class MPA(models.Model):
     boundary = models.MultiPolygonField(srid=4326, null=True, blank=True)
     # todo:  create property that takes area from polygon first then area field if no poly
     area = models.DecimalField(help_text='km^2', null=True, blank=True, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0.01'))])
-    # area = models.PositiveIntegerField(help_text='km^2', null=True, blank=True)
     founded = models.PositiveIntegerField(null=True, blank=True)
 
     mpa_compliance = models.ForeignKey(to=MPACompliance)
