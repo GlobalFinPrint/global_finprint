@@ -1,5 +1,5 @@
 -- noinspection SqlNoDataSourceInspectionForFile
-CREATE VIEW v_report_annotation_status_by_annotator AS
+CREATE OR REPLACE VIEW public.v_report_annotation_status_by_annotator AS
   SELECT
     aff.name AS affiliation,
     u.first_name,

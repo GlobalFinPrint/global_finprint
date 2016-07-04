@@ -167,7 +167,7 @@ class Event(AuditableModel):
             'event_time': self.event_time,
             'extent': None if self.extent is None else str(self.extent),
             'note': self.note,
-            'attributes': [a.to_json() for a in self.attribute.all()]
+            'attribute': [a.to_json() for a in self.attribute.all()]
         }
 
     def filename(self):

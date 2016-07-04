@@ -1,5 +1,5 @@
 -- noinspection SqlNoDataSourceInspectionForFile
-CREATE VIEW v_report_sets_without_video AS
+CREATE OR REPLACE VIEW public.v_report_sets_without_video AS
   SELECT
     tt.code || '_' || bs.code AS code,
     bs.create_datetime        AS set_creation_date
