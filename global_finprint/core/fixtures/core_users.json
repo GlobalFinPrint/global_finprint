@@ -336,7 +336,7 @@
     "pk": 24,
     "fields": {
       "user": 24,
-      "affiliation": 0
+      "affiliation": 10
     }
   },
   {
@@ -344,7 +344,7 @@
     "pk": 25,
     "fields": {
       "user": 25,
-      "affiliation": 0
+      "affiliation": 10
     }
   },
   {
@@ -352,7 +352,7 @@
     "pk": 26,
     "fields": {
       "user": 26,
-      "affiliation": 0
+      "affiliation": 10
     }
   },
   {
@@ -360,7 +360,7 @@
     "pk": 27,
     "fields": {
       "user": 27,
-      "affiliation": 0
+      "affiliation": 10
     }
   }
 ]

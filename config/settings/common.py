@@ -29,6 +29,7 @@ THIRD_PARTY_APPS = (
     'bootstrap3_datetime',
     'braces',
     'leaflet',
+    'mptt',
 )
 
 # Apps specific for this project go here.
@@ -255,3 +256,9 @@ LEAFLET_CONFIG = {
     'MIN_ZOOM': 3,
     'MAX_ZOOM': 18,
 }
+
+DJANGO_SERVER_ENV = env('DJANGO_SERVER_ENV', default='local')
+FRAME_CAPTURE_BUCKET = 'finprint-annotator-screen-captures'
+
+# Custom auth backend
+AUTHENTICATION_BACKENDS = ['global_finprint.core.backends.FinprintAuth']

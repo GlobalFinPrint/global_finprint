@@ -10,7 +10,7 @@ from django.template import RequestContext
 from global_finprint.trip.models import Trip
 from global_finprint.bruv.models import Equipment
 from ..models import Set
-from ..forms import SetForm, EnvironmentMeasureForm, BaitForm
+from ..forms import SetForm, EnvironmentMeasureForm
 from ...annotation.forms import VideoForm
 from ...habitat.models import ReefHabitat
 from ...core.mixins import UserAllowedMixin
@@ -36,11 +36,21 @@ class SetListView(UserAllowedMixin, View):
     template = 'pages/sets/set_list.html'
 
     def _common_context(self, request, parent_trip):
+        prefetch = [
+            'trip',
+            'drop_measure',
+            'haul_measure',
+            'video',
+            'user',
+            'bait',
+            'equipment',
+            'reef_habitat',
+        ]
         return RequestContext(request, {
             'request': request,
             'trip_pk': parent_trip.pk,
             'trip_name': str(parent_trip),
-            'sets': Set.objects.filter(trip=parent_trip).order_by('drop_time'),
+            'sets': Set.objects.filter(trip=parent_trip).prefetch_related(*prefetch).order_by('set_date', 'drop_time'),
         })
 
     def _get_set_form_defaults(self, parent_trip):
@@ -83,9 +93,7 @@ class SetListView(UserAllowedMixin, View):
             )
             context['set_form'].initial['reef'] = edited_set.reef_habitat.reef
             context['set_form'].initial['habitat'] = edited_set.reef_habitat.habitat
-            context['bait_form'] = BaitForm(
-                instance=edited_set.bait
-            )
+
             context['drop_form'] = EnvironmentMeasureForm(
                 instance=edited_set.drop_measure, prefix='drop'
             )
@@ -103,7 +111,6 @@ class SetListView(UserAllowedMixin, View):
                 initial=self._get_set_form_defaults(parent_trip),
                 trip_pk=trip_pk
             )
-            context['bait_form'] = BaitForm(initial={'type': 'CHP'})
             context['drop_form'] = EnvironmentMeasureForm(None, prefix='drop')
             context['haul_form'] = EnvironmentMeasureForm(None, prefix='haul')
             context['video_form'] = VideoForm()
@@ -117,20 +124,21 @@ class SetListView(UserAllowedMixin, View):
 
         if set_pk is None:
             set_form = SetForm(request.POST, trip_pk=trip_pk)
-            bait_form = BaitForm(request.POST)
             drop_form = EnvironmentMeasureForm(request.POST, prefix='drop')
             haul_form = EnvironmentMeasureForm(request.POST, prefix='haul')
             video_form = VideoForm(request.POST, request.FILES)
         else:
             edited_set = get_object_or_404(Set, pk=set_pk)
             set_form = SetForm(request.POST, trip_pk=trip_pk, instance=edited_set)
-            bait_form = BaitForm(request.POST, instance=edited_set.bait)
             drop_form = EnvironmentMeasureForm(request.POST, prefix='drop', instance=edited_set.drop_measure)
             haul_form = EnvironmentMeasureForm(request.POST, prefix='haul', instance=edited_set.haul_measure)
             video_form = VideoForm(request.POST, request.FILES, instance=edited_set.video)
 
         # forms are valid
-        if all(form.is_valid() for form in [set_form, bait_form, drop_form, haul_form, video_form]):
+        if all(form.is_valid() for form in [set_form,
+                                            drop_form,
+                                            haul_form,
+                                            video_form]):
 
             # get reef_habitat from reef + habitat
             # note: "create new set" uses the .instance, "edit existing set" is using the .cleaned_data
@@ -142,7 +150,6 @@ class SetListView(UserAllowedMixin, View):
             # create new set and env measures
             if set_pk is None:
                 new_set = set_form.save()
-                new_set.bait = bait_form.save()
                 new_set.drop_measure = drop_form.save()
                 new_set.haul_measure = haul_form.save()
                 new_set.video = video_form.save()
@@ -155,8 +162,6 @@ class SetListView(UserAllowedMixin, View):
                 for k, v in set_form.cleaned_data.items():
                     if k not in ('reef', 'habitat'):
                         setattr(edited_set, k, v)
-                for k, v in bait_form.cleaned_data.items():
-                    setattr(edited_set.bait, k, v)
                 for k, v in drop_form.cleaned_data.items():
                     setattr(edited_set.drop_measure, k, v)
                 for k, v in haul_form.cleaned_data.items():
@@ -183,7 +188,6 @@ class SetListView(UserAllowedMixin, View):
                 context['set_pk'] = set_pk
                 context['set_name'] = str(get_object_or_404(Set, pk=set_pk))
             context['set_form'] = set_form
-            context['bait_form'] = bait_form
             context['drop_form'] = drop_form
             context['haul_form'] = haul_form
             context['video_form'] = video_form

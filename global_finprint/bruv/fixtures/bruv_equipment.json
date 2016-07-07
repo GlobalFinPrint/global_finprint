@@ -1,49 +1,114 @@
 [
   {
+    "model": "bruv.bait",
+    "pk": 1,
     "fields": {
-      "image": "",
-      "type": "Rebar"
-    },
-    "model": "bruv.frametype",
-    "pk": 1
+      "create_datetime": "2016-05-16T18:03:56.485Z",
+      "last_modified_datetime": "2016-05-16T18:04:10.450Z",
+      "user": 25,
+      "description": "fresh sardines",
+      "type": "CRS",
+      "oiled": false
+    }
   },
   {
-    "fields": {
-      "image": "",
-      "type": "Stainless rebar"
-    },
     "model": "bruv.frametype",
-    "pk": 2
+    "pk": 1,
+    "fields": {
+      "type": "Rebar",
+      "image": ""
+    }
   },
   {
-    "fields": {
-      "image": "",
-      "type": "PVC"
-    },
     "model": "bruv.frametype",
-    "pk": 3
-  },
-  {
-    "fields": {
-      "image": "",
-      "type": "Mixed"
-    },
-    "model": "bruv.frametype",
-    "pk": 4
-  },
-  {
     "pk": 2,
-    "model": "bruv.equipment",
     "fields": {
-      "camera_height": 100,
-      "frame_type": 1,
-      "last_modified_datetime": "2015-10-29T20:18:37.817Z",
+      "type": "Stainless rebar",
+      "image": ""
+    }
+  },
+  {
+    "model": "bruv.frametype",
+    "pk": 3,
+    "fields": {
+      "type": "PVC",
+      "image": ""
+    }
+  },
+  {
+    "model": "bruv.frametype",
+    "pk": 4,
+    "fields": {
+      "type": "Mixed",
+      "image": ""
+    }
+  },
+  {
+    "model": "bruv.frametype",
+    "pk": 5,
+    "fields": {
+      "type": "Stainless steel",
+      "image": ""
+    }
+  },
+  {
+    "model": "bruv.equipment",
+    "pk": 2,
+    "fields": {
       "create_datetime": "2015-10-29T20:18:37.816Z",
-      "stereo": false,
+      "last_modified_datetime": "2015-10-29T20:18:37.817Z",
       "user": 1,
       "camera": "GoPro Hero 3",
+      "stereo": false,
+      "frame_type": 1,
       "bait_container": "C",
-      "arm_length": 100
+      "arm_length": 100,
+      "camera_height": 100
+    }
+  },
+  {
+    "model": "bruv.equipment",
+    "pk": 3,
+    "fields": {
+      "create_datetime": "2016-05-16T18:05:09.711Z",
+      "last_modified_datetime": "2016-05-16T18:05:09.711Z",
+      "user": 25,
+      "camera": "GoPro Hero 3+",
+      "stereo": false,
+      "frame_type": 5,
+      "bait_container": "C",
+      "arm_length": 91,
+      "camera_height": 60
+    }
+  },
+  {
+    "model": "bruv.equipment",
+    "pk": 4,
+    "fields": {
+      "create_datetime": "2016-05-16T18:05:26.645Z",
+      "last_modified_datetime": "2016-05-16T18:05:26.645Z",
+      "user": 25,
+      "camera": "Sony Handycam",
+      "stereo": false,
+      "frame_type": 1,
+      "bait_container": "C",
+      "arm_length": 100,
+      "camera_height": 100
+    }
+  },
+  {
+    "model": "bruv.equipment",
+    "pk": 5,
+    "fields": {
+      "create_datetime": "2016-05-16T18:05:41.319Z",
+      "last_modified_datetime": "2016-05-16T18:05:41.319Z",
+      "user": 25,
+      "camera": "Sony Handycam",
+      "stereo": false,
+      "frame_type": 2,
+      "bait_container": "C",
+      "arm_length": 100,
+      "camera_height": 100
     }
   }
 ]

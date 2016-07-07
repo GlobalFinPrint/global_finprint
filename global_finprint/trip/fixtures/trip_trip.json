@@ -1,0 +1,104 @@
+[
+  {
+    "model": "trip.trip",
+    "pk": 18,
+    "fields": {
+      "create_datetime": "2016-03-16T15:24:14.201Z",
+      "last_modified_datetime": "2016-03-16T15:24:14.201Z",
+      "user": 25,
+      "code": "CH_2009_BZ_1",
+      "team": 1,
+      "location": 1,
+      "boat": null,
+      "start_date": "2009-06-10",
+      "end_date": "2009-07-07",
+      "source": 5,
+      "data_embargo_termination": null
+    }
+  },
+  {
+    "model": "trip.trip",
+    "pk": 22,
+    "fields": {
+      "create_datetime": "2016-03-16T15:24:14.201Z",
+      "last_modified_datetime": "2016-03-16T15:24:14.201Z",
+      "user": 25,
+      "code": "CH_2010_BZ_1",
+      "team": 1,
+      "location": 1,
+      "boat": null,
+      "start_date": "2010-04-05",
+      "end_date": "2010-06-05",
+      "source": 5,
+      "data_embargo_termination": null
+    }
+  },
+  {
+    "model": "trip.trip",
+    "pk": 25,
+    "fields": {
+      "create_datetime": "2016-03-16T15:24:14.201Z",
+      "last_modified_datetime": "2016-03-16T15:24:14.201Z",
+      "user": 25,
+      "code": "CH_2011_BZ_2",
+      "team": 1,
+      "location": 1,
+      "boat": null,
+      "start_date": "2011-07-25",
+      "end_date": "2011-08-23",
+      "source": 5,
+      "data_embargo_termination": null
+    }
+  },
+  {
+    "model": "trip.trip",
+    "pk": 26,
+    "fields": {
+      "create_datetime": "2016-03-16T15:24:14.201Z",
+      "last_modified_datetime": "2016-03-16T15:24:14.201Z",
+      "user": 25,
+      "code": "CH_2011_BZ_1",
+      "team": 1,
+      "location": 1,
+      "boat": null,
+      "start_date": "2011-06-05",
+      "end_date": "2011-06-29",
+      "source": 5,
+      "data_embargo_termination": null
+    }
+  },
+  {
+    "model": "trip.trip",
+    "pk": 27,
+    "fields": {
+      "create_datetime": "2016-03-16T15:24:14.201Z",
+      "last_modified_datetime": "2016-03-16T15:24:14.201Z",
+      "user": 25,
+      "code": "CH_2012_BZ_1",
+      "team": 1,
+      "location": 1,
+      "boat": null,
+      "start_date": "2012-05-21",
+      "end_date": "2012-06-27",
+      "source": 5,
+      "data_embargo_termination": null
+    }
+  },
+  {
+    "model": "trip.trip",
+    "pk": 29,
+    "fields": {
+      "create_datetime": "2016-03-16T15:24:14.201Z",
+      "last_modified_datetime": "2016-03-16T15:24:14.201Z",
+      "user": 25,
+      "code": "CH_2013_BZ_1",
+      "team": 1,
+      "location": 1,
+      "boat": null,
+      "start_date": "2013-04-19",
+      "end_date": "2013-05-11",
+      "source": 5,
+      "data_embargo_termination": null
+    }
+  }
+]

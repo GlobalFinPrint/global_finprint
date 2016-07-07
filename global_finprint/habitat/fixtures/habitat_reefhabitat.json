@@ -1,0 +1,66 @@
+[
+  {
+    "model": "habitat.reefhabitat",
+    "pk": 1,
+    "fields": {
+      "reef": 50,
+      "habitat": 5
+    }
+  },
+  {
+    "model": "habitat.reefhabitat",
+    "pk": 2,
+    "fields": {
+      "reef": 43,
+      "habitat": 1
+    }
+  },
+  {
+    "model": "habitat.reefhabitat",
+    "pk": 3,
+    "fields": {
+      "reef": 52,
+      "habitat": 5
+    }
+  },
+  {
+    "model": "habitat.reefhabitat",
+    "pk": 4,
+    "fields": {
+      "reef": 41,
+      "habitat": 5
+    }
+  },
+  {
+    "model": "habitat.reefhabitat",
+    "pk": 5,
+    "fields": {
+      "reef": 52,
+      "habitat": 1
+    }
+  },
+  {
+    "model": "habitat.reefhabitat",
+    "pk": 6,
+    "fields": {
+      "reef": 41,
+      "habitat": 1
+    }
+  },
+  {
+    "model": "habitat.reefhabitat",
+    "pk": 7,
+    "fields": {
+      "reef": 50,
+      "habitat": 1
+    }
+  },
+  {
+    "model": "habitat.reefhabitat",
+    "pk": 8,
+    "fields": {
+      "reef": 43,
+      "habitat": 5
+    }
+  }
+]

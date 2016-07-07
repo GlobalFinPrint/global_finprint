@@ -50,9 +50,9 @@ Provides a list of trips (for use in lead assignment filtering).
 
 **Returns** (JSON):
 - trips: (array)
-    - id: (integer)  
+    - id: (integer)
     - trip: (string)
-    - sets: (array)
+    - sets: (array of objects)
         - id: (integer)
         - set: (string)
 
@@ -77,12 +77,10 @@ Provides details for the specified set along with data used for annotation tool 
 - progress: (integer)
 - observations: (array of [observation objects](#observation-response-object))
 - animals: (array of [animal objects](#animal-response-object))
-- behaviors: (array)
-    - id (integer)
-    - type (string)
-- features: (array)
-    - id (integer)
-    - feature (string)
+- attributes: (array of objects)
+    - id: (integer)
+    - name: (string)
+    - description: (string)
 
 
 ### Observation listing
@@ -109,8 +107,10 @@ Creates a new observation for the specified set.
 **Expects** (POST):
 - token (string)
 - [observation request fields](#observation-request-fields)
+
 **Returns** (JSON):
 - observations: (array of [observation objects](#observation-response-object))
+- filename: (string for use in frame capture file naming)
 
 
 ### Edit observation
@@ -136,12 +136,62 @@ Delete an observation for the specified set.
 **Expects** (URL):
 - id (integer)
 
-**Expects** (POST):
+**Expects** (GET):
 - token (string)
 - obs_id (integer)
 
 **Returns** (JSON):
+- observations: (array of [observation objects](#observation-response-object)
+
+
+### Create observation event
+`POST /api/set/:set_id/obs/:obs_id/event`
+Create a new event on an observation.
+
+**Expects** (URL):
+- set_id: (integer)
+- obs_id: (integer)
+
+**Expects** (POST):
+- token: (string)
+- [event request fields](#event-request-fields)
+
+**Returns** (JSON):
 - observations: (array of [observation objects](#observation-response-object))
+- filename: (string for use in frame capture file naming)
+
+
+### Edit observation event
+`POST /api/set/:set_id/obs/:obs_id/event/:evt_id`
+Edit an existing observation event.
+
+**Expects** (URL):
+- set_id: (integer)
+- obs_id: (integer)
+- evt_id: (integer)
+
+**Expects** (POST):
+- token: (string)
+- [event request fields](#event-request-fields)
+
+**Returns** (JSON):
+- observations: (array of [observation objects](#observation-response-object))
+
+
+### Delete observation event
+`DELETE /api/set/:set_id/obs/:obs_id/event`
+Delete the specified observation event.
+
+**Expects** (URL):
+- set_id: (integer)
+- obs_id: (integer)
+
+**Expects** (GET):
+- token: (string)
+- evt_id: (integer)
+
+**Returns** (JSON):
+- observations: (array of [observation objects](#observation-response-object)
 
 
 ### Animal list
@@ -172,30 +222,21 @@ Provides detail for a specific animal given an id.
 - animals: [animal object](#animal-response-object)
 
 
-### Behavior list
-`GET /api/behaviors`
-Provides a list of animal behaviors.
+### Attribute list
+`GET /api/set/:id/attributes`
+Provides a list of available event attributes for a set.
+
+**Expects** (URL):
+- id (integer)
 
 **Expects** (GET):
 - token (string)
 
 **Returns** (JSON):
-- behaviors: (array)
-    - id (integer)
-    - type (string)
-
-
-### Feature list
-`GET /api/features`
-Provides list of observation features.
-
-**Expects** (GET):
-- token (string)
-
-**Returns** (JSON):
-- features: (array)
-    - id (integer)
-    - feature (string)
+- attributes: (array of objects)
+    - id: (integer)
+    - name: (string)
+    - description: (string)
 
 
 ### Mark set as done
@@ -224,7 +265,7 @@ Updates the progress (latest second watched) for the specified set.
 - progress (integer)
 
 **Returns** (JSON):
-- progress: (integer) (NOTE: progress will only update if new value is greater than old value)
+- progress: (integer) *NOTE: progress will only update if new value is greater than old value*
 
 
 ### Set list response object
@@ -245,10 +286,17 @@ All returned observation objects will follow this standard:
     - id: (integer)
     - type: (string)
     - type_choice: ("I" or "A")
-    - initial_observation_time: (integer)
     - duration: (integer)
-    - extent: ([WKT format string](#extent-format))
     - comment: (string)
+    - events:
+        - id: (integer)
+        - event_time: (integer)
+        - extent: ([WKT format string](#extent-format))
+        - note: (string)
+        - attributes: (array of objects)
+            - id: (integer)
+            - name: (string)
+            - description: (string)
 
     *fields below are only for animal observations*
 
@@ -259,21 +307,14 @@ All returned observation objects will follow this standard:
     - stage: (string)
     - stage_choice: ("AD", "JU", or "U")
     - length: (integer)
-    - behaviors: (array)
-        - id: (integer)
-        - type: (string)
-    - features: (array)
-        - id: (integer)
-        - feature: (string)
 
 
 ### Observation request fields
 All POSTed observations are expected to follow this standard:
 - type_choice: ("I" or "A") *NOTE: type cannot be changed during an edit*
-- initial_observation_time: (integer)
 - duration: (integer) (optional)
-- extent: ([WKT format string](#extent-format)) (optional)
 - comment: (string) (optional)
+- [event request fields](#event-request-fields) *NOTE: exclude for observation edit* 
 
 *fields below are only for animal observations*
 
@@ -281,8 +322,14 @@ All POSTed observations are expected to follow this standard:
 - sex_choice: ("M", "F", or "U") (optional)
 - stage_choice: ("AD", "JD", or "U") (optional)
 - length: (integer) (optional)
-- behavior_ids: (comma separated list of integers) (optional)
-- feature_ids: (comma separated list of integers) (optional)
+
+
+### Event request fields
+All POSTed events are expected to follow this standard:
+- event_time: (integer)
+- extent: ([WKT format string](#extent-format))
+- note: (string)
+- attribute: (array of integers)
 
 
 ### Animal response object

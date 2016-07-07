@@ -1,0 +1,178 @@
+[
+  {
+    "model": "core.team",
+    "pk": 1,
+    "fields": {
+      "create_datetime": "2016-03-14T20:58:09.720Z",
+      "last_modified_datetime": "2016-03-14T20:58:09.720Z",
+      "user": 25,
+      "sampler_collaborator": "CONCH",
+      "lead": 19
+    }
+  },
+  {
+    "model": "core.team",
+    "pk": 2,
+    "fields": {
+      "create_datetime": "2016-03-14T20:58:09.720Z",
+      "last_modified_datetime": "2016-03-14T20:58:09.720Z",
+      "user": 25,
+      "sampler_collaborator": "",
+      "lead": 23
+    }
+  },
+  {
+    "model": "core.team",
+    "pk": 3,
+    "fields": {
+      "create_datetime": "2016-03-14T20:58:09.720Z",
+      "last_modified_datetime": "2016-03-14T20:58:09.720Z",
+      "user": 25,
+      "sampler_collaborator": "LaMAVE",
+      "lead": 23
+    }
+  },
+  {
+    "model": "core.team",
+    "pk": 4,
+    "fields": {
+      "create_datetime": "2016-03-14T20:58:09.720Z",
+      "last_modified_datetime": "2016-03-14T20:58:09.720Z",
+      "user": 25,
+      "sampler_collaborator": "BLOOM",
+      "lead": 19
+    }
+  },
+  {
+    "model": "core.team",
+    "pk": 5,
+    "fields": {
+      "create_datetime": "2016-03-14T20:58:09.720Z",
+      "last_modified_datetime": "2016-03-14T20:58:09.720Z",
+      "user": 25,
+      "sampler_collaborator": "CONCH/Sunsail",
+      "lead": 19
+    }
+  },
+  {
+    "model": "core.team",
+    "pk": 6,
+    "fields": {
+      "create_datetime": "2016-03-14T20:58:09.720Z",
+      "last_modified_datetime": "2016-03-14T20:58:09.720Z",
+      "user": 25,
+      "sampler_collaborator": "Cape Eleuthera Institute",
+      "lead": 19
+    }
+  },
+  {
+    "model": "core.team",
+    "pk": 7,
+    "fields": {
+      "create_datetime": "2016-03-14T20:58:09.720Z",
+      "last_modified_datetime": "2016-03-14T20:58:09.720Z",
+      "user": 25,
+      "sampler_collaborator": "ERIC",
+      "lead": 19
+    }
+  },
+  {
+    "model": "core.team",
+    "pk": 8,
+    "fields": {
+      "create_datetime": "2016-03-14T20:58:09.720Z",
+      "last_modified_datetime": "2016-03-14T20:58:09.720Z",
+      "user": 25,
+      "sampler_collaborator": "FAO",
+      "lead": 19
+    }
+  },
+  {
+    "model": "core.team",
+    "pk": 9,
+    "fields": {
+      "create_datetime": "2016-03-14T20:58:09.720Z",
+      "last_modified_datetime": "2016-03-14T20:58:09.720Z",
+      "user": 25,
+      "sampler_collaborator": "Ricardo Garla",
+      "lead": 19
+    }
+  },
+  {
+    "model": "core.team",
+    "pk": 10,
+    "fields": {
+      "create_datetime": "2016-03-14T20:58:09.720Z",
+      "last_modified_datetime": "2016-03-14T20:58:09.720Z",
+      "user": 25,
+      "sampler_collaborator": "School for Field Studies",
+      "lead": 19
+    }
+  },
+  {
+    "model": "core.team",
+    "pk": 11,
+    "fields": {
+      "create_datetime": "2016-03-14T20:58:09.720Z",
+      "last_modified_datetime": "2016-03-14T20:58:09.720Z",
+      "user": 25,
+      "sampler_collaborator": "Smithsonian Institute",
+      "lead": 19
+    }
+  },
+  {
+    "model": "core.team",
+    "pk": 12,
+    "fields": {
+      "create_datetime": "2016-03-14T20:58:09.720Z",
+      "last_modified_datetime": "2016-03-14T20:58:09.720Z",
+      "user": 25,
+      "sampler_collaborator": "",
+      "lead": 22
+    }
+  },
+  {
+    "model": "core.team",
+    "pk": 13,
+    "fields": {
+      "create_datetime": "2016-03-14T20:58:09.720Z",
+      "last_modified_datetime": "2016-03-14T20:58:09.720Z",
+      "user": 25,
+      "sampler_collaborator": "",
+      "lead": 18
+    }
+  },
+  {
+    "model": "core.team",
+    "pk": 14,
+    "fields": {
+      "create_datetime": "2016-03-14T20:58:09.720Z",
+      "last_modified_datetime": "2016-03-14T20:58:09.720Z",
+      "user": 25,
+      "sampler_collaborator": "Bimini Biological Field Station",
+      "lead": 18
+    }
+  },
+  {
+    "model": "core.team",
+    "pk": 15,
+    "fields": {
+      "create_datetime": "2016-03-14T20:58:09.720Z",
+      "last_modified_datetime": "2016-03-14T20:58:09.720Z",
+      "user": 25,
+      "sampler_collaborator": "Sunsail",
+      "lead": 18
+    }
+  },
+  {
+    "model": "core.team",
+    "pk": 16,
+    "fields": {
+      "create_datetime": "2016-03-14T20:58:09.720Z",
+      "last_modified_datetime": "2016-03-14T20:58:09.720Z",
+      "user": 25,
+      "sampler_collaborator": "",
+      "lead": 21
+    }
+  }
+]

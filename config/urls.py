@@ -9,9 +9,11 @@ from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import login, logout, password_change, password_change_done
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.sites.models import Site
 from django.views.defaults import bad_request, permission_denied, page_not_found, server_error
 
 from global_finprint.core.views import UrlRedirect, UserInfoView
+from global_finprint.core.forms import FinprintAuthenticationForm
 
 
 urlpatterns = [
@@ -23,15 +25,14 @@ urlpatterns = [
     url(r'^reports/', include('global_finprint.report.urls')),
     url(r'^api/', include('global_finprint.api.urls')),
     url(r"^assignment/", include('global_finprint.annotation.urls.assignment')),
-    url(r"^annotation/", TemplateView.as_view(template_name='pages/sets/set_annotation.html'),
-        name='set_annotation'),
 
     url(r"^about/$", TemplateView.as_view(template_name='pages/about.html'), name="about"),
 
     url(r"^user/info/(?P<id>\d+)$", UserInfoView.as_view(), name="user_info_view"),
 
     # User management
-    url(r'^accounts/login/$', login, {'template_name': 'registration/login.html'}, name='finprint_login'),
+    url(r'^accounts/login/$', login, {'template_name': 'registration/login.html',
+                                      'authentication_form': FinprintAuthenticationForm}, name='finprint_login'),
     url(r'^accounts/logout/$', logout, {'template_name': 'registration/logged_out.html'}, name='finprint_logout'),
     url(r'^accounts/password_change/$', login_required(password_change),
         {'password_change_form': PasswordChangeForm},
@@ -42,6 +43,9 @@ urlpatterns = [
     url(r'^accounts/profile/$', UrlRedirect.as_view()),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# remove confusing 'Sites' from admin page:
+admin.site.unregister(Site)
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit

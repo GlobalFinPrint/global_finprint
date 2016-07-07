@@ -1,31 +1,57 @@
 {% load time_display %}
 <h3>Observations{{ for }}</h3>
-<table class="table table-bordered table-condensed assignment-obseration-table" cellspacing="0" width="100%">
+<table class="table table-bordered table-condensed assignment-observation-table" id="observation-table" cellspacing="0" width="100%">
     <thead>
-    <tr class="success">
+    <tr>
         <th>Annotator</th>
-        <th>Initial observation time</th>
-        <th>Duration (ms)</th>
-        <th>Type</th>
-        <th>Animal</th>
-        <th>Comment</th>
-        <th>Screen capture</th>
+        <th>Organism</th>
+        <th>Observation note</th>
+        <th>Duration</th>
+        <th>Image capture</th>
+        <th>Time</th>
+        <th>Image notes</th>
+        <th>Tags</th>
+        <th>Actions</th>
     </tr>
     </thead>
-    <tbody>
+    <tbody id="collapse-parent">
     {% for o in observations|dictsortreversed:'initial_observation_time' %}
+        {% with firstevent=o.events_for_table.first rowspan=o.events_for_table.count %}
+        {% for e in o.events_for_table %}
+            {% if e.id == firstevent.id %}
+            <tr class="first-event accordion-toggle" data-target=".children-{{ o.id }}" data-rowspan="{{ rowspan }}">
+                <td class="rowspan">{{ o.assignment.annotator }}</td>
+                {% if o.type == 'I' %}
+                    <td class="rowspan"><i>N/A</i></td>
+                {% else %}
+                    <td class="rowspan">{{ o.animalobservation.animal }}</td>
+                {% endif %}
+                <td class="rowspan">{{ o.comment|default_if_none:"<i>None</i>" }}</td>
+                <td class="rowspan">{{ o.duration }}</td>
+            {% else %}
+            <tr class="children-{{ o.id }} child-row">
+            {% endif %}
+                {% with imageurl=e.image_url %}
+                {% if imageurl %}
+                    <td>
+                        <div class="annotool-thumbnail" style="background-image:url('{{ e.image_url }}')">
+                            <div class="extent" style="{{ e.extent_to_css }}">&nbsp;</div>
+                        </div>
+                    </td>
+                {% else %}
+                    <td><i>N/A</i></td>
+                {% endif %}
+                {% endwith %}
+                <td>{{ e.event_time|time_display }}</td>
+                <td>{{ e.note }}</td>
+                <td class="attributes">{{ e.attribute.all|join:', ' }}</td>
+                <td><a href="#">Edit</a></td>
+            </tr>
+        {% endfor %}
+        {% endwith %}
+    {% empty %}
         <tr>
-            <td>{{ o.assignment.annotator }}</td>
-            <td>{{ o.initial_observation_time|time_display }}</td>
-            <td>{{ o.duration|default_if_none:"<i>None</i>" }}</td>
-            <td>{{ o.get_type_display }}</td>
-            <td>{{ o.animalobservation.animal|default_if_none:"<i>N/A</i>" }}</td>
-            <td>{{ o.comment|default_if_none:"<i>None</i>"  }}</td>
-            <td><i>TODO</i></td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="7" class="text-center">
+            <td colspan="9" class="text-center">
                 <h4>{{ assignment.annotator }} has not yet submitted any observations for this video</h4>
             </td>
         </tr>

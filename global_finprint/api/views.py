@@ -3,7 +3,9 @@ from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotFoun
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
 from ..trip.models import Trip
-from ..annotation.models import Assignment, Observation, Animal, AnimalBehavior, ObservationFeature
+from ..annotation.models.animal import Animal
+from ..annotation.models.video import Assignment
+from ..annotation.models.observation import Observation, Attribute, Event
 from ..core.models import FinprintUser
 
 
@@ -92,9 +94,7 @@ class SetDetail(APIView):
                                      'assigned_to': {'id': request.va.annotator_id, 'user': str(request.va.annotator)},
                                      'progress': request.va.progress,
                                      'observations': Observation.get_for_api(request.va),
-                                     'animals': Animal.get_for_api(request.va),
-                                     'behaviors': list(AnimalBehavior.objects.all().values()),
-                                     'features': list(ObservationFeature.objects.all().values())}})
+                                     'animals': Animal.get_for_api(request.va)}})
 
 
 class Observations(APIView):
@@ -105,11 +105,13 @@ class Observations(APIView):
         params = dict((key, val) for key, val in request.POST.items() if key in Observation.valid_fields())
         params['assignment'] = request.va
         params['user'] = request.annotator.user
-        Observation.create(**params)
+        params['attribute'] = request.POST.getlist('attribute')
+        obs = Observation.create(**params)
+        evt = obs.event_set.first()
         if request.va.status_id == 1:
             request.va.status_id = 2
             request.va.save()
-        return JsonResponse({'observations': Observation.get_for_api(request.va)})
+        return JsonResponse({'observations': Observation.get_for_api(request.va), 'filename': evt.filename()})
 
     def delete(self, request, set_id):
         Observation.objects.filter(assignment=request.va).get(pk=request.GET.get('obs_id')).delete()
@@ -136,12 +138,7 @@ class ObservationUpdate(APIView):
                 if key == 'user':
                     setattr(obs, 'user', val)
                     setattr(animal_obs, 'user', val)
-                elif key == 'behavior_ids':
-                    setattr(animal_obs, 'behaviors', val.split(',') if val != '' else [])
-                elif key == 'feature_ids':
-                    setattr(animal_obs, 'features', val.split(',') if val != '' else [])
-                elif key in ['animal_id', 'sex', 'stage', 'length', 'gear_on_animal',
-                             'gear_fouled', 'tag', 'external_parasites']:
+                elif key in ['animal_id', 'sex', 'stage', 'length']:
                     setattr(animal_obs, key, val)
                 else:
                     setattr(obs, key, val)
@@ -162,16 +159,6 @@ class AnimalDetail(APIView):
         return JsonResponse({'animal': get_object_or_404(Animal, pk=animal_id).to_json()})
 
 
-class BehaviorList(APIView):
-    def get(self, request):
-        return JsonResponse({'behaviors': list(AnimalBehavior.objects.all().values())})
-
-
-class FeatureList(APIView):
-    def get(self, request):
-        return JsonResponse({'features': list(ObservationFeature.objects.all().values())})
-
-
 class StatusUpdate(APIView):
     def post(self, request, set_id):
         request.va.status_id = 3
@@ -183,3 +170,44 @@ class ProgressUpdate(APIView):
     def post(self, request, set_id):
         new_progress = request.va.update_progress(int(request.POST.get('progress')))
         return JsonResponse({'progress': new_progress})
+
+
+class AttributeList(APIView):
+    def get(self, request, set_id):
+        return JsonResponse({'attributes': Attribute.tree_json(is_lead=request.annotator.is_lead())})
+
+
+class Events(APIView):
+    def post(self, request, set_id, obs_id):
+        obs = get_object_or_404(Observation, pk=obs_id, assignment=request.va)
+        params = dict((key, val) for key, val in request.POST.items() if key in Event.valid_fields())
+        params['observation'] = obs
+        params['user'] = request.annotator.user
+        params['attribute'] = request.POST.getlist('attribute')
+        evt = Event.create(**params)
+        return JsonResponse({'observations': Observation.get_for_api(request.va), 'filename': evt.filename()})
+
+    def delete(self, request, set_id, obs_id):
+        obs = get_object_or_404(Observation, pk=obs_id, assignment=request.va)
+        evt = get_object_or_404(Event, pk=request.GET.get('evt_id'), observation=obs)
+        evt.delete()
+        if len(obs.event_set.all()) == 0:
+            obs.delete()
+        # TODO delete frame capture file
+        return JsonResponse({'observations': Observation.get_for_api(request.va)})
+
+
+class EventUpdate(APIView):
+    def post(self, request, set_id, obs_id, evt_id):
+        obs = get_object_or_404(Observation, pk=obs_id, assignment=request.va)
+        evt = get_object_or_404(Event, pk=evt_id, observation=obs)
+        params = dict((key, val) for key, val in request.POST.items()
+                      if key in Event.valid_fields() and key not in ['extent', 'event_time'])
+        params['user'] = request.annotator.user
+        for key, val in params.items():
+            setattr(evt, key, val)
+        evt.attribute = []
+        for att_id in request.POST.getlist('attribute', []):
+            evt.attribute.add(get_object_or_404(Attribute, pk=att_id))
+        evt.save()
+        return JsonResponse({'observations': Observation.get_for_api(request.va)})

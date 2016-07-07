@@ -1,15 +1,17 @@
+from datetime import date, timedelta
+
 from django.views.generic import View
 from django.shortcuts import get_object_or_404, render_to_response
 from django.db.models import Count
 from django.http.response import JsonResponse
 from django.template import RequestContext
+
+from ...core.mixins import UserAllowedMixin
 from ...trip.models import Trip
 from ...bruv.models import Set
 from ...habitat.models import Location
-from ...core.mixins import UserAllowedMixin
-from ..models import Assignment, Video, AnnotationState
 from ...core.models import Affiliation, FinprintUser
-from datetime import date, timedelta
+from ..models.video import Assignment, Video, AnnotationState
 
 
 class VideoAutoAssignView(UserAllowedMixin, View):
@@ -25,9 +27,12 @@ class VideoAutoAssignView(UserAllowedMixin, View):
         trip_id = request.POST.get('trip')
         aff_id = request.POST.get('affiliation')
         num = int(request.POST.get('num'))
+        include_leads = bool(request.POST.get('include_leads', False))
 
         annotators = FinprintUser.objects.filter(affiliation_id=aff_id).all()
-        for video in Video.objects.filter(set__trip_id=trip_id).all():
+        if not include_leads:
+            annotators = list(a for a in annotators if not a.is_lead())
+        for video in Video.objects.filter(set__trip_id=trip_id).exclude(file__isnull=True).exclude(file='').all():
             self.assign_video(annotators, video, num)
 
         return JsonResponse({'status': 'ok'})
@@ -52,7 +57,8 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
     def post(self, request):
         query = Assignment.objects.all()
         unassigned = Set.objects.annotate(Count('video__assignment')) \
-                                .filter(video__assignment__count=0)
+                                .filter(video__assignment__count=0) \
+                                .exclude(video__file__isnull=True).exclude(video__file='')
 
         trips = request.POST.getlist('trip[]')
         sets = request.POST.getlist('set[]')

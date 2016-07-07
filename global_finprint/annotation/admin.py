@@ -1,9 +1,11 @@
 from django.contrib import admin
 
-from global_finprint.annotation import models
+from mptt.admin import MPTTModelAdmin
+
+from .models import animal, video, annotation
 
 
-admin.site.register(models.AnimalBehavior)
-admin.site.register(models.AnimalGroup)
-admin.site.register(models.Animal)
-admin.site.register(models.AnnotationState)
+admin.site.register(animal.AnimalGroup)
+admin.site.register(animal.Animal)
+admin.site.register(video.AnnotationState)
+admin.site.register(annotation.Attribute, MPTTModelAdmin)
