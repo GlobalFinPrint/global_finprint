@@ -10,7 +10,7 @@ class Attribute(MPTTModel):
         help_text='overridden if parent is inactive')
     lead_only = models.BooleanField(
         default=False,
-        help_text='overridden if parent is lead_only')
+        help_text='overridden if parent is lead only')
 
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
 
