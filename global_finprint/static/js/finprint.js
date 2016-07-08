@@ -162,17 +162,17 @@ var finprint = finprint || {};  //namespace if necessary...
         });
 
         $modal.find('#assign-auto').click(function() {
-            $modal.find('div.modal-footer span.success-message').fadeOut();
+            $modal.find('div.modal-footer span.success-message').fadeOut().removeClass('alert-error');
             $.post('/assignment/auto', $modalForm.serialize(), function(data) {
                 console.log($modal.find('div.modal-footer span.success-message'));
                 console.log(data);
                 var $aa = data['assignments'];
-                var $message = ['For', data['video_count'], 'video(s),', $aa['assigned'], 'of',
-                                $aa['total'], 'viewing(s) assigned,', $aa['newly_assigned'],
-                                'new'
-                               ].join(' ');
-                console.log($message)
+                var $message = ['Trip Total: ', data['video_count'], 'video(s). Of', $aa['assigned'], 'assignment(s) made,', $aa['newly_assigned'], 'were new.'].join(' ');
+                if ($aa['assigned'] < $aa['total']){
+                    $modal.find('div.modal-footer span.success-message').addClass('alert-error')
+                }
                 $modal.find('div.modal-footer span.success-message').text($message).fadeIn();
+                console.log($message)
             });
         });
     }
