@@ -162,9 +162,20 @@ var finprint = finprint || {};  //namespace if necessary...
         });
 
         $modal.find('#assign-auto').click(function() {
-            $.post('/assignment/auto', $modalForm.serialize(), function() {
-                console.log($modal.find('div.modal-footer span.success-message'));
-                $modal.find('div.modal-footer span.success-message').fadeIn().delay(1000).fadeOut();
+            $modal.find('div.modal-footer span.success-message').fadeOut().removeClass('alert-error');
+            $.post('/assignment/auto', $modalForm.serialize(), function(data) {
+                var $aa = data['assignments'];
+                var $message = ['Processed',
+                                data['video_count'],
+                                'video(s).',
+                                $aa['assigned'],
+                                'assignment(s) made',
+                                ['(', $aa['newly_assigned'], ' new).'].join('')
+                               ].join(' ');
+                if ($aa['assigned'] < $aa['total']){
+                    $modal.find('div.modal-footer span.success-message').addClass('alert-error')
+                }
+                $modal.find('div.modal-footer span.success-message').text($message).fadeIn();
             });
         });
     }
