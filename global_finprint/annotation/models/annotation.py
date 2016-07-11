@@ -17,6 +17,9 @@ class Attribute(MPTTModel):
     class MPTTMeta:
         order_insertion_by = ['name']
 
+    class Meta:
+        verbose_name = 'Tag'
+
     def __str__(self):
         return u"{0}".format(self.name)
 
