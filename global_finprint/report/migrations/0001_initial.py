@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('core', '0002_auto_20160412_2234'),
-        ('habitat', '0008_auto_20160711_0258'),
+        ('habitat', '0007_auto_20160705_0342'),
         ('trip', '0008_source_legacy'),
     ]
 
