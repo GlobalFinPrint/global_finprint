@@ -39,6 +39,7 @@ LOCAL_APPS = (
     'global_finprint.trip',
     'global_finprint.bruv',
     'global_finprint.annotation',
+    'global_finprint.report',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
