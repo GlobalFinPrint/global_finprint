@@ -2,6 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import environ
+import sys
 
 
 ROOT_DIR = environ.Path(__file__) - 3  # (/a/b/myfile.py - 3 = /)
@@ -235,6 +236,11 @@ LOGGING = {
             'formatter': 'debug_formatter',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': LOG_DIR,
+        },
+        'stdout': {
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+            'formatter': 'terse_formatter'
         }
     },
     'loggers': {
@@ -247,6 +253,11 @@ LOGGING = {
         {
             'handlers': ['debug_log_file', 'log_file'],
         },
+        'scripts':
+        {
+            'handlers': ['stdout'],
+            'level': 'INFO'
+        }
     }
 }
 
