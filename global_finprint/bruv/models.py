@@ -133,6 +133,9 @@ class Bait(AuditableModel):
     def __str__(self):
         return u'{0} {1} {2}'.format(self.get_type_display(), self.description, '*' if self.oiled else '')
 
+    class Meta:
+        unique_together = ('description', 'type', 'oiled')
+
 
 class Set(AuditableModel):
     # suggested code pattern:
