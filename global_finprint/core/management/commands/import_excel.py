@@ -4,12 +4,6 @@ from datetime import datetime
 import logging
 
 from django.core.management.base import BaseCommand, CommandError
-from django.contrib.auth.models import User
-from global_finprint.trip.models import Source, Trip
-from global_finprint.core.models import Team, FinprintUser
-from global_finprint.habitat.models import Location, Site, ReefHabitat, Reef, ReefType
-import global_finprint.bruv.models as gfbm
-from django.contrib.gis.geos import GEOSGeometry
 
 import global_finprint.core.management.commands.import_common as ic
 
@@ -31,7 +25,6 @@ def import_file(in_file):
 def import_trip_data(sheet):
     headers = get_header_map(sheet.rows[0])
     get_cell = get_cell_by_name_extractor(headers)
-    import_user = User.objects.filter(username='GFAdmin').first()
     for row in sheet.rows[1:]:
         trip_code = get_cell(row, 'code').value
         if trip_code:
@@ -55,7 +48,6 @@ def import_trip_data(sheet):
 def import_set_data(sheet):
     headers = get_header_map(sheet.rows[0])
     get_cell = get_cell_by_name_extractor(headers)
-    import_user = User.objects.filter(username='GFAdmin').first()
     for row in sheet.rows[1:]:
         set_code = get_cell(row, 'set_code').value
         if set_code:
@@ -99,6 +91,10 @@ def import_set_data(sheet):
                 video,
                 comment
             )                
+
+def import_environment_data(sheet):
+    headers = get_header_map(sheet.rows[0])
+    get_cell = get_cell_by_name_extractor(headers)
 
 def get_cell_by_name_extractor(headers):
     extractor_func = lambda row, column_name: row[headers[column_name]]
