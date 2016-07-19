@@ -95,6 +95,16 @@ def import_set_data(sheet):
 def import_environment_data(sheet):
     headers = get_header_map(sheet.rows[0])
     get_cell = get_cell_by_name_extractor(headers)
+    for row in sheet.rows[1:]:
+        trip_code = get_cell(row, 'trip_code').value
+        if trip_code:
+            set_code = get_cell(row, 'set_code').value
+            reading_date = get_date_from_cell(row, 'date').value
+            drop_haul = get_cell(row, 'drop_haul').value
+            temp = get_cell(row, 'temp').value
+            salinity = get_cell(row, 'salinity').value
+            conductivity = get_cell(row, 'conductivity').value
+            dissolved_oxygen = get_cell(row, 'dissolved_oxygen').value
 
 def get_cell_by_name_extractor(headers):
     extractor_func = lambda row, column_name: row[headers[column_name]]

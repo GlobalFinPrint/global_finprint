@@ -1,10 +1,9 @@
 import logging
 
-from django.core.management.base import BaseCommand, CommandError
-from django.contrib.auth.models import User
-from global_finprint.trip.models import Source, Trip
-from global_finprint.core.models import Team, FinprintUser
-from global_finprint.habitat.models import Location, Site, ReefHabitat, Reef, ReefType
+import django.contrib.auth.models as djam
+import global_finprint.trip.models as gftm
+import global_finprint.core.models as gfcm
+import global_finprint.habitat.models as gfhm
 import global_finprint.bruv.models as gfbm
 from django.contrib.gis.geos import GEOSGeometry
 
@@ -27,7 +26,7 @@ def get_bait_type_map():
 def get_import_user():
     global import_user
     if not import_user:
-        import_user = User.objects.filter(username='GFAdmin').first()
+        import_user = djam.User.objects.filter(username='GFAdmin').first()
     return import_user
 
 def import_trip(
@@ -41,10 +40,10 @@ def import_trip(
 ):
     try:
         logger.info('Working on trip "%s"', trip_code)
-        trip = Trip.objects.filter(code=trip_code).first()
+        trip = gftm.Trip.objects.filter(code=trip_code).first()
         if not trip:
-            location = Location.objects.filter(name=location_name).first()
-            lead_candidates = User.objects.filter(last_name=investigator)
+            location = gfhm.Location.objects.filter(name=location_name).first()
+            lead_candidates = djam.User.objects.filter(last_name=investigator)
             validate_data(
                 len(lead_candidates) > 0,
                 'No investigator with last name {}'.format(investigator))
@@ -52,17 +51,17 @@ def import_trip(
                 len(lead_candidates) < 2,
                 'More than one investigator with last name {}'.format(investigator))
 
-            lead = FinprintUser.objects.filter(user=lead_candidates[0]).first()
+            lead = gfcm.FinprintUser.objects.filter(user=lead_candidates[0]).first()
             validate_data(lead, 'No FinprintUser associated with User "{}"'.format(investigator))
 
-            team=Team.objects.filter(
+            team=gfcm.Team.objects.filter(
                 lead=lead,
                 sampler_collaborator=collaborator).first()
             validate_data(team, 'No such team: {} - {}'.format(investigator, collaborator))
 
-            source = Source.objects.filter(code=trip_code[:2]).first()
+            source = gftm.Source.objects.filter(code=trip_code[:2]).first()
 
-            trip = Trip(
+            trip = gftm.Trip(
                 code=trip_code,
                 team=team,
                 source=source,
@@ -99,7 +98,7 @@ def import_set(
 ):
     try:
         logger.info('Working on set "%s"', set_code)
-        trip = Trip.objects.filter(code=trip_code).first()
+        trip = gftm.Trip.objects.filter(code=trip_code).first()
         validate_data(trip, 'references non-existent trip "{}"'.format(trip_code))
         the_set = gfbm.Set.objects.filter(code=set_code, trip=trip).first()
         if not the_set:
@@ -133,18 +132,36 @@ def import_set(
     except DataError:
         logger.error('Set "%s" not created.', set_code)
     
+def import_environment_reading(
+        trip_code,
+        set_code,
+        reading_date,
+        is_drop,
+        temp,
+        salinity,
+        conductivity,
+        dissolved_oxygen,
+        current_flow,
+        current_direction,
+        tide_state,
+        wind_speed,
+        wind_direction,
+        cloud_cover,
+        surface_chop
+):
+    pass
 
 def get_reef_habitat(site_name, reef_name, habitat_type):
-    site = Site.objects.filter(name=site_name).first()
+    site = gfhm.Site.objects.filter(name=site_name).first()
     validate_data(site, 'Site "{}" not found'.format(site_name))
 
-    reef = Reef.objects.filter(name=reef_name, site=site).first()
+    reef = gfhm.Reef.objects.filter(name=reef_name, site=site).first()
     validate_data(reef, 'Reef "{}" not found'.format(reef_name))
 
-    reef_type = ReefType.objects.filter(type=habitat_type).first()
+    reef_type = gfhm.ReefType.objects.filter(type=habitat_type).first()
     validate_data(reef_type, 'Unknown reef type: {}'.format(reef_type))
 
-    return ReefHabitat.get_or_create(reef, reef_type)
+    return gfhm.ReefHabitat.get_or_create(reef, reef_type)
 
 def parse_equipment_string(equipment_str):
     equip_array = equipment_str.split('/')
