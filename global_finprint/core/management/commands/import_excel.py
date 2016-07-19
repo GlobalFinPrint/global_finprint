@@ -18,11 +18,11 @@ CAMERA_FIELD_LENGTH = 32
 class DataError(Exception):
     pass
 
-def import_file(in_file, source_name):
+def import_file(in_file):
     'Trip, Set, Environment, Observation'
     wb = openpyxl.load_workbook(in_file)
 
-    import_trip_data(wb['Trip'], source_name)
+    import_trip_data(wb['Trip'])
     import_set_data(wb['Set'])
 
     # Environment
@@ -31,7 +31,7 @@ def import_file(in_file, source_name):
     # Observation
     # trip_code, set_code, date, time...
 
-def import_trip_data(sheet, source_name=None):
+def import_trip_data(sheet):
     headers = get_header_map(sheet.rows[0])
     get_cell = get_cell_by_name_extractor(headers)
     import_user = User.objects.filter(username='GFAdmin').first()
@@ -244,11 +244,6 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('in_file', type=str)
-        parser.add_argument(
-            '--source',
-            type=str,
-            default=None,
-            help='name of funding source')
 
     def handle(self, *args, **options):
-        import_file(options['in_file'], options['source'])
+        import_file(options['in_file'])
