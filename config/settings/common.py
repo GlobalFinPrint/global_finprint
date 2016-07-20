@@ -39,6 +39,7 @@ LOCAL_APPS = (
     'global_finprint.trip',
     'global_finprint.bruv',
     'global_finprint.annotation',
+    'global_finprint.report',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -251,10 +252,22 @@ LOGGING = {
 }
 
 LEAFLET_CONFIG = {
-    'DEFAULT_CENTER': (25.0600, -77.3450),
-    'DEFAULT_ZOOM': 5,
-    'MIN_ZOOM': 3,
-    'MAX_ZOOM': 18,
+    'TILES':
+        [
+            ('Oceans',
+             'https://services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}.png',
+             {}),
+            ('Topographic',
+             'https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.png',
+             {}),
+            ('National Geographic',
+             'https://services.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}.png',
+             {}),
+        ],
+    'DEFAULT_CENTER': (-6.0, 15.0),
+    'DEFAULT_ZOOM': 3,
+    'MIN_ZOOM': 2,
+    'MAX_ZOOM': 13,
 }
 
 DJANGO_SERVER_ENV = env('DJANGO_SERVER_ENV', default='local')
