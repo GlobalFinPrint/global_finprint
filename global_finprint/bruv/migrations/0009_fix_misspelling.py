@@ -10,10 +10,16 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunSQL('''
-            --- WHOOPS!
-            UPDATE bruv_bait
-            SET description = 'Pilchards'
-            WHERE description = 'Pilcahrds';
+        with good_bait as (
+            select id from bruv_bait WHERE description = 'Pilchards' AND type = 'CRS' AND oiled = FALSE LIMIT 1
+        ),
+        bad_bait as (
+            select id from bruv_bait WHERE description = 'Pilcahrds' AND type = 'CRS' AND oiled = FALSE LIMIT 1
+        ),
+        bad_rows AS (
+            select id from bruv_set WHERE bait_id in (select id from bad_bait)
+        )
+        update bruv_set set bait_id = good_bait.id from good_bait where bait_id in (select id from bad_bait);
     '''),
         migrations.RunSQL('''
             --- pick first instance of dupe
