@@ -96,7 +96,7 @@ class EnvironmentMeasure(AuditableModel):
                                    max_digits=4, decimal_places=2,
                                    help_text='ppt')  # ppt .0
     conductivity = models.DecimalField(null=True, blank=True,
-                                       max_digits=4, decimal_places=2,
+                                       max_digits=8, decimal_places=2,
                                        help_text='S/m')  # S/m .00
     dissolved_oxygen = models.DecimalField(null=True, blank=True,
                                            max_digits=3, decimal_places=1,

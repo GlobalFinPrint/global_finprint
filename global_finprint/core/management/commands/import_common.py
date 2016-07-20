@@ -1,4 +1,5 @@
 import logging
+import functools
 
 import django.contrib.auth.models as djam
 import global_finprint.trip.models as gftm
@@ -11,23 +12,31 @@ FRAME_FIELD_LENGTH = 32
 CAMERA_FIELD_LENGTH = 32
 
 logger = logging.getLogger('scripts')
-import_user = None
-bait_type_map = None
 
 class DataError(Exception):
     pass
 
+@functools.lru_cache()
 def get_bait_type_map():
+    return  make_choices_reverse_map(gfbm.BAIT_TYPE_CHOICES)
+
+@functools.lru_cache()
+def get_tide_state_map():
+    return  make_choices_reverse_map(gfbm.TIDE_CHOICES)
+
+@functools.lru_cache()
+def get_surface_chop_map():
+    return  make_choices_reverse_map(gfbm.SURFACE_CHOP_CHOICES)
+
+def make_choices_reverse_map(choices_set):
     result = {}
-    for abrev, verbose in gfbm.BAIT_TYPE_CHOICES:
+    for abrev, verbose in choices_set:
         result[verbose.lower()] = abrev
     return result
 
+@functools.lru_cache()
 def get_import_user():
-    global import_user
-    if not import_user:
-        import_user = djam.User.objects.filter(username='GFAdmin').first()
-    return import_user
+    return djam.User.objects.filter(username='GFAdmin').first()
 
 def import_trip(
         trip_code,
@@ -128,11 +137,11 @@ def import_set(
             set.save()
             logger.info('Created set "%s"', set_code)
         else:
-            logger.warning('Set "%s" already exists ignoring.', set_code)
+            logger.warning('Set "%s" already exists, ignoring.', set_code)
     except DataError:
         logger.error('Set "%s" not created.', set_code)
     
-def import_environment_reading(
+def import_environment_measure(
         trip_code,
         set_code,
         reading_date,
@@ -149,7 +158,70 @@ def import_environment_reading(
         cloud_cover,
         surface_chop
 ):
-    pass
+    measure_type = 'drop' if is_drop else 'haul'
+    try:
+        logger.info('Trying to add %s data for set "%s" on trip "%s"', measure_type, set_code, trip_code)
+
+        the_trip = gftm.Trip.objects.filter(code=trip_code).first()
+        validate_data(the_trip, 'Trip "{}" not found when trying to import environment measure.'.format(trip_code))
+
+        the_set = gfbm.Set.objects.filter(code=set_code, trip=the_trip).first()
+        validate_data(the_set, 'Set "{}" not found when trying to import environment measure.'.format(set_code))
+
+        # Only add if data doesn't already exist
+        if (is_drop and not the_set.drop_measure) or (not is_drop and not the_set.haul_measure):
+            # normalize strings (all may be None)
+            if current_direction:
+                current_direction = current_direction.upper()
+            if tide_state:
+                try:
+                    tide_state = get_tide_state_map()[tide_state.lower()]
+                except KeyError:
+                    valdiate_data(
+                        False,
+                        'Bad tide_state "%s" for set "%s" of trip "%s"', tide_state, set_code, trip_code
+                    )
+            if wind_direction:
+                wind_direction = wind_direction.upper()
+            if surface_chop:
+                try:
+                    surface_chop = get_surface_chop_map()[surface_chop.lower()]
+                except KeyError:
+                    valdiate_data(
+                        False,
+                        'Bad tide_state "%s" for set "%s" of trip "%s"', tide_state, set_code, trip_code
+                    )
+
+            enviro_measure = gfbm.EnvironmentMeasure(
+                water_temperature=temp,
+                salinity=salinity,
+                conductivity=conductivity,
+                dissolved_oxygen=dissolved_oxygen,
+                current_flow=current_flow,
+                current_direction=current_direction,
+                tide_state=tide_state,
+                estimated_wind_speed=wind_speed,
+                wind_direction=wind_direction,
+                cloud_cover=cloud_cover,
+                surface_chop=surface_chop,
+                user=get_import_user()
+            )
+            enviro_measure.save()
+            if is_drop:
+                the_set.drop_measure = enviro_measure
+            else:
+                the_set.haul_measure = enviro_measure
+            the_set.save()
+            logger.info('%s data added.', measure_type)
+        else:
+            logger.warning(
+                'Set "%s" of trip "%s" already has %s data specified.',
+                set_code,
+                trip_code,
+                measure_type
+            )
+    except DataError:
+        logger.error('Failed while adding %s data for set "%s" on trip "%s"', measure_type, set_code, trip_code)
 
 def get_reef_habitat(site_name, reef_name, habitat_type):
     site = gfhm.Site.objects.filter(name=site_name).first()

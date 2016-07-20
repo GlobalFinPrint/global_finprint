@@ -15,9 +15,7 @@ def import_file(in_file):
 
     import_trip_data(wb['Trip'])
     import_set_data(wb['Set'])
-
-    # Environment
-    # trip_code, set_code, date, drop_haul, temp, salinity...
+    import_environment_data(wb['Environment'])
 
     # Observation
     # trip_code, set_code, date, time...
@@ -99,12 +97,37 @@ def import_environment_data(sheet):
         trip_code = get_cell(row, 'trip_code').value
         if trip_code:
             set_code = get_cell(row, 'set_code').value
-            reading_date = get_date_from_cell(row, 'date').value
+            reading_date = get_date_from_cell(get_cell(row, 'date'))
             drop_haul = get_cell(row, 'drop_haul').value
-            temp = get_cell(row, 'temp').value
-            salinity = get_cell(row, 'salinity').value
-            conductivity = get_cell(row, 'conductivity').value
-            dissolved_oxygen = get_cell(row, 'dissolved_oxygen').value
+            temp = get_float_from_cell(get_cell(row, 'temp'))
+            salinity = get_float_from_cell(get_cell(row, 'salinity'))
+            conductivity = get_float_from_cell(get_cell(row, 'conductivity'))
+            dissolved_oxygen = get_float_from_cell(get_cell(row, 'dissolved_oxygen'))
+            current_flow = get_float_from_cell(get_cell(row, 'current_flow'))
+            current_direction = get_cell(row, 'current_direction').value
+            tide_state = get_cell(row, 'tide_state').value
+            wind_speed = get_float_from_cell(get_cell(row, 'wind_speed'))
+            wind_direction = get_cell(row, 'wind_direction').value
+            cloud_cover = get_float_from_cell(get_cell(row, 'cloud_cover'))
+            surface_chop = get_cell(row, 'surface_chop').value
+
+            ic.import_environment_measure(
+                trip_code,
+                set_code,
+                reading_date,
+                drop_haul.lower() == 'drop',
+                temp,
+                salinity,
+                conductivity,
+                dissolved_oxygen,
+                current_flow,
+                current_direction,
+                tide_state,
+                wind_speed,
+                wind_direction,
+                cloud_cover,
+                surface_chop
+            )
 
 def get_cell_by_name_extractor(headers):
     extractor_func = lambda row, column_name: row[headers[column_name]]
