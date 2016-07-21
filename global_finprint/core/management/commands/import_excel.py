@@ -1,3 +1,14 @@
+"""
+import_excel
+Author: Tyler Sellon
+
+Adds "import_excel" command, accessible through manage.py.
+
+Takes a single excel workbook and imports the data.
+
+File format is specified here:
+https://www.dropbox.com/s/5yy0bb4mxbm0mdj/data_collection_standards.xlsx?dl=0
+"""
 import openpyxl
 import os
 from datetime import datetime
@@ -16,9 +27,7 @@ def import_file(in_file):
     import_trip_data(wb['Trip'])
     import_set_data(wb['Set'])
     import_environment_data(wb['Environment'])
-
-    # Observation
-    # trip_code, set_code, date, time...
+    import_observation_data(wb['Observation'])
 
 def import_trip_data(sheet):
     headers = get_header_map(sheet.rows[0])
@@ -129,6 +138,45 @@ def import_environment_data(sheet):
                 surface_chop
             )
 
+def import_observation_data(sheet):
+    headers = get_header_map(sheet.rows[0])
+    get_cell = get_cell_by_name_extractor(headers)
+    for row in sheet.rows[1:]:
+        trip_code = get_cell(row, 'trip_code').value
+        if trip_code:
+            set_code = get_cell(row, 'set_code').value
+            obvs_date = get_date_from_cell(get_cell(row, 'date'))
+            obvs_time = get_cell(row, 'time').value
+            duration = get_cell(row, 'duration').value
+            family = get_cell(row, 'family').value
+            genus = get_cell(row, 'genus').value
+            species = get_cell(row, 'species').value
+            behavior = get_cell(row, 'behaviour').value
+            sex = get_cell(row, 'sex').value
+            stage = get_cell(row, 'stage').value
+            length = get_cell(row, 'length').value
+            comment = get_cell(row, 'comment').value
+            annotator = get_cell(row, 'annotator').value
+            annotation_date = get_date_from_cell(get_cell(row, 'date'))
+
+            ic.import_observation(
+                trip_code,
+                set_code,
+                obvs_date,
+                obvs_time,
+                duration,
+                family,
+                genus,
+                species,
+                behavior,
+                sex,
+                stage,
+                length,
+                comment,
+                annotator,
+                annotation_date
+            )
+
 def get_cell_by_name_extractor(headers):
     extractor_func = lambda row, column_name: row[headers[column_name]]
     return extractor_func
@@ -161,7 +209,7 @@ def get_time_from_cell(cell):
         return cell.value
 
 class Command(BaseCommand):
-    help = ''
+    help = 'Imports observation data from excel format. Usage: python manage.py import_excel <excel_file>'
 
     def add_arguments(self, parser):
         parser.add_argument('in_file', type=str)
