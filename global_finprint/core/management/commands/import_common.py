@@ -1,3 +1,22 @@
+"""
+import_common
+Author: Tyler Sellon
+
+Package for common functionality used in Finprint's bulk data importation. All
+model related logic should be in here. File parsing should be done in other
+modules which call into this package.
+
+Main externally facing API is:
+import_trip: create a trip model
+import_set: create a set model
+import_environment_measure: adds environment data to a set
+import_observation: adds an observation to a set
+
+If data already exists, a warning is logged. If data is incomplete or malformed,
+an error is logged. In ether case, no error is raised to the caller. If use of
+this package spreads to functions beyond basic bulk import commands, we should
+add error signaling.
+"""
 import logging
 import functools
 
@@ -6,10 +25,19 @@ import global_finprint.trip.models as gftm
 import global_finprint.core.models as gfcm
 import global_finprint.habitat.models as gfhm
 import global_finprint.bruv.models as gfbm
+import global_finprint.annotation.models.video as gfav
+import global_finprint.annotation.models.animal as gfaa
+import global_finprint.annotation.models.observation as gfao
 from django.contrib.gis.geos import GEOSGeometry
+from django.db import transaction
 
 FRAME_FIELD_LENGTH = 32
 CAMERA_FIELD_LENGTH = 32
+
+LEGACY_USER_FORMAT = 'LEGACY_{}'
+LEGACY_EMAIL_FORMAT = '{}@sink.arpa'
+LEGACY_AFFILITATION = 'Legacy'
+LEGACY_COMMENT = 'Auto-imported legacy data.'
 
 logger = logging.getLogger('scripts')
 
@@ -27,6 +55,14 @@ def get_tide_state_map():
 @functools.lru_cache()
 def get_surface_chop_map():
     return  make_choices_reverse_map(gfbm.SURFACE_CHOP_CHOICES)
+
+@functools.lru_cache()
+def get_animal_sex_map():
+    return make_choices_reverse_map(gfaa.ANIMAL_SEX_CHOICES)
+
+@functools.lru_cache()
+def get_animal_stage_map():
+    return make_choices_reverse_map(gfaa.ANIMAL_STAGE_CHOICES)
 
 def make_choices_reverse_map(choices_set):
     result = {}
@@ -102,7 +138,7 @@ def import_set(
         equipment_str,
         bait_str,
         visibility,
-        video,
+        video_str,
         comment
 ):
     try:
@@ -115,6 +151,11 @@ def import_set(
             reef_habitat = get_reef_habitat(site_name, reef_name, habitat_type)
             equipment = parse_equipment_string(equipment_str)
             bait = parse_bait_string(bait_str)
+            if video_str:
+                video = gfav.Video(file=video_str, user=get_import_user())
+                video.save()
+            else:
+                video = None
             if not visibility:
                 visibility = '0'
 
@@ -132,6 +173,7 @@ def import_set(
                 equipment=equipment,
                 reef_habitat=reef_habitat,
                 trip=trip,
+                video=video,
                 user=get_import_user()
             )
             set.save()
@@ -222,6 +264,159 @@ def import_environment_measure(
             )
     except DataError:
         logger.error('Failed while adding %s data for set "%s" on trip "%s"', measure_type, set_code, trip_code)
+
+def import_observation(
+        trip_code,
+        set_code,
+        obsv_date,
+        obsv_time,
+        duration,
+        family,
+        genus,
+        species,
+        behavior,
+        sex,
+        stage,
+        length,
+        comment,
+        annotator,
+        annotation_date
+):
+    try:
+        logger.info(
+            'Trying to add observation data from "%s" for set "%s" on trip "%s"',
+            annotator,
+            set_code,
+            trip_code
+        )
+
+        with transaction.atomic():
+            the_trip = gftm.Trip.objects.filter(code=trip_code).first()
+            validate_data(the_trip, 'Trip "{}" not found when trying to import observation.'.format(trip_code))
+
+            the_set = gfbm.Set.objects.filter(code=set_code, trip=the_trip).first()
+            validate_data(the_set, 'Set "{}" not found when trying to import observation.'.format(set_code))
+            validate_data(the_set.video, 'No video associated with set "{}"'.format(set_code))
+
+            annotator_user = get_annotator(annotator)
+            assignment = get_assignment(annotator_user, the_set.video)
+
+            if does_observation_exist(assignment, duration, obsv_time, comment):
+                logger.warning(
+                    'Not importing: identical observation already exists from "%s" for set "%s" on trip "%s"',
+                    annotator,
+                    set_code,
+                    trip_code
+                )
+            else:
+                observation = gfao.Observation(
+                    assignment=assignment,
+                    duration=duration,
+                    comment=LEGACY_COMMENT,
+                    user=get_import_user()
+                )
+                observation.save()
+
+                if family:
+                    observation.type = 'A'
+                    observation.save()
+                    animal = gfaa.Animal.objects.filter(
+                        family=family,
+                        genus=genus,
+                        species=species
+                    ).first()
+                    validate_data(animal, 'Unable to find animal {} - {} - {}'.format(family, genus, species))
+                    animal_obsv_args = {
+                        'observation': observation,
+                        'animal': animal,
+                        'user': get_import_user()
+                    }
+                    if sex:
+                        animal_obsv_args['sex'] = get_animal_sex_map()[sex.lower()]
+                    if length:
+                        animal_obsv_args['length'] = length
+                    if stage:
+                        animal_obsv_args['stage'] = get_animal_stage_map()[stage.lower()]
+                    animal_obsv = gfao.AnimalObservation(**animal_obsv_args)
+                    animal_obsv.save()
+
+                event = gfao.Event(
+                    observation=observation,
+                    event_time=obsv_time,
+                    note=comment,
+                    user=get_import_user()
+                )
+                event.save()
+                logger.info(
+                    'Successfully added observation data from "%s" for set "%s" on trip "%s"',
+                    annotator,
+                    set_code,
+                    trip_code
+                )
+    except DataError:
+        logger.error('Failed while adding observation for set "%s" of trip "%s"', set_code, trip_code)
+
+def does_observation_exist(
+        assignment,
+        duration,
+        obsv_time,
+        comment
+):
+    result = False
+    observation = gfao.Observation.objects.filter(
+        assignment=assignment,
+        duration=duration,
+        comment=LEGACY_COMMENT
+    ).first()
+
+    if observation:
+        event = gfao.Event.objects.filter(
+            observation=observation,
+            event_time=obsv_time,
+            note=comment
+        ).first()
+        if event:
+            result = True
+    return result
+
+def get_assignment(annotator_user, video):
+    assignment = gfav.Assignment.objects.filter(
+        annotator=annotator_user,
+        video=video
+    ).first()
+    if not assignment:
+        assignment = gfav.Assignment(
+            annotator=annotator_user,
+            video=video,
+            assigned_by=gfcm.FinprintUser.objects.filter(user=get_import_user()).first(),
+            user=get_import_user()
+        )
+        assignment.save()
+    return assignment
+
+def get_annotator(annotator):
+    # TODO: find out format of annotator column
+    username = LEGACY_USER_FORMAT.format(annotator)
+    django_user = djam.User.objects.filter(username=username).first()
+    if not django_user:
+        django_user = djam.User(
+            username=username,
+            email=LEGACY_EMAIL_FORMAT.format(annotator),
+            last_name=annotator
+        )
+        django_user.save()
+    annotator_user = gfcm.FinprintUser.objects.filter(user=django_user).first()
+    if not annotator_user:
+        affiliation = gfcm.Affiliation.objects.filter(name=LEGACY_AFFILITATION).first()
+        if not affiliation:
+            affiliation = gfcm.Affiliation(name=LEGACY_AFFILITATION)
+            affiliation.save()
+        annotator_user = gfcm.FinprintUser(
+            user=django_user,
+            affiliation=affiliation
+        )
+        annotator_user.save()
+    return annotator_user
 
 def get_reef_habitat(site_name, reef_name, habitat_type):
     site = gfhm.Site.objects.filter(name=site_name).first()
