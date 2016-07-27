@@ -133,6 +133,9 @@ class Bait(AuditableModel):
     def __str__(self):
         return u'{0} {1} {2}'.format(self.get_type_display(), self.description, '*' if self.oiled else '')
 
+    class Meta:
+        unique_together = ('description', 'type', 'oiled')
+
 
 class Set(AuditableModel):
     # suggested code pattern:
@@ -140,8 +143,8 @@ class Set(AuditableModel):
     code = models.CharField(max_length=32, help_text='[site + reef code]_xxx', null=True, blank=True)
     set_date = models.DateField()
     coordinates = models.PointField(null=True)
-    latitude = models.DecimalField(max_digits=10, decimal_places=6)
-    longitude = models.DecimalField(max_digits=10, decimal_places=6)
+    latitude = models.DecimalField(max_digits=12, decimal_places=8)
+    longitude = models.DecimalField(max_digits=12, decimal_places=8)
     drop_time = models.TimeField()
     haul_time = models.TimeField()
     visibility = models.CharField(max_length=3, choices=VISIBILITY_CHOICES)

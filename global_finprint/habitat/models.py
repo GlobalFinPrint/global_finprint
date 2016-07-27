@@ -23,6 +23,9 @@ class Region(models.Model):
 class Location(models.Model):
     name = models.CharField(max_length=100, unique=True)
     code = models.CharField(max_length=4, unique=True, help_text='3166-1 alpha-2, if applicable.')
+    boundary = models.MultiPolygonField(srid=4326, null=True, blank=True)
+    eez_boundary = models.MultiPolygonField(srid=4326, null=True, blank=True)
+
     region = models.ForeignKey(to=Region)
 
     @property

@@ -4,6 +4,7 @@ from global_finprint.annotation.views.annotation import site_animal_list, annota
 from global_finprint.annotation.views.observations import observation_post
 from ..habitat.views import reef_detail_geojson
 from ..trip.views import trip_sets_geojson
+from ..report.views import planned_site_geojson
 from global_finprint.api import views
 
 
@@ -11,6 +12,7 @@ urlpatterns = [
     # geo
     url(r"^reef/(?P<reef_id>\d+)/geojson/$", reef_detail_geojson, name='api_reef_detail_geojson'),
     url(r"^trip/(?P<trip_id>\d+)/sets/geojson/$", trip_sets_geojson, name='api_trip_sets_geojson'),
+    url(r"^report/status/geojson/$", planned_site_geojson, name='api_planned_site_geojson'),
 
     # annotation
     url(r"^observation/$", observation_post, name='api_observation_post'),
