@@ -1,13 +1,10 @@
 """
-import_excel
+import_event_measure
 Author: Tyler Sellon
 
-Adds "import_excel" command, accessible through manage.py.
+Adds "import_event_measure" command, accessible through manage.py.
 
-Takes a single excel workbook and imports the data.
-
-File format is specified here:
-https://www.dropbox.com/s/5yy0bb4mxbm0mdj/data_collection_standards.xlsx?dl=0
+Takes a single event measure csv and imports the data.
 """
 import os
 from datetime import datetime
