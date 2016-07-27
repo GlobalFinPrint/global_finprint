@@ -74,6 +74,8 @@ class SetList(APIView):
                 assignments = assignments.filter(video__set__trip__id=request.GET.get('trip_id'))
             if 'set_id' in request.GET:
                 assignments = assignments.filter(video__set__id=request.GET.get('set_id'))
+            if 'annotator_id' in request.GET:
+                assignments = assignments.filter(annotator_id=request.GET.get('annotator_id'))
         else:
             assignments = Assignment.get_active_for_annotator(request.annotator)
         return JsonResponse({'sets': list(va.to_json() for va in assignments)})
@@ -81,9 +83,21 @@ class SetList(APIView):
 
 class TripList(APIView):
     def get(self, request):
+        if request.GET.get('assigned', False):
+            assignments = Assignment.objects.filter(status_id__in=[1, 2, 3])
+            trips = set(a.set().trip for a in assignments)
+        else:
+            trips = Trip.objects.all()
         return JsonResponse({'trips': list({'id': t.id, 'trip': str(t),
                                             'sets': list({'id': s.id, 'set': str(s)} for s in t.set_set.all())}
-                                           for t in Trip.objects.all())})
+                                           for t in trips)})
+
+
+class AnnotatorList(APIView):
+    def get(self, request):
+        assignments = Assignment.objects.filter(status_id__in=[1, 2, 3])
+        return JsonResponse({'annotators': list({'id': an.id, 'annotator': str(an)}
+                                                for an in set(a.annotator for a in assignments))})
 
 
 class SetDetail(APIView):

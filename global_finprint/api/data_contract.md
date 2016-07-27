@@ -36,6 +36,7 @@ Provides a list of unfinished sets assigned to an annotator for review, or a lis
 - token: (string)
 - trip_id: (integer) (optional)
 - set_id: (integer) (optional)
+- annotator_id: (integer) (optional)
 
 **Returns** (JSON):
 - sets (array of [set list objects](#set-list-response-object))
@@ -47,6 +48,7 @@ Provides a list of trips (for use in lead assignment filtering).
 
 **Expects** (GET):
 - token: (string)
+- assigned: (boolean) (optional)
 
 **Returns** (JSON):
 - trips: (array)
@@ -55,6 +57,19 @@ Provides a list of trips (for use in lead assignment filtering).
     - sets: (array of objects)
         - id: (integer)
         - set: (string)
+
+
+### Annotator listing
+ `GET /api/annotator`
+ Provides a list of annotators (for use in lead assignment filtering):
+
+**Expects** (GET):
+- token: (string)
+
+**Returns** (JSON):
+- annotators: (array)
+    - id: (integer)
+    - annotator: (string)
 
 
 ### Set detail
