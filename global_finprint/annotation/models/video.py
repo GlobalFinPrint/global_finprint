@@ -1,5 +1,4 @@
-from django.db import models
-
+from django.db import models, connection
 from global_finprint.core.models import AuditableModel, FinprintUser
 
 
@@ -56,4 +55,18 @@ class Assignment(AuditableModel):
                 'set_code': str(self.set()),
                 'file': str(self.video.file),
                 'assigned_to': {'id': self.annotator.id, 'user': str(self.annotator)},
-                'progress': self.progress}
+                'progress': self.progress,
+                'status': {'id': self.status_id, 'name': self.status.name},
+                'assigned_at': self.create_datetime,
+                'last_activity': self.last_activity()}
+
+    def last_activity(self):
+        sql = '''
+        SELECT max(greatest(e.last_modified_datetime, o.last_modified_datetime))
+        FROM annotation_observation o
+        JOIN annotation_event e ON (e.observation_id = o.id)
+        WHERE o.assignment_id = %s
+        '''
+        with connection.cursor() as cursor:
+            cursor.execute(sql, [self.id])
+            return cursor.fetchone()[0]

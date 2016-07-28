@@ -293,6 +293,11 @@ Set objects returned in lists (not when getting set detail) will follow this sta
         - id: (integer)
         - user: (string)
     - progress: (integer)
+    - status: (object)
+        - id: (integer)
+        - name: (string)
+    - assigned_at: (date/time)
+    - last_activity: (date/time)
 
 
 ### Observation response object
