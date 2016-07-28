@@ -51,14 +51,15 @@ class Assignment(AuditableModel):
         return cls.get_active().filter(annotator=annotator)
 
     def to_json(self):
+        last_activity = self.last_activity()
         return {'id': self.id,
                 'set_code': str(self.set()),
                 'file': str(self.video.file),
                 'assigned_to': {'id': self.annotator.id, 'user': str(self.annotator)},
                 'progress': self.progress,
                 'status': {'id': self.status_id, 'name': self.status.name},
-                'assigned_at': self.create_datetime,
-                'last_activity': self.last_activity()}
+                'assigned_at': self.create_datetime.strftime('%b %d, %Y %I:%m %p'),
+                'last_activity': last_activity.strftime('%b %d, %Y %I:%m %p') if last_activity else 'None'}
 
     def last_activity(self):
         sql = '''
