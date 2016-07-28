@@ -44,11 +44,11 @@ class Assignment(AuditableModel):
 
     @classmethod
     def get_active(cls):
-        return cls.objects.filter(status_id__in=[1, 2])
+        return cls.objects.filter(status_id__in=[1, 2, 3])
 
     @classmethod
     def get_active_for_annotator(cls, annotator):
-        return cls.get_active().filter(annotator=annotator)
+        return cls.objects.filter(annotator=annotator, status_id__in=[1, 2])
 
     def to_json(self):
         last_activity = self.last_activity()

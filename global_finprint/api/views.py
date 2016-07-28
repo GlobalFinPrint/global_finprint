@@ -69,7 +69,7 @@ class Logout(APIView):
 class SetList(APIView):
     def get(self, request):
         if request.annotator.is_lead() and 'filtered' in request.GET:
-            assignments = Assignment.objects.filter(status_id__in=[1, 2, 3])
+            assignments = Assignment.get_active()
             if 'trip_id' in request.GET:
                 assignments = assignments.filter(video__set__trip__id=request.GET.get('trip_id'))
             if 'set_id' in request.GET:
@@ -86,7 +86,7 @@ class SetList(APIView):
 class TripList(APIView):
     def get(self, request):
         if request.GET.get('assigned', False):
-            assignments = Assignment.objects.filter(status_id__in=[1, 2, 3])
+            assignments = Assignment.get_active()
             sets = set(a.set() for a in assignments)
             trips = set(s.trip for s in sets)
             return JsonResponse({'trips': list({'id': t.id, 'trip': str(t),
@@ -102,7 +102,7 @@ class TripList(APIView):
 
 class AnnotatorList(APIView):
     def get(self, request):
-        assignments = Assignment.objects.filter(status_id__in=[1, 2, 3])
+        assignments = Assignment.get_active()
         return JsonResponse({'annotators': list({'id': an.id, 'annotator': str(an)}
                                                 for an in set(a.annotator for a in assignments))})
 
