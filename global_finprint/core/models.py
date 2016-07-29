@@ -67,7 +67,7 @@ class FinprintUser(models.Model):
             'affiliation': self.affiliation.name,
             'assignments': [{'id': a.id, 'set': a.set().code, 'status': str(a.status)}
                             for a in self.assignment_set.all()],
-            'observations': [{'id': o.id, 'time': o.initial_observation_time}
+            'observations': [{'id': o.id, 'time': o.initial_observation_time()}
                              for o in self.observations_created.all()]
         }
 
