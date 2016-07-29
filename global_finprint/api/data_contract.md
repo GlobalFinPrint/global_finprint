@@ -96,6 +96,9 @@ Provides details for the specified set along with data used for annotation tool 
     - id: (integer)
     - name: (string)
     - description: (string)
+- status: (object)
+    - id: (integer)
+    - name: (string)
 
 
 ### Observation listing
