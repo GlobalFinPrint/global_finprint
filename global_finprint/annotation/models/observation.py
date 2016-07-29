@@ -179,6 +179,7 @@ class Event(AuditableModel):
                                                  self.observation_id,
                                                  self.id)
 
+    # TODO do we need to check for every key? maybe just use filename and a base_url
     def image_url(self):
         try:
             conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
