@@ -191,6 +191,32 @@ class StatusUpdate(APIView):
         return JsonResponse({'status': 'OK'})
 
 
+class AcceptAssignment(APIView):
+    def post(self, request, set_id):
+        if not request.annotator.is_lead():
+            message = 'Assignment can only be Accepted by a lead'
+        elif request.va.status_id != 3:
+            message = 'Assignment must be Ready for Review to be Accepted'
+        else:
+            request.va.status_id = 4
+            request.va.save()
+            message = 'OK'
+        return JsonResponse({'status': message})
+
+
+class RejectAssignment(APIView):
+    def post(self, request, set_id):
+        if not request.annotator.is_lead():
+            message = 'Assignment can only be Rejected by a lead'
+        elif request.va.status_id != 3:
+            message = 'Assignment must be Ready for Review to be Rejected'
+        else:
+            request.va.status_id = 6
+            request.va.save()
+            message = 'OK'
+        return JsonResponse({'status': message})
+
+
 class ProgressUpdate(APIView):
     def post(self, request, set_id):
         new_progress = request.va.update_progress(int(request.POST.get('progress')))
