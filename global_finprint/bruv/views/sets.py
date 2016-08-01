@@ -41,6 +41,7 @@ class SetListView(UserAllowedMixin, View):
             'trip_pk': parent_trip.pk,
             'trip_name': str(parent_trip),
             'sets': self._get_filtered_sets(parent_trip),
+            'search_form': SetSearchForm(self.request.GET or None)
         })
 
     def _get_filtered_sets(self, parent_trip):
@@ -55,8 +56,8 @@ class SetListView(UserAllowedMixin, View):
             'equipment',
             'reef_habitat',
         ]
-        form = SetSearchForm(self.request.GET)
         search_terms = {}
+        form = SetSearchForm(self.request.GET)
         if self.request.GET and form.is_valid():
             search_values = form.cleaned_data
             search_terms = dict((key, val) for (key, val) in search_values.items()
@@ -123,7 +124,6 @@ class SetListView(UserAllowedMixin, View):
 
         # new set form
         else:
-            context['search_form'] = SetSearchForm(self.request.GET or None)
             context['set_form'] = SetForm(
                 None,
                 initial=self._get_set_form_defaults(parent_trip),

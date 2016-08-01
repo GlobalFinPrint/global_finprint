@@ -62,12 +62,6 @@ a {
 
 }
 
-//.search .form-inline .form-group:last-child {
-//  display: inline-block;
-//  vertical-align: bottom;
-//  padding-bottom: 15px;
-//}
-
 .form-inline {
   .form-group {
     vertical-align: top;
@@ -78,22 +72,7 @@ a {
       position: relative;
       padding-bottom: 30px;
 
-//      span.help-block {
-//        position: absolute;
-//        top: 55px;
-//        left: 0;
-//      }
     }
-
-//    p.help-block {
-//      display: inline;
-//    }
-
-//    &:last-child {
-//      display: block;
-//      text-align: right;
-//      padding-bottom: 0;
-//    }
 
     a.cancel-button {
       margin: 0 10px;
