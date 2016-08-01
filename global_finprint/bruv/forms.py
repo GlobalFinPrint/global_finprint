@@ -1,9 +1,11 @@
 from django import forms
 from crispy_forms.helper import FormHelper
+import crispy_forms.layout as cfl
+import crispy_forms.bootstrap as cfb
 from bootstrap3_datetime.widgets import DateTimePicker
-from .models import Set, EnvironmentMeasure, Bait
+from .models import Set, EnvironmentMeasure, Bait, Equipment
 from ..trip.models import Trip
-from ..habitat.models import Reef, ReefType
+from ..habitat.models import Reef, ReefType, ReefHabitat
 
 
 timepicker_opts = {"format": "HH:mm", "showClear": True}
@@ -59,6 +61,39 @@ class SetForm(forms.ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
+
+class SetSearchForm(forms.Form):
+    set_date = forms.DateField(required=False,
+                               input_formats=['%B %d %Y'],
+                               widget=DateTimePicker(options=datepicker_opts))
+    reef = forms.ModelChoiceField(required=False,
+                                  queryset=Reef.objects.all())
+    habitat = forms.ModelChoiceField(required=False,
+                                     queryset=ReefType.objects.all())
+    equipment = forms.ModelChoiceField(required=False,
+                                       queryset=Equipment.objects.filter(set__in=Set.objects.all()).distinct())
+    bait = forms.ModelChoiceField(required=False,
+                                  queryset=Bait.objects.filter(set__in=Set.objects.all()).distinct())
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_class = 'form-inline set-search form-group-sm'
+        self.helper.form_method = "get"
+        self.helper.layout = cfl.Layout(
+            cfl.Fieldset(
+                'Filter by:',
+                'set_date',
+                'reef',
+                'habitat',
+                'equipment',
+                'bait'),
+            cfl.Div(
+                cfb.FormActions(
+                    cfl.HTML("""<a role="button" class="btn btn-default cancel-button"
+                    href="{% url "trip_set_list" trip_pk %}">Reset</a>"""),
+                    cfl.Submit('', 'Search')),
+                css_class='row pull-right'))
 
 class EnvironmentMeasureForm(forms.ModelForm):
     class Meta:
