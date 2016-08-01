@@ -10,6 +10,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initAssignButtons();
         initAssignmentSearch();
         initAssignmentModals();
+        initShowFormButtons();
         initManageStateButtons();
         initAutomaticAssignment();
         initAnnotatorPopover();
@@ -98,6 +99,15 @@ var finprint = finprint || {};  //namespace if necessary...
                 $modal.modal('hide');
                 $('form#assignment-search-form button#search').click();
             });
+        });
+    }
+
+    function initShowFormButtons() {
+        var $buttons = $('#btn-show-form');
+
+        $buttons.click(function(){
+            $('#hidden-div').show();
+            $('#btn-show-form').hide();
         });
     }
 
