@@ -10,9 +10,9 @@ from django.template import RequestContext
 from global_finprint.trip.models import Trip
 from global_finprint.bruv.models import Equipment
 from ..models import Set
-from ..forms import SetForm, EnvironmentMeasureForm
+from ..forms import SetForm, EnvironmentMeasureForm, SetSearchForm
 from ...annotation.forms import VideoForm
-from ...habitat.models import ReefHabitat
+from ...habitat.models import ReefHabitat, Reef
 from ...core.mixins import UserAllowedMixin
 
 from datetime import datetime
@@ -36,6 +36,16 @@ class SetListView(UserAllowedMixin, View):
     template = 'pages/sets/set_list.html'
 
     def _common_context(self, request, parent_trip):
+        return RequestContext(request, {
+            'request': request,
+            'trip_pk': parent_trip.pk,
+            'trip_name': str(parent_trip),
+            'sets': self._get_filtered_sets(parent_trip),
+            'search_form': SetSearchForm(self.request.GET or None)
+        })
+
+    def _get_filtered_sets(self, parent_trip):
+        result = None
         prefetch = [
             'trip',
             'drop_measure',
@@ -46,12 +56,20 @@ class SetListView(UserAllowedMixin, View):
             'equipment',
             'reef_habitat',
         ]
-        return RequestContext(request, {
-            'request': request,
-            'trip_pk': parent_trip.pk,
-            'trip_name': str(parent_trip),
-            'sets': Set.objects.filter(trip=parent_trip).prefetch_related(*prefetch).order_by('set_date', 'drop_time'),
-        })
+        search_terms = {}
+        form = SetSearchForm(self.request.GET)
+        if self.request.GET and form.is_valid():
+            search_values = form.cleaned_data
+            search_terms = dict((key, val) for (key, val) in search_values.items()
+                    if key in ['set_date', 'equipment', 'bait'] and val is not None)
+            if search_values['reef']:
+                search_terms['reef_habitat__reef'] = search_values['reef']
+            if search_values['habitat']:
+                search_terms['reef_habitat__habitat'] = search_values['habitat']
+        search_terms['trip'] = parent_trip
+        result = Set.objects.filter(**search_terms).prefetch_related(*prefetch).order_by('set_date', 'drop_time')
+
+        return result
 
     def _get_set_form_defaults(self, parent_trip):
         set_form_defaults = {
