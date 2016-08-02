@@ -54,6 +54,31 @@ a {
   border-color: #eed3d7;
 }
 
+.main-splash {
+  background-image: url("/static/images/fp_main.jpg");
+  background-repeat: no-repeat;
+}
+
+.splash-header {
+  color: white;
+  background-color: $blue;
+  opacity: 0.9;
+  padding: 12px 18px;
+}
+
+.splash-actions {
+  background-color: white;
+  opacity: 0.9;
+  padding: 12px 18px;
+  li {
+    padding: 15px 0px;
+  }
+}
+
+.splash-spacer {
+  height: 450px;
+}
+
 .generic-list {
   list-style-type: none;
 }
