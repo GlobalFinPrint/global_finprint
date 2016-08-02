@@ -66,7 +66,7 @@ BAIT_TYPE_CHOICES = {
 
 class FrameType(models.Model):
     # starting seed:  rebar, stainless rebar, PVC, mixed
-    type = models.CharField(max_length=16)
+    type = models.CharField(max_length=32)
     image = models.ImageField(null=True, blank=True)
 
     def __str__(self):
@@ -74,12 +74,12 @@ class FrameType(models.Model):
 
 
 class Equipment(AuditableModel):
-    camera = models.CharField(max_length=16)
+    camera = models.CharField(max_length=32)
     stereo = models.BooleanField(default=False)
     frame_type = models.ForeignKey(to=FrameType)
     bait_container = models.CharField(max_length=1, choices=EQUIPMENT_BAIT_CONTAINER, default='C')
-    arm_length = models.PositiveIntegerField(help_text='centimeters')
-    camera_height = models.PositiveIntegerField(help_text='centimeters')
+    arm_length = models.PositiveIntegerField(null=True, help_text='centimeters')
+    camera_height = models.PositiveIntegerField(null=True, help_text='centimeters')
 
     def __str__(self):
         return u"{0} / {1}".format(self.frame_type.type, self.camera)
@@ -96,7 +96,7 @@ class EnvironmentMeasure(AuditableModel):
                                    max_digits=4, decimal_places=2,
                                    help_text='ppt')  # ppt .0
     conductivity = models.DecimalField(null=True, blank=True,
-                                       max_digits=4, decimal_places=2,
+                                       max_digits=8, decimal_places=2,
                                        help_text='S/m')  # S/m .00
     dissolved_oxygen = models.DecimalField(null=True, blank=True,
                                            max_digits=3, decimal_places=1,
@@ -126,7 +126,7 @@ class EnvironmentMeasure(AuditableModel):
 
 
 class Bait(AuditableModel):
-    description = models.CharField(max_length=16, help_text='1kg')
+    description = models.CharField(max_length=32, help_text='1kg')
     type = models.CharField(max_length=3, choices=BAIT_TYPE_CHOICES)
     oiled = models.BooleanField(default=False, help_text='20ml menhaden oil')
 
@@ -200,7 +200,8 @@ class Set(AuditableModel):
         return reverse('set_update', args=[str(self.id)])
 
     def observations(self):
-        return Observation.objects.filter(assignment__in=self.video.assignment_set.all())
+        if self.video:
+            return Observation.objects.filter(assignment__in=self.video.assignment_set.all())
 
     def __str__(self):
         return u"{0}_{1}".format(self.trip.code, self.code)
