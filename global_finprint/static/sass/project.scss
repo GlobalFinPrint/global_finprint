@@ -84,6 +84,24 @@ a {
   }
 }
 
+thead {
+  tr{
+    border: 0;
+    th {
+      border: 0 !important;
+    }
+  }
+
+  tr.table-header-title {
+    color: white;
+    background-color: $blue;
+  }
+
+  tr.table-header-labels {
+    color: $blue;
+  }
+}
+
 .set-table th#edit {
   vertical-align: middle;
 }
@@ -95,20 +113,6 @@ table.set-table {
 
   tr.env-headers, tr.env-row {
     display: none;
-  }
-}
-
-tr.bg-primary {
-  border: 0;
-  th {
-    border: 0 !important;
-  }
-}
-
-tr.bg-info {
-  border: 0;
-  th {
-    border: 0 !important;
   }
 }
 
@@ -212,14 +216,12 @@ a.manual-assign {
 }
 
 .panel-heading .accordion-toggle:after {
-    /* symbol for "opening" panels */
-    font-family: 'Glyphicons Halflings';
-    content: "\e114";
+    /* symbol for "opened" panels */
+    @include glyphicon("\e114");
     float: right;
-    color: grey;
 }
 
 .panel-heading.collapsed .accordion-toggle:after {
     /* symbol for "collapsed" panels */
-    content: "\e079";
+    @include glyphicon("\e079");
 }
