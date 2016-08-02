@@ -40,10 +40,14 @@
             </div>
         </div>
 
+        {% if set_pk %}
+        <div>
+        {% else %}
         <div>
             <p class="text-right"><a id="btn-show-form" class="btn btn-primary">Create new set</a></p>
         </div>
         <div id="hidden-div" style="display: none;">
+        {% endif %}    
             {% if request.user.is_authenticated %}
             <div class="row">
                 {% if set_pk %}
