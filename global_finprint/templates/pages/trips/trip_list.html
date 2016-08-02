@@ -15,11 +15,19 @@
 
         {% if request.user.is_authenticated %}
         <div class="row">
+            {% if trip_pk %}
+            <div class="well clearfix">
+            {% else %}
             <div>
                 <p class="text-right"><a id="btn-show-form" class="btn btn-primary">Create new trip</a></p>
             </div>
             <div id="hidden-div" class="well clearfix" style="display: none;">
-                <legend>New trip:</legend>
+            {% endif %}
+                {% if trip_pk %}
+                <legend>Edit trip</legend>
+                {% else %}
+                <legend>New trip</legend>
+                {% endif %}
                 {% crispy form %}
             </div>
         </div>
