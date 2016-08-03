@@ -131,7 +131,7 @@ class Bait(AuditableModel):
     oiled = models.BooleanField(default=False, help_text='20ml menhaden oil')
 
     def __str__(self):
-        return u'{0} {1} {2}'.format(self.get_type_display(), self.description, '*' if self.oiled else '')
+        return u'{0} {1} {2}'.format(self.get_type_display(), self.description, '(m)' if self.oiled else '')
 
     class Meta:
         unique_together = ('description', 'type', 'oiled')
