@@ -15,7 +15,7 @@
 
         {% if request.user.is_authenticated %}
         <div class="row">
-            {% if trip_pk %}
+            {% if trip_pk or form.errors %}
             <div class="well clearfix">
             {% else %}
             <div>
