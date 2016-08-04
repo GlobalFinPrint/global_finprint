@@ -28,6 +28,7 @@ import global_finprint.bruv.models as gfbm
 import global_finprint.annotation.models.video as gfav
 import global_finprint.annotation.models.animal as gfaa
 import global_finprint.annotation.models.observation as gfao
+import global_finprint.annotation.models.annotation as gfan
 from django.contrib.gis.geos import GEOSGeometry
 from django.db import transaction
 
@@ -153,7 +154,7 @@ def import_set(
             equipment = parse_equipment_string(equipment_str)
             bait = parse_bait_string(bait_str)
             video_name = '{}_{}.avi'.format(trip_code, set_code)
-            video = gfav.Video(video=video_name, source_folder=source_video_str, user=get_import_user())
+            video = gfav.Video(file=video_name, source_folder=source_video_str, user=get_import_user())
             video.save()
             if not visibility:
                 visibility = '0'
@@ -339,10 +340,16 @@ def import_observation(
                     animal_obsv = gfao.AnimalObservation(**animal_obsv_args)
                     animal_obsv.save()
 
-                event = gfao.Event(
+                attribute_ids = None
+                if behavior:
+                    att, _  = gfan.Attribute.objects.get_or_create(name=behavior)
+                    attribute_ids = [att.id]
+
+                event = gfao.Event.create(
                     observation=observation,
                     event_time=obsv_time,
                     note=comment,
+                    attribute=attribute_ids,
                     user=get_import_user()
                 )
                 event.save()
