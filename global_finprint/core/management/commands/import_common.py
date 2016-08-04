@@ -138,7 +138,7 @@ def import_set(
         equipment_str,
         bait_str,
         visibility,
-        video_str,
+        source_video_str,
         comment
 ):
     try:
@@ -151,11 +151,9 @@ def import_set(
             reef_habitat = get_reef_habitat(site_name, reef_name, habitat_type)
             equipment = parse_equipment_string(equipment_str)
             bait = parse_bait_string(bait_str)
-            if video_str:
-                video = gfav.Video(file=video_str, user=get_import_user())
-                video.save()
-            else:
-                video = None
+            video_name = '{}_{}.avi'.format(trip_code, set_code)
+            video = gfav.Video(video=video_name, source_folder=source_video_str, user=get_import_user())
+            video.save()
             if not visibility:
                 visibility = '0'
 
