@@ -68,6 +68,7 @@ def make_choices_reverse_map(choices_set):
     result = {}
     for abrev, verbose in choices_set:
         result[verbose.lower()] = abrev
+        result[abrev.lower()] = abrev
     return result
 
 @functools.lru_cache()
