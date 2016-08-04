@@ -19,6 +19,7 @@ add error signaling.
 """
 import logging
 import functools
+import json
 
 import django.contrib.auth.models as djam
 import global_finprint.trip.models as gftm
@@ -282,6 +283,7 @@ def import_observation(
         annotator,
         annotation_date
 ):
+    json_args = json.dumps(locals(), sort_keys=True, default=lambda a: a.isoformat())
     try:
         logger.info(
             'Trying to add observation data from "%s" for set "%s" on trip "%s"',
@@ -301,7 +303,7 @@ def import_observation(
             annotator_user = get_annotator(annotator)
             assignment = get_assignment(annotator_user, the_set.video)
 
-            if does_observation_exist(assignment, duration, obsv_time, comment):
+            if does_observation_exist(assignment, duration, obsv_time, json_args):
                 logger.warning(
                     'Not importing: identical observation already exists from "%s" for set "%s" on trip "%s"',
                     annotator,
@@ -348,7 +350,7 @@ def import_observation(
                 event = gfao.Event.create(
                     observation=observation,
                     event_time=obsv_time,
-                    note=comment,
+                    note=json_args,
                     attribute=attribute_ids,
                     user=get_import_user()
                 )
@@ -369,20 +371,14 @@ def does_observation_exist(
         comment
 ):
     result = False
-    observation = gfao.Observation.objects.filter(
-        assignment=assignment,
-        duration=duration,
-        comment=LEGACY_COMMENT
+    event = gfao.Event.objects.filter(
+        observation__assignment=assignment,
+        observation__duration=duration,
+        event_time=obsv_time,
+        note=comment
     ).first()
-
-    if observation:
-        event = gfao.Event.objects.filter(
-            observation=observation,
-            event_time=obsv_time,
-            note=comment
-        ).first()
-        if event:
-            result = True
+    if event:
+        result = True
     return result
 
 def get_assignment(annotator_user, video):
