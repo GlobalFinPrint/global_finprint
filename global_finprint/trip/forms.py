@@ -44,11 +44,17 @@ class TripForm(forms.ModelForm):
                 *([None] + self.Meta.fields)
             ),
             cfl.Div(
-                cfb.FormActions(
-                    cfl.HTML("""<a role="button" class="btn btn-default cancel-button"
-                    href="{% url "trip_list" %}">Cancel</a>"""),
-                    cfl.Submit('save', 'Save trip')),
-                css_class='row pull-right'))
+                cfl.Div(
+                    cfl.HTML('<small class="help-block">**Note: If code is left blank, it will be automatically generated.</small>'),
+                    css_class='pull-left'),
+                cfl.Div(
+                    cfb.FormActions(
+                        cfl.HTML("""<a role="button" class="btn btn-default cancel-button"
+                        href="{% url "trip_list" %}">Cancel</a>"""),
+                        cfl.Submit('save', 'Save trip')),
+                    css_class='pull-right'),
+                css_class='row'))
+        self.fields['code'].label += '**'
 
 
 class TripSearchForm(forms.Form):

@@ -40,7 +40,7 @@
             </div>
         </div>
 
-        {% if set_pk %}
+        {% if set_pk or set_form.errors or drop_form.errors or haul_form.errors or video_form.errors %}
         <div>
         {% else %}
         <div>
@@ -62,7 +62,7 @@
                     <form class="form-inline set ng-pristine ng-valid" action="" method="post" id="set-env-form" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="panel panel-default sub-form">
-                            <div class="panel-heading collapsed"
+                            <div class="panel-heading {% if not set_form.errors %}collapsed{% endif %}"
                                  role="tab"
                                  id="headingOne"
                                  data-toggle="collapse"
@@ -75,7 +75,7 @@
                                 </h4>
                             </div>
                             <div id="collapseOne"
-                                 class="panel-collapse collapse"
+                                 class="panel-collapse collapse {% if set_form.errors %}in{% endif %}"
                                  role="tabpanel"
                                  aria-labelledby="headingOne">
                                 <div class="panel-body">
@@ -85,7 +85,7 @@
                             </div>
                         </div>
                         <div class="panel panel-default sub-form">
-                            <div class="panel-heading collapsed"
+                            <div class="panel-heading {% if not drop_form.errors %}collapsed{% endif %}"
                                  role="tab"
                                  id="headingTwo"
                                  data-toggle="collapse"
@@ -98,7 +98,7 @@
                                 </h4>
                             </div>
                             <div id="collapseTwo"
-                                 class="panel-collapse collapse"
+                                 class="panel-collapse collapse {% if drop_form.errors %}in{% endif %}"
                                  role="tabpanel"
                                  aria-labelledby="headingTwo">
                                 <div class="panel-body">
@@ -108,7 +108,7 @@
                             </div>
                         </div>
                         <div class="panel panel-default sub-form">
-                            <div class="panel-heading collapsed"
+                            <div class="panel-heading {% if not haul_form.errors %}collapsed{% endif %}"
                                  role="tab"
                                  id="headingThree"
                                  data-toggle="collapse"
@@ -121,7 +121,7 @@
                                 </h4>
                             </div>
                             <div id="collapseThree"
-                                 class="panel-collapse collapse"
+                                 class="panel-collapse collapse {% if haul_form.errors %}in{% endif %}"
                                  role="tabpanel"
                                  aria-labelledby="headingThree">
                                 <div class="panel-body">
@@ -131,7 +131,7 @@
                             </div>
                         </div>
                         <div class="panel panel-default sub-form">
-                            <div class="panel-heading collapsed"
+                            <div class="panel-heading {% if not video_form.errors %}collapsed{% endif %}"
                                  role="tab"
                                  id="headingFour"
                                  data-toggle="collapse"
@@ -144,7 +144,7 @@
                                 </h4>
                             </div>
                             <div id="collapseFour"
-                                 class="panel-collapse collapse"
+                                 class="panel-collapse collapse {% if video_form.errors %}in{% endif %}"
                                  role="tabpanel"
                                  aria-labelledby="headingFour">
                                 <div class="panel-body">

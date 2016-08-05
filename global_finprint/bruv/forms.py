@@ -60,6 +60,13 @@ class SetForm(forms.ModelForm):
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
+        self.fields['code'].label += '**'
+        self.helper.layout.append(
+            cfl.HTML('<br>'))
+        self.helper.layout.append(
+            cfl.Div(
+                cfl.HTML('<small class="help-block">**Note: If code is left blank, it will be automatically generated.</small>'),
+                css_class='row pull-left'))
 
 
 class SetSearchForm(forms.Form):

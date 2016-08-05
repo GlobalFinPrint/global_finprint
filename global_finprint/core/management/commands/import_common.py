@@ -19,6 +19,7 @@ add error signaling.
 """
 import logging
 import functools
+import json
 
 import django.contrib.auth.models as djam
 import global_finprint.trip.models as gftm
@@ -28,6 +29,7 @@ import global_finprint.bruv.models as gfbm
 import global_finprint.annotation.models.video as gfav
 import global_finprint.annotation.models.animal as gfaa
 import global_finprint.annotation.models.observation as gfao
+import global_finprint.annotation.models.annotation as gfan
 from django.contrib.gis.geos import GEOSGeometry
 from django.db import transaction
 
@@ -38,6 +40,8 @@ LEGACY_USER_FORMAT = 'LEGACY_{}'
 LEGACY_EMAIL_FORMAT = '{}@sink.arpa'
 LEGACY_AFFILITATION = 'Legacy'
 LEGACY_COMMENT = 'Auto-imported legacy data.'
+
+UNDETERMINED_HABITAT_TYPE = 'To Be Updated'
 
 logger = logging.getLogger('scripts')
 
@@ -68,6 +72,7 @@ def make_choices_reverse_map(choices_set):
     result = {}
     for abrev, verbose in choices_set:
         result[verbose.lower()] = abrev
+        result[abrev.lower()] = abrev
     return result
 
 @functools.lru_cache()
@@ -99,9 +104,7 @@ def import_trip(
             lead = gfcm.FinprintUser.objects.filter(user=lead_candidates[0]).first()
             validate_data(lead, 'No FinprintUser associated with User "{}"'.format(investigator))
 
-            team=gfcm.Team.objects.filter(
-                lead=lead,
-                sampler_collaborator=collaborator).first()
+            team=gfcm.Team.objects.filter(lead=lead).first()
             validate_data(team, 'No such team: {} - {}'.format(investigator, collaborator))
 
             source = gftm.Source.objects.filter(code=trip_code[:2]).first()
@@ -138,7 +141,7 @@ def import_set(
         equipment_str,
         bait_str,
         visibility,
-        video_str,
+        source_video_str,
         comment
 ):
     try:
@@ -151,11 +154,9 @@ def import_set(
             reef_habitat = get_reef_habitat(site_name, reef_name, habitat_type)
             equipment = parse_equipment_string(equipment_str)
             bait = parse_bait_string(bait_str)
-            if video_str:
-                video = gfav.Video(file=video_str, user=get_import_user())
-                video.save()
-            else:
-                video = None
+            video_name = '{}_{}.avi'.format(trip_code, set_code)
+            video = gfav.Video(file=video_name, source_folder=source_video_str, user=get_import_user())
+            video.save()
             if not visibility:
                 visibility = '0'
 
@@ -282,6 +283,7 @@ def import_observation(
         annotator,
         annotation_date
 ):
+    json_args = json.dumps(locals(), sort_keys=True, default=lambda a: a.isoformat())
     try:
         logger.info(
             'Trying to add observation data from "%s" for set "%s" on trip "%s"',
@@ -301,7 +303,7 @@ def import_observation(
             annotator_user = get_annotator(annotator)
             assignment = get_assignment(annotator_user, the_set.video)
 
-            if does_observation_exist(assignment, duration, obsv_time, comment):
+            if does_observation_exist(assignment, duration, obsv_time, json_args):
                 logger.warning(
                     'Not importing: identical observation already exists from "%s" for set "%s" on trip "%s"',
                     annotator,
@@ -340,10 +342,16 @@ def import_observation(
                     animal_obsv = gfao.AnimalObservation(**animal_obsv_args)
                     animal_obsv.save()
 
-                event = gfao.Event(
+                attribute_ids = None
+                if behavior:
+                    att, _  = gfan.Attribute.objects.get_or_create(name=behavior)
+                    attribute_ids = [att.id]
+
+                event = gfao.Event.create(
                     observation=observation,
                     event_time=obsv_time,
-                    note=comment,
+                    note=json_args,
+                    attribute=attribute_ids,
                     user=get_import_user()
                 )
                 event.save()
@@ -363,20 +371,14 @@ def does_observation_exist(
         comment
 ):
     result = False
-    observation = gfao.Observation.objects.filter(
-        assignment=assignment,
-        duration=duration,
-        comment=LEGACY_COMMENT
+    event = gfao.Event.objects.filter(
+        observation__assignment=assignment,
+        observation__duration=duration,
+        event_time=obsv_time,
+        note=comment
     ).first()
-
-    if observation:
-        event = gfao.Event.objects.filter(
-            observation=observation,
-            event_time=obsv_time,
-            note=comment
-        ).first()
-        if event:
-            result = True
+    if event:
+        result = True
     return result
 
 def get_assignment(annotator_user, video):
@@ -425,6 +427,8 @@ def get_reef_habitat(site_name, reef_name, habitat_type):
     reef = gfhm.Reef.objects.filter(name=reef_name, site=site).first()
     validate_data(reef, 'Reef "{}" not found'.format(reef_name))
 
+    if not habitat_type:
+        habitat_type = UNDETERMINED_HABITAT_TYPE
     reef_type = gfhm.ReefType.objects.filter(type=habitat_type).first()
     validate_data(reef_type, 'Unknown reef type: {}'.format(reef_type))
 

@@ -5,6 +5,7 @@ from global_finprint.core.models import AuditableModel, FinprintUser
 # todo:  pull video file names into ranked list (for l & r, etc.)
 class Video(AuditableModel):
     file = models.CharField(max_length=100, null=True, blank=True)
+    source_folder = models.CharField(max_length=100, null=True, blank=True)
 
     def annotators_assigned(self):
         return list(a.annotator for a in self.assignment_set.all())
