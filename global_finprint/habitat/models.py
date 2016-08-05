@@ -55,7 +55,7 @@ class Site(models.Model):
     objects = models.GeoManager()
 
     def __str__(self):
-        return u"{0}".format(self.name)
+        return u"{0} - {1} ({2})".format(self.location, self.name, self.code)
 
     class Meta:
         unique_together = (('location', 'name'),
@@ -190,7 +190,7 @@ class Reef(models.Model):
     objects = models.GeoManager()
 
     def __str__(self):
-        return u"{0} - {1} ({2}{3})".format(self.site, self.name, self.site.code, self.code)
+        return u"{0} - {1} ({2}{3})".format(self.site.name, self.name, self.site.code, self.code)
 
     class Meta:
         unique_together = (('site', 'name'),
