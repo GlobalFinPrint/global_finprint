@@ -845,5 +845,16 @@
       "boundary": null,
       "type": "C"
     }
+  },
+  {
+    "model": "habitat.site",
+    "pk": 162,
+    "fields": {
+      "name": "Nusa Penida",
+      "code": "NP",
+      "location": 93,
+      "boundary": null,
+      "type": "C"
+    }
   }
 ]
