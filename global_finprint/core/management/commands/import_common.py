@@ -41,6 +41,8 @@ LEGACY_EMAIL_FORMAT = '{}@sink.arpa'
 LEGACY_AFFILITATION = 'Legacy'
 LEGACY_COMMENT = 'Auto-imported legacy data.'
 
+UNDETERMINED_HABITAT_TYPE = 'To Be Updated'
+
 logger = logging.getLogger('scripts')
 
 class DataError(Exception):
@@ -102,9 +104,7 @@ def import_trip(
             lead = gfcm.FinprintUser.objects.filter(user=lead_candidates[0]).first()
             validate_data(lead, 'No FinprintUser associated with User "{}"'.format(investigator))
 
-            team=gfcm.Team.objects.filter(
-                lead=lead,
-                sampler_collaborator=collaborator).first()
+            team=gfcm.Team.objects.filter(lead=lead).first()
             validate_data(team, 'No such team: {} - {}'.format(investigator, collaborator))
 
             source = gftm.Source.objects.filter(code=trip_code[:2]).first()
@@ -427,6 +427,8 @@ def get_reef_habitat(site_name, reef_name, habitat_type):
     reef = gfhm.Reef.objects.filter(name=reef_name, site=site).first()
     validate_data(reef, 'Reef "{}" not found'.format(reef_name))
 
+    if not habitat_type:
+        habitat_type = UNDETERMINED_HABITAT_TYPE
     reef_type = gfhm.ReefType.objects.filter(type=habitat_type).first()
     validate_data(reef_type, 'Unknown reef type: {}'.format(reef_type))
 

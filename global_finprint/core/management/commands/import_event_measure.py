@@ -23,7 +23,7 @@ def import_file(trip_code, set_code, filename):
     # throw away first four lines (headers are on line five)
     for _ in range(4):
         csv_file.readline()
-    obs_data = csv.DictReader(csv_file)
+    obs_data = csv.DictReader(csv_file, delimiter='\t')
     import_observation_data(trip_code, set_code, obs_data)
 
 def import_observation_data(trip_code, set_code, obs_data):
@@ -66,7 +66,10 @@ def minutes2milliseconds(minutes):
     :param minutes: duration in minutes as string
     :return: duration in milliseconds as int
     """
-    return round(float(minutes) * 60 * 1000)
+    if minutes:
+        return round(float(minutes) * 60 * 1000)
+    else:
+        return 0
 
 def string2date(date):
     """
