@@ -430,7 +430,7 @@ def get_reef_habitat(site_name, reef_name, habitat_type):
     if not habitat_type:
         habitat_type = UNDETERMINED_HABITAT_TYPE
     reef_type = gfhm.ReefType.objects.filter(type=habitat_type).first()
-    validate_data(reef_type, 'Unknown reef type: {}'.format(reef_type))
+    validate_data(reef_type, 'Unknown reef type: {}'.format(habitat_type))
 
     return gfhm.ReefHabitat.get_or_create(reef, reef_type)
 
