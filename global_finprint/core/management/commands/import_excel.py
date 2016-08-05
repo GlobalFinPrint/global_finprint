@@ -13,6 +13,7 @@ import openpyxl
 import os
 from datetime import datetime
 import logging
+import traceback
 
 from django.core.management.base import BaseCommand, CommandError
 
@@ -32,7 +33,7 @@ def import_file(in_file):
 def import_trip_data(sheet):
     headers = get_header_map(sheet.rows[0])
     get_cell = get_cell_by_name_extractor(headers)
-    for row in sheet.rows[1:]:
+    for idx, row in enumerate(sheet.rows[1:], start=1):
         trip_code = get_cell(row, 'code').value
         if trip_code:
             location_name = get_cell(row, 'location').value
@@ -51,53 +52,62 @@ def import_trip_data(sheet):
                 collaborator,
                 boat
             )
+#        except:
+#            logging.error('Unable to import trip data for row %s', idx)
+#            logging.error(traceback.format_exc)
+        
 
 def import_set_data(sheet):
     headers = get_header_map(sheet.rows[0])
     get_cell = get_cell_by_name_extractor(headers)
-    for row in sheet.rows[1:]:
-        set_code = get_cell(row, 'set_code').value
-        if set_code:
-            trip_code = get_cell(row, 'trip_code').value
-            set_date = get_date_from_cell(get_cell(row, 'date'))
-            latitude = get_cell(row, 'latitude').value
-            longitude = get_cell(row, 'longitude').value
-            try:
-                depth_cell = get_cell(row, 'depth')
-                depth = get_float_from_cell(depth_cell)
-            except ValueError:
-                logging.error('Bad depth value "%s"', depth_cell.value)
-                logging.error('Set "%s" not created', set_code)
-                continue
-            drop_time = get_time_from_cell(get_cell(row, 'drop_time'))
-            haul_time = get_time_from_cell(get_cell(row, 'haul_time'))
-            site_name = get_cell(row, 'site').value
-            reef_name = get_cell(row, 'reef').value
-            habitat_type = get_cell(row, 'habitat').value
-            equipment_str = get_cell(row, 'equipment').value
-            bait_str = get_cell(row, 'bait').value
-            visibility = get_cell(row, 'visibility').value
-            video = get_cell(row, 'video').value
-            comment = get_cell(row, 'comment').value
+    for idx, row in enumerate(sheet.rows[1:], start=1):
+        try:
+            set_code = get_cell(row, 'set_code').value
+            if set_code:
+                trip_code = get_cell(row, 'trip_code').value
+                set_date = get_date_from_cell(get_cell(row, 'date'))
+                latitude = get_cell(row, 'latitude').value
+                longitude = get_cell(row, 'longitude').value
+                try:
+                    depth_cell = get_cell(row, 'depth')
+                    depth = get_float_from_cell(depth_cell)
+                except ValueError:
+                    logging.error('Bad depth value "%s"', depth_cell.value)
+                    logging.error('Set "%s" not created', set_code)
+                    continue
+                drop_time = get_time_from_cell(get_cell(row, 'drop_time'), format_str='%H:%M')
+                haul_time = get_time_from_cell(get_cell(row, 'haul_time'), format_str='%H:%M')
+                site_name = get_cell(row, 'site').value
+                reef_name = get_cell(row, 'reef').value
+                habitat_type = get_cell(row, 'habitat').value
+                equipment_str = get_cell(row, 'equipment').value
+                bait_str = get_cell(row, 'bait').value
+                visibility = get_cell(row, 'visibility').value
+                video = get_cell(row, 'video').value
+                comment = get_cell(row, 'comment').value
 
-            ic.import_set(
-                set_code,
-                trip_code,
-                set_date,
-                latitude,
-                longitude,
-                depth,
-                drop_time,
-                haul_time,
-                site_name,
-                reef_name,
-                habitat_type,
-                equipment_str,
-                bait_str,
-                visibility,
-                video,
-                comment
-            )                
+                ic.import_set(
+                    set_code,
+                    trip_code,
+                    set_date,
+                    latitude,
+                    longitude,
+                    depth,
+                    drop_time,
+                    haul_time,
+                    site_name,
+                    reef_name,
+                    habitat_type,
+                    equipment_str,
+                    bait_str,
+                    visibility,
+                    video,
+                    comment
+                )                
+        except:
+            logging.error('Unable to import set data for row %s', idx)
+            logging.error(traceback.format_exc)
+            
 
 def import_environment_data(sheet):
     headers = get_header_map(sheet.rows[0])
@@ -197,12 +207,12 @@ def get_float_from_cell(cell):
     return result
 
 def get_date_from_cell(cell):
-    if cell.number_format == 'General':
-        return datetime.strptime(cell.value, '%d/%m/%Y')
-    else:
-        return cell.value
+    result = cell.value
+    if isinstance(result, str):
+        result = datetime.strptime(cell.value, '%d/%m/%Y')
+    return result
     
-def get_time_from_cell(cell):
+def get_time_from_cell(cell, format_str='%H:%M:%S %p'):
     if cell.number_format == 'General':
         return datetime.strptime(cell.value, '%H:%M:%S %p').time()
     else:
