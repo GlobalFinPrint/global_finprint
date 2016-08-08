@@ -30,8 +30,13 @@ class Animal(models.Model):
     family = models.CharField(max_length=100)
     genus = models.CharField(max_length=100)
     species = models.CharField(max_length=100)
-    fishbase_key = models.IntegerField(null=True, blank=True)
-    sealifebase_key = models.IntegerField(null=True, blank=True)
+
+    # optional external identifiers:
+    fishbase_key = models.PositiveIntegerField("FishBase key", null=True, blank=True)
+    sealifebase_key = models.PositiveIntegerField("SeaLifeBase key", null=True, blank=True)
+        # http://www.marine.csiro.au/caab/
+        # note that while the CAAB display contains a space, e.g., 37 440011 we store it as a single integer
+    caab_code = models.PositiveIntegerField("CAAB code", null=True, blank=True, help_text='Enter CAAB code without spaces')
 
     class Meta:
         unique_together = ('genus', 'species')
@@ -52,6 +57,7 @@ class Animal(models.Model):
             'species': self.species,
             'fishbase_key': self.fishbase_key,
             'sealifebase_key': self.sealifebase_key,
+            'caab_code': self.caab_code,
             'regions': list({'id': r.id, 'region': str(r)} for r in self.regions.all())
         }
 
