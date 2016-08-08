@@ -283,7 +283,6 @@ def import_observation(
         annotator,
         annotation_date
 ):
-    json_args = json.dumps(locals(), sort_keys=True, default=lambda a: a.isoformat())
     try:
         logger.info(
             'Trying to add observation data from "%s" for set "%s" on trip "%s"',
@@ -303,7 +302,7 @@ def import_observation(
             annotator_user = get_annotator(annotator)
             assignment = get_assignment(annotator_user, the_set.video)
 
-            if does_observation_exist(assignment, duration, obsv_time, json_args):
+            if does_observation_exist(assignment, duration, obsv_time, comment):
                 logger.warning(
                     'Not importing: identical observation already exists from "%s" for set "%s" on trip "%s"',
                     annotator,
@@ -342,7 +341,7 @@ def import_observation(
                     animal_obsv = gfao.AnimalObservation(**animal_obsv_args)
                     animal_obsv.save()
 
-                attribute_ids = None
+                attribute_ids = []
                 if behavior:
                     att, _  = gfan.Attribute.objects.get_or_create(name=behavior)
                     attribute_ids = [att.id]
@@ -350,7 +349,7 @@ def import_observation(
                 event = gfao.Event.create(
                     observation=observation,
                     event_time=obsv_time,
-                    note=json_args,
+                    note=comment,
                     attribute=attribute_ids,
                     user=get_import_user()
                 )
@@ -397,27 +396,14 @@ def get_assignment(annotator_user, video):
     return assignment
 
 def get_annotator(annotator):
-    # TODO: find out format of annotator column
-    username = LEGACY_USER_FORMAT.format(annotator)
-    django_user = djam.User.objects.filter(username=username).first()
-    if not django_user:
-        django_user = djam.User(
-            username=username,
-            email=LEGACY_EMAIL_FORMAT.format(annotator),
-            last_name=annotator
-        )
-        django_user.save()
+    validate_data(annotator, 'No annotator specified.')
+    anno_array = annotator.split(' ', maxsplit=1)
+    validate_data(len(anno_array) == 2, 'Need both first and last name for annotator ({})'.format(annotator))
+    first_name, last_name = anno_array
+    django_user = djam.User.objects.filter(first_name=first_name, last_name=last_name).first()
+    validate_data(django_user, 'No user found with first name "{}" and last name "{}"'.format(first_name, last_name))
     annotator_user = gfcm.FinprintUser.objects.filter(user=django_user).first()
-    if not annotator_user:
-        affiliation = gfcm.Affiliation.objects.filter(name=LEGACY_AFFILITATION).first()
-        if not affiliation:
-            affiliation = gfcm.Affiliation(name=LEGACY_AFFILITATION)
-            affiliation.save()
-        annotator_user = gfcm.FinprintUser(
-            user=django_user,
-            affiliation=affiliation
-        )
-        annotator_user.save()
+    validate_data(annotator_user, 'No finprint user associated with django user for "{}"'.format(annotator))
     return annotator_user
 
 def get_reef_habitat(site_name, reef_name, habitat_type):
@@ -442,20 +428,14 @@ def parse_equipment_string(equipment_str):
     frame_str = equip_array[0][:FRAME_FIELD_LENGTH]
     camera_str = equip_array[1][:CAMERA_FIELD_LENGTH]
     frame = gfbm.FrameType.objects.filter(type__iexact=frame_str).first()
-    if not frame:
-        frame = gfbm.FrameType(type=frame_str)
-        frame.save()
+    validate_data(frame, 'Unknown frame type "{}" in equipment string "{}"'.format(frame_str, equipment_str))
     equipment = gfbm.Equipment.objects.filter(
         camera=camera_str,
         frame_type=frame).first()
-    if not equipment:
-        equipment = gfbm.Equipment(
-            camera=camera_str,
-            frame_type=frame,
-            arm_length=1,
-            camera_height=1,
-            user=get_import_user())
-        equipment.save()
+    validate_data(
+        equipment,
+        'No equipment model found with camera "{}" and frame "{}" (frame_str "{}")'.format(
+            camera_str, frame_str, equipment_str))
     return equipment
 
 def parse_bait_string(bait_str):
@@ -472,12 +452,7 @@ def parse_bait_string(bait_str):
         bait = gfbm.Bait.objects.filter(
             description=bait_description,
             type=bait_type).first()
-        if not bait:
-            bait = gfbm.Bait(
-                description=bait_description,
-                type=bait_type,
-                user=get_import_user())
-            bait.save()
+        validate_data(bait, 'Unknown bait "{}"'.format(bait_str))
     return bait
 
 def validate_data(predicate, error_msg):

@@ -10,6 +10,7 @@ import os
 from datetime import datetime
 import logging
 import csv
+import json
 
 from django.core.management.base import BaseCommand, CommandError
 
@@ -35,10 +36,10 @@ def import_observation_data(trip_code, set_code, obs_data):
         genus = row['Genus']
         species = row['Species']
         behavior = row['Activity']
-        sex = None # row['Stage']
+        sex = row['Stage']
         stage = None
         length = None
-        comment = row['Comment']
+        comment = json_args = json.dumps(row, sort_keys=True, default=lambda a: a.isoformat())
         annotator = row['TapeReader']
         annotation_date = None
 
