@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MaxValueValidator
 
 from global_finprint.habitat.models import Region
 
@@ -32,11 +33,19 @@ class Animal(models.Model):
     species = models.CharField(max_length=100)
 
     # optional external identifiers:
-    fishbase_key = models.PositiveIntegerField("FishBase key", null=True, blank=True)
-    sealifebase_key = models.PositiveIntegerField("SeaLifeBase key", null=True, blank=True)
+    fishbase_key = models.PositiveIntegerField("FishBase key",
+                                               null=True,
+                                               blank=True)
+    sealifebase_key = models.PositiveIntegerField("SeaLifeBase key",
+                                                  null=True,
+                                                  blank=True)
         # http://www.marine.csiro.au/caab/
         # note that while the CAAB display contains a space, e.g., 37 440011 we store it as a single integer
-    caab_code = models.PositiveIntegerField("CAAB code", null=True, blank=True, help_text='Enter CAAB code without spaces')
+    caab_code = models.PositiveIntegerField("CAAB code",
+                                            validators=[MaxValueValidator(99999999)],
+                                            null=True,
+                                            blank=True,
+                                            help_text='Enter CAAB code without spaces')
 
     class Meta:
         unique_together = ('genus', 'species')
