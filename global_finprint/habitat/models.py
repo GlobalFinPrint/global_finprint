@@ -128,6 +128,9 @@ class ReefType(models.Model):
     def __str__(self):
             return u"{0}".format(self.type)
 
+    class Meta:
+        verbose_name = "Reef habitat"
+
 
 class ProtectionStatus(models.Model):
     """
