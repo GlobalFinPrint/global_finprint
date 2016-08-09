@@ -20,7 +20,7 @@ def bulk_import(excel_file, em_files_root):
         if trip_code and set_code:
             logging.info('Finding event measure folder for trip: {}, set: {}'.format(trip_code, set_code))
         em_folder_name = get_cell(row, 'video').value
-        em_path = os.path.join(em_files_root, em_folder_name[:4], em_folder_name)
+        em_path = os.path.join(em_files_root, trip_code, em_folder_name[:4], em_folder_name)
         logging.info('Checking folder "{}"'.format(em_path))
         try:
             txt_files = [fi for fi in os.listdir(em_path) if fi.lower().endswith('.txt')]
