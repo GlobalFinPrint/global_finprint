@@ -19,16 +19,28 @@ import global_finprint.core.management.commands.import_common as ic
 logger = logging.getLogger('scripts')
 
 def import_file(trip_code, set_code, filename):
+    logger.info('Importing trip "{}", set "{}" from file "{}"'.format(trip_code, set_code, filename))
     csv_file = open(filename)
 
     # throw away first four lines (headers are on line five)
     for _ in range(4):
-        csv_file.readline()
+        try:
+            csv_file.readline()
+        except UnicodeDecodeError:
+            logger.error('Unable to parse binary file ("{}")'.format(filename))
+            return
     obs_data = csv.DictReader(csv_file, delimiter='\t')
     import_observation_data(trip_code, set_code, obs_data)
 
 def import_observation_data(trip_code, set_code, obs_data):
+    is_set_data_imported = False
     for row in obs_data:
+        if not is_set_data_imported:
+            try:
+                ic.update_set_data(trip_code, set_code, row['Visibility'])
+            except KeyError:
+                logger.error('Data is missing column "Visibility"')
+                continue
         obvs_date = string2date(row['Date'])
         obvs_time = minutes2milliseconds(row['Time (mins)'])
         duration = minutes2milliseconds(row['Period time (mins)'])
@@ -40,7 +52,10 @@ def import_observation_data(trip_code, set_code, obs_data):
         stage = None
         length = None
         comment = json_args = json.dumps(row, sort_keys=True, default=lambda a: a.isoformat())
-        annotator = row['TapeReader']
+        try:
+            annotator = row['TapeReader']
+        except KeyError:
+            annotator = row['Tape Reader']
         annotation_date = None
 
         ic.import_observation(
@@ -78,7 +93,17 @@ def string2date(date):
     :param date: date in a string format
     :return: date as datetime
     """
-    return datetime.strptime(date, '%d/%m/%Y')
+    result = None
+    for format_string in ['%d/%m/%Y', '%d/%m/%y', '%d-%m-%Y', '%d.%m.%y', '%d.%m.%Y']:
+        try:
+            result = datetime.strptime(date, format_string)
+            break
+        except ValueError:
+            pass
+    if not result:
+        raise ValueError('Unable to parse date: {}'.format(date))
+    
+    return result
 
 class Command(BaseCommand):
     help = """Imports observation data from event measure format.
