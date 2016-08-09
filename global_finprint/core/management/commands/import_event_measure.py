@@ -13,6 +13,7 @@ import csv
 import json
 
 from django.core.management.base import BaseCommand, CommandError
+import django.db.utils as dbu
 
 import global_finprint.core.management.commands.import_common as ic
 
@@ -37,11 +38,19 @@ def import_observation_data(trip_code, set_code, obs_data):
     for row in obs_data:
         if not is_set_data_imported:
             try:
-                ic.update_set_data(trip_code, set_code, row['Visibility'])
+                visibility = row['Visibility']
+                ic.update_set_data(trip_code, set_code, visibility)
             except KeyError:
                 logger.error('Data is missing column "Visibility"')
-                continue
-        obvs_date = string2date(row['Date'])
+                break
+            except dbu.DataError:
+                logger.error('Invalid visibility entry: "{}"'.format(visibility))
+                break
+        try:
+            obvs_date = string2date(row['Date'])
+        except ValueError:
+            logger.error('Failing import due to bad date')
+            break
         obvs_time = minutes2milliseconds(row['Time (mins)'])
         duration = minutes2milliseconds(row['Period time (mins)'])
         family = row['Family']
@@ -101,7 +110,9 @@ def string2date(date):
         except ValueError:
             pass
     if not result:
-        raise ValueError('Unable to parse date: {}'.format(date))
+        error_str = 'Unable to parse date: {}'.format(date)
+        logger.error(error_str)
+        raise ValueError(error_str)
     
     return result
 
