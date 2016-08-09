@@ -39,7 +39,7 @@ CAMERA_FIELD_LENGTH = 32
 LEGACY_USER_FORMAT = 'LEGACY_{}'
 LEGACY_EMAIL_FORMAT = '{}@sink.arpa'
 LEGACY_AFFILITATION = 'Legacy'
-LEGACY_COMMENT = 'Auto-imported legacy data.'
+LEGACY_COMMENT = 'Auto-imported data.'
 
 UNDETERMINED_HABITAT_TYPE = 'To Be Updated'
 
@@ -362,6 +362,20 @@ def import_observation(
                 )
     except DataError:
         logger.error('Failed while adding observation for set "%s" of trip "%s"', set_code, trip_code)
+
+def update_set_data(trip_code, set_code, visibility):
+    try:
+        logger.info('Updating set data for set "{}" of trip "{}"'.format(set_code, trip_code))
+        the_trip = gftm.Trip.objects.filter(code=trip_code).first()
+        validate_data(the_trip, 'Trip "{}" not found when trying to import observation.'.format(trip_code))
+
+        the_set = gfbm.Set.objects.filter(code=set_code, trip=the_trip).first()
+        validate_data(the_set, 'Set "{}" not found when trying to import observation.'.format(set_code))
+
+        the_set.visibility = visibility
+        the_set.save()
+    except DataError:
+        logger.error('Failed to update visibility for set "{}" of trip "{}"'.format(set_code, trip_code))
 
 def does_observation_exist(
         assignment,
