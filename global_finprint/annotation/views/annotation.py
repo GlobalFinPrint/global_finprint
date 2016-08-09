@@ -44,6 +44,7 @@ def site_animal_list(request, site_id, *args, **kwargs):
             'sealifebase_key': animal.sealifebase_key,
             'sealifebase_url': 'http://www.sealifebase.org/summary/{0}'.format(animal.sealifebase_key)
             if animal.sealifebase_key else None,
+            'caab_code': animal.caab_code,
         }
         animal_lists['all'].append(animal_dict)
         if animal.rank <= limit:

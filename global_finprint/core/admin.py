@@ -53,6 +53,7 @@ class UserAdmin(admin.UserAdmin):
 class FinprintUserAdmin(ModelAdmin):
     actions = None
     fields = ('user', 'affiliation')
+    ordering = ['affiliation__name', 'user__last_name', 'user__first_name']
 
 
 site.unregister(models.User)

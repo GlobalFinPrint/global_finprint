@@ -23,6 +23,9 @@ class Region(models.Model):
 class Location(models.Model):
     name = models.CharField(max_length=100, unique=True)
     code = models.CharField(max_length=4, unique=True, help_text='3166-1 alpha-2, if applicable.')
+    boundary = models.MultiPolygonField(srid=4326, null=True, blank=True)
+    eez_boundary = models.MultiPolygonField(srid=4326, null=True, blank=True)
+
     region = models.ForeignKey(to=Region)
 
     @property
@@ -52,7 +55,7 @@ class Site(models.Model):
     objects = models.GeoManager()
 
     def __str__(self):
-        return u"{0}".format(self.name)
+        return u"{0} - {1} ({2})".format(self.location, self.name, self.code)
 
     class Meta:
         unique_together = (('location', 'name'),
@@ -125,6 +128,9 @@ class ReefType(models.Model):
     def __str__(self):
             return u"{0}".format(self.type)
 
+    class Meta:
+        verbose_name = "Reef habitat"
+
 
 class ProtectionStatus(models.Model):
     """
@@ -187,7 +193,7 @@ class Reef(models.Model):
     objects = models.GeoManager()
 
     def __str__(self):
-        return u"{0} - {1} ({2}{3})".format(self.site, self.name, self.site.code, self.code)
+        return u"{0} - {1} ({2}{3})".format(self.site.name, self.name, self.site.code, self.code)
 
     class Meta:
         unique_together = (('site', 'name'),

@@ -33,7 +33,7 @@ class Trip(AuditableModel):
         if not self.code:  # trip code if it hasn't been set:  [source]_[year]_[loc code]_xx
             self.code = u'{}_{}_{}_xx'.format(self.source.code, self.start_date.year, self.location.code)
         if not self.data_embargo_termination:
-            if self.source.data_embargo_length == 9999:
+            if self.source.data_embargo_length >= 9999:
                 self.data_embargo_termination = datetime.max
             else:
                 self.data_embargo_termination = self.end_date + timedelta(days=self.source.data_embargo_length)
