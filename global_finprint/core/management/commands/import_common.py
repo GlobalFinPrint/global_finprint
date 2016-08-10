@@ -333,7 +333,10 @@ def import_observation(
                         'user': get_import_user()
                     }
                     if sex:
-                        animal_obsv_args['sex'] = get_animal_sex_map()[sex.lower()]
+                        try:
+                            animal_obsv_args['sex'] = get_animal_sex_map()[sex.lower()]
+                        except KeyError:
+                            validate_data(False, 'Unknown animal sex "{}"'.format(sex))
                     if length:
                         animal_obsv_args['length'] = length
                     if stage:
@@ -414,7 +417,7 @@ def get_annotator(annotator):
     anno_array = annotator.split(' ', maxsplit=1)
     validate_data(len(anno_array) == 2, 'Need both first and last name for annotator ({})'.format(annotator))
     first_name, last_name = anno_array
-    django_user = djam.User.objects.filter(first_name=first_name, last_name=last_name).first()
+    django_user = djam.User.objects.filter(first_name__iexact=first_name, last_name__iexact=last_name).first()
     validate_data(django_user, 'No user found with first name "{}" and last name "{}"'.format(first_name, last_name))
     annotator_user = gfcm.FinprintUser.objects.filter(user=django_user).first()
     validate_data(annotator_user, 'No finprint user associated with django user for "{}"'.format(annotator))
