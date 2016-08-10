@@ -414,6 +414,7 @@ def get_assignment(annotator_user, video):
 
 def get_annotator(annotator):
     validate_data(annotator, 'No annotator specified.')
+    annotator = annotator.strip()
     anno_array = annotator.split(' ', maxsplit=1)
     validate_data(len(anno_array) == 2, 'Need both first and last name for annotator ({})'.format(annotator))
     first_name, last_name = anno_array

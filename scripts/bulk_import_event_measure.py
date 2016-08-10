@@ -23,7 +23,7 @@ def bulk_import(excel_file, em_files_root):
         em_path = os.path.join(em_files_root, trip_code, em_folder_name[:4], em_folder_name)
         logging.info('Checking folder "{}"'.format(em_path))
         try:
-            txt_files = [fi for fi in os.listdir(em_path) if fi.lower().endswith('.txt')]
+            txt_files = [fi for fi in os.listdir(em_path) if fi.lower().endswith('.txt') and not fi.startswith('.')]
         except:
             logging.warn('No event measure files found for set "{}" of trip "{}"'.format(set_code, trip_code))
             continue
@@ -76,6 +76,6 @@ def get_header_map(header_row):
     return result
 
 if __name__ == '__main__':
-    logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', level=logging.WARN, filename='import.log')
+    logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', level=logging.WARN, filename='~/import.log')
     bulk_import()
 
