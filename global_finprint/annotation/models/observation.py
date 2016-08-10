@@ -140,6 +140,7 @@ class Event(AuditableModel):
     extent = geomodels.PolygonField(null=True)
     attribute = models.ManyToManyField(to=Attribute)
     note = models.TextField(null=True)
+    raw_import_json = models.TextField(null=True)
 
     @classmethod
     def create(cls, **kwargs):
@@ -158,7 +159,8 @@ class Event(AuditableModel):
             'observation',
             'event_time',
             'extent',
-            'note'
+            'note',
+            'raw_import_json'
         ]
 
     def to_json(self):
