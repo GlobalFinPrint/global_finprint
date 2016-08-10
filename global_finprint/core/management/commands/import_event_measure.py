@@ -60,7 +60,8 @@ def import_observation_data(trip_code, set_code, obs_data):
         sex = row['Stage']
         stage = None
         length = None
-        comment = json_args = json.dumps(row, sort_keys=True, default=lambda a: a.isoformat())
+        comment = row['Comment']
+        raw_import_json = json.dumps(row, sort_keys=True, default=lambda a: a.isoformat())
         try:
             annotator = row['TapeReader']
         except KeyError:
@@ -82,7 +83,8 @@ def import_observation_data(trip_code, set_code, obs_data):
             length,
             comment,
             annotator,
-            annotation_date
+            annotation_date,
+            raw_import_json
         )
 
 def minutes2milliseconds(minutes):

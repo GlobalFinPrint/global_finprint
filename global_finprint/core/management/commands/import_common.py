@@ -281,7 +281,8 @@ def import_observation(
         length,
         comment,
         annotator,
-        annotation_date
+        annotation_date,
+        raw_import_json
 ):
     try:
         logger.info(
@@ -354,7 +355,8 @@ def import_observation(
                     event_time=obsv_time,
                     note=comment,
                     attribute=attribute_ids,
-                    user=get_import_user()
+                    user=get_import_user(),
+                    raw_import_json=raw_import_json
                 )
                 event.save()
                 logger.info(
@@ -443,8 +445,8 @@ def parse_equipment_string(equipment_str):
     validate_data(
         len(equip_array) == 2,
         'Unexpected equipment string: "{}"'.format(equipment_str))
-    frame_str = equip_array[0][:FRAME_FIELD_LENGTH]
-    camera_str = equip_array[1][:CAMERA_FIELD_LENGTH]
+    frame_str = equip_array[0][:FRAME_FIELD_LENGTH].strip()
+    camera_str = equip_array[1][:CAMERA_FIELD_LENGTH].strip()
     frame = gfbm.FrameType.objects.filter(type__iexact=frame_str).first()
     validate_data(frame, 'Unknown frame type "{}" in equipment string "{}"'.format(frame_str, equipment_str))
     equipment = gfbm.Equipment.objects.filter(
