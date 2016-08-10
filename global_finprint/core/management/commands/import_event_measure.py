@@ -103,7 +103,7 @@ def string2date(date):
     :return: date as datetime
     """
     result = None
-    for format_string in ['%d/%m/%Y', '%d/%m/%y', '%d-%m-%Y', '%d.%m.%y', '%d.%m.%Y']:
+    for format_string in ['%d/%m/%Y', '%d/%m/%y', '%d-%m-%Y', '%d-%m-%y', '%d.%m.%y', '%d.%m.%Y']:
         try:
             result = datetime.strptime(date, format_string)
             break

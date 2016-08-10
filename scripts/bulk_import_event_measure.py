@@ -76,6 +76,6 @@ def get_header_map(header_row):
     return result
 
 if __name__ == '__main__':
-    logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', level=logging.WARN, filename='~/import.log')
+    logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', level=logging.WARN, filename='/home/ubuntu/import.log')
     bulk_import()
 
