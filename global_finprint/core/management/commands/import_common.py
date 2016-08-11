@@ -303,7 +303,7 @@ def import_observation(
             annotator_user = get_annotator(annotator)
             assignment = get_assignment(annotator_user, the_set.video)
 
-            if does_observation_exist(assignment, duration, obsv_time, comment):
+            if does_observation_exist(assignment, duration, obsv_time, raw_import_json):
                 logger.warning(
                     'Not importing: identical observation already exists from "%s" for set "%s" on trip "%s"',
                     annotator,
@@ -386,14 +386,14 @@ def does_observation_exist(
         assignment,
         duration,
         obsv_time,
-        comment
+        raw_import_json
 ):
     result = False
     event = gfao.Event.objects.filter(
         observation__assignment=assignment,
         observation__duration=duration,
         event_time=obsv_time,
-        note=comment
+        raw_import_json=raw_import_json
     ).first()
     if event:
         result = True
