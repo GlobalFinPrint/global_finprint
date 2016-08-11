@@ -51,14 +51,23 @@ def import_observation_data(trip_code, set_code, obs_data):
         except ValueError:
             logger.error('Failing import due to bad date')
             break
+        stage = None
+        sex = None
+        if row['Stage']:
+            orig_stage_value = row['Stage']
+            if orig_stage_value in ['M', 'F']:
+                sex = orig_stage_value
+            elif orig_stage_value in ['', 'F']:
+                stage = orig_stage_value
+            else:
+                logger.error('Unknown "Stage" value: {}'.format(orig_stage_value))
+                break
         obvs_time = minutes2milliseconds(row['Time (mins)'])
         duration = minutes2milliseconds(row['Period time (mins)'])
         family = row['Family']
         genus = row['Genus']
         species = row['Species']
         behavior = row['Activity']
-        sex = row['Stage']
-        stage = None
         length = None
         comment = row['Comment']
         raw_import_json = json.dumps(row, sort_keys=True, default=lambda a: a.isoformat())
