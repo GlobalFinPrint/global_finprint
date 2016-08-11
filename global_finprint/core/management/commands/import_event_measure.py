@@ -34,18 +34,7 @@ def import_file(trip_code, set_code, filename):
     import_observation_data(trip_code, set_code, obs_data)
 
 def import_observation_data(trip_code, set_code, obs_data):
-    is_set_data_imported = False
     for row in obs_data:
-        if not is_set_data_imported:
-            try:
-                visibility = row['Visibility']
-                ic.update_set_data(trip_code, set_code, visibility)
-            except KeyError:
-                logger.error('Data is missing column "Visibility"')
-                break
-            except dbu.DataError:
-                logger.error('Invalid visibility entry: "{}"'.format(visibility))
-                break
         try:
             obvs_date = string2date(row['Date'])
         except ValueError:
