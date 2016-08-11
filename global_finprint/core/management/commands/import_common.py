@@ -470,7 +470,7 @@ def parse_bait_string(bait_str):
         except KeyError:
             validate_data(False, 'Unknown bait type: {}'.format(bait_type_str))
         bait = gfbm.Bait.objects.filter(
-            description=bait_description,
+            description__iexact=bait_description,
             type=bait_type).first()
         validate_data(bait, 'Unknown bait "{}"'.format(bait_str))
     return bait
