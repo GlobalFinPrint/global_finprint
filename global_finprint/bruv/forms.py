@@ -5,7 +5,7 @@ import crispy_forms.bootstrap as cfb
 from bootstrap3_datetime.widgets import DateTimePicker
 from .models import Set, EnvironmentMeasure, Bait, Equipment
 from ..trip.models import Trip
-from ..habitat.models import Reef, ReefType, ReefHabitat
+from ..habitat.models import Reef, ReefType
 
 
 timepicker_opts = {"format": "HH:mm", "showClear": True}
@@ -35,8 +35,8 @@ class SetForm(forms.ModelForm):
     class Meta:
         model = Set
         fields = ['trip', 'code', 'set_date', 'latitude', 'longitude', 'depth',
-                  'drop_time', 'haul_time', 'reef', 'habitat', 'equipment', 'bait', 'visibility',
-                  'reef_habitat',]
+                  'drop_time', 'haul_time', 'reef', 'habitat', 'equipment', 'bait',
+                  'reef_habitat']
         exclude = ('reef_habitat',)
         widgets = {
             'trip': forms.HiddenInput(),
@@ -52,11 +52,6 @@ class SetForm(forms.ModelForm):
 
         if trip_pk:
             self.fields['reef'].queryset = Trip.objects.get(pk=trip_pk).location.reef_set
-
-        self.fields['visibility'].choices = \
-            sorted(self.fields['visibility'].choices,
-                   key=lambda _: _[0].isdigit() and int(_[0]) or _[0] == '' and -1 or 100)
-        self.fields['visibility'].choices[0] = (None, '---')
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
@@ -102,13 +97,41 @@ class SetSearchForm(forms.Form):
                     cfl.Submit('', 'Search')),
                 css_class='row pull-right'))
 
+
 class EnvironmentMeasureForm(forms.ModelForm):
     class Meta:
         model = EnvironmentMeasure
         fields = ['water_temperature', 'salinity',
-                  'conductivity', 'dissolved_oxygen', 'current_flow',
+                  'conductivity', 'dissolved_oxygen',
                   'current_direction', 'tide_state', 'estimated_wind_speed',
                   'wind_direction', 'cloud_cover', 'surface_chop']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+
+
+class SetLevelDataForm(forms.ModelForm):
+    class Meta:
+        model = Set
+        fields = ['visibility', 'current_flow_instrumented', 'current_flow_estimated',
+                  'bruv_image_url', 'splendor_image_url']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.fields['visibility'].choices = \
+            sorted(self.fields['visibility'].choices,
+                   key=lambda _: _[0].isdigit() and int(_[0]) or _[0] == '' and -1 or 100)
+        self.fields['visibility'].choices[0] = (None, '---')
+
+
+class SetLevelCommentsForm(forms.ModelForm):
+    class Meta:
+        model = Set
+        fields = ['comments', 'message_to_annotators', 'tags']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

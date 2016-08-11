@@ -47,7 +47,7 @@
             <p class="text-right"><a id="btn-show-form" class="btn btn-primary">Create new set</a></p>
         </div>
         <div id="hidden-div" style="display: none;">
-        {% endif %}    
+        {% endif %}
             {% if request.user.is_authenticated %}
             <div class="row">
                 {% if set_pk %}
@@ -61,6 +61,7 @@
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <form class="form-inline set ng-pristine ng-valid" action="" method="post" id="set-env-form" enctype="multipart/form-data">
                         {% csrf_token %}
+
                         <div class="panel panel-default sub-form">
                             <div class="panel-heading {% if not set_form.errors %}collapsed{% endif %}"
                                  role="tab"
@@ -84,8 +85,9 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="panel panel-default sub-form">
-                            <div class="panel-heading {% if not drop_form.errors %}collapsed{% endif %}"
+                            <div class="panel-heading {% if not set_level_comments_form.errors %}collapsed{% endif %}"
                                  role="tab"
                                  id="headingTwo"
                                  data-toggle="collapse"
@@ -94,21 +96,22 @@
                                  area-expanded="false"
                                  aria-controls="collapseTwo">
                                 <h4 class="panel-title">
-                                    <a class="accordion-toggle">Drop environmental measure</a>
+                                    <a class="accordion-toggle">Set comments, annotator messages, and tags</a>
                                 </h4>
                             </div>
                             <div id="collapseTwo"
-                                 class="panel-collapse collapse {% if drop_form.errors %}in{% endif %}"
+                                 class="panel-collapse collapse {% if set_level_comments_form.errors %}in{% endif %}"
                                  role="tabpanel"
                                  aria-labelledby="headingTwo">
                                 <div class="panel-body">
-                                    {% crispy drop_form %}
+                                    {% crispy set_level_comments_form %}
                                     <p><!-- placeholder --></p>
                                 </div>
                             </div>
                         </div>
+
                         <div class="panel panel-default sub-form">
-                            <div class="panel-heading {% if not haul_form.errors %}collapsed{% endif %}"
+                            <div class="panel-heading {% if not drop_form.errors %}collapsed{% endif %}"
                                  role="tab"
                                  id="headingThree"
                                  data-toggle="collapse"
@@ -117,21 +120,22 @@
                                  area-expanded="false"
                                  aria-controls="collapseThree">
                                 <h4 class="panel-title">
-                                    <a class="accordion-toggle">Haul environmental measure</a>
+                                    <a class="accordion-toggle">Drop environmental measure</a>
                                 </h4>
                             </div>
                             <div id="collapseThree"
-                                 class="panel-collapse collapse {% if haul_form.errors %}in{% endif %}"
+                                 class="panel-collapse collapse {% if drop_form.errors %}in{% endif %}"
                                  role="tabpanel"
                                  aria-labelledby="headingThree">
                                 <div class="panel-body">
-                                    {% crispy haul_form %}
+                                    {% crispy drop_form %}
                                     <p><!-- placeholder --></p>
                                 </div>
                             </div>
                         </div>
+
                         <div class="panel panel-default sub-form">
-                            <div class="panel-heading {% if not video_form.errors %}collapsed{% endif %}"
+                            <div class="panel-heading {% if not haul_form.errors %}collapsed{% endif %}"
                                  role="tab"
                                  id="headingFour"
                                  data-toggle="collapse"
@@ -140,21 +144,45 @@
                                  area-expanded="false"
                                  aria-controls="collapseFour">
                                 <h4 class="panel-title">
-                                    <a class="accordion-toggle">Video, photos, and flow/substrate measures</a>
+                                    <a class="accordion-toggle">Haul environmental measure</a>
                                 </h4>
                             </div>
                             <div id="collapseFour"
-                                 class="panel-collapse collapse {% if video_form.errors %}in{% endif %}"
+                                 class="panel-collapse collapse {% if haul_form.errors %}in{% endif %}"
                                  role="tabpanel"
                                  aria-labelledby="headingFour">
                                 <div class="panel-body">
-                                    {% crispy video_form %}
+                                    {% crispy haul_form %}
                                     <p><!-- placeholder --></p>
                                 </div>
                             </div>
                         </div>
-                        <br>
-                        <br>
+
+                        <div class="panel panel-default sub-form">
+                            <div class="panel-heading {% if not video_form.errors %}collapsed{% endif %}"
+                                 role="tab"
+                                 id="headingFive"
+                                 data-toggle="collapse"
+                                 data-parent="#accordion"
+                                 href="#collapseFive"
+                                 area-expanded="false"
+                                 aria-controls="collapseFive">
+                                <h4 class="panel-title">
+                                    <a class="accordion-toggle">Video, photos, and flow/substrate measures</a>
+                                </h4>
+                            </div>
+                            <div id="collapseFive"
+                                 class="panel-collapse collapse {% if video_form.errors %}in{% endif %}"
+                                 role="tabpanel"
+                                 aria-labelledby="headingFive">
+                                <div class="panel-body">
+                                    {% crispy video_form %}
+                                    {% crispy set_level_data_form %}
+                                    <p><!-- placeholder --></p>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-group pull-right">
                             <a href="{% url 'trip_set_list' trip_pk %}" class="btn btn-default">Reset</a>
                             <input type="submit" name="save" value="Save new set" class="btn btn-primary" id="submit-id-save" />
