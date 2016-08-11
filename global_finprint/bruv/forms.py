@@ -1,9 +1,12 @@
 from django import forms
+from django.forms.utils import flatatt
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from crispy_forms.helper import FormHelper
 import crispy_forms.layout as cfl
 import crispy_forms.bootstrap as cfb
 from bootstrap3_datetime.widgets import DateTimePicker
-from .models import Set, EnvironmentMeasure, Bait, Equipment
+from .models import Set, EnvironmentMeasure, Bait, Equipment, SetTag
 from ..trip.models import Trip
 from ..habitat.models import Reef, ReefType
 
@@ -128,7 +131,24 @@ class SetLevelDataForm(forms.ModelForm):
         self.fields['visibility'].choices[0] = (None, '---')
 
 
+class SelectizeWidget(forms.SelectMultiple):
+    def render(self, name, value, attrs=None, choices=()):
+        if value is None:
+            value = []
+        final_attrs = self.build_attrs(attrs, name=name)
+        output = [format_html('<select class="selectize" multiple="multiple"{}>', flatatt(final_attrs))]
+        options = self.render_options(choices, value)
+        if options:
+            output.append(options)
+        output.append('</select>')
+        return mark_safe('\n'.join(output))
+
+
 class SetLevelCommentsForm(forms.ModelForm):
+    comments = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}))
+    message_to_annotators = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}))
+    tags = forms.MultipleChoiceField(widget=SelectizeWidget, choices=SetTag.get_choices())
+
     class Meta:
         model = Set
         fields = ['comments', 'message_to_annotators', 'tags']

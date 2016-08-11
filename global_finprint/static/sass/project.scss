@@ -251,3 +251,9 @@ a.manual-assign {
     /* symbol for "collapsed" panels */
     @include glyphicon("\e079");
 }
+
+form.set {
+  #div_id_tags {
+    min-width: 300px;
+  }
+}

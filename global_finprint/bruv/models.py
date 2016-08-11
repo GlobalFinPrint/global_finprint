@@ -13,7 +13,6 @@ from global_finprint.habitat.models import ReefHabitat
 
 from mptt.models import MPTTModel, TreeForeignKey
 
-
 EQUIPMENT_BAIT_CONTAINER = {
     ('B', 'Bag'),
     ('C', 'Cage'),
@@ -139,6 +138,14 @@ class Bait(AuditableModel):
         unique_together = ('description', 'type', 'oiled')
 
 
+# needed for SetTag#get_choices because python doesn't have this somehow (!!!)
+def flatten(x):
+    if type(x) is list:
+        return [a for i in x for a in flatten(i)]
+    else:
+        return [x]
+
+
 class SetTag(MPTTModel):
     name = models.CharField(max_length=50, unique=True)
     description = models.TextField(null=True, blank=True)
@@ -152,6 +159,16 @@ class SetTag(MPTTModel):
 
     def __str__(self):
         return u"{0}".format(self.name)
+
+    @classmethod
+    def get_choices(cls, node=None):
+        if node is None:
+            nodes = [cls.get_choices(node=node) for node in cls.objects.filter(parent=None, active=True)]
+            return [(node.pk, node.name) for node in flatten(nodes)]
+        elif node.is_leaf_node():
+            return node
+        else:
+            return [node] + [cls.get_choices(node=node) for node in node.get_children().filter(active=True)]
 
 
 class Set(AuditableModel):
