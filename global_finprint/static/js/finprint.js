@@ -15,6 +15,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initAutomaticAssignment();
         initAnnotatorPopover();
         initCollapse();
+        initSelectizeWidgets();
     });
 
     function getCSRF() {
@@ -290,5 +291,9 @@ var finprint = finprint || {};  //namespace if necessary...
                 $parent.find(target).show();
             }
         });
+    }
+
+    function initSelectizeWidgets() {
+        $('select[multiple="multiple"].selectize').selectize({ plugins: ['remove_button', 'restore_on_backspace'] });
     }
 })(jQuery);
