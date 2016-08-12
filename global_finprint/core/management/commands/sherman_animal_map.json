@@ -1,0 +1,60 @@
+{
+    "Carcharhinidae": {
+        "": {
+            "": 292
+        },
+        "Carcharhinus": {
+            "": 293
+        }
+    },
+    "Dasyatidae": {
+        "": {
+            "": 291
+        },
+        "Dasyatis": {
+            "kuhlii": 158
+        },
+        "Himantura": {
+            "": 295
+        },
+        "Taeniura": {
+            "meyeni": 207
+        }
+    },
+    "Hemiscylliidae": {
+        "Chiloscyllium": {
+            "punctatum": 234
+        }
+    },
+    "Mobulidae": {
+        "Manta": {
+            "sp": 297
+        }
+    },
+    "Muraenidae": {
+        "": {
+            "": 300
+        },
+        "Gymnothorax": {
+            "": 298
+        }
+    },
+    "Myliobatidae": {
+        "": {
+            "": 299
+        },
+        "Aetobatus": {
+            "": 296
+        },
+        "Manta": {
+            "": 297,
+            "spp": 297
+        }
+    },
+    "Sphyrnidae":
+    {
+        "Sphyrna": {
+            "": 294
+        }
+    }
+}

@@ -19,8 +19,9 @@ import global_finprint.core.management.commands.import_common as ic
 
 logger = logging.getLogger('scripts')
 
-def import_file(trip_code, set_code, filename):
+def import_file(trip_code, set_code, filename, animal_map):
     logger.info('Importing trip "{}", set "{}" from file "{}"'.format(trip_code, set_code, filename))
+    ic.load_animal_mapping(animal_map)
     csv_file = open(filename)
 
     # throw away first four lines (headers are on line five)
@@ -125,10 +126,12 @@ Usage: python manage.py import_event_measure <trip_code> <set_code> <in_file>"""
         parser.add_argument('trip_code', type=str)
         parser.add_argument('set_code', type=str)
         parser.add_argument('in_file', type=str)
+        parser.add_argument('animal_map', type=str)
 
     def handle(self, *args, **options):
         import_file(
             options['trip_code'],
             options['set_code'],
-            options['in_file']
+            options['in_file'],
+            options['animal_map']
         )

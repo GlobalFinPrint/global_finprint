@@ -44,6 +44,7 @@ LEGACY_COMMENT = 'Auto-imported data.'
 UNDETERMINED_HABITAT_TYPE = 'To Be Updated'
 
 logger = logging.getLogger('scripts')
+animal_map = None
 
 class DataError(Exception):
     pass
@@ -322,11 +323,15 @@ def import_observation(
                 if family:
                     observation.type = 'A'
                     observation.save()
-                    animal = gfaa.Animal.objects.filter(
-                        family=family,
-                        genus=genus,
-                        species=species
-                    ).first()
+                    animal_id = get_animal_mapping(family, genus, species)
+                    if animal_id:
+                        animal = gfaa.Animal.objects.get(pk=animal_id)
+                    else:
+                        animal = gfaa.Animal.objects.filter(
+                            family=family,
+                            genus=genus,
+                            species=species
+                        ).first()
                     validate_data(animal, 'Unable to find animal {} - {} - {}'.format(family, genus, species))
                     animal_obsv_args = {
                         'observation': observation,
@@ -381,6 +386,18 @@ def update_set_data(trip_code, set_code, visibility):
         the_set.save()
     except DataError:
         logger.error('Failed to update visibility for set "{}" of trip "{}"'.format(set_code, trip_code))
+
+def load_animal_mapping(mapping_file):
+    global animal_map
+    animal_map = json.load(open(mapping_file))
+
+def get_animal_mapping(family, genus, species):
+    result = None
+    try:
+        result = animal_map[family][genus][species]
+    except KeyError:
+        pass # no special mapping for this animal
+    return result
 
 def does_observation_exist(
         assignment,
