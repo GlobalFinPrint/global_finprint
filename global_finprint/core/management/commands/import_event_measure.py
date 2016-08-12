@@ -49,7 +49,7 @@ def import_observation_data(trip_code, set_code, obs_data):
             elif orig_stage_value == 'AD':
                 stage = orig_stage_value
             elif orig_stage_value == 'J':
-                stage = 'JD'
+                stage = 'JU'
             else:
                 logger.error('Unknown "Stage" value: {}'.format(orig_stage_value))
                 break
