@@ -61,7 +61,6 @@ def import_observation_data(trip_code, set_code, obs_data):
         behavior = row['Activity']
         length = None
         comment = row['Comment']
-        raw_import_json = json.dumps(row, sort_keys=True, default=lambda a: a.isoformat())
         try:
             annotator = row['TapeReader']
         except KeyError:
