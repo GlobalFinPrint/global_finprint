@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.gis.db import models as geomodels
+from django.contrib.postgres.fields import JSONField
 from global_finprint.core.models import AuditableModel, FinprintUser
 from django.conf import settings
 from boto.s3.connection import S3Connection
@@ -140,7 +141,7 @@ class Event(AuditableModel):
     extent = geomodels.PolygonField(null=True)
     attribute = models.ManyToManyField(to=Attribute)
     note = models.TextField(null=True)
-    raw_import_json = models.TextField(null=True)
+    raw_import_json = JSONField(null=True)
 
     @classmethod
     def create(cls, **kwargs):

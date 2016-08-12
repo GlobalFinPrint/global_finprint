@@ -84,7 +84,7 @@ def import_observation_data(trip_code, set_code, obs_data):
             comment,
             annotator,
             annotation_date,
-            raw_import_json
+            row
         )
 
 def minutes2milliseconds(minutes):
