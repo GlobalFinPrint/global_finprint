@@ -7,6 +7,8 @@ import collections
 import click
 import subprocess
 
+ANIMAL_MAP = 'global_finprint/core/management/commands/sherman_animal_map.json'
+
 @click.command()
 @click.argument('excel_file')
 @click.argument('em_files_root')
