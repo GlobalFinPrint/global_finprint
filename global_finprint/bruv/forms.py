@@ -147,7 +147,7 @@ class SelectizeWidget(forms.SelectMultiple):
 class SetLevelCommentsForm(forms.ModelForm):
     comments = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}))
     message_to_annotators = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}))
-    tags = forms.MultipleChoiceField(widget=SelectizeWidget, choices=SetTag.get_choices())
+    tags = forms.MultipleChoiceField(widget=SelectizeWidget, choices=SetTag.get_choices)
 
     class Meta:
         model = Set
