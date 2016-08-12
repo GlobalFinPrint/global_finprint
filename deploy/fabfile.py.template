@@ -140,8 +140,8 @@ def deploy_from_git(environment):
         sudo('../venv/bin/pip3 install -r ./requirements/{0}.txt'.format(environment), user='www-data')
         sudo('bower install --allow-root --config.interactive=false')
         sudo('chown -R www-data:www-data ./global_finprint/static')
-        apply_migrations()
         collect_static()
+        apply_migrations()
 
 def deploy_from_s3(version,environment,branch):
     s3_file = 'finprint-builds/{0}/global_finprint/files/global_finprint-{1}.tar.gz'.format(branch,version)
@@ -162,8 +162,8 @@ def deploy_from_s3(version,environment,branch):
     sudo('cp {0}/environment_scripts/set_env.sh {1}/'.format(remote_app_dir, remote_django_dir),user='www-data')
     sudo('cp {0}/environment_scripts/run_gunicorn.sh {1}/'.format(remote_app_dir, remote_django_dir),user='www-data')
     sudo('cp {0}/environment_scripts/gunicorn.conf.py {1}/config/'.format(remote_app_dir, remote_django_dir),user='www-data')
-    apply_migrations()
     collect_static()
+    apply_migrations()
 
 
 def configure_gunicorn():
