@@ -1,11 +1,13 @@
 import csv
 
+from django.contrib.auth.decorators import login_required
+from django.core.serializers import serialize
 from django.http import HttpResponse
 from django.views.generic import View
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from .models import Report
+from .models import Report, Planned_Site_Status
 from ..core.mixins import UserAllowedMixin
 
 
@@ -43,3 +45,18 @@ class CustomReportFileView(UserAllowedMixin, View):
         writer.writerows(results)
 
         return response
+
+
+class StatusMapView(UserAllowedMixin, View):
+    template = 'pages/reports/status_report_map.html'
+
+    def get(self, request):
+        return render_to_response(self.template)
+
+@login_required
+def planned_site_geojson(request):
+    feature = serialize('geojson',
+                        Planned_Site_Status.objects.all(),
+                        fields='eez_boundary, status'
+                        )
+    return HttpResponse(feature, content_type='application/json')

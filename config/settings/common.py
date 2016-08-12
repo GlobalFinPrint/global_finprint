@@ -2,6 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import environ
+import sys
 
 
 ROOT_DIR = environ.Path(__file__) - 3  # (/a/b/myfile.py - 3 = /)
@@ -39,6 +40,7 @@ LOCAL_APPS = (
     'global_finprint.trip',
     'global_finprint.bruv',
     'global_finprint.annotation',
+    'global_finprint.report',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -235,6 +237,11 @@ LOGGING = {
             'formatter': 'debug_formatter',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': LOG_DIR,
+        },
+        'stdout': {
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+            'formatter': 'terse_formatter'
         }
     },
     'loggers': {
@@ -247,12 +254,35 @@ LOGGING = {
         {
             'handlers': ['debug_log_file', 'log_file'],
         },
+        'scripts':
+        {
+            'handlers': ['stdout'],
+            'level': 'INFO'
+        }
     }
 }
 
 LEAFLET_CONFIG = {
-    'DEFAULT_CENTER': (25.0600, -77.3450),
-    'DEFAULT_ZOOM': 5,
-    'MIN_ZOOM': 3,
-    'MAX_ZOOM': 18,
+    'TILES':
+        [
+            ('Oceans',
+             'https://services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}.png',
+             {}),
+            ('Topographic',
+             'https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.png',
+             {}),
+            ('National Geographic',
+             'https://services.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}.png',
+             {}),
+        ],
+    'DEFAULT_CENTER': (-6.0, 15.0),
+    'DEFAULT_ZOOM': 3,
+    'MIN_ZOOM': 2,
+    'MAX_ZOOM': 13,
 }
+
+DJANGO_SERVER_ENV = env('DJANGO_SERVER_ENV', default='local')
+FRAME_CAPTURE_BUCKET = 'finprint-annotator-screen-captures'
+
+# Custom auth backend
+AUTHENTICATION_BACKENDS = ['global_finprint.core.backends.FinprintAuth']

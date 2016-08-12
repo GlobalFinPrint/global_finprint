@@ -54,18 +54,38 @@ a {
   border-color: #eed3d7;
 }
 
+.main-splash {
+  background-image: url("/static/images/fp_main.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.splash-header {
+  color: white;
+  background-color: $blue;
+  opacity: 0.9;
+  padding: 12px 18px;
+}
+
+.splash-actions {
+  background-color: white;
+  opacity: 0.9;
+  padding: 12px 18px;
+  li {
+    padding: 15px 0px;
+  }
+}
+
+.splash-spacer {
+  height: 450px;
+}
+
 .generic-list {
   list-style-type: none;
 }
 
 .generic-list-item {
 
-}
-
-.search .form-inline .form-group:last-child {
-  display: inline-block;
-  vertical-align: bottom;
-  padding-bottom: 15px;
 }
 
 .form-inline {
@@ -78,21 +98,6 @@ a {
       position: relative;
       padding-bottom: 30px;
 
-      span.help-block {
-        position: absolute;
-        top: 55px;
-        left: 0;
-      }
-    }
-
-    p.help-block {
-      display: inline;
-    }
-
-    &:last-child {
-      display: block;
-      text-align: right;
-      padding-bottom: 0;
     }
 
     a.cancel-button {
@@ -102,6 +107,24 @@ a {
 
   #div_id_oiled {
     padding-top: 25px;
+  }
+}
+
+thead {
+  tr{
+    border: 0;
+    th {
+      border: 0 !important;
+    }
+  }
+
+  tr.table-header-title {
+    color: white;
+    background-color: $blue;
+  }
+
+  tr.table-header-labels {
+    color: $blue;
   }
 }
 
@@ -200,7 +223,37 @@ a.manual-assign {
     }
 
     tr.child-row {
+      display: none;
       background-color: $child-row;
     }
+
+    td div.annotool-thumbnail {
+      position: relative;
+      width: 160px;
+      height: 90px;
+      background-size: 160px 90px;
+
+      div.extent {
+        position: absolute;
+        border: 1px solid lightgreen;
+      }
+    }
+  }
+}
+
+.panel-heading .accordion-toggle:after {
+    /* symbol for "opened" panels */
+    @include glyphicon("\e114");
+    float: right;
+}
+
+.panel-heading.collapsed .accordion-toggle:after {
+    /* symbol for "collapsed" panels */
+    @include glyphicon("\e079");
+}
+
+form.set {
+  #div_id_tags {
+    min-width: 300px;
   }
 }

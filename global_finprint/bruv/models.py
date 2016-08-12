@@ -1,4 +1,7 @@
+from decimal import Decimal
+
 from django.contrib.gis.db import models
+from django.core.validators import MinValueValidator
 from django.core.urlresolvers import reverse
 from django.contrib.gis.geos import Point
 
@@ -8,6 +11,7 @@ from global_finprint.core.models import AuditableModel
 from global_finprint.trip.models import Trip
 from global_finprint.habitat.models import ReefHabitat
 
+from mptt.models import MPTTModel, TreeForeignKey
 
 EQUIPMENT_BAIT_CONTAINER = {
     ('B', 'Bag'),
@@ -63,7 +67,7 @@ BAIT_TYPE_CHOICES = {
 
 class FrameType(models.Model):
     # starting seed:  rebar, stainless rebar, PVC, mixed
-    type = models.CharField(max_length=16)
+    type = models.CharField(max_length=32)
     image = models.ImageField(null=True, blank=True)
 
     def __str__(self):
@@ -71,12 +75,12 @@ class FrameType(models.Model):
 
 
 class Equipment(AuditableModel):
-    camera = models.CharField(max_length=16)
+    camera = models.CharField(max_length=32)
     stereo = models.BooleanField(default=False)
     frame_type = models.ForeignKey(to=FrameType)
     bait_container = models.CharField(max_length=1, choices=EQUIPMENT_BAIT_CONTAINER, default='C')
-    arm_length = models.PositiveIntegerField(help_text='centimeters')
-    camera_height = models.PositiveIntegerField(help_text='centimeters')
+    arm_length = models.PositiveIntegerField(null=True, help_text='centimeters')
+    camera_height = models.PositiveIntegerField(null=True, help_text='centimeters')
 
     def __str__(self):
         return u"{0} / {1}".format(self.frame_type.type, self.camera)
@@ -93,7 +97,7 @@ class EnvironmentMeasure(AuditableModel):
                                    max_digits=4, decimal_places=2,
                                    help_text='ppt')  # ppt .0
     conductivity = models.DecimalField(null=True, blank=True,
-                                       max_digits=4, decimal_places=2,
+                                       max_digits=8, decimal_places=2,
                                        help_text='S/m')  # S/m .00
     dissolved_oxygen = models.DecimalField(null=True, blank=True,
                                            max_digits=3, decimal_places=1,
@@ -123,12 +127,48 @@ class EnvironmentMeasure(AuditableModel):
 
 
 class Bait(AuditableModel):
-    description = models.CharField(max_length=16, help_text='1kg')
+    description = models.CharField(max_length=32, help_text='1kg')
     type = models.CharField(max_length=3, choices=BAIT_TYPE_CHOICES)
     oiled = models.BooleanField(default=False, help_text='20ml menhaden oil')
 
     def __str__(self):
-        return u'{0} {1} {2}'.format(self.get_type_display(), self.description, '*' if self.oiled else '')
+        return u'{0} {1} {2}'.format(self.get_type_display(), self.description, '(m)' if self.oiled else '')
+
+    class Meta:
+        unique_together = ('description', 'type', 'oiled')
+
+
+# needed for SetTag#get_choices because python doesn't have this somehow (!!!)
+def flatten(x):
+    if type(x) is list:
+        return [a for i in x for a in flatten(i)]
+    else:
+        return [x]
+
+
+class SetTag(MPTTModel):
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(null=True, blank=True)
+    active = models.BooleanField(
+        default=True,
+        help_text='overridden if parent is inactive')
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
+
+    def __str__(self):
+        return u"{0}".format(self.name)
+
+    @classmethod
+    def get_choices(cls, node=None):
+        if node is None:
+            nodes = [cls.get_choices(node=node) for node in cls.objects.filter(parent=None, active=True)]
+            return [(node.pk, node.name) for node in flatten(nodes)]
+        elif node.is_leaf_node():
+            return node
+        else:
+            return [node] + [cls.get_choices(node=node) for node in node.get_children().filter(active=True)]
 
 
 class Set(AuditableModel):
@@ -137,13 +177,21 @@ class Set(AuditableModel):
     code = models.CharField(max_length=32, help_text='[site + reef code]_xxx', null=True, blank=True)
     set_date = models.DateField()
     coordinates = models.PointField(null=True)
-    latitude = models.DecimalField(max_digits=10, decimal_places=6)
-    longitude = models.DecimalField(max_digits=10, decimal_places=6)
+    latitude = models.DecimalField(max_digits=12, decimal_places=8)
+    longitude = models.DecimalField(max_digits=12, decimal_places=8)
     drop_time = models.TimeField()
     haul_time = models.TimeField()
     visibility = models.CharField(max_length=3, choices=VISIBILITY_CHOICES)
-    depth = models.FloatField(null=True, help_text='m')
+    depth = models.DecimalField(null=True, help_text='m', decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0.01'))])
     comments = models.TextField(null=True, blank=True)
+    message_to_annotators = models.TextField(null=True, blank=True)
+    tags = models.ManyToManyField(to=SetTag)
+    current_flow_estimated = models.CharField(max_length=50, null=True, blank=True)
+    current_flow_instrumented = models.DecimalField(null=True, blank=True,
+                                                    max_digits=5, decimal_places=2,
+                                                    help_text='m/s')  # m/s .00
+    bruv_image_url = models.CharField(max_length=200, null=True, blank=True)
+    splendor_image_url = models.CharField(max_length=200, null=True, blank=True)
 
     # todo:  need some form changes here ...
     bait = models.ForeignKey(Bait, null=True)
@@ -194,7 +242,8 @@ class Set(AuditableModel):
         return reverse('set_update', args=[str(self.id)])
 
     def observations(self):
-        return Observation.objects.filter(assignment__in=self.video.assignment_set.all())
+        if self.video:
+            return Observation.objects.filter(assignment__in=self.video.assignment_set.all())
 
     def __str__(self):
         return u"{0}_{1}".format(self.trip.code, self.code)

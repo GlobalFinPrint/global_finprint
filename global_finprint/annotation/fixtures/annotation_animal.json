@@ -35,6 +35,13 @@
     }
   },
   {
+    "model": "annotation.animalgroup",
+    "pk": 6,
+    "fields": {
+      "name": "Moray"
+    }
+  },
+  {
     "model": "annotation.animal",
     "pk": 16,
     "fields": {
@@ -46,7 +53,9 @@
       "species": "tiburo",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -55,13 +64,15 @@
     "fields": {
       "rank": null,
       "group": 1,
-      "common_name": "Sharpnose shark (Atlantic/Carib)",
+      "common_name": "Sharpnose shark (atlantic/carib)",
       "family": "Carcharhinidae",
       "genus": "Rhizoprionodon ",
       "species": "sp.",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -76,7 +87,9 @@
       "species": "acronotus",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -91,7 +104,11 @@
       "species": "cuvier",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1,
+        2,
+        3
+      ]
     }
   },
   {
@@ -106,7 +123,9 @@
       "species": "brevirostris",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -121,7 +140,11 @@
       "species": "mokarran ",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1,
+        2,
+        3
+      ]
     }
   },
   {
@@ -136,7 +159,10 @@
       "species": "limbatus",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1,
+        2
+      ]
     }
   },
   {
@@ -151,7 +177,9 @@
       "species": "cirratum",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -166,7 +194,9 @@
       "species": "perezi",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -181,7 +211,10 @@
       "species": "narinari",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1,
+        2
+      ]
     }
   },
   {
@@ -196,7 +229,9 @@
       "species": "jamaicensis",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -211,7 +246,9 @@
       "species": "schmardae",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -226,7 +263,9 @@
       "species": "americana",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -241,7 +280,9 @@
       "species": "caretta",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -256,7 +297,9 @@
       "species": "imbricate",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -271,7 +314,9 @@
       "species": "mydas",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -286,7 +331,9 @@
       "species": "striatus",
       "fishbase_key": 18,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -301,7 +348,9 @@
       "species": "cruentata",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -316,7 +365,9 @@
       "species": "fulva",
       "fishbase_key": 8816,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -331,7 +382,9 @@
       "species": "guttatus",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -346,7 +399,9 @@
       "species": "adscensionis",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -361,7 +416,9 @@
       "species": "bonaci",
       "fishbase_key": 1209,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -376,7 +433,9 @@
       "species": "venenosa",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -391,7 +450,9 @@
       "species": "barracuda",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -406,7 +467,9 @@
       "species": "analis",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -421,7 +484,9 @@
       "species": "chrysurus",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -436,7 +501,9 @@
       "species": "ruber",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -451,7 +518,9 @@
       "species": "dumerili",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -466,7 +535,9 @@
       "species": "fasciata",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -481,7 +552,9 @@
       "species": "bartholomaei",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -496,7 +569,9 @@
       "species": "latus",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -511,7 +586,9 @@
       "species": "maculatus",
       "fishbase_key": null,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -519,14 +596,16 @@
     "pk": 48,
     "fields": {
       "rank": null,
-      "group": 4,
+      "group": 6,
       "common_name": "Spotted moray eel",
       "family": "Muraenidae",
       "genus": "Gymnothorax",
       "species": "moringa",
       "fishbase_key": 7547,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
     }
   },
   {
@@ -534,14 +613,2982 @@
     "pk": 49,
     "fields": {
       "rank": null,
-      "group": 4,
+      "group": 6,
       "common_name": "Green moray eel",
       "family": "Muraenidae",
       "genus": "Gymnothorax",
       "species": "funebris",
       "fishbase_key": 7546,
       "sealifebase_key": null,
-      "regions": [1]
+      "regions": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 92,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Bigeye seaperch",
+      "family": "Lutjanidae",
+      "genus": "Lutjanus",
+      "species": "lutjanus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 93,
+    "fields": {
+      "rank": null,
+      "group": 6,
+      "common_name": "Fimbriated moray",
+      "family": "Muraenidae",
+      "genus": "Gymnothorax",
+      "species": "fimbriatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 94,
+    "fields": {
+      "rank": null,
+      "group": 1,
+      "common_name": "Tawny nurse shark",
+      "family": "Ginglymostomatidae",
+      "genus": "Nebrius",
+      "species": "ferrugineus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 95,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "White-spotted rockcod",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "caeruleopunctatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 96,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Camouflage rockcod",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "polyphekadion",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 97,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Mozambique large-eye bream",
+      "family": "Lethrinidae",
+      "genus": "Wattsia",
+      "species": "mosambica",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 98,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Onespot seaperch",
+      "family": "Lutjanidae",
+      "genus": "Lutjanus",
+      "species": "monostigma",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 99,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Brown-barred rockcod",
+      "family": "Serranidae",
+      "genus": "Cephalopholis",
+      "species": "boenak",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 100,
+    "fields": {
+      "rank": null,
+      "group": 2,
+      "common_name": "Mangrove whipray",
+      "family": "Dasyatidae",
+      "genus": "Himantura",
+      "species": "granulata",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 101,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Tripletail maori wrasse",
+      "family": "Labridae",
+      "genus": "Cheilinus",
+      "species": "trilobatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 102,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Moses perch",
+      "family": "Lutjanidae",
+      "genus": "Lutjanus",
+      "species": "russelli",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 103,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Red bass",
+      "family": "Lutjanidae",
+      "genus": "Lutjanus",
+      "species": "bohar",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 104,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Collared seabream",
+      "family": "Lethrinidae",
+      "genus": "Gymnocranius",
+      "species": "audleyi",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 105,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Sailfin snapper",
+      "family": "Lutjanidae",
+      "genus": "Symphorichthys",
+      "species": "spilurus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 106,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Longfin rockcod (honeycomb rockcod)",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "quoyanus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 107,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Yellow-spotted emperor",
+      "family": "Lethrinidae",
+      "genus": "Lethrinus",
+      "species": "erythracanthus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 108,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Flame snapper",
+      "family": "Lutjanidae",
+      "genus": "Etelis",
+      "species": "coruscans",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 109,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Crimson seaperch (smallmouth nannygai)",
+      "family": "Lutjanidae",
+      "genus": "Lutjanus",
+      "species": "erythropterus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 110,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Flagtail rockcod",
+      "family": "Serranidae",
+      "genus": "Cephalopholis",
+      "species": "urodeta",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 111,
+    "fields": {
+      "rank": null,
+      "group": 3,
+      "common_name": "Green turtle",
+      "family": "Chelonioidea",
+      "genus": "Chelonia",
+      "species": "mydas",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 112,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Paddletail",
+      "family": "Lutjanidae",
+      "genus": "Lutjanus",
+      "species": "gibbus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 113,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Hogfish",
+      "family": "Labridae",
+      "genus": "Bodianus",
+      "species": "spp.",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 114,
+    "fields": {
+      "rank": null,
+      "group": 1,
+      "common_name": "Blacktip reef shark",
+      "family": "Carcharhinidae",
+      "genus": "Carcharhinus",
+      "species": "melanopterus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 115,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Thumbprint emperor",
+      "family": "Lethrinidae",
+      "genus": "Lethrinus",
+      "species": "harak",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 116,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Red emperor",
+      "family": "Lutjanidae",
+      "genus": "Lutjanus",
+      "species": "sebae",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 117,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Midnight seaperch",
+      "family": "Lutjanidae",
+      "genus": "Macolor",
+      "species": "macularis",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 118,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Variegated emperor",
+      "family": "Lethrinidae",
+      "genus": "Lethrinus",
+      "species": "variegatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 119,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Yellow-striped emperor",
+      "family": "Lethrinidae",
+      "genus": "Lethrinus",
+      "species": "ornatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 120,
+    "fields": {
+      "rank": null,
+      "group": 1,
+      "common_name": "Australian weasel shark",
+      "family": "Hemigaleidae",
+      "genus": "Hemigaelus",
+      "species": "australensis",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 121,
+    "fields": {
+      "rank": null,
+      "group": 1,
+      "common_name": "Epaulette shark",
+      "family": "Hemiscyllidae",
+      "genus": "Hemiscyllium",
+      "species": "ocellatum",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 122,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Robinson's seabream",
+      "family": "Lethrinidae",
+      "genus": "Gymnocranius",
+      "species": "grandoculis",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 123,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Flowery cod",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "fuscoguttatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 124,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Hexagon rockcod",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "hexagonatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 125,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Redmouth rockcod",
+      "family": "Serranidae",
+      "genus": "Aethaloperca",
+      "species": "rogaa",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 126,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Barred-cheek coral trout",
+      "family": "Serranidae",
+      "genus": "Plectropomus",
+      "species": "maculatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 127,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Maori cod",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "undulatostriatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 129,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Blue-lined rockcod",
+      "family": "Serranidae",
+      "genus": "Cephalopholis",
+      "species": "formosa",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 130,
+    "fields": {
+      "rank": null,
+      "group": 3,
+      "common_name": "Leatherback turtle  ",
+      "family": "Chelonioidea",
+      "genus": "Dermochelys",
+      "species": "coriacea",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 131,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Blue stripe seaperch",
+      "family": "Lutjanidae",
+      "genus": "Lutjanus",
+      "species": "kasmira",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 132,
+    "fields": {
+      "rank": null,
+      "group": 1,
+      "common_name": "Pigeye shark",
+      "family": "Carcharhinidae",
+      "genus": "Carcharhinus",
+      "species": "amboinensis",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 133,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Coral rockcod",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "corallicola",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 134,
+    "fields": {
+      "rank": null,
+      "group": 6,
+      "common_name": "Giant moray",
+      "family": "Muraenidae",
+      "genus": "Gymnothorax",
+      "species": "javanicus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 135,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Surgeonfishes",
+      "family": "Acanthuridae",
+      "genus": "Acanthurus and Ctenochaetus",
+      "species": "spp.",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 136,
+    "fields": {
+      "rank": null,
+      "group": 2,
+      "common_name": "Manta ray",
+      "family": "Mobulidae",
+      "genus": "Manta",
+      "species": "birostris",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 137,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Unicornfish",
+      "family": "Acanthuridae",
+      "genus": "Naso and Prionurus",
+      "species": "spp.",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 138,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Black-tipped rockcod",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "fasciatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 139,
+    "fields": {
+      "rank": null,
+      "group": 3,
+      "common_name": "Loggerhead turtle  ",
+      "family": "Chelonioidea",
+      "genus": "Caretta",
+      "species": "caretta",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 140,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Grass emperor (grass sweetlip)",
+      "family": "Lethrinidae",
+      "genus": "Lethrinus",
+      "species": "laticaudis",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 141,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Black and white seaperch",
+      "family": "Lutjanidae",
+      "genus": "Macolor",
+      "species": "niger",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 142,
+    "fields": {
+      "rank": null,
+      "group": 2,
+      "common_name": "Devil ray",
+      "family": "Myliobatidae",
+      "genus": "Mobula",
+      "species": "spp.",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 143,
+    "fields": {
+      "rank": null,
+      "group": 6,
+      "common_name": "Honeycomb moray",
+      "family": "Muraenidae",
+      "genus": "Gymnothorax",
+      "species": "favafineus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 144,
+    "fields": {
+      "rank": null,
+      "group": 1,
+      "common_name": "Whitetip reef shark",
+      "family": "Carcharhinidae",
+      "genus": "Triaenodon",
+      "species": "obesus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 145,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Queensland grouper",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "lanceolatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 146,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Coronation trout",
+      "family": "Serranidae",
+      "genus": "Variola",
+      "species": "louti",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 147,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Barramundi cod",
+      "family": "Serranidae",
+      "genus": "Cromileptes",
+      "species": "altivelis",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 148,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Coral trout (leopard trout)",
+      "family": "Serranidae",
+      "genus": "Plectropomus",
+      "species": "leopardus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 149,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Maori seaperch",
+      "family": "Lutjanidae",
+      "genus": "Lutjanus",
+      "species": "rivulatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 150,
+    "fields": {
+      "rank": null,
+      "group": 1,
+      "common_name": "Bull shark",
+      "family": "Carcharhinidae",
+      "genus": "Carcharhinus",
+      "species": "leucas",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 151,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Dothead rockcod",
+      "family": "Serranidae",
+      "genus": "Cephalopholis",
+      "species": "microprion",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 152,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Venus tuskfish",
+      "family": "Labridae",
+      "genus": "Choerodon",
+      "species": "venustus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 153,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Speckled grouper",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "magniscuttis",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 154,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Red-eared emperor",
+      "family": "Lethrinidae",
+      "genus": "Lethrinus",
+      "species": "rubrioperculatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 155,
+    "fields": {
+      "rank": null,
+      "group": 1,
+      "common_name": "Sliteye shark",
+      "family": "Carcharhinidae",
+      "genus": "Loxodon",
+      "species": "macrorhinus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 156,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Sweetlip emperor (redthroat emperor)",
+      "family": "Lethrinidae",
+      "genus": "Lethrinus",
+      "species": "miniatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 157,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Dark-tailed seaperch",
+      "family": "Lutjanidae",
+      "genus": "Lutjanus",
+      "species": "lemniscatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 158,
+    "fields": {
+      "rank": null,
+      "group": 2,
+      "common_name": "Bluespotted maskray",
+      "family": "Dasyatidae",
+      "genus": "Neotrygon",
+      "species": "kuhlii",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 159,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Comet grouper",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "morrhua",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 160,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Anchor tuskfish",
+      "family": "Labridae",
+      "genus": "Choerodon",
+      "species": "anchorago",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 161,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Bicolour parrotfish",
+      "family": "Scaridae",
+      "genus": "Cetoscarus",
+      "species": "bicolor",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 162,
+    "fields": {
+      "rank": null,
+      "group": 6,
+      "common_name": "Zebra moray",
+      "family": "Muraenidae",
+      "genus": "Gymnomuraena",
+      "species": "zebra",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 163,
+    "fields": {
+      "rank": null,
+      "group": 2,
+      "common_name": "Jenkin's whipray",
+      "family": "Dasyatidae",
+      "genus": "Himantura",
+      "species": "jenkinsii",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 164,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Bumphead parrotfish",
+      "family": "Scaridae",
+      "genus": "Bolbometopon",
+      "species": "muricatum",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 165,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Blue-spotted rockcod",
+      "family": "Serranidae",
+      "genus": "Cephalopholis",
+      "species": "cyanostigma",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 166,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Orange-striped emperor",
+      "family": "Lethrinidae",
+      "genus": "Lethrinus",
+      "species": "obsoletus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 167,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Five-lined seaperch",
+      "family": "Lutjanidae",
+      "genus": "Lutjanus",
+      "species": "quinquelineatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 168,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Eight bar grouper",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "octofasciatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 169,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Trout cod",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "maculatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 170,
+    "fields": {
+      "rank": null,
+      "group": 1,
+      "common_name": "Lemon shark",
+      "family": "Carcharhinidae",
+      "genus": "Negaprion",
+      "species": "acutidens",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 171,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Chinamanfish",
+      "family": "Lutjanidae",
+      "genus": "Symphorus",
+      "species": "nematophorus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 172,
+    "fields": {
+      "rank": null,
+      "group": 6,
+      "common_name": "Chlamydatus moray",
+      "family": "Muraenidae",
+      "genus": "Gymnothorax",
+      "species": "chlamydatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 173,
+    "fields": {
+      "rank": null,
+      "group": 6,
+      "common_name": "Spotted moray",
+      "family": "Muraenidae",
+      "genus": "Gymnothorax",
+      "species": "isingteena",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 174,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Small-toothed jobfish",
+      "family": "Lutjanidae",
+      "genus": "Aphareus",
+      "species": "furca",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 175,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Humphead maori wrasse",
+      "family": "Labridae",
+      "genus": "Cheilinus",
+      "species": "undulatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 176,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Strawberry rockcod",
+      "family": "Serranidae",
+      "genus": "Cephalopholis",
+      "species": "spiloparaea",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 177,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Chinese footballer (blue spot trout)",
+      "family": "Serranidae",
+      "genus": "Plectropomus",
+      "species": "laevis",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 178,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Spangled emperor",
+      "family": "Lethrinidae",
+      "genus": "Lethrinus",
+      "species": "nebulosus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 179,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Speckled-fin rockcod",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "ongus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 180,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Pink-eared emperor",
+      "family": "Lethrinidae",
+      "genus": "Lethrinus",
+      "species": "lentjan",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 181,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Yellowtail emperor",
+      "family": "Lethrinidae",
+      "genus": "Lethrinus",
+      "species": "atkinsoni",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 182,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Brown stripe seaperch (brown hussar)",
+      "family": "Lutjanidae",
+      "genus": "Lutjanus",
+      "species": "vitta",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 183,
+    "fields": {
+      "rank": null,
+      "group": 6,
+      "common_name": "Kidako moray",
+      "family": "Muraenidae",
+      "genus": "Gymnothorax",
+      "species": "kidako",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 184,
+    "fields": {
+      "rank": null,
+      "group": 1,
+      "common_name": "Silvertip shark",
+      "family": "Carcharhinidae",
+      "genus": "Carcharhinus",
+      "species": "albimarginatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 185,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Lavender jobfish",
+      "family": "Lutjanidae",
+      "genus": "Pristipomoides",
+      "species": "sieboldii",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 186,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Gold-lined seabream",
+      "family": "Lethrinidae",
+      "genus": "Gnathodentex",
+      "species": "aureolineatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 187,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Greasy rockcod",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "tauvina",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 188,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Japanese seabream",
+      "family": "Lethrinidae",
+      "genus": "Gymnocranius",
+      "species": "euanus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 189,
+    "fields": {
+      "rank": null,
+      "group": 1,
+      "common_name": "Dusky shark",
+      "family": "Carcharhinidae",
+      "genus": "Carcharhinus",
+      "species": "obscurus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 190,
+    "fields": {
+      "rank": null,
+      "group": 3,
+      "common_name": "Olive ridley turtle  ",
+      "family": "Chelonioidea",
+      "genus": "Lepidochelys",
+      "species": "olivacea",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 191,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Ruby snapper",
+      "family": "Lutjanidae",
+      "genus": "Etelis",
+      "species": "carbunculus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 192,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Hussar (pink hussar)",
+      "family": "Lutjanidae",
+      "genus": "Lutjanus",
+      "species": "adetii",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 193,
+    "fields": {
+      "rank": null,
+      "group": 1,
+      "common_name": "Scalloped hammerhead shark",
+      "family": "Sphyrnidae",
+      "genus": "Sphyrna",
+      "species": "lewini",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 194,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Big-eye bream",
+      "family": "Lethrinidae",
+      "genus": "Monotaxis",
+      "species": "grandoculis",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 195,
+    "fields": {
+      "rank": null,
+      "group": 6,
+      "common_name": "Ribbon eel",
+      "family": "Muraenidae",
+      "genus": "Rhinomuraena",
+      "species": "quaesita",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 196,
+    "fields": {
+      "rank": null,
+      "group": 2,
+      "common_name": "Ocellated eagle ray",
+      "family": "Myliobatidae",
+      "genus": "Aetobatus",
+      "species": "ocellatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 197,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Long-nosed emperor",
+      "family": "Lethrinidae",
+      "genus": "Lethrinus",
+      "species": "olivaceus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 198,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Lancer",
+      "family": "Lethrinidae",
+      "genus": "Lethrinus",
+      "species": "genivittatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 199,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Crimson jobfish (rosy jobfish)",
+      "family": "Lutjanidae",
+      "genus": "Pristipomoides",
+      "species": "filamentosus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 200,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Saddletail seaperch(largemouth nannygai)",
+      "family": "Lutjanidae",
+      "genus": "Lutjanus",
+      "species": "malabaricus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 201,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Areolate rockcod",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "areolatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 202,
+    "fields": {
+      "rank": null,
+      "group": 1,
+      "common_name": "Leopard/zebra shark",
+      "family": "Stegostomatidae",
+      "genus": "Stegostoma",
+      "species": "fasciatum",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 203,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Yellow lipemperor",
+      "family": "Lethrinidae",
+      "genus": "Lethrinus",
+      "species": "xanthochilus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 204,
+    "fields": {
+      "rank": null,
+      "group": 6,
+      "common_name": "Snowflake moray",
+      "family": "Muraenidae",
+      "genus": "Echidna",
+      "species": "nebulosa",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 205,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Hapuku",
+      "family": "Serranidae",
+      "genus": "Polyprion",
+      "species": "americanus and oxygeneios",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 206,
+    "fields": {
+      "rank": null,
+      "group": 1,
+      "common_name": "Spottail shark ",
+      "family": "Carcharhinidae",
+      "genus": "Carcharhinus",
+      "species": "sorrah",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 207,
+    "fields": {
+      "rank": null,
+      "group": 2,
+      "common_name": "Marbled ray/ blotched fantail ray",
+      "family": "Dasyatidae",
+      "genus": "Taeniurops",
+      "species": "meyeni",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 208,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Peacock rockcod",
+      "family": "Serranidae",
+      "genus": "Cephalopholis",
+      "species": "argus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 209,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Coral cod",
+      "family": "Serranidae",
+      "genus": "Cephalopholis",
+      "species": "miniata",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 210,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Painted sweetlips (slaty bream)",
+      "family": "Haemulidae",
+      "genus": "Diagramma",
+      "species": "spp.",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 211,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Blackspot tuskfish",
+      "family": "Labridae",
+      "genus": "Choerodon",
+      "species": "schoenleinii",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 212,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Grass tuskfish (purple tuskfish)",
+      "family": "Labridae",
+      "genus": "Choerodon",
+      "species": "cephalotes",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 213,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Oblique-banded grouper",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "radiatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 214,
+    "fields": {
+      "rank": null,
+      "group": 2,
+      "common_name": "Pink whipray",
+      "family": "Dasyatidae",
+      "genus": "Himantura",
+      "species": "fai",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 215,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "White-lined rockcod",
+      "family": "Serranidae",
+      "genus": "Anyperodon",
+      "species": "leucogrammicus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 216,
+    "fields": {
+      "rank": null,
+      "group": 6,
+      "common_name": "Whitemouth moray/ turkey moray",
+      "family": "Muraenidae",
+      "genus": "Gymnothorax",
+      "species": "meleagris",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 217,
+    "fields": {
+      "rank": null,
+      "group": 1,
+      "common_name": "Spinner shark",
+      "family": "Carcharhinidae",
+      "genus": "Carcharhinus",
+      "species": "brevipinna",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 218,
+    "fields": {
+      "rank": null,
+      "group": 1,
+      "common_name": "Spotted wobbegong",
+      "family": "Orectolobidae",
+      "genus": "Orectolobus",
+      "species": "maculatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 219,
+    "fields": {
+      "rank": null,
+      "group": 2,
+      "common_name": "White spot guitarfish (2 spp.)",
+      "family": "Rhynchobatidae",
+      "genus": "Rhynchobatus",
+      "species": "spp.",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 220,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Thinspine rockcod",
+      "family": "Serranidae",
+      "genus": "Gracila",
+      "species": "albomarginata",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 221,
+    "fields": {
+      "rank": null,
+      "group": 6,
+      "common_name": "Barred-fin moray",
+      "family": "Muraenidae",
+      "genus": "Gymnothorax",
+      "species": "zonipectis",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 222,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Yellow-margined seaperch",
+      "family": "Lutjanidae",
+      "genus": "Lutjanus",
+      "species": "fulvus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 223,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Tomato rockcod",
+      "family": "Serranidae",
+      "genus": "Cephalopholis",
+      "species": "sonnerati",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 224,
+    "fields": {
+      "rank": null,
+      "group": 2,
+      "common_name": "Shark ray/ bowmouth guitarfish",
+      "family": "Rhinidae",
+      "genus": "Rhina",
+      "species": "ancylostoma",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 226,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Spanish flag (stripey)",
+      "family": "Lutjanidae",
+      "genus": "Lutjanus",
+      "species": "carponotatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 227,
+    "fields": {
+      "rank": null,
+      "group": 2,
+      "common_name": "Giant shovelnose ray",
+      "family": "Rhinobatidae",
+      "genus": "Glaucostegus",
+      "species": "typus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 228,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Squaretail/passionfruit trout",
+      "family": "Serranidae",
+      "genus": "Plectropomus",
+      "species": "areolatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 229,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Snubnose rockcod",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "macrospilos",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 230,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Leopard rockcod",
+      "family": "Serranidae",
+      "genus": "Cephalopholis",
+      "species": "leopardus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 231,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Chinaman rockcod",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "rivulatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 232,
+    "fields": {
+      "rank": null,
+      "group": 6,
+      "common_name": "Yellow margined moray",
+      "family": "Muraenidae",
+      "genus": "Gymnothorax",
+      "species": "flavimarginatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 233,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Highfin coral trout",
+      "family": "Serranidae",
+      "genus": "Plectropomus",
+      "species": "oligacanthus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 234,
+    "fields": {
+      "rank": null,
+      "group": 1,
+      "common_name": "Brown banded catshark/grey carpetshark",
+      "family": "Hemiscyllidae",
+      "genus": "Chiloscyllium",
+      "species": "punctatum",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 235,
+    "fields": {
+      "rank": null,
+      "group": 2,
+      "common_name": "Reticulate whipray/ honeycomb stingray",
+      "family": "Dasyatidae",
+      "genus": "Himantura",
+      "species": "uarnak",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 236,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Spotted seabream",
+      "family": "Lethrinidae",
+      "genus": "Gymnocranius",
+      "species": "sp.",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 237,
+    "fields": {
+      "rank": null,
+      "group": 6,
+      "common_name": "Greyface moray/ white eyed moray",
+      "family": "Muraenidae",
+      "genus": "Gymnothorax",
+      "species": "thyrsoideus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 238,
+    "fields": {
+      "rank": null,
+      "group": 3,
+      "common_name": "Sea snakes and sea kraits",
+      "family": "Hydrophiinae",
+      "genus": "",
+      "species": "",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": []
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 239,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Blue maori",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "cyanopodus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 240,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Blue tuskfish",
+      "family": "Labridae",
+      "genus": "Choerodon",
+      "species": "cyanodus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 241,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Black-spot snapper",
+      "family": "Lutjanidae",
+      "genus": "Lutjanus",
+      "species": "fulviflamma",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 242,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Green jobfish",
+      "family": "Lutjanidae",
+      "genus": "Aprion",
+      "species": "virescens",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 243,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Goldband snapper",
+      "family": "Lutjanidae",
+      "genus": "Pristipomoides",
+      "species": "multidens and typus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 244,
+    "fields": {
+      "rank": null,
+      "group": 1,
+      "common_name": "Sandbar shark",
+      "family": "Carcharhinidae",
+      "genus": "Carcharhinus",
+      "species": "plumbeus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 245,
+    "fields": {
+      "rank": null,
+      "group": 3,
+      "common_name": "Flatback turtle  ",
+      "family": "Chelonioidea",
+      "genus": "Natator",
+      "species": "depressus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 246,
+    "fields": {
+      "rank": null,
+      "group": 2,
+      "common_name": "Cowtail ray",
+      "family": "Dasyatidae",
+      "genus": "Pastinachus",
+      "species": "atrus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 247,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Six bar rockcod",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "sexfasciatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 248,
+    "fields": {
+      "rank": null,
+      "group": 3,
+      "common_name": "Hawksbill turtle  ",
+      "family": "Chelonioidea",
+      "genus": "Eretmochelys",
+      "species": "imbricata",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 249,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Bar rockcod",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "ergastularius",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 250,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Dwarf spotted rockcod (wire netting rockcod)",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "merra",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 251,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Four-saddle rockcod",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "spilotoceps",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 252,
+    "fields": {
+      "rank": null,
+      "group": 2,
+      "common_name": "Manta ray",
+      "family": "Mobulidae",
+      "genus": "Manta",
+      "species": "alfredi",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 253,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Potato cod",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "tukula",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 254,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Six spot rockcod",
+      "family": "Serranidae",
+      "genus": "Cephalopholis",
+      "species": "sexmaculata",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 255,
+    "fields": {
+      "rank": null,
+      "group": 2,
+      "common_name": "Bluespotted fantail ray",
+      "family": "Dasyatidae",
+      "genus": "Taeniura",
+      "species": "lymma",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 256,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Blacksaddle rockcod",
+      "family": "Serranidae",
+      "genus": "Epinephelus",
+      "species": "howlandi",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 257,
+    "fields": {
+      "rank": null,
+      "group": 1,
+      "common_name": "Grey reef shark",
+      "family": "Carcharhinidae",
+      "genus": "Carcharhinus",
+      "species": "amblyrhynchos",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 258,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Lyretail trout",
+      "family": "Serranidae",
+      "genus": "Variola",
+      "species": "albimarginata",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "annotation.animal",
+    "pk": 259,
+    "fields": {
+      "rank": null,
+      "group": 4,
+      "common_name": "Redbreasted maori wrasse",
+      "family": "Labridae",
+      "genus": "Cheilinus",
+      "species": "fasciatus",
+      "fishbase_key": null,
+      "sealifebase_key": null,
+      "regions": [
+        2,
+        3
+      ]
     }
   }
 ]
+

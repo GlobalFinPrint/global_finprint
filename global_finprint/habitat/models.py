@@ -1,4 +1,7 @@
+from decimal import Decimal
+
 from django.contrib.gis.db import models
+from django.core.validators import MinValueValidator
 
 from ..core.models import Team
 
@@ -20,6 +23,9 @@ class Region(models.Model):
 class Location(models.Model):
     name = models.CharField(max_length=100, unique=True)
     code = models.CharField(max_length=4, unique=True, help_text='3166-1 alpha-2, if applicable.')
+    boundary = models.MultiPolygonField(srid=4326, null=True, blank=True)
+    eez_boundary = models.MultiPolygonField(srid=4326, null=True, blank=True)
+
     region = models.ForeignKey(to=Region)
 
     @property
@@ -49,7 +55,7 @@ class Site(models.Model):
     objects = models.GeoManager()
 
     def __str__(self):
-        return u"{0}".format(self.name)
+        return u"{0} - {1} ({2})".format(self.location, self.name, self.code)
 
     class Meta:
         unique_together = (('location', 'name'),
@@ -66,7 +72,8 @@ class MPACompliance(models.Model):
     description = models.CharField(max_length=48)
 
     def __str__(self):
-            return u"{0} ({1})".format(self.type, self.description)
+        return u"{0}{1}".format(self.type,
+                                ' (' + self.description + ')' if self.description and len(self.description) > 0 else '')
 
     class Meta:
         verbose_name = "MPA compliance"
@@ -91,10 +98,10 @@ class MPAIsolation(models.Model):
 
 class MPA(models.Model):
     name = models.CharField(max_length=100)
-    boundary = models.MultiPolygonField(srid=4326, null=True)
+    boundary = models.MultiPolygonField(srid=4326, null=True, blank=True)
     # todo:  create property that takes area from polygon first then area field if no poly
-    area = models.PositiveIntegerField(help_text='km^2')
-    founded = models.PositiveIntegerField()
+    area = models.DecimalField(help_text='km^2', null=True, blank=True, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0.01'))])
+    founded = models.PositiveIntegerField(null=True, blank=True)
 
     mpa_compliance = models.ForeignKey(to=MPACompliance)
     mpa_isolation = models.ForeignKey(to=MPAIsolation)
@@ -120,6 +127,9 @@ class ReefType(models.Model):
 
     def __str__(self):
             return u"{0}".format(self.type)
+
+    class Meta:
+        verbose_name = "Reef habitat"
 
 
 class ProtectionStatus(models.Model):
@@ -183,7 +193,7 @@ class Reef(models.Model):
     objects = models.GeoManager()
 
     def __str__(self):
-        return u"{0} - {1} ({2}{3})".format(self.site, self.name, self.site.code, self.code)
+        return u"{0} - {1} ({2}{3})".format(self.site.name, self.name, self.site.code, self.code)
 
     class Meta:
         unique_together = (('site', 'name'),

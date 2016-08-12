@@ -19,6 +19,7 @@
     "moment": "~2.10.6",
     "eonasdan-bootstrap-datetimepicker": "~4.17.37",
     "bootstrap-multiselect": "~0.9.13",
-    "selectize": "^0.12.1"
+    "selectize": "^0.12.1",
+    "esri-leaflet": "1.0.4"
   }
 }

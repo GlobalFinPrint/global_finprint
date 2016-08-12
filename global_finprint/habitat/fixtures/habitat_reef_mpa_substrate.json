@@ -74,6 +74,14 @@
   },
   {
     "fields": {
+      "description": "",
+      "type": "unknown"
+    },
+    "model": "habitat.mpacompliance",
+    "pk": 4
+  },
+  {
+    "fields": {
       "type": "continuous"
     },
     "model": "habitat.mpaisolation",
@@ -92,6 +100,13 @@
     },
     "model": "habitat.mpaisolation",
     "pk": 3
+  },
+  {
+    "fields": {
+      "type": "unknown"
+    },
+    "model": "habitat.mpaisolation",
+    "pk": 4
   },
   {
     "fields": {
@@ -132,6 +147,22 @@
     },
     "model": "habitat.reeftype",
     "pk": 5
+  },
+  {
+    "fields": {
+      "type": "To Be Updated",
+      "code": "T"
+    },
+    "model": "habitat.reeftype",
+    "pk": 6
+  },
+  {
+    "fields": {
+      "type": "Lost Data",
+      "code": "U"
+    },
+    "model": "habitat.reeftype",
+    "pk": 7
   },
   {
     "fields": {

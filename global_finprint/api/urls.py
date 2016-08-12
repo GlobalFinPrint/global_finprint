@@ -4,6 +4,7 @@ from global_finprint.annotation.views.annotation import site_animal_list, annota
 from global_finprint.annotation.views.observations import observation_post
 from ..habitat.views import reef_detail_geojson
 from ..trip.views import trip_sets_geojson
+from ..report.views import planned_site_geojson
 from global_finprint.api import views
 
 
@@ -11,6 +12,7 @@ urlpatterns = [
     # geo
     url(r"^reef/(?P<reef_id>\d+)/geojson/$", reef_detail_geojson, name='api_reef_detail_geojson'),
     url(r"^trip/(?P<trip_id>\d+)/sets/geojson/$", trip_sets_geojson, name='api_trip_sets_geojson'),
+    url(r"^report/status/geojson/$", planned_site_geojson, name='api_planned_site_geojson'),
 
     # annotation
     url(r"^observation/$", observation_post, name='api_observation_post'),
@@ -29,9 +31,12 @@ urlpatterns = [
         name='api_observation_update'),
     url(r"^set/(?P<set_id>\d+)/animals$", csrf_exempt(views.AnimalList.as_view()), name='api_animal_list'),
     url(r"^set/(?P<set_id>\d+)/done$", csrf_exempt(views.StatusUpdate.as_view()), name='api_status_update'),
+    url(r"^set/(?P<set_id>\d+)/accept", csrf_exempt(views.AcceptAssignment.as_view()), name='api_accept_assign'),
+    url(r"^set/(?P<set_id>\d+)/reject", csrf_exempt(views.RejectAssignment.as_view()), name='api_reject_assign'),
     url(r"^set/(?P<set_id>\d+)/progress$", csrf_exempt(views.ProgressUpdate.as_view()), name='api_progress_update'),
     url(r"^animal/(?P<animal_id>\d+)$", csrf_exempt(views.AnimalDetail.as_view()), name='api_animal_detail'),
     url(r"^set/(?P<set_id>\d+)/obs/(?P<obs_id>\d+)/event$", csrf_exempt(views.Events.as_view()), name='api_events'),
     url(r"^set/(?P<set_id>\d+)/obs/(?P<obs_id>\d+)/event/(?P<evt_id>\d+)$",
         csrf_exempt(views.EventUpdate.as_view()), name='api_event_update'),
+    url(r"^annotator", csrf_exempt(views.AnnotatorList.as_view()), name='api_annotator_list'),
 ]

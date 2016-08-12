@@ -14,7 +14,8 @@
     "fields": {
       "name": "Legacy Heupel",
       "data_embargo_length": 0,
-      "code": "HE"
+      "code": "HE",
+      "legacy": true
     }
   },
   {
@@ -23,7 +24,8 @@
     "fields": {
       "name": "Legacy Simpfendorfer",
       "data_embargo_length": 0,
-      "code": "SI"
+      "code": "SI",
+      "legacy": true
     }
   },
   {
@@ -32,7 +34,8 @@
     "fields": {
       "name": "Legacy Heithaus",
       "data_embargo_length": 0,
-      "code": "HH"
+      "code": "HH",
+      "legacy": true
     }
   },
   {
@@ -41,7 +44,8 @@
     "fields": {
       "name": "Legacy Chapman",
       "data_embargo_length": 0,
-      "code": "CH"
+      "code": "CH",
+      "legacy": true
     }
   },
   {
@@ -50,7 +54,8 @@
     "fields": {
       "name": "Legacy Meekan",
       "data_embargo_length": 0,
-      "code": "ME"
+      "code": "ME",
+      "legacy": true
     }
   }
 ]

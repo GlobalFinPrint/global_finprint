@@ -1,7 +1,12 @@
 from django import forms
+from django.forms.utils import flatatt
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from crispy_forms.helper import FormHelper
+import crispy_forms.layout as cfl
+import crispy_forms.bootstrap as cfb
 from bootstrap3_datetime.widgets import DateTimePicker
-from .models import Set, EnvironmentMeasure, Bait
+from .models import Set, EnvironmentMeasure, Bait, Equipment, SetTag
 from ..trip.models import Trip
 from ..habitat.models import Reef, ReefType
 
@@ -33,8 +38,8 @@ class SetForm(forms.ModelForm):
     class Meta:
         model = Set
         fields = ['trip', 'code', 'set_date', 'latitude', 'longitude', 'depth',
-                  'drop_time', 'haul_time', 'reef', 'habitat', 'equipment', 'bait', 'visibility',
-                  'reef_habitat',]
+                  'drop_time', 'haul_time', 'reef', 'habitat', 'equipment', 'bait',
+                  'reef_habitat']
         exclude = ('reef_habitat',)
         widgets = {
             'trip': forms.HiddenInput(),
@@ -51,22 +56,102 @@ class SetForm(forms.ModelForm):
         if trip_pk:
             self.fields['reef'].queryset = Trip.objects.get(pk=trip_pk).location.reef_set
 
-        self.fields['visibility'].choices = \
-            sorted(self.fields['visibility'].choices,
-                   key=lambda _: _[0].isdigit() and int(_[0]) or _[0] == '' and -1 or 100)
-        self.fields['visibility'].choices[0] = (None, '---')
-
         self.helper = FormHelper(self)
         self.helper.form_tag = False
+        self.fields['code'].label += '**'
+        self.helper.layout.append(
+            cfl.HTML('<br>'))
+        self.helper.layout.append(
+            cfl.Div(
+                cfl.HTML('<small class="help-block">**Note: If code is left blank, it will be automatically generated.</small>'),
+                css_class='row pull-left'))
+
+
+class SetSearchForm(forms.Form):
+    set_date = forms.DateField(required=False,
+                               input_formats=['%B %d %Y'],
+                               widget=DateTimePicker(options=datepicker_opts))
+    reef = forms.ModelChoiceField(required=False,
+                                  queryset=Reef.objects.all())
+    habitat = forms.ModelChoiceField(required=False,
+                                     queryset=ReefType.objects.all())
+    equipment = forms.ModelChoiceField(required=False,
+                                       queryset=Equipment.objects.filter(set__in=Set.objects.all()).distinct())
+    bait = forms.ModelChoiceField(required=False,
+                                  queryset=Bait.objects.filter(set__in=Set.objects.all()).distinct())
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_class = 'form-inline set-search form-group-sm'
+        self.helper.form_method = "get"
+        self.helper.layout = cfl.Layout(
+            cfl.Fieldset(
+                'Filter by:',
+                'set_date',
+                'reef',
+                'habitat',
+                'equipment',
+                'bait'),
+            cfl.Div(
+                cfb.FormActions(
+                    cfl.HTML("""<a role="button" class="btn btn-default cancel-button"
+                    href="{% url "trip_set_list" trip_pk %}">Reset</a>"""),
+                    cfl.Submit('', 'Search')),
+                css_class='row pull-right'))
 
 
 class EnvironmentMeasureForm(forms.ModelForm):
     class Meta:
         model = EnvironmentMeasure
         fields = ['water_temperature', 'salinity',
-                  'conductivity', 'dissolved_oxygen', 'current_flow',
+                  'conductivity', 'dissolved_oxygen',
                   'current_direction', 'tide_state', 'estimated_wind_speed',
                   'wind_direction', 'cloud_cover', 'surface_chop']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+
+
+class SetLevelDataForm(forms.ModelForm):
+    class Meta:
+        model = Set
+        fields = ['visibility', 'current_flow_instrumented', 'current_flow_estimated',
+                  'bruv_image_url', 'splendor_image_url']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.fields['visibility'].choices = \
+            sorted(self.fields['visibility'].choices,
+                   key=lambda _: _[0].isdigit() and int(_[0]) or _[0] == '' and -1 or 100)
+        self.fields['visibility'].choices[0] = (None, '---')
+
+
+class SelectizeWidget(forms.SelectMultiple):
+    def render(self, name, value, attrs=None, choices=()):
+        if value is None:
+            value = []
+        final_attrs = self.build_attrs(attrs, name=name)
+        output = [format_html('<select class="selectize" multiple="multiple"{}>', flatatt(final_attrs))]
+        options = self.render_options(choices, value)
+        if options:
+            output.append(options)
+        output.append('</select>')
+        return mark_safe('\n'.join(output))
+
+
+class SetLevelCommentsForm(forms.ModelForm):
+    comments = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}))
+    message_to_annotators = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}))
+    tags = forms.MultipleChoiceField(widget=SelectizeWidget, choices=SetTag.get_choices())
+
+    class Meta:
+        model = Set
+        fields = ['comments', 'message_to_annotators', 'tags']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

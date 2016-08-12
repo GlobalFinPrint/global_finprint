@@ -10,7 +10,8 @@ from django.template import RequestContext
 from global_finprint.trip.models import Trip
 from global_finprint.bruv.models import Equipment
 from ..models import Set
-from ..forms import SetForm, EnvironmentMeasureForm
+from ..forms import SetForm, EnvironmentMeasureForm, \
+    SetSearchForm, SetLevelCommentsForm, SetLevelDataForm
 from ...annotation.forms import VideoForm
 from ...habitat.models import ReefHabitat
 from ...core.mixins import UserAllowedMixin
@@ -36,6 +37,16 @@ class SetListView(UserAllowedMixin, View):
     template = 'pages/sets/set_list.html'
 
     def _common_context(self, request, parent_trip):
+        return RequestContext(request, {
+            'request': request,
+            'trip_pk': parent_trip.pk,
+            'trip_name': str(parent_trip),
+            'sets': self._get_filtered_sets(parent_trip),
+            'search_form': SetSearchForm(self.request.GET or None)
+        })
+
+    def _get_filtered_sets(self, parent_trip):
+        result = None
         prefetch = [
             'trip',
             'drop_measure',
@@ -46,12 +57,20 @@ class SetListView(UserAllowedMixin, View):
             'equipment',
             'reef_habitat',
         ]
-        return RequestContext(request, {
-            'request': request,
-            'trip_pk': parent_trip.pk,
-            'trip_name': str(parent_trip),
-            'sets': Set.objects.filter(trip=parent_trip).prefetch_related(*prefetch).order_by('set_date', 'drop_time'),
-        })
+        search_terms = {}
+        form = SetSearchForm(self.request.GET)
+        if self.request.GET and form.is_valid():
+            search_values = form.cleaned_data
+            search_terms = dict((key, val) for (key, val) in search_values.items()
+                    if key in ['set_date', 'equipment', 'bait'] and val is not None)
+            if search_values['reef']:
+                search_terms['reef_habitat__reef'] = search_values['reef']
+            if search_values['habitat']:
+                search_terms['reef_habitat__habitat'] = search_values['habitat']
+        search_terms['trip'] = parent_trip
+        result = Set.objects.filter(**search_terms).prefetch_related(*prefetch).order_by('set_date', 'drop_time')
+
+        return result
 
     def _get_set_form_defaults(self, parent_trip):
         set_form_defaults = {
@@ -72,7 +91,6 @@ class SetListView(UserAllowedMixin, View):
                 'set_date': last_set.set_date,
                 'drop_time': last_set.drop_time,
                 'haul_time': last_set.haul_time,
-                'visibility': last_set.visibility,
             })
 
         return set_form_defaults
@@ -103,6 +121,12 @@ class SetListView(UserAllowedMixin, View):
             context['video_form'] = VideoForm(
                 instance=edited_set.video
             )
+            context['set_level_data_form'] = SetLevelDataForm(
+                instance=edited_set
+            )
+            context['set_level_comments_form'] = SetLevelCommentsForm(
+                instance=edited_set
+            )
 
         # new set form
         else:
@@ -114,6 +138,8 @@ class SetListView(UserAllowedMixin, View):
             context['drop_form'] = EnvironmentMeasureForm(None, prefix='drop')
             context['haul_form'] = EnvironmentMeasureForm(None, prefix='haul')
             context['video_form'] = VideoForm()
+            context['set_level_data_form'] = SetLevelDataForm()
+            context['set_level_comments_form'] = SetLevelCommentsForm()
 
         return render_to_response(self.template, context=context)
 

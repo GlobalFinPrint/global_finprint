@@ -18,10 +18,13 @@ class VideoAutoAssignView(UserAllowedMixin, View):
     def assign_video(self, annotators, video, num):
         avail = list(a for a in annotators if a not in video.annotators_assigned())
         assigned_by = FinprintUser.objects.get(user=self.request.user)
+        assign_count = 0
         while len(video.annotators_assigned()) < num and len(annotators) > 0 and len(avail) > 0:
             ann = min(avail, key=lambda a: len(a.active_assignments()))
             Assignment(annotator=ann, video=video, assigned_by=assigned_by).save()
             avail.remove(ann)
+            assign_count += 1
+        return assign_count
 
     def post(self, request):
         trip_id = request.POST.get('trip')
@@ -32,10 +35,26 @@ class VideoAutoAssignView(UserAllowedMixin, View):
         annotators = FinprintUser.objects.filter(affiliation_id=aff_id).all()
         if not include_leads:
             annotators = list(a for a in annotators if not a.is_lead())
-        for video in Video.objects.filter(set__trip_id=trip_id).all():
-            self.assign_video(annotators, video, num)
+        video_count = 0
+        assigned_count = 0
+        new_count = 0
+        for video in Video.objects.filter(set__trip_id=trip_id).exclude(file__isnull=True).exclude(file='').all():
+            video_count += 1
+            new_count += self.assign_video(annotators, video, num)
+            assigned_count += len(video.annotators_assigned())
 
-        return JsonResponse({'status': 'ok'})
+        return JsonResponse(
+            {
+                'status': 'ok',
+                'video_count': video_count,
+                'assignments' :
+                {
+                    'total' : video_count * num,
+                    'assigned' : assigned_count,
+                    'newly_assigned' : new_count
+                }
+            }
+        )
 
 
 class AssignmentListView(UserAllowedMixin, View):
@@ -57,7 +76,8 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
     def post(self, request):
         query = Assignment.objects.all()
         unassigned = Set.objects.annotate(Count('video__assignment')) \
-                                .filter(video__assignment__count=0)
+                                .filter(video__assignment__count=0) \
+                                .exclude(video__file__isnull=True).exclude(video__file='')
 
         trips = request.POST.getlist('trip[]')
         sets = request.POST.getlist('set[]')

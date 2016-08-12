@@ -31,6 +31,7 @@
         <script type="text/javascript" src="{% static 'bower_components/bootstrap-multiselect/dist/js/bootstrap-multiselect.js' %}"></script>
         <script type="text/javascript" src="{% static 'bower_components/selectize/dist/js/standalone/selectize.min.js' %}"></script>
         {% leaflet_js %}
+        <script type="text/javascript" src="{% static 'bower_components/esri-leaflet/dist/esri-leaflet.js' %}"></script>
         <script src="{% static 'js/finprint.js' %}"></script>
     {% endblock javascript %}
 
@@ -70,7 +71,13 @@
                 </ul>
             {% endif %}
             <ul class="nav navbar-nav navbar-right">
-                <li><p class="navbar-text">{% current_version %} ({% release_date %})</p></li>
+                <li><p class="navbar-text">{% current_version %}</p></li>
+                {% if request.user.is_authenticated %}
+                    <li><a href="{% url 'password_change' %}"> {{ request.user.username }} </a></li>
+                    <li><a href="{% url 'finprint_logout' %}">{% trans "Logout" %}</a></li>
+                {% else %}
+                    <li><a href="{% url 'finprint_login' %}">{% trans "Log In" %}</a></li>
+                {% endif %}
             </ul>
         </div>
     </div>

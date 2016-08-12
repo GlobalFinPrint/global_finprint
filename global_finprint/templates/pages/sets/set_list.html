@@ -12,38 +12,202 @@
 
     <div class="col-md-12" xmlns="http://www.w3.org/1999/html">
         <div class="row">
-            <div class="well trail">
-                <a href="/">Global FinPrint</a> |
-                <a href="{% url 'trip_list' %}">Trips</a> |
-                <a href="{% url 'trip_update' trip_pk %}">{{ trip_name }}</a> |
-                Sets
+            <div class="col-md-7">
+                 <div class="row">
+                     <h3>Trips</h3>
+                 </div>
+                 <div class="row">
+                     <div class="trail">
+                         <a href="{% url 'trip_list' %}">All Trips</a> |
+                         {{ trip_name }} |
+                     </div>
+                 </div>
+            </div>
+            <div class="col-md-5">
+                <div class="row">
+                    {% leaflet_map "set_map" callback="main_map_init" %}
+                </div>
             </div>
         </div>
 
         <div class="row">
-            {% leaflet_map "set_map" callback="main_map_init" %}
-            <br/>
-            <br/>
+            <h3>Sets</h3>
+        </div>
+
+        <div class="row well">
+            <div class="search clearfix">
+                {% crispy search_form %}
+            </div>
+        </div>
+
+        {% if set_pk or set_form.errors or drop_form.errors or haul_form.errors or video_form.errors %}
+        <div>
+        {% else %}
+        <div>
+            <p class="text-right"><a id="btn-show-form" class="btn btn-primary">Create new set</a></p>
+        </div>
+        <div id="hidden-div" style="display: none;">
+        {% endif %}
+            {% if request.user.is_authenticated %}
+            <div class="row">
+                {% if set_pk %}
+                <h3>Edit set "{{ set_name }}"</h3>
+                {% else %}
+                <h3>Add new set with environmental measures</h3>
+                {% endif %}
+            </div>
+
+            <div class="row well clearfix">
+                <form class="form-inline set ng-pristine ng-valid" action="" method="post" id="set-env-form" enctype="multipart/form-data">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        {% csrf_token %}
+
+                        <div class="panel panel-default sub-form">
+                            <div class="panel-heading {% if not set_form.errors %}collapsed{% endif %}"
+                                 role="tab"
+                                 id="headingOne"
+                                 data-toggle="collapse"
+                                 data-parent="#accordion"
+                                 href="#collapseOne"
+                                 area-expanded="false"
+                                 aria-controls="collapseOne">
+                                <h4 class="panel-title">
+                                    <a class="accordion-toggle">Set environmental measures and bait</a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne"
+                                 class="panel-collapse collapse {% if set_form.errors %}in{% endif %}"
+                                 role="tabpanel"
+                                 aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    {% crispy set_form %}
+                                    <p><!-- placeholder --></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-default sub-form">
+                            <div class="panel-heading {% if not set_level_comments_form.errors %}collapsed{% endif %}"
+                                 role="tab"
+                                 id="headingTwo"
+                                 data-toggle="collapse"
+                                 data-parent="#accordion"
+                                 href="#collapseTwo"
+                                 area-expanded="false"
+                                 aria-controls="collapseTwo">
+                                <h4 class="panel-title">
+                                    <a class="accordion-toggle">Set comments, annotator messages, and tags</a>
+                                </h4>
+                            </div>
+                            <div id="collapseTwo"
+                                 class="panel-collapse collapse {% if set_level_comments_form.errors %}in{% endif %}"
+                                 role="tabpanel"
+                                 aria-labelledby="headingTwo">
+                                <div class="panel-body">
+                                    {% crispy set_level_comments_form %}
+                                    <p><!-- placeholder --></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-default sub-form">
+                            <div class="panel-heading {% if not drop_form.errors %}collapsed{% endif %}"
+                                 role="tab"
+                                 id="headingThree"
+                                 data-toggle="collapse"
+                                 data-parent="#accordion"
+                                 href="#collapseThree"
+                                 area-expanded="false"
+                                 aria-controls="collapseThree">
+                                <h4 class="panel-title">
+                                    <a class="accordion-toggle">Drop environmental measure</a>
+                                </h4>
+                            </div>
+                            <div id="collapseThree"
+                                 class="panel-collapse collapse {% if drop_form.errors %}in{% endif %}"
+                                 role="tabpanel"
+                                 aria-labelledby="headingThree">
+                                <div class="panel-body">
+                                    {% crispy drop_form %}
+                                    <p><!-- placeholder --></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-default sub-form">
+                            <div class="panel-heading {% if not haul_form.errors %}collapsed{% endif %}"
+                                 role="tab"
+                                 id="headingFour"
+                                 data-toggle="collapse"
+                                 data-parent="#accordion"
+                                 href="#collapseFour"
+                                 area-expanded="false"
+                                 aria-controls="collapseFour">
+                                <h4 class="panel-title">
+                                    <a class="accordion-toggle">Haul environmental measure</a>
+                                </h4>
+                            </div>
+                            <div id="collapseFour"
+                                 class="panel-collapse collapse {% if haul_form.errors %}in{% endif %}"
+                                 role="tabpanel"
+                                 aria-labelledby="headingFour">
+                                <div class="panel-body">
+                                    {% crispy haul_form %}
+                                    <p><!-- placeholder --></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-default sub-form">
+                            <div class="panel-heading {% if not video_form.errors %}collapsed{% endif %}"
+                                 role="tab"
+                                 id="headingFive"
+                                 data-toggle="collapse"
+                                 data-parent="#accordion"
+                                 href="#collapseFive"
+                                 area-expanded="false"
+                                 aria-controls="collapseFive">
+                                <h4 class="panel-title">
+                                    <a class="accordion-toggle">Video, photos, and flow/substrate measures</a>
+                                </h4>
+                            </div>
+                            <div id="collapseFive"
+                                 class="panel-collapse collapse {% if video_form.errors %}in{% endif %}"
+                                 role="tabpanel"
+                                 aria-labelledby="headingFive">
+                                <div class="panel-body">
+                                    {% crispy video_form %}
+                                    {% crispy set_level_data_form %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group pull-right">
+                        <a href="{% url 'trip_set_list' trip_pk %}" class="btn btn-default">Reset</a>
+                        <input type="submit" name="save" value="Save new set" class="btn btn-primary" id="submit-id-save" />
+                    </div>
+                </form>
+            </div>
+            {% endif %}
         </div>
 
         <div class="row">
             <table class="table table-bordered table-condensed set-table" cellspacing="0" width="100%">
                 <thead>
-                <tr class="success">
+                <tr class="table-header-title">
+                    <th colspan=13><h4>Showing all sets</h4></th>
+                </tr>
+                <tr class="table-header-labels well">
                     <th id="code">Trip & set code</th>
                     <th id="date">Date</th>
-                    <th id="reef">Reef & Habitat</th>
-                    <th id="latitude">Lat</th>
-                    <th id="longitude">Long</th>
+                    <th id="reef" colspan=2>Reef</th>
+                    <th id="lat-long">Lat/long</th>
                     <th id="depth">Depth</th>
-                    <th id="drop_time">Drop</th>
-                    <th id="haul_time">Haul</th>
                     <th id="equipment">Equipment</th>
-                    <th id="visibility">Vis</th>
                     <th id="bait">Bait</th>
+                    <th class="video" colspan=2>Video</th>
                     <th id="observations">Obs</th>
                     <th class="show_observations">Drop/haul</th>
-                    <th class="video">Video</th>
                     <th id="edit">Edit</th>
                 </tr>
                 </thead>
@@ -51,15 +215,18 @@
                     <tr>
                         <td>{{ set }}</td>
                         <td>{{ set.set_date|date:"M d Y" }}</td>
-                        <td>{{ set.reef_habitat }}</td>
-                        <td>{{ set.latitude }}</td>
-                        <td>{{ set.longitude }}</td>
+                        <td colspan=2>{{ set.reef_habitat }}</td>
+                        <td>{{ set.latitude }}/&#10;{{ set.longitude }}</td>
                         <td>{{ set.depth }}</td>
-                        <td>{{ set.drop_time|date:"H:i" }}</td>
-                        <td>{{ set.haul_time|date:"H:i" }}</td>
                         <td>{{ set.equipment }}</td>
-                        <td>{{ set.visibility }}</td>
                         <td>{{ set.bait }}</td>
+                        <td colspan=2>
+                            {% if set.video %}
+                                {{ set.video.file }}
+                            {% else %}
+                                <a href="{% url 'set_update' set.trip.id set.id %}">Add</a>
+                            {% endif %}
+                        </td>
                         <td>
                             <a href="{% url 'set_observation_list' set.trip.id set.id %}">
                                 View ({{ set.observations.count }})
@@ -68,13 +235,6 @@
                         <td>
                             <a class="show-env" href="#" data-set="{{ set.id }}">Show</a>
                             <a class="hide-env" href="#" data-set="{{ set.id }}">Hide</a>
-                        </td>
-                        <td>
-                            {% if set.video %}
-                                {{ set.video.file }}
-                            {% else %}
-                                <a href="{% url 'set_update' set.trip.id set.id %}">Add</a>
-                            {% endif %}
                         </td>
                         <td>
                             {% if request.user.is_authenticated %}
@@ -86,7 +246,7 @@
                     </tr>
                     {# for each environmental measure: #}
                     <tr class="info env-headers set-{{ set.id }}">
-                        <th colspan="3"></th>
+                        <th></th>
                         <th class="haul-drop">Drop/haul</th>
                         <th class="temperature">Temp</th>
                         <th class="salinity">Salinity</th>
@@ -103,7 +263,7 @@
                     {% if set.drop_measure %}
                     {% with env=set.drop_measure %}
                         <tr class="env-row set-{{ set.id }} drop">
-                            <td colspan="3"></td>
+                            <td></td>
                             <td>Drop measure</td>
                             <td>{{ env.water_temperature }}</td>
                             <td>{{ env.salinity }}</td>
@@ -120,7 +280,7 @@
                     {% endwith %}
                     {% else %}
                         <tr class="env-row set-{{ set.id }} drop">
-                            <td colspan="12"></td>
+                            <td colspan="11"></td>
                             <td><a href="{% url 'set_update' set.trip.id set.id %}#set-env-form">
                                 Add drop measure
                             </a></td>
@@ -129,7 +289,7 @@
                     {% if set.haul_measure %}
                     {% with env=set.haul_measure %}
                         <tr class="env-row set-{{ set.id }} haul">
-                            <td colspan="3"></td>
+                            <td></td>
                             <td>Haul measure</td>
                             <td>{{ env.water_temperature }}</td>
                             <td>{{ env.salinity }}</td>
@@ -152,54 +312,9 @@
                             </a></td>
                         </tr>
                     {% endif %}
-                    <tr class="env-row set-{{ set.id }} spacer">
-                        <td colspan="13"></td>
-                    </tr>
                 {% endfor %}
             </table>
         </div>
-
-        {% if request.user.is_authenticated %}
-        <div class="row">
-            {% if set_pk %}
-            <h3>Edit set "{{ set_name }}"</h3>
-            {% else %}
-            <h3>Add new set with environmental measures</h3>
-            {% endif %}
-        </div>
-
-        <div class="row">
-            <div class="well clearfix">
-                <form class="form-inline set ng-pristine ng-valid" action="" method="post" id="set-env-form" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="sub-form">
-                        <h4>Set</h4>
-                        {% crispy set_form %}
-                        <p><!-- placeholder --></p>
-                    </div>
-                    <div class="sub-form">
-                        <h4>Drop environmental measure</h4>
-                        {% crispy drop_form %}
-                        <p><!-- placeholder --></p>
-                    </div>
-                    <div class="sub-form">
-                        <h4>Haul environmental measure</h4>
-                        {% crispy haul_form %}
-                        <p><!-- placeholder --></p>
-                    </div>
-                    <div class="sub-form">
-                        <h4>Video(s)</h4>
-                        {% crispy video_form %}
-                        <p><!-- placeholder --></p>
-                    </div>
-                    <div class="form-group">
-                        <a href="{% url 'trip_set_list' trip_pk %}" class="btn btn-default">Reset</a>
-                        <input type="submit" name="save" value="Save" class="btn btn-primary" id="submit-id-save" />
-                    </div>
-                </form>
-            </div>
-        </div>
-        {% endif %}
     </div>
     <script type="text/javascript">
         function main_map_init(map, options) {
