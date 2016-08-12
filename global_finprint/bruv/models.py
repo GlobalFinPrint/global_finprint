@@ -11,6 +11,7 @@ from global_finprint.core.models import AuditableModel
 from global_finprint.trip.models import Trip
 from global_finprint.habitat.models import ReefHabitat
 
+from mptt.models import MPTTModel, TreeForeignKey
 
 EQUIPMENT_BAIT_CONTAINER = {
     ('B', 'Bag'),
@@ -137,6 +138,39 @@ class Bait(AuditableModel):
         unique_together = ('description', 'type', 'oiled')
 
 
+# needed for SetTag#get_choices because python doesn't have this somehow (!!!)
+def flatten(x):
+    if type(x) is list:
+        return [a for i in x for a in flatten(i)]
+    else:
+        return [x]
+
+
+class SetTag(MPTTModel):
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(null=True, blank=True)
+    active = models.BooleanField(
+        default=True,
+        help_text='overridden if parent is inactive')
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
+
+    def __str__(self):
+        return u"{0}".format(self.name)
+
+    @classmethod
+    def get_choices(cls, node=None):
+        if node is None:
+            nodes = [cls.get_choices(node=node) for node in cls.objects.filter(parent=None, active=True)]
+            return [(node.pk, node.name) for node in flatten(nodes)]
+        elif node.is_leaf_node():
+            return node
+        else:
+            return [node] + [cls.get_choices(node=node) for node in node.get_children().filter(active=True)]
+
+
 class Set(AuditableModel):
     # suggested code pattern:
     # [site.code][reef.code]_[set number within reef]
@@ -150,6 +184,14 @@ class Set(AuditableModel):
     visibility = models.CharField(max_length=3, choices=VISIBILITY_CHOICES)
     depth = models.DecimalField(null=True, help_text='m', decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0.01'))])
     comments = models.TextField(null=True, blank=True)
+    message_to_annotators = models.TextField(null=True, blank=True)
+    tags = models.ManyToManyField(to=SetTag)
+    current_flow_estimated = models.CharField(max_length=50, null=True, blank=True)
+    current_flow_instrumented = models.DecimalField(null=True, blank=True,
+                                                    max_digits=5, decimal_places=2,
+                                                    help_text='m/s')  # m/s .00
+    bruv_image_url = models.CharField(max_length=200, null=True, blank=True)
+    splendor_image_url = models.CharField(max_length=200, null=True, blank=True)
 
     # todo:  need some form changes here ...
     bait = models.ForeignKey(Bait, null=True)

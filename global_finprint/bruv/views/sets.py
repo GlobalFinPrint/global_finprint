@@ -10,9 +10,10 @@ from django.template import RequestContext
 from global_finprint.trip.models import Trip
 from global_finprint.bruv.models import Equipment
 from ..models import Set
-from ..forms import SetForm, EnvironmentMeasureForm, SetSearchForm
+from ..forms import SetForm, EnvironmentMeasureForm, \
+    SetSearchForm, SetLevelCommentsForm, SetLevelDataForm
 from ...annotation.forms import VideoForm
-from ...habitat.models import ReefHabitat, Reef
+from ...habitat.models import ReefHabitat
 from ...core.mixins import UserAllowedMixin
 
 from datetime import datetime
@@ -90,7 +91,6 @@ class SetListView(UserAllowedMixin, View):
                 'set_date': last_set.set_date,
                 'drop_time': last_set.drop_time,
                 'haul_time': last_set.haul_time,
-                'visibility': last_set.visibility,
             })
 
         return set_form_defaults
@@ -121,6 +121,12 @@ class SetListView(UserAllowedMixin, View):
             context['video_form'] = VideoForm(
                 instance=edited_set.video
             )
+            context['set_level_data_form'] = SetLevelDataForm(
+                instance=edited_set
+            )
+            context['set_level_comments_form'] = SetLevelCommentsForm(
+                instance=edited_set
+            )
 
         # new set form
         else:
@@ -132,6 +138,8 @@ class SetListView(UserAllowedMixin, View):
             context['drop_form'] = EnvironmentMeasureForm(None, prefix='drop')
             context['haul_form'] = EnvironmentMeasureForm(None, prefix='haul')
             context['video_form'] = VideoForm()
+            context['set_level_data_form'] = SetLevelDataForm()
+            context['set_level_comments_form'] = SetLevelCommentsForm()
 
         return render_to_response(self.template, context=context)
 
