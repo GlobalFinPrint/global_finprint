@@ -71,7 +71,7 @@ class TripSearchForm(forms.Form):
     team = forms.ModelChoiceField(required=False,
                                   queryset=Team.objects.filter(trip__in=Trip.objects.all()).distinct())
     reef = forms.ModelChoiceField(required=False,
-                                  queryset=Reef.objects.all())
+                                  queryset=Reef.objects.order_by('site__name', 'name'))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
