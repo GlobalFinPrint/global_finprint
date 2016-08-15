@@ -252,12 +252,14 @@ a.manual-assign {
     @include glyphicon("\e079");
 }
 
+form.trip, form.set {
+  small.help-block {
+    margin-left: 15px;
+  }
+}
+
 form.set {
   #div_id_tags {
     min-width: 300px;
-  }
-
-  small.help-block {
-    margin-left: 15px;
   }
 }
