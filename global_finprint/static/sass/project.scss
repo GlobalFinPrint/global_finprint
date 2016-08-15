@@ -259,6 +259,10 @@ form.trip, form.set {
 }
 
 form.set {
+  div[data-toggle="collapse"] {
+    cursor: pointer;
+  }
+
   #div_id_tags {
     min-width: 300px;
   }
