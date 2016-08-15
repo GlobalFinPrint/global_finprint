@@ -106,7 +106,7 @@ class EnvironmentMeasureForm(forms.ModelForm):
         model = EnvironmentMeasure
         fields = ['water_temperature', 'salinity',
                   'conductivity', 'dissolved_oxygen',
-                  'current_direction', 'tide_state', 'estimated_wind_speed',
+                  'tide_state', 'estimated_wind_speed',
                   'wind_direction', 'cloud_cover', 'surface_chop']
 
     def __init__(self, *args, **kwargs):
