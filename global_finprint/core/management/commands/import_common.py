@@ -20,6 +20,7 @@ add error signaling.
 import logging
 import functools
 import json
+from datetime import datetime
 
 import django.contrib.auth.models as djam
 import global_finprint.trip.models as gftm
@@ -151,6 +152,8 @@ def import_set(
         validate_data(trip, 'references non-existent trip "{}"'.format(trip_code))
         the_set = gfbm.Set.objects.filter(code=set_code, trip=trip).first()
         if not the_set:
+            validate_data(drop_time, 'No drop time supplied.')
+            validate_data(haul_time, 'No haul time supplied.')
             validate_data(drop_time < haul_time, 'Drop time must be before haul time.')
             reef_habitat = get_reef_habitat(site_name, reef_name, habitat_type)
             equipment = parse_equipment_string(equipment_str)
