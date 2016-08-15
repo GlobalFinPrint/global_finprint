@@ -34,6 +34,7 @@
     },
     "Mobulidae": {
         "Manta": {
+            "": 297,
             "sp": 297
         }
     },
@@ -44,6 +45,7 @@
         "Gymnothorax": {
             "": 298,
             "sp": 298,
+            "thyysoideus": 237,
             "thrysoideus": 237
         }
     },
@@ -62,6 +64,11 @@
         },
         "Mobula": {
             "": 142
+        }
+    },
+    "Ophichthidae": {
+        "Myrichthys": {
+            "colubrinus": 300
         }
     },
     "Sphyrnidae":
