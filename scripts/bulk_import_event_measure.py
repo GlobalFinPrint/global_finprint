@@ -1,3 +1,4 @@
+import bulk_common as bc
 import openpyxl
 import os
 from datetime import datetime
@@ -15,7 +16,7 @@ ANIMAL_MAP = 'global_finprint/core/management/commands/sherman_animal_map.json'
 def bulk_import(excel_file, em_files_root):
     wb = openpyxl.load_workbook(excel_file)
     sheet = wb['Set']
-    get_cell = get_cell_by_name_extractor(get_header_map(sheet.rows[0]))
+    get_cell = bc.get_cell_by_name_extractor(bc.get_header_map(sheet.rows[0]))
     for row in sheet.rows[1:]:
         trip_code = get_cell(row, 'trip_code').value
         set_code = get_cell(row, 'set_code').value
@@ -66,18 +67,7 @@ def bulk_import(excel_file, em_files_root):
             else:
                 logging.error('Unable to find file for annotator "{}" in folder "{}"'.format(annotator, em_path))
 
-def get_cell_by_name_extractor(headers):
-    extractor_func = lambda row, column_name: row[headers[column_name]]
-    return extractor_func
-
-def get_header_map(header_row):
-    result = {}
-    for idx, header in enumerate(header_row):
-        if header.value:
-            result[header.value] = idx
-    return result
-
 if __name__ == '__main__':
-    logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', level=logging.WARN, filename='/home/ubuntu/import.log')
+    logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', level=logging.WARN, filename='import.log')
     bulk_import()
 
