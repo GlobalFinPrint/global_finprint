@@ -59,7 +59,7 @@ def bulk_import(excel_file, em_files_root):
                 full_file_name = os.path.join(em_path, file_to_process)
                 logging.info('Processing "{}"'.format(os.path.join(em_path, file_to_process)))
                 subprocess.call(
-                    'python manage.py import_event_measure {} {} "{}" "{}"'.format(trip_code, set_code, full_file_name, ANIMAL_MAP),
+                    'python manage.py import_event_measure {} {} "{}" --animal_map "{}"'.format(trip_code, set_code, full_file_name, ANIMAL_MAP),
                     shell=True
                 )
 

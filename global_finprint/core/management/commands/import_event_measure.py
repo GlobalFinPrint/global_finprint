@@ -19,9 +19,11 @@ import global_finprint.core.management.commands.import_common as ic
 
 logger = logging.getLogger('scripts')
 
-def import_file(trip_code, set_code, filename, animal_map):
+def import_file(trip_code, set_code, filename, animal_map, annotator, date):
     logger.info('Importing trip "{}", set "{}" from file "{}"'.format(trip_code, set_code, filename))
-    ic.load_animal_mapping(animal_map)
+    if animal_map:
+        logger.info('Loading animal to id mappings from "{}"'.format(animal_map))
+        ic.load_animal_mapping(animal_map)
     csv_file = open(filename)
 
     # throw away first four lines (headers are on line five)
@@ -32,14 +34,17 @@ def import_file(trip_code, set_code, filename, animal_map):
             logger.error('Unable to parse binary file ("{}")'.format(filename))
             return
     obs_data = csv.DictReader(csv_file, delimiter='\t')
-    import_observation_data(trip_code, set_code, obs_data)
+    import_observation_data(trip_code, set_code, obs_data, annotator=annotator, date=date)
 
-def import_observation_data(trip_code, set_code, obs_data):
+def import_observation_data(trip_code, set_code, obs_data, annotator=None, date=None):
     for row in obs_data:
         try:
-            obvs_date = string2date(row['Date'])
+            obvs_date = string2date(date if date else row['Date'])
         except ValueError:
             logger.error('Failing import due to bad date')
+            break
+        except KeyError:
+            logger.error('Failing due to missing Date column')
             break
         stage = None
         sex = None
@@ -62,10 +67,11 @@ def import_observation_data(trip_code, set_code, obs_data):
         behavior = row['Activity']
         length = None
         comment = row['Comment']
-        try:
-            annotator = row['TapeReader']
-        except KeyError:
-            annotator = row['Tape Reader']
+        if not annotator:
+            try:
+                annotator = row['TapeReader']
+            except KeyError:
+                annotator = row['Tape Reader']
         annotation_date = None
 
         ic.import_observation(
@@ -126,12 +132,16 @@ Usage: python manage.py import_event_measure <trip_code> <set_code> <in_file>"""
         parser.add_argument('trip_code', type=str)
         parser.add_argument('set_code', type=str)
         parser.add_argument('in_file', type=str)
-        parser.add_argument('animal_map', type=str)
+        parser.add_argument('--animal_map', type=str, default=None)
+        parser.add_argument('--date', type=str, default=None)
+        parser.add_argument('--annotator', type=str, default=None)
 
     def handle(self, *args, **options):
         import_file(
             options['trip_code'],
             options['set_code'],
             options['in_file'],
-            options['animal_map']
+            options['animal_map'],
+            options['annotator'],
+            options['date']
         )

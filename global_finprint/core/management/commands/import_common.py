@@ -397,7 +397,8 @@ def load_animal_mapping(mapping_file):
 def get_animal_mapping(family, genus, species):
     result = None
     try:
-        result = animal_map[family][genus][species]
+        if animal_map:
+            result = animal_map[family][genus][species]
     except KeyError:
         pass # no special mapping for this animal
     return result
