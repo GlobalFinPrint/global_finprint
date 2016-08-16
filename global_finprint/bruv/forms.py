@@ -103,13 +103,17 @@ class EnvironmentMeasureForm(forms.ModelForm):
         model = EnvironmentMeasure
         fields = ['water_temperature', 'salinity',
                   'conductivity', 'dissolved_oxygen',
-                  'tide_state', 'estimated_wind_speed',
+                  'tide_state', 'estimated_wind_speed', 'measured_wind_speed',
                   'wind_direction', 'cloud_cover', 'surface_chop']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_tag = False
+        self.fields['measured_wind_speed'].label += '**'
+        help_text = '<small class="help-block">**Use kts only when you have instrumentation ' \
+                    'that makes a precise recording.</small>'
+        self.helper.layout.append(cfl.Div(cfl.HTML(help_text)))
 
 
 class SetLevelDataForm(forms.ModelForm):
