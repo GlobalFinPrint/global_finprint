@@ -39,13 +39,15 @@ class TripForm(forms.ModelForm):
         #else:
         #    self.helper.form_action = reverse('trip_list')
         self.helper.form_method = "post"
+        help_text = '<small class="help-block">**Note: If code is left blank, ' \
+                    'it will be automatically generated.</small>'
         self.helper.layout = cfl.Layout(
             cfl.Fieldset(
                 *([None] + self.Meta.fields)
             ),
             cfl.Div(
                 cfl.Div(
-                    cfl.HTML('<small class="help-block">**Note: If code is left blank, it will be automatically generated.</small>'),
+                    cfl.HTML(help_text),
                     css_class='pull-left'),
                 cfl.Div(
                     cfb.FormActions(

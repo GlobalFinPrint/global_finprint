@@ -37,9 +37,9 @@ class SetForm(forms.ModelForm):
 
     class Meta:
         model = Set
-        fields = ['trip', 'code', 'set_date', 'latitude', 'longitude', 'depth',
+        fields = ['trip', 'set_date', 'latitude', 'longitude', 'depth',
                   'drop_time', 'haul_time', 'reef', 'habitat', 'equipment', 'bait',
-                  'reef_habitat']
+                  'reef_habitat', 'code']
         exclude = ('reef_habitat',)
         widgets = {
             'trip': forms.HiddenInput(),
@@ -59,12 +59,9 @@ class SetForm(forms.ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.fields['code'].label += '**'
-        self.helper.layout.append(
-            cfl.HTML('<br>'))
-        self.helper.layout.append(
-            cfl.Div(
-                cfl.HTML('<small class="help-block">**Note: If code is left blank, it will be automatically generated.</small>'),
-                css_class='row pull-left'))
+        help_text = '<small class="help-block">**Note: If code is left blank, ' \
+                    'it will be automatically generated.</small>'
+        self.helper.layout.append(cfl.Div(cfl.HTML(help_text)))
 
 
 class SetSearchForm(forms.Form):

@@ -252,15 +252,45 @@ a.manual-assign {
     @include glyphicon("\e079");
 }
 
-form.trip, form.set {
-  small.help-block {
-    margin-left: 15px;
-  }
+form.trip small.help-block {
+  margin-left: 15px;
 }
 
 form.set {
   div[data-toggle="collapse"] {
     cursor: pointer;
+  }
+
+  div.input-group.date {
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+
+    input {
+      border-right: none;
+      box-shadow: none;
+    }
+
+    span.input-group-addon {
+      background: white;
+      padding-left: 5px;
+    }
+  }
+
+  #id_latitude, #id_longitude {
+    width: 130px;
+  }
+
+  #id_depth {
+    width: 100px;
+  }
+
+  #id_set_date {
+    width: 150px;
+    padding-right: 0;
+  }
+
+  #id_haul_time, #id_drop_time {
+    width: 50px;
+    padding-right: 0;
   }
 
   #div_id_tags {
