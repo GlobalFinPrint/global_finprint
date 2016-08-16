@@ -16,6 +16,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initAnnotatorPopover();
         initCollapse();
         initSelectizeWidgets();
+        initImageSelectWidgets();
     });
 
     function getCSRF() {
@@ -295,5 +296,19 @@ var finprint = finprint || {};  //namespace if necessary...
 
     function initSelectizeWidgets() {
         $('select[multiple="multiple"].selectize').selectize({ plugins: ['remove_button', 'restore_on_backspace'] });
+    }
+
+    function initImageSelectWidgets() {
+        $('div.image-select-widget-parent input').click(function(e) {
+            e.stopPropagation();
+        }).change(function() {
+            //TODO update UI for filename
+            console.log($(this).val());
+        });
+
+        $('div.image-select-widget-parent').click(function(e) {
+            e.preventDefault();
+            $(this).find('input').click();
+        });
     }
 })(jQuery);

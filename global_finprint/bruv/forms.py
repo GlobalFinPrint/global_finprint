@@ -126,17 +126,19 @@ class EnvironmentMeasureForm(forms.ModelForm):
 class ImageSelectWidget(forms.FileInput):
     def render(self, name, value, attrs=None):
         output = format_html('''
-        <div class="image-select-widget" style="background-image:url({});">&nbsp;</div>
-        <input type="hidden" value="{}" name="{}" />
+        <div class="image-select-widget-parent">
+            <div class="image-select-widget" style="background-image:url({});">&nbsp;</div>
+            <input type="file" value="{}" name="{}" />
+        </div>
         ''', static('images/upload_image.png') if not value else value, value, name)  # TODO need to get value URL
         return mark_safe(output)
 
 
 class SetLevelDataForm(forms.ModelForm):
-    bruv_image_url = forms.CharField(required=False,
+    bruv_image_url = forms.FileField(required=False,
                                      widget=ImageSelectWidget,
                                      label='Habitat photo: BRUV')
-    splendor_image_url = forms.CharField(required=False,
+    splendor_image_url = forms.FileField(required=False,
                                          widget=ImageSelectWidget,
                                          label='Habitat photo: splendor of the reef')
 
