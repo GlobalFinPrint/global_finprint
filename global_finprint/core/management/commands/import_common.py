@@ -462,21 +462,25 @@ def get_reef_habitat(site_name, reef_name, habitat_type):
     return gfhm.ReefHabitat.get_or_create(reef, reef_type)
 
 def parse_equipment_string(equipment_str):
-    equip_array = equipment_str.split('/')
-    validate_data(
-        len(equip_array) == 2,
-        'Unexpected equipment string: "{}"'.format(equipment_str))
-    frame_str = equip_array[0][:FRAME_FIELD_LENGTH].strip()
-    camera_str = equip_array[1][:CAMERA_FIELD_LENGTH].strip()
-    frame = gfbm.FrameType.objects.filter(type__iexact=frame_str).first()
-    validate_data(frame, 'Unknown frame type "{}" in equipment string "{}"'.format(frame_str, equipment_str))
-    equipment = gfbm.Equipment.objects.filter(
-        camera=camera_str,
-        frame_type=frame).first()
-    validate_data(
-        equipment,
-        'No equipment model found with camera "{}" and frame "{}" (frame_str "{}")'.format(
-            camera_str, frame_str, equipment_str))
+    if equipment_str == 'Stereo stainless rebar / GoPro3 Silver+':
+        equipment = gfbm.Equipment.objects.get(pk=5)
+        validate_data(equipment,'Equipment with id 5 missing.')
+    else:
+        equip_array = equipment_str.split('/')
+        validate_data(
+            len(equip_array) == 2,
+            'Unexpected equipment string: "{}"'.format(equipment_str))
+        frame_str = equip_array[0][:FRAME_FIELD_LENGTH].strip()
+        camera_str = equip_array[1][:CAMERA_FIELD_LENGTH].strip()
+        frame = gfbm.FrameType.objects.filter(type__iexact=frame_str).first()
+        validate_data(frame, 'Unknown frame type "{}" in equipment string "{}"'.format(frame_str, equipment_str))
+        equipment = gfbm.Equipment.objects.filter(
+            camera=camera_str,
+            frame_type=frame).first()
+        validate_data(
+            equipment,
+            'No equipment model found with camera "{}" and frame "{}" (frame_str "{}")'.format(
+                camera_str, frame_str, equipment_str))
     return equipment
 
 def parse_bait_string(bait_str):
