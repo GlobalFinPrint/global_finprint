@@ -99,10 +99,16 @@ class SetSearchForm(forms.Form):
 
 
 class EnvironmentMeasureForm(forms.ModelForm):
+    dissolved_oxygen_measure = forms.ChoiceField(
+        required=False,
+        label='&nbsp;',
+        choices=[('mgl', 'mg/L')]
+    )
+
     class Meta:
         model = EnvironmentMeasure
         fields = ['water_temperature', 'salinity',
-                  'conductivity', 'dissolved_oxygen',
+                  'conductivity', 'dissolved_oxygen', 'dissolved_oxygen_measure',
                   'tide_state', 'estimated_wind_speed', 'measured_wind_speed',
                   'wind_direction', 'cloud_cover', 'surface_chop']
 
