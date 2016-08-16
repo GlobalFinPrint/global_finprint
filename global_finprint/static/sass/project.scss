@@ -269,6 +269,10 @@ form div.image-select-widget-parent {
   input {
     display: none;
   }
+
+  div.caption {
+    color: $link;
+  }
 }
 
 form.set {

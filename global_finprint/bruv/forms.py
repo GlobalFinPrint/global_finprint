@@ -125,12 +125,18 @@ class EnvironmentMeasureForm(forms.ModelForm):
 
 class ImageSelectWidget(forms.FileInput):
     def render(self, name, value, attrs=None):
-        output = format_html('''
+        template = '''
         <div class="image-select-widget-parent">
             <div class="image-select-widget" style="background-image:url({});">&nbsp;</div>
             <input type="file" value="{}" name="{}" />
+            <div class="caption">{}</div>
         </div>
-        ''', static('images/upload_image.png') if not value else value, value, name)  # TODO need to get value URL
+        '''
+        output = format_html(template,
+                             static('images/upload_image.png') if not value else value,  # TODO need to get value URL
+                             value,
+                             name,
+                             'Upload image' if not value else 'Choose another image')
         return mark_safe(output)
 
 
