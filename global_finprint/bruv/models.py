@@ -186,7 +186,7 @@ class Set(AuditableModel):
     comments = models.TextField(null=True, blank=True)
     message_to_annotators = models.TextField(null=True, blank=True)
     tags = models.ManyToManyField(to=SetTag)
-    current_flow_estimated = models.CharField(max_length=50, null=True, blank=True)
+    current_flow_estimated = models.CharField(max_length=50, null=True, blank=True, help_text='H, M, L')
     current_flow_instrumented = models.DecimalField(null=True, blank=True,
                                                     max_digits=5, decimal_places=2,
                                                     help_text='m/s')  # m/s .00

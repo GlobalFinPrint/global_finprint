@@ -2,6 +2,7 @@ from django import forms
 from django.forms.utils import flatatt
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from crispy_forms.helper import FormHelper
 import crispy_forms.layout as cfl
 import crispy_forms.bootstrap as cfb
@@ -122,7 +123,23 @@ class EnvironmentMeasureForm(forms.ModelForm):
         self.helper.layout.append(cfl.Div(cfl.HTML(help_text)))
 
 
+class ImageSelectWidget(forms.FileInput):
+    def render(self, name, value, attrs=None):
+        output = format_html('''
+        <div class="image-select-widget" style="background-image:url({});">&nbsp;</div>
+        <input type="hidden" value="{}" name="{}" />
+        ''', static('images/upload_image.png') if not value else value, value, name)  # TODO need to get value URL
+        return mark_safe(output)
+
+
 class SetLevelDataForm(forms.ModelForm):
+    bruv_image_url = forms.CharField(required=False,
+                                     widget=ImageSelectWidget,
+                                     label='Habitat photo: BRUV')
+    splendor_image_url = forms.CharField(required=False,
+                                         widget=ImageSelectWidget,
+                                         label='Habitat photo: splendor of the reef')
+
     class Meta:
         model = Set
         fields = ['visibility', 'current_flow_instrumented', 'current_flow_estimated',
@@ -132,10 +149,15 @@ class SetLevelDataForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_tag = False
+        self.fields['visibility'].required = False
         self.fields['visibility'].choices = \
             sorted(self.fields['visibility'].choices,
                    key=lambda _: _[0].isdigit() and int(_[0]) or _[0] == '' and -1 or 100)
         self.fields['visibility'].choices[0] = (None, '---')
+        self.helper.layout = cfl.Layout(
+            'visibility', 'current_flow_instrumented', 'current_flow_estimated',
+            cfl.Div('bruv_image_url', 'splendor_image_url')
+        )
 
 
 class SelectizeWidget(forms.SelectMultiple):
