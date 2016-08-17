@@ -302,10 +302,6 @@ form.set {
     width: 100px;
   }
 
-  #id_reef {
-    width: 250px;
-  }
-
   #id_set_date {
     width: 150px;
     padding-right: 0;
@@ -318,5 +314,11 @@ form.set {
 
   #div_id_tags {
     min-width: 300px;
+  }
+}
+
+form.trip-search {
+  select#id_reef {
+    width: 240px;
   }
 }
