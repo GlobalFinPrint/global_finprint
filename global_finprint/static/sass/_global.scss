@@ -131,6 +131,22 @@ form div.image-select-widget-parent {
 }
 
 
+// datepicker style
+div.input-group.date {
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+
+  input {
+    border-right: none;
+    box-shadow: none;
+  }
+
+  span.input-group-addon {
+    background: white;
+    padding-left: 5px;
+  }
+}
+
+
 // misc. style
 span.disabled {
   color: #ccc;

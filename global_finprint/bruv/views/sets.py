@@ -46,7 +46,7 @@ class SetListView(UserAllowedMixin, View):
         })
 
     def _get_filtered_sets(self, parent_trip):
-        result = None
+        result = Set.objects
         prefetch = [
             'trip',
             'drop_measure',
@@ -62,13 +62,15 @@ class SetListView(UserAllowedMixin, View):
         if self.request.GET and form.is_valid():
             search_values = form.cleaned_data
             search_terms = dict((key, val) for (key, val) in search_values.items()
-                    if key in ['set_date', 'equipment', 'bait'] and val is not None)
+                                if key in ['set_date', 'equipment', 'bait', 'code'] and val is not None)
             if search_values['reef']:
                 search_terms['reef_habitat__reef'] = search_values['reef']
             if search_values['habitat']:
                 search_terms['reef_habitat__habitat'] = search_values['habitat']
+            if search_terms['code']:
+                result = result.filter(code__contains=search_terms['code'])
         search_terms['trip'] = parent_trip
-        result = Set.objects.filter(**search_terms).prefetch_related(*prefetch).order_by('set_date', 'drop_time')
+        result = result.filter(**search_terms).prefetch_related(*prefetch).order_by('set_date', 'drop_time')
 
         return result
 

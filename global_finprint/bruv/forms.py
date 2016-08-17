@@ -79,6 +79,7 @@ class SetSearchForm(forms.Form):
                                        queryset=Equipment.objects.filter(set__in=Set.objects.all()).distinct())
     bait = forms.ModelChoiceField(required=False,
                                   queryset=Bait.objects.filter(set__in=Set.objects.all()).distinct())
+    code = forms.CharField(required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -86,18 +87,18 @@ class SetSearchForm(forms.Form):
         self.helper.form_class = 'form-inline set-search form-group-sm'
         self.helper.form_method = "get"
         self.helper.layout = cfl.Layout(
-            cfl.Fieldset(
-                'Filter by:',
+            cfl.Div(
                 'set_date',
                 'reef',
                 'habitat',
                 'equipment',
-                'bait'),
+                'bait',
+                'code'),
             cfl.Div(
                 cfb.FormActions(
-                    cfl.HTML("""<a role="button" class="btn btn-default cancel-button"
+                    cfl.HTML("""<a role="button" class="btn btn-default btn-fp cancel-button"
                     href="{% url "trip_set_list" trip_pk %}">Reset</a>"""),
-                    cfl.Submit('', 'Search')),
+                    cfl.Submit('', 'Search', css_class='btn-fp')),
                 css_class='row pull-right'))
 
 
