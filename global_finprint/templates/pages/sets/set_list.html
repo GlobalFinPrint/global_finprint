@@ -5,9 +5,7 @@
 
     {% if set_pk or form_errors %}
     {# jump to form if editing or there is an error #}
-        <script type="text/javascript">$(function() { window.location.hash = '#set-env-form'; });</script>
-    {% else %}
-        <script type="text/javascript">$(function() { window.location.hash = ''; });</script>
+        <script type="text/javascript">$(function() { window.location.hash = '#set-form-parent'; });</script>
     {% endif %}
 
     <div class="col-md-12" xmlns="http://www.w3.org/1999/html">
@@ -40,14 +38,11 @@
             </div>
         </div>
 
-        {% if set_pk or set_form.errors or drop_form.errors or haul_form.errors or video_form.errors or set_level_data_form.errors or set_level_comments_form.errors%}
         <div>
-        {% else %}
-        <div>
-            <p class="text-right"><a id="btn-show-form" class="btn btn-primary">Create new set</a></p>
+            <p class="text-right"><a id="btn-show-form" class="btn btn-primary btn-fp">Create new set</a></p>
         </div>
-        <div id="hidden-div" style="display: none;">
-        {% endif %}
+
+        <div id="set-form-parent">
             {% if request.user.is_authenticated %}
             <div class="row">
                 {% if set_pk %}
@@ -179,6 +174,9 @@
                     </div>
                     <div class="form-group pull-right cta-buttons">
                         <a href="{% url 'trip_set_list' trip_pk %}" class="btn btn-default btn-fp">Cancel</a>
+                        {% if not set_pk %}
+                            <input type="submit" name="save-and-add" value="Save & add new set" class="btn btn-primary btn-fp" id="submit-id-save-and-add-new" />
+                        {% endif %}
                         <input type="submit" name="save" value="Save{{ set_pk|yesno:" changes, new set" }}" class="btn btn-primary btn-fp" id="submit-id-save" />
                     </div>
                 </form>

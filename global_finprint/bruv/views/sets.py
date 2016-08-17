@@ -219,6 +219,10 @@ class SetListView(UserAllowedMixin, View):
 
             # navigate back to set list
             success_url = reverse_lazy('trip_set_list', args=[trip_pk])
+            if 'save-and-add' in request.POST:
+                success_url += '#set-form-parent'
+            else:
+                success_url += '#'
             return HttpResponseRedirect(success_url)
 
         # one or more forms have errors

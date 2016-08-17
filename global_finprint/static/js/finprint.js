@@ -105,12 +105,16 @@ var finprint = finprint || {};  //namespace if necessary...
     }
 
     function initShowFormButtons() {
-        var $buttons = $('#btn-show-form');
-
-        $buttons.click(function(){
-            $('#hidden-div').show();
+        var showForm = function() {
             $('#btn-show-form').hide();
-        });
+            $('#set-form-parent').show();
+            window.location.hash = '#set-form-parent';
+        };
+
+        if (window.location.hash === '#set-form-parent') {
+            showForm();
+        }
+        $('#btn-show-form').click(showForm);
     }
 
     function initManageStateButtons() {
