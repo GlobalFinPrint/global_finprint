@@ -1,58 +1,6 @@
-// stylesheet variables
-$blue: #29566D;
-$green: #7ED321;
-$gray: #838C9E;
-$black: #4A4A4A;
-$link: #4A90E2;
-$table-header: transparentize($blue, 0.8);
-$parent-row: transparentize($green, 0.5);
-$child-row: transparentize($green, 0.75);
-$table-border: transparentize($blue, 0.95);
-
-@mixin glyphicon($code) {
-  content: $code;
-  font-family: 'Glyphicons Halflings';
-  font-size: 12px;
-  padding-left: 5px;
-}
-
-a {
-  color: $link;
-}
-
 // project specific CSS goes here
-
-// bootstrap alert CSS, translated to the django-standard levels of
-// debug, info, success, warning, error
-.alert-debug {
-  color: black;
-  background-color: white;
-  border-color: #d6e9c6;
-}
-
-.alert-info {
-  color: #3a87ad;
-  background-color: #d9edf7;
-  border-color: #bce8f1;
-}
-
-.alert-success {
-  color: #468847;
-  background-color: #dff0d8;
-  border-color: #d6e9c6;
-}
-
-.alert-warning {
-  color: black;
-  background-color: orange;
-  border-color: #d6e9c6;
-}
-
-.alert-error {
-  color: #b94a48;
-  background-color: #f2dede;
-  border-color: #eed3d7;
-}
+@import 'lib';
+@import 'global';
 
 .main-splash {
   background-image: url("/static/images/fp_main.jpg");
@@ -72,7 +20,7 @@ a {
   opacity: 0.9;
   padding: 12px 18px;
   li {
-    padding: 15px 0px;
+    padding: 15px 0;
   }
 }
 
@@ -84,55 +32,11 @@ a {
   list-style-type: none;
 }
 
-.generic-list-item {
-
-}
-
-.form-inline {
-  .form-group {
-    vertical-align: top;
-    padding-bottom: 15px;
-    margin-right: 5px;
-
-    &.has-error {
-      position: relative;
-      padding-bottom: 30px;
-
-    }
-
-    a.cancel-button {
-      margin: 0 10px;
-    }
-  }
-
-  #div_id_oiled {
-    padding-top: 25px;
-  }
-}
-
-thead {
-  tr{
-    border: 0;
-    th {
-      border: 0 !important;
-    }
-  }
-
-  tr.table-header-title {
-    color: white;
-    background-color: $blue;
-  }
-
-  tr.table-header-labels {
-    color: $blue;
-  }
-}
-
-.set-table th#edit {
-  vertical-align: middle;
-}
-
 table.set-table {
+  th#edit {
+    vertical-align: middle;
+  }
+
   td a.hide-env {
     display: none;
   }
@@ -140,10 +44,6 @@ table.set-table {
   tr.env-headers, tr.env-row {
     display: none;
   }
-}
-
-span.disabled {
-  color: #ccc;
 }
 
 ul.annotators {
@@ -155,9 +55,6 @@ ul.annotators {
   }
 }
 
-h3.inline {
-  display: inline-block;
-}
 
 table.video-annotator-table {
   margin-top: 15px;
@@ -241,41 +138,44 @@ a.manual-assign {
   }
 }
 
-.panel-heading .accordion-toggle:after {
-    /* symbol for "opened" panels */
-    @include glyphicon("\e114");
-    float: right;
+form.trip {
+  small.help-block {
+    margin-left: 15px;
+  }
 }
 
-.panel-heading.collapsed .accordion-toggle:after {
-    /* symbol for "collapsed" panels */
-    @include glyphicon("\e079");
+h3.set-form-title {
+  color: white;
+  background-color: $blue;
+  margin-bottom: 0;
+  padding: 5px 15px;
+  font-size: 1.4em;
 }
 
-form.trip small.help-block {
-  margin-left: 15px;
-}
-
-form div.image-select-widget-parent {
-  cursor: pointer;
-
-  div.image-select-widget {
-    width: 216px;
-    height: 120px;
-    background-size: 216px 120px;
-    margin-right: 15px;
-  }
-
-  input {
-    display: none;
-  }
-
-  div.caption {
-    color: $link;
-  }
+div.set-form-well {
+  padding: 0;
+  border-radius: 0;
+  border: 0;
 }
 
 form.set {
+  div.panel.sub-form {
+    margin: 0 0 2px 0;
+    border: none;
+    background: $accordian-panel;
+    color: $blue;
+
+    div.panel-heading {
+      background: $accordian-header-active;
+      border-radius: 0;
+      color: $blue;
+
+      &.collapsed {
+        background: $accordian-header;
+      }
+    }
+  }
+
   div[data-toggle="collapse"] {
     cursor: pointer;
   }

@@ -51,19 +51,19 @@
             {% if request.user.is_authenticated %}
             <div class="row">
                 {% if set_pk %}
-                <h3>Edit set "{{ set_name }}"</h3>
+                <h3 class="set-form-title">Edit set "{{ set_name }}"</h3>
                 {% else %}
-                <h3>Add new set with environmental measures</h3>
+                <h3 class="set-form-title">New set</h3>
                 {% endif %}
             </div>
 
-            <div class="row well clearfix">
+            <div class="row well clearfix set-form-well">
                 <form class="form-inline set ng-pristine ng-valid" action="" method="post" id="set-env-form" enctype="multipart/form-data">
                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                         {% csrf_token %}
 
                         <div class="panel panel-default sub-form">
-                            <div class="panel-heading"
+                            <div class="panel-heading {% if form_errors and not set_form.errors %}collapsed{% endif %}"
                                  role="tab"
                                  id="headingOne"
                                  data-toggle="collapse"
@@ -75,7 +75,7 @@
                                 </h4>
                             </div>
                             <div id="collapseOne"
-                                 class="panel-collapse collapse in"
+                                 class="panel-collapse collapse {% if not form_errors or set_form.errors %}in{% endif %}"
                                  role="tabpanel"
                                  aria-labelledby="headingOne">
                                 <div class="panel-body">
