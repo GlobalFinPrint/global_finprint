@@ -109,6 +109,28 @@ form div.image-select-widget-parent {
 }
 
 
+// styled buttons
+.btn.btn-fp {
+  background: none;
+  box-shadow: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  border-color: $blue;
+  margin-right: 10px;
+
+  &.btn-default {
+    background-color: white;
+    color: $blue;
+  }
+
+  &.btn-primary {
+    background-color: $blue;
+    color: white;
+  }
+}
+
+
 // misc. style
 span.disabled {
   color: #ccc;
