@@ -34,10 +34,6 @@ class TripForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_class = 'form-inline trip form-group-sm'
-        # if 'instance' in kwargs and kwargs['instance']:
-        #     self.helper.form_action = reverse('trip_update', args=[kwargs['instance'].pk])
-        # else:
-        #     self.helper.form_action = reverse('trip_list')
         self.helper.form_method = "post"
         help_text = '<small class="help-block">*Required Field &nbsp;&nbsp;&nbsp; **Note: If code is left blank, ' \
                     'it will be automatically generated.</small>'

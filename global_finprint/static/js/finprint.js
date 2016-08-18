@@ -117,11 +117,13 @@ var finprint = finprint || {};  //namespace if necessary...
             window.location.hash = '#trip-form-parent';
         };
 
-        if (window.location.hash === '#set-form-parent') {
-            showSetForm();
-        } else if (window.location.hash === '#trip-form-parent') {
-            showTripForm();
-        }
+        window.onhashchange = function() {
+            if (window.location.hash === '#set-form-parent') {
+                showSetForm();
+            } else if (window.location.hash === '#trip-form-parent') {
+                showTripForm();
+            }
+        };
 
         $('#btn-show-set-form').click(showSetForm);
         $('#btn-show-trip-form').click(showTripForm);

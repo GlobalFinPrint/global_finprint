@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
-
 {% block content %}
+
+    {% if trip_pk or form_errors %}
+    {# jump to form if editing or there is an error #}
+        <script type="text/javascript">$(function() { window.location.hash = '#trip-form-parent'; });</script>
+    {% endif %}
+
     <div class="col-md-12">
         <div class="row">
             <h3>Trips</h3>
