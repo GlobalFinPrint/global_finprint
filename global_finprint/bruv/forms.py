@@ -13,7 +13,7 @@ from ..habitat.models import Reef, ReefType
 
 
 timepicker_opts = {"format": "HH:mm", "showClear": True}
-datepicker_opts = {"format": "MMMM DD YYYY", "showClear": True}
+datepicker_opts = {"format": "MMMM DD YYYY", "showClear": True, "extraFormats": ["D/M/Y"]}
 
 
 class SetForm(forms.ModelForm):
