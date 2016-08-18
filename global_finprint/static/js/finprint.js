@@ -117,13 +117,16 @@ var finprint = finprint || {};  //namespace if necessary...
             window.location.hash = '#trip-form-parent';
         };
 
-        window.onhashchange = function() {
+        var checkHash = function() {
             if (window.location.hash === '#set-form-parent') {
                 showSetForm();
             } else if (window.location.hash === '#trip-form-parent') {
                 showTripForm();
             }
         };
+
+        window.onhashchange = checkHash;
+        checkHash();
 
         $('#btn-show-set-form').click(showSetForm);
         $('#btn-show-trip-form').click(showTripForm);
