@@ -78,8 +78,6 @@ class SetListView(UserAllowedMixin, View):
         set_form_defaults = {
             'trip': parent_trip,
             'set_date': parent_trip.start_date,
-            'drop_time': datetime.min.time(),
-            'haul_time': datetime.min.time(),
             'equipment': Equipment.objects.all().first(),
         }
 
