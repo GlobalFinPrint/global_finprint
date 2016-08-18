@@ -34,12 +34,12 @@ class TripForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_class = 'form-inline trip form-group-sm'
-        #if 'instance' in kwargs and kwargs['instance']:
-        #    self.helper.form_action = reverse('trip_update', args=[kwargs['instance'].pk])
-        #else:
-        #    self.helper.form_action = reverse('trip_list')
+        # if 'instance' in kwargs and kwargs['instance']:
+        #     self.helper.form_action = reverse('trip_update', args=[kwargs['instance'].pk])
+        # else:
+        #     self.helper.form_action = reverse('trip_list')
         self.helper.form_method = "post"
-        help_text = '<small class="help-block">**Note: If code is left blank, ' \
+        help_text = '<small class="help-block">*Required Field &nbsp;&nbsp;&nbsp; **Note: If code is left blank, ' \
                     'it will be automatically generated.</small>'
         self.helper.layout = cfl.Layout(
             cfl.Fieldset(
@@ -51,11 +51,10 @@ class TripForm(forms.ModelForm):
                     css_class='pull-left'),
                 cfl.Div(
                     cfb.FormActions(
-                        cfl.HTML("""<a role="button" class="btn btn-default cancel-button"
+                        cfl.HTML("""<a role="button" class="btn btn-default btn-fp cancel-button"
                         href="{% url "trip_list" %}">Cancel</a>"""),
-                        cfl.Submit('save', 'Save trip')),
-                    css_class='pull-right'),
-                css_class='row'))
+                        cfl.Submit('save', 'Save trip', css_class='btn-fp')),
+                    css_class='pull-right')))
         self.fields['code'].label += '**'
 
 
@@ -81,8 +80,7 @@ class TripSearchForm(forms.Form):
         self.helper.form_class = 'form-inline trip-search form-group-sm'
         self.helper.form_method = "get"
         self.helper.layout = cfl.Layout(
-            cfl.Fieldset(
-                'Filter by:',
+            cfl.Div(
                 'search_start_date',
                 'search_end_date',
                 'region',
@@ -91,7 +89,7 @@ class TripSearchForm(forms.Form):
                 'reef'),
             cfl.Div(
                 cfb.FormActions(
-                    cfl.HTML("""<a role="button" class="btn btn-default cancel-button"
-                    href="{% url "trip_list" %}">Reset search</a>"""),
-                    cfl.Submit('', 'Search trips')),
+                    cfl.HTML("""<a role="button" class="btn btn-default cancel-button btn-fp"
+                    href="{% url "trip_list" %}">Reset</a>"""),
+                    cfl.Submit('', 'Search', css_class='btn-fp')),
                 css_class='row pull-right'))

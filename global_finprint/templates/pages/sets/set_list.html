@@ -36,16 +36,16 @@
         </div>
 
         <div>
-            <p class="text-right"><a id="btn-show-form" class="btn btn-primary btn-fp">Create new set</a></p>
+            <p class="text-right"><a id="btn-show-set-form" class="btn btn-primary btn-fp">Create new set</a></p>
         </div>
 
         <div id="set-form-parent">
             {% if request.user.is_authenticated %}
             <div class="row">
                 {% if set_pk %}
-                <h3 class="set-form-title">Edit set "{{ set_name }}"</h3>
+                <h3 class="form-title">Edit set "{{ set_name }}"</h3>
                 {% else %}
-                <h3 class="set-form-title">New set</h3>
+                <h3 class="form-title">New set</h3>
                 {% endif %}
             </div>
 

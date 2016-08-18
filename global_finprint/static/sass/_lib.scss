@@ -10,7 +10,8 @@ $table-header: transparentize($blue, 0.8);
 $parent-row: transparentize($green, 0.5);
 $child-row: transparentize($green, 0.75);
 $table-border: transparentize($blue, 0.95);
-$accordian-panel: #e9eef0;
+$form-background: #e9eef0;
+$accordian-panel: $form-background;
 $accordian-header: #c2cfd6;
 $accordian-header-active: #d5dee2;
 

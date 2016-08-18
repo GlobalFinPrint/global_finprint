@@ -144,16 +144,10 @@ form.trip {
   }
 }
 
-form.trip-search {
-  select#id_reef {
-    width: 240px;
-  }
-}
-
-#set-search {
+#set-search, #trip-search {
   color: $blue;
   border: none;
-  background: $accordian-panel;
+  background: $form-background;
   border-radius: 0;
   margin: 15px 0;
   padding: 0;
@@ -167,16 +161,35 @@ form.trip-search {
   }
 }
 
-#set-form-parent {
+h3.form-title {
+  color: white;
+  background-color: $blue;
+  margin-bottom: 0;
+  padding: 5px 15px;
+  font-size: 1.4em;
+}
+
+#trip-form-parent {
   display: none;
 
-  h3.set-form-title {
-    color: white;
-    background-color: $blue;
-    margin-bottom: 0;
-    padding: 5px 15px;
-    font-size: 1.4em;
+  div.trip-form-well {
+    padding: 15px 15px 0;
+    border-radius: 0;
+    border: 0;
+    background: $form-background;
+
+    form.trip {
+      color: $blue;
+
+      small.help-block {
+        margin-left: 0;
+      }
+    }
   }
+}
+
+#set-form-parent {
+  display: none;
 
   div.set-form-well {
     padding: 0;

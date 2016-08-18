@@ -105,16 +105,26 @@ var finprint = finprint || {};  //namespace if necessary...
     }
 
     function initShowFormButtons() {
-        var showForm = function() {
-            $('#btn-show-form').hide();
+        var showSetForm = function() {
+            $('#btn-show-set-form').hide();
             $('#set-form-parent').show();
             window.location.hash = '#set-form-parent';
         };
 
+        var showTripForm = function() {
+            $('#btn-show-trip-form').hide();
+            $('#trip-form-parent').show();
+            window.location.hash = '#trip-form-parent';
+        };
+
         if (window.location.hash === '#set-form-parent') {
-            showForm();
+            showSetForm();
+        } else if (window.location.hash === '#trip-form-parent') {
+            showTripForm();
         }
-        $('#btn-show-form').click(showForm);
+
+        $('#btn-show-set-form').click(showSetForm);
+        $('#btn-show-trip-form').click(showTripForm);
     }
 
     function initManageStateButtons() {
