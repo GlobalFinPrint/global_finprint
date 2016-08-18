@@ -62,13 +62,15 @@ class SetListView(UserAllowedMixin, View):
         if self.request.GET and form.is_valid():
             search_values = form.cleaned_data
             search_terms = dict((key, val) for (key, val) in search_values.items()
-                                if key in ['set_date', 'equipment', 'bait', 'code'] and val is not None)
+                                if key in ['equipment', 'bait'] and val is not None)
+            if search_values['search_set_date']:
+                search_terms['set_date'] = search_values['search_set_date']
             if search_values['reef']:
                 search_terms['reef_habitat__reef'] = search_values['reef']
             if search_values['habitat']:
                 search_terms['reef_habitat__habitat'] = search_values['habitat']
-            if search_terms['code']:
-                result = result.filter(code__contains=search_terms['code'])
+            if search_values['code']:
+                result = result.filter(code__contains=search_values['code'])
         search_terms['trip'] = parent_trip
         result = result.filter(**search_terms).prefetch_related(*prefetch).order_by('set_date', 'drop_time')
 

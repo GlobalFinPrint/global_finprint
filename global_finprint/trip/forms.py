@@ -10,7 +10,7 @@ from .models import Trip
 from ..core.models import Team
 
 
-datepicker_opts = {"format": "MMMM DD YYYY"}
+datepicker_opts = {"format": "MMMM DD YYYY", "showClear": True}
 
 
 class TripForm(forms.ModelForm):

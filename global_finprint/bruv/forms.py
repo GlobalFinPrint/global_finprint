@@ -68,7 +68,7 @@ class SetForm(forms.ModelForm):
 
 
 class SetSearchForm(forms.Form):
-    set_date = forms.DateField(required=False,
+    search_set_date = forms.DateField(required=False,
                                input_formats=['%B %d %Y'],
                                widget=DateTimePicker(options=datepicker_opts))
     reef = forms.ModelChoiceField(required=False,
@@ -95,7 +95,7 @@ class SetSearchForm(forms.Form):
         self.helper.form_method = "get"
         self.helper.layout = cfl.Layout(
             cfl.Div(
-                'set_date',
+                'search_set_date',
                 'reef',
                 'habitat',
                 'equipment',
