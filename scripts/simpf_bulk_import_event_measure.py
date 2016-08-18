@@ -35,7 +35,11 @@ def bulk_import(excel_file, em_files_root):
             pieces = a_file[:-4].split('_')
             if len(pieces) >= 4:
                 annotator = pieces[3]
-                if annotator in ['MaxN', 'PointMeasurements', ' Point Measurements', 'Dot Point Measurements']:
+                if annotator in ['MaxN',
+                                 'PointMeasurements',
+                                 ' Point Measurements',
+                                 'Dot Point Measurements',
+                                 'Point Measurements']:
                     annotator = pieces[-1]
                 files_by_annotator[annotator].append(a_file)
         logging.info('All candidate files: {}'.format(txt_files))
@@ -68,6 +72,6 @@ def bulk_import(excel_file, em_files_root):
                 logging.error('Unable to find file for annotator "{}" in folder "{}"'.format(annotator, em_path))
 
 if __name__ == '__main__':
-    logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', level=logging.WARN, filename='/home/ubuntu/import.log')
+    logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', level=logging.WARN, filename='import.log')
     bulk_import()
 
