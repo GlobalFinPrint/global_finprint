@@ -42,7 +42,7 @@ class SetListView(UserAllowedMixin, View):
             'trip_pk': parent_trip.pk,
             'trip_name': str(parent_trip),
             'sets': self._get_filtered_sets(parent_trip),
-            'search_form': SetSearchForm(self.request.GET or None)
+            'search_form': SetSearchForm(self.request.GET or None, trip_id=parent_trip.pk)
         })
 
     def _get_filtered_sets(self, parent_trip):

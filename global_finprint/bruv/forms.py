@@ -82,7 +82,14 @@ class SetSearchForm(forms.Form):
     code = forms.CharField(required=False)
 
     def __init__(self, *args, **kwargs):
+        trip_id = kwargs.pop('trip_id', False)
+
         super().__init__(*args, **kwargs)
+
+        if trip_id:
+            self.fields['reef'].queryset = Reef.objects.filter(id__in=Trip.objects.get(pk=trip_id).
+                                                               set_set.all().values('reef_habitat__reef'))
+
         self.helper = FormHelper(self)
         self.helper.form_class = 'form-inline set-search form-group-sm'
         self.helper.form_method = "get"
