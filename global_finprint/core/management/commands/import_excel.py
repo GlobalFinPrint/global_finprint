@@ -52,10 +52,6 @@ def import_trip_data(sheet):
                 collaborator,
                 boat
             )
-#        except:
-#            logging.error('Unable to import trip data for row %s', idx)
-#            logging.error(traceback.format_exc)
-        
 
 def import_set_data(sheet):
     headers = get_header_map(sheet.rows[0])
@@ -84,6 +80,8 @@ def import_set_data(sheet):
                 bait_str = get_cell(row, 'bait').value
                 visibility = get_cell(row, 'visibility').value
                 video = get_cell(row, 'video').value
+                camera = get_cell(row, 'camera').value
+                video_name = '{}_{}_{}.avi'.format(trip_code, set_code, camera)
                 comment = get_cell(row, 'comment').value
 
                 ic.import_set(
@@ -102,6 +100,7 @@ def import_set_data(sheet):
                     bait_str,
                     visibility,
                     video,
+                    video_name,
                     comment
                 )                
         except:

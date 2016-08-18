@@ -95,6 +95,7 @@ def import_trip(
         trip = gftm.Trip.objects.filter(code=trip_code).first()
         if not trip:
             location = gfhm.Location.objects.filter(name=location_name).first()
+            validate_data(location, 'No location found with name "{}"'.format(location_name))
             lead_candidates = djam.User.objects.filter(last_name=investigator)
             validate_data(
                 len(lead_candidates) > 0,
@@ -144,6 +145,7 @@ def import_set(
         bait_str,
         visibility,
         source_video_str,
+        aws_video_str,
         comment
 ):
     try:
@@ -158,8 +160,7 @@ def import_set(
             reef_habitat = get_reef_habitat(site_name, reef_name, habitat_type)
             equipment = parse_equipment_string(equipment_str)
             bait = parse_bait_string(bait_str)
-            video_name = '{}_{}.avi'.format(trip_code, set_code)
-            video = gfav.Video(file=video_name, source_folder=source_video_str, user=get_import_user())
+            video = gfav.Video(file=aws_video_str, source_folder=source_video_str, user=get_import_user())
             video.save()
             if not visibility:
                 visibility = '0'
