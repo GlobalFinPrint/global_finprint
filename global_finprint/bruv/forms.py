@@ -138,30 +138,29 @@ class ImageSelectWidget(forms.FileInput):
         template = '''
         <div class="image-select-widget-parent">
             <div class="image-select-widget" style="background-image:url({});">&nbsp;</div>
-            <input type="file" value="{}" name="{}" />
+            <input type="file" value="" name="{}" />
             <div class="caption">{}</div>
         </div>
         '''
         output = format_html(template,
                              static('images/upload_image.png') if not value else value,  # TODO need to get value URL
-                             value,
                              name,
                              'Upload image' if not value else 'Choose another image')
         return mark_safe(output)
 
 
 class SetLevelDataForm(forms.ModelForm):
-    bruv_image_url = forms.FileField(required=False,
-                                     widget=ImageSelectWidget,
-                                     label='Habitat photo: BRUV')
-    splendor_image_url = forms.FileField(required=False,
-                                         widget=ImageSelectWidget,
-                                         label='Habitat photo: splendor of the reef')
+    bruv_image_file = forms.FileField(required=False,
+                                      widget=ImageSelectWidget,
+                                      label='Habitat photo: BRUV')
+    splendor_image_file = forms.FileField(required=False,
+                                          widget=ImageSelectWidget,
+                                          label='Habitat photo: splendor of the reef')
 
     class Meta:
         model = Set
         fields = ['visibility', 'current_flow_instrumented', 'current_flow_estimated',
-                  'bruv_image_url', 'splendor_image_url']
+                  'bruv_image_file', 'splendor_image_file']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -174,7 +173,7 @@ class SetLevelDataForm(forms.ModelForm):
         self.fields['visibility'].choices[0] = (None, '---')
         self.helper.layout = cfl.Layout(
             'visibility', 'current_flow_instrumented', 'current_flow_estimated',
-            cfl.Div('bruv_image_url', 'splendor_image_url')
+            cfl.Div('bruv_image_file', 'splendor_image_file')
         )
 
 
