@@ -117,41 +117,46 @@ def import_set_data(sheet):
 def import_environment_data(sheet):
     headers = get_header_map(sheet.rows[0])
     get_cell = get_cell_by_name_extractor(headers)
-    for row in sheet.rows[1:]:
-        trip_code = get_cell(row, 'trip_code').value
-        if trip_code:
-            set_code = get_cell(row, 'set_code').value
-            reading_date = get_date_from_cell(get_cell(row, 'date'))
-            drop_haul = get_cell(row, 'drop_haul').value
-            temp = get_float_from_cell(get_cell(row, 'temp'))
-            salinity = get_float_from_cell(get_cell(row, 'salinity'))
-            conductivity = get_float_from_cell(get_cell(row, 'conductivity'))
-            dissolved_oxygen = get_float_from_cell(get_cell(row, 'dissolved_oxygen'))
-            current_flow = get_float_from_cell(get_cell(row, 'current_flow'))
-            current_direction = get_cell(row, 'current_direction').value
-            tide_state = get_cell(row, 'tide_state').value
-            wind_speed = get_float_from_cell(get_cell(row, 'wind_speed'))
-            wind_direction = get_cell(row, 'wind_direction').value
-            cloud_cover = get_float_from_cell(get_cell(row, 'cloud_cover'))
-            surface_chop = get_cell(row, 'surface_chop').value
+    for idx, row in enumerate(sheet.rows[1:], start=2):
+        try:
+            trip_code = get_cell(row, 'trip_code').value
+            if trip_code:
+                set_code = get_cell(row, 'set_code').value
+                reading_date = get_date_from_cell(get_cell(row, 'date'))
+                drop_haul = get_cell(row, 'drop_haul').value
+                temp = get_float_from_cell(get_cell(row, 'temp'))
+                salinity = get_float_from_cell(get_cell(row, 'salinity'))
+                conductivity = get_float_from_cell(get_cell(row, 'conductivity'))
+                dissolved_oxygen = get_float_from_cell(get_cell(row, 'dissolved_oxygen'))
+                current_flow = get_float_from_cell(get_cell(row, 'current_flow'))
+                current_direction = get_cell(row, 'current_direction').value
+                tide_state = get_cell(row, 'tide_state').value
+                wind_speed = get_float_from_cell(get_cell(row, 'wind_speed'))
+                wind_direction = get_cell(row, 'wind_direction').value
+                cloud_cover = get_float_from_cell(get_cell(row, 'cloud_cover'))
+                surface_chop = get_cell(row, 'surface_chop').value
 
-            ic.import_environment_measure(
-                trip_code,
-                set_code,
-                reading_date,
-                drop_haul.lower() == 'drop',
-                temp,
-                salinity,
-                conductivity,
-                dissolved_oxygen,
-                current_flow,
-                current_direction,
-                tide_state,
-                wind_speed,
-                wind_direction,
-                cloud_cover,
-                surface_chop
-            )
+                ic.import_environment_measure(
+                    trip_code,
+                    set_code,
+                    reading_date,
+                    drop_haul.lower() == 'drop',
+                    temp,
+                    salinity,
+                    conductivity,
+                    dissolved_oxygen,
+                    current_flow,
+                    current_direction,
+                    tide_state,
+                    wind_speed,
+                    wind_direction,
+                    cloud_cover,
+                    surface_chop
+                )
+        except:
+            logger.error('Unable to import environment data for row %s', idx)
+            logger.error(traceback.format_exc())
+
 
 def import_observation_data(sheet):
     headers = get_header_map(sheet.rows[0])
