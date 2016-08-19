@@ -318,16 +318,22 @@ var finprint = finprint || {};  //namespace if necessary...
     }
 
     function initImageSelectWidgets() {
-        $('div.image-select-widget-parent input').click(function(e) {
-            e.stopPropagation();
-        }).change(function() {
-            //TODO update UI for filename
-            console.log($(this).val());
-        });
+        $('div.image-select-widget-parent').each(function(_, parent) {
+            var $parent = $(parent);
 
-        $('div.image-select-widget-parent').click(function(e) {
-            e.preventDefault();
-            $(this).find('input').click();
+            $parent.find('input').click(function(e) {
+                e.stopPropagation();
+            }).change(function() {
+                var $this = $(this);
+                var file = $this.val().match(/[^\\]+$/)[0];
+                $parent.find('.caption').text('New file: ' + file);
+                $parent.find('.image-select-widget').css('opacity', 0.5)
+            });
+
+            $parent.click(function(e) {
+                e.preventDefault();
+                $(this).find('input').click();
+            });
         });
     }
 })(jQuery);
