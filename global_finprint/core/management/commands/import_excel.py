@@ -80,8 +80,14 @@ def import_set_data(sheet):
                 bait_str = get_cell(row, 'bait').value
                 visibility = get_cell(row, 'visibility').value
                 video = get_cell(row, 'video').value
-                camera = get_cell(row, 'camera').value
-                video_name = '{}_{}_{}.avi'.format(trip_code, set_code, camera)
+                video_name_array = [trip_code, set_code]
+                try:
+                    camera = get_cell(row, 'camera').value
+                    if camera:
+                        video_name_array.append(camera)
+                except KeyError:
+                    pass # No camera column
+                video_name = '{}.avi'.format('_'.join(video_name_array))
                 comment = get_cell(row, 'comment').value
 
                 ic.import_set(
@@ -105,7 +111,7 @@ def import_set_data(sheet):
                 )                
         except:
             logger.error('Unable to import set data for row %s', idx)
-            logger.error(traceback.format_exc)
+            logger.error(traceback.format_exc())
             
 
 def import_environment_data(sheet):
