@@ -56,7 +56,7 @@ def import_trip_data(sheet):
 def import_set_data(sheet):
     headers = get_header_map(sheet.rows[0])
     get_cell = get_cell_by_name_extractor(headers)
-    for idx, row in enumerate(sheet.rows[1:], start=1):
+    for idx, row in enumerate(sheet.rows[1:], start=2):
         try:
             set_code = get_cell(row, 'set_code').value
             if set_code:
@@ -218,10 +218,10 @@ def get_date_from_cell(cell):
     return result
     
 def get_time_from_cell(cell, format_str='%H:%M:%S %p'):
-    if cell.number_format == 'General':
-        return datetime.strptime(cell.value, '%H:%M:%S %p').time()
-    else:
-        return cell.value
+    result = cell.value
+    if isinstance(result, str):
+        result = datetime.strptime(cell.value, '%H:%M:%S %p').time()
+    return result
 
 class Command(BaseCommand):
     help = 'Imports observation data from excel format. Usage: python manage.py import_excel <excel_file>'
