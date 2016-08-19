@@ -101,7 +101,7 @@ class EnvironmentMeasure(AuditableModel):
                                        max_digits=8, decimal_places=2,
                                        help_text='S/m')  # S/m .00
     dissolved_oxygen = models.DecimalField(null=True, blank=True,
-                                           max_digits=3, decimal_places=1)
+                                           max_digits=8, decimal_places=1)
     current_flow = models.DecimalField(null=True, blank=True,
                                        max_digits=5, decimal_places=2,
                                        help_text='m/s')  # m/s .00
