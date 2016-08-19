@@ -68,8 +68,8 @@ def import_set_data(sheet):
                     depth_cell = get_cell(row, 'depth')
                     depth = get_float_from_cell(depth_cell)
                 except ValueError:
-                    logging.error('Bad depth value "%s"', depth_cell.value)
-                    logging.error('Set "%s" not created', set_code)
+                    logger.error('Bad depth value "%s"', depth_cell.value)
+                    logger.error('Set "%s" not created', set_code)
                     continue
                 drop_time = get_time_from_cell(get_cell(row, 'drop_time'), format_str='%H:%M')
                 haul_time = get_time_from_cell(get_cell(row, 'haul_time'), format_str='%H:%M')
@@ -104,8 +104,8 @@ def import_set_data(sheet):
                     comment
                 )                
         except:
-            logging.error('Unable to import set data for row %s', idx)
-            logging.error(traceback.format_exc)
+            logger.error('Unable to import set data for row %s', idx)
+            logger.error(traceback.format_exc)
             
 
 def import_environment_data(sheet):
