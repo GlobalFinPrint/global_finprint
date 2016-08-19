@@ -10,6 +10,7 @@ from bootstrap3_datetime.widgets import DateTimePicker
 from .models import Set, EnvironmentMeasure, Bait, Equipment, SetTag
 from ..trip.models import Trip
 from ..habitat.models import Reef, ReefType
+from django.conf import settings
 
 
 timepicker_opts = {"format": "HH:mm", "showClear": True}
@@ -134,18 +135,23 @@ class EnvironmentMeasureForm(forms.ModelForm):
 
 
 class ImageSelectWidget(forms.FileInput):
+    def __init__(self, image_url=None, attrs={}):
+        self.image_url = image_url
+        super().__init__(attrs)
+
     def render(self, name, value, attrs=None):
         template = '''
         <div class="image-select-widget-parent">
             <div class="image-select-widget" style="background-image:url({});">&nbsp;</div>
-            <input type="file" value="" name="{}" />
+            <input type="file" value="{}" name="{}" />
             <div class="caption">{}</div>
         </div>
         '''
         output = format_html(template,
-                             static('images/upload_image.png') if not value else value,  # TODO need to get value URL
+                             static('images/upload_image.png') if not self.image_url else self.image_url,
+                             value,
                              name,
-                             'Upload image' if not value else 'Choose another image')
+                             'Upload image' if not self.image_url else 'Choose another image')
         return mark_safe(output)
 
 
@@ -166,6 +172,13 @@ class SetLevelDataForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_tag = False
+        s3_base_url = 'https://s3-us-west-2.amazonaws.com/' + settings.HABITAT_IMAGE_BUCKET
+        bruv_image_url = s3_base_url + kwargs['instance'].bruv_image_url \
+            if 'instance' in kwargs and kwargs['instance'] else None
+        splendor_image_url = s3_base_url + kwargs['instance'].splendor_image_url \
+            if 'instance' in kwargs and kwargs['instance'] else None
+        self.fields['bruv_image_file'].widget = ImageSelectWidget(image_url=bruv_image_url)
+        self.fields['splendor_image_file'].widget = ImageSelectWidget(image_url=splendor_image_url)
         self.fields['visibility'].required = False
         self.fields['visibility'].choices = \
             sorted(self.fields['visibility'].choices,
