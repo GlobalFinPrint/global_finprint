@@ -61,8 +61,8 @@ class SetForm(forms.ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.fields['code'].label += '**'
-        self.fields['latitude'].widget.attrs['step'] = 1.0
-        self.fields['longitude'].widget.attrs['step'] = 1.0
+        self.fields['latitude'].widget.attrs['step'] = 'any'
+        self.fields['longitude'].widget.attrs['step'] = 'any'
         help_text = '<small class="help-block">*Required Field &nbsp;&nbsp;&nbsp; **Note: If code is left blank, ' \
                     'it will be automatically generated.</small>'
         self.helper.layout.append(cfl.Div(cfl.HTML(help_text)))
