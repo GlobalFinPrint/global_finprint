@@ -174,9 +174,9 @@ class SetLevelDataForm(forms.ModelForm):
         self.helper.form_tag = False
         s3_base_url = 'https://s3-us-west-2.amazonaws.com/' + settings.HABITAT_IMAGE_BUCKET
         bruv_image_url = s3_base_url + kwargs['instance'].bruv_image_url \
-            if 'instance' in kwargs and kwargs['instance'] else None
+            if 'instance' in kwargs and kwargs['instance'] and kwargs['instance'].bruv_image_url else None
         splendor_image_url = s3_base_url + kwargs['instance'].splendor_image_url \
-            if 'instance' in kwargs and kwargs['instance'] else None
+            if 'instance' in kwargs and kwargs['instance'] and kwargs['instance'].splendor_image_url else None
         self.fields['bruv_image_file'].widget = ImageSelectWidget(image_url=bruv_image_url)
         self.fields['splendor_image_file'].widget = ImageSelectWidget(image_url=splendor_image_url)
         self.fields['visibility'].required = False
