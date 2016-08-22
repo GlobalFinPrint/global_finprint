@@ -17,7 +17,9 @@ from ...annotation.forms import VideoForm
 from ...habitat.models import ReefHabitat
 from ...core.mixins import UserAllowedMixin
 
-from datetime import datetime
+from boto import exception as BotoException
+from boto.s3.connection import S3Connection
+from django.conf import settings
 
 
 # deprecated:
@@ -98,6 +100,36 @@ class SetListView(UserAllowedMixin, View):
 
         return set_form_defaults
 
+    def _upload_image(self, file, filename):
+        try:
+            conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+            bucket = conn.get_bucket(settings.HABITAT_IMAGE_BUCKET)
+            key = bucket.get_key(filename)
+            if not key:
+                key = bucket.new_key(filename)
+            key.set_contents_from_string(file.read(), headers={'Content-Type': 'image/png'})
+            key.set_acl('public-read')
+            return True
+        except BotoException.S3ResponseError:
+            return False
+
+    def _process_habitat_images(self, set, request):
+        if request.FILES.get('bruv_image_file', False):
+            filename = set.habitat_filename('bruv')
+            if self._upload_image(request.FILES['bruv_image_file'], filename):
+                set.bruv_image_url = filename
+                set.save()
+            else:
+                messages.warning(request, 'Error uploading BRUV image')
+
+        if request.FILES.get('splendor_image_file', False):
+            filename = set.habitat_filename('splendor')
+            if self._upload_image(request.FILES['splendor_image_file'], filename):
+                set.splendor_image_url = filename
+                set.save()
+            else:
+                messages.warning(request, 'Error uploading Habitat image')
+
     def get(self, request, **kwargs):
         trip_pk, set_pk = kwargs.get('trip_pk', None), kwargs.get('set_pk', None)
         parent_trip = get_object_or_404(Trip, pk=trip_pk)
@@ -155,16 +187,16 @@ class SetListView(UserAllowedMixin, View):
             set_form = SetForm(request.POST, trip_pk=trip_pk)
             drop_form = EnvironmentMeasureForm(request.POST, prefix='drop')
             haul_form = EnvironmentMeasureForm(request.POST, prefix='haul')
-            video_form = VideoForm(request.POST, request.FILES)
-            set_level_data_form = SetLevelDataForm(request.POST)
+            video_form = VideoForm(request.POST)
+            set_level_data_form = SetLevelDataForm(request.POST, request.FILES)
             set_level_comments_form = SetLevelCommentsForm(request.POST)
         else:
             edited_set = get_object_or_404(Set, pk=set_pk)
             set_form = SetForm(request.POST, trip_pk=trip_pk, instance=edited_set)
             drop_form = EnvironmentMeasureForm(request.POST, prefix='drop', instance=edited_set.drop_measure)
             haul_form = EnvironmentMeasureForm(request.POST, prefix='haul', instance=edited_set.haul_measure)
-            video_form = VideoForm(request.POST, request.FILES, instance=edited_set.video)
-            set_level_data_form = SetLevelDataForm(request.POST, instance=edited_set)
+            video_form = VideoForm(request.POST, instance=edited_set.video)
+            set_level_data_form = SetLevelDataForm(request.POST, request.FILES, instance=edited_set)
             set_level_comments_form = SetLevelCommentsForm(request.POST, instance=edited_set)
 
         # forms are valid
@@ -189,10 +221,14 @@ class SetListView(UserAllowedMixin, View):
                 new_set.haul_measure = haul_form.save()
                 new_set.video = video_form.save()
                 for k, v in set_level_data_form.cleaned_data.items():
-                    setattr(new_set, k, v)
+                    if k not in ('bruv_image_file', 'splendor_image_file'):
+                        setattr(new_set, k, v)
                 for k, v in set_level_comments_form.cleaned_data.items():
                     setattr(new_set, k, v)
                 new_set.save()
+
+                # upload and save image urls
+                self._process_habitat_images(new_set, request)
 
                 messages.success(self.request, 'Set created')
 
@@ -225,7 +261,8 @@ class SetListView(UserAllowedMixin, View):
                     for k, v in video_form.cleaned_data.items():
                         setattr(edited_set.video, k, v)
                 for k, v in set_level_data_form.cleaned_data.items():
-                    setattr(edited_set, k, v)
+                    if k not in ('bruv_image_file', 'splendor_image_file'):
+                        setattr(edited_set, k, v)
                 for k, v in set_level_comments_form.cleaned_data.items():
                     setattr(edited_set, k, v)
 
@@ -237,6 +274,9 @@ class SetListView(UserAllowedMixin, View):
                     edited_set.haul_measure.save()
                 if edited_set.video:
                     edited_set.video.save()
+
+                # upload and save image urls
+                self._process_habitat_images(edited_set, request)
 
                 messages.success(self.request, 'Set updated')
 

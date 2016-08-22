@@ -10,6 +10,7 @@ from bootstrap3_datetime.widgets import DateTimePicker
 from .models import Set, EnvironmentMeasure, Bait, Equipment, SetTag
 from ..trip.models import Trip
 from ..habitat.models import Reef, ReefType
+from django.conf import settings
 
 
 timepicker_opts = {"format": "HH:mm", "showClear": True}
@@ -60,8 +61,8 @@ class SetForm(forms.ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.fields['code'].label += '**'
-        self.fields['latitude'].widget.attrs['step'] = 1.0
-        self.fields['longitude'].widget.attrs['step'] = 1.0
+        self.fields['latitude'].widget.attrs['step'] = 'any'
+        self.fields['longitude'].widget.attrs['step'] = 'any'
         help_text = '<small class="help-block">*Required Field &nbsp;&nbsp;&nbsp; **Note: If code is left blank, ' \
                     'it will be automatically generated.</small>'
         self.helper.layout.append(cfl.Div(cfl.HTML(help_text)))
@@ -134,6 +135,10 @@ class EnvironmentMeasureForm(forms.ModelForm):
 
 
 class ImageSelectWidget(forms.FileInput):
+    def __init__(self, image_url=None, attrs={}):
+        self.image_url = image_url
+        super().__init__(attrs)
+
     def render(self, name, value, attrs=None):
         template = '''
         <div class="image-select-widget-parent">
@@ -143,30 +148,37 @@ class ImageSelectWidget(forms.FileInput):
         </div>
         '''
         output = format_html(template,
-                             static('images/upload_image.png') if not value else value,  # TODO need to get value URL
+                             static('images/upload_image.png') if not self.image_url else self.image_url,
                              value,
                              name,
-                             'Upload image' if not value else 'Choose another image')
+                             'Upload image' if not self.image_url else 'Choose another image')
         return mark_safe(output)
 
 
 class SetLevelDataForm(forms.ModelForm):
-    bruv_image_url = forms.FileField(required=False,
-                                     widget=ImageSelectWidget,
-                                     label='Habitat photo: BRUV')
-    splendor_image_url = forms.FileField(required=False,
-                                         widget=ImageSelectWidget,
-                                         label='Habitat photo: splendor of the reef')
+    bruv_image_file = forms.FileField(required=False,
+                                      widget=ImageSelectWidget,
+                                      label='Habitat photo: BRUV')
+    splendor_image_file = forms.FileField(required=False,
+                                          widget=ImageSelectWidget,
+                                          label='Habitat photo: splendor of the reef')
 
     class Meta:
         model = Set
         fields = ['visibility', 'current_flow_instrumented', 'current_flow_estimated',
-                  'bruv_image_url', 'splendor_image_url']
+                  'bruv_image_file', 'splendor_image_file']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_tag = False
+        s3_base_url = 'https://s3-us-west-2.amazonaws.com/' + settings.HABITAT_IMAGE_BUCKET
+        bruv_image_url = s3_base_url + kwargs['instance'].bruv_image_url \
+            if 'instance' in kwargs and kwargs['instance'] and kwargs['instance'].bruv_image_url else None
+        splendor_image_url = s3_base_url + kwargs['instance'].splendor_image_url \
+            if 'instance' in kwargs and kwargs['instance'] and kwargs['instance'].splendor_image_url else None
+        self.fields['bruv_image_file'].widget = ImageSelectWidget(image_url=bruv_image_url)
+        self.fields['splendor_image_file'].widget = ImageSelectWidget(image_url=splendor_image_url)
         self.fields['visibility'].required = False
         self.fields['visibility'].choices = \
             sorted(self.fields['visibility'].choices,
@@ -174,7 +186,7 @@ class SetLevelDataForm(forms.ModelForm):
         self.fields['visibility'].choices[0] = (None, '---')
         self.helper.layout = cfl.Layout(
             'visibility', 'current_flow_instrumented', 'current_flow_estimated',
-            cfl.Div('bruv_image_url', 'splendor_image_url')
+            cfl.Div('bruv_image_file', 'splendor_image_file')
         )
 
 

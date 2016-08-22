@@ -7,6 +7,7 @@ from django.contrib.gis.geos import Point
 
 from global_finprint.annotation.models.observation import Observation
 from global_finprint.annotation.models.video import Video
+from global_finprint.core.version import VersionInfo
 from global_finprint.core.models import AuditableModel
 from global_finprint.trip.models import Trip
 from global_finprint.habitat.models import ReefHabitat
@@ -100,7 +101,7 @@ class EnvironmentMeasure(AuditableModel):
                                        max_digits=8, decimal_places=2,
                                        help_text='S/m')  # S/m .00
     dissolved_oxygen = models.DecimalField(null=True, blank=True,
-                                           max_digits=3, decimal_places=1)
+                                           max_digits=8, decimal_places=1)
     current_flow = models.DecimalField(null=True, blank=True,
                                        max_digits=5, decimal_places=2,
                                        help_text='m/s')  # m/s .00
@@ -244,6 +245,13 @@ class Set(AuditableModel):
     def observations(self):
         if self.video:
             return Observation.objects.filter(assignment__in=self.video.assignment_set.all())
+
+    def habitat_filename(self, image_type):
+        server_env = VersionInfo.get_server_env()
+        return '/{0}/{1}/{2}/{3}.png'.format(server_env,
+                                             self.trip.code,
+                                             self.code,
+                                             image_type)
 
     def __str__(self):
         return u"{0}_{1}".format(self.trip.code, self.code)

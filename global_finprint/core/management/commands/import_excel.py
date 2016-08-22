@@ -56,7 +56,7 @@ def import_trip_data(sheet):
 def import_set_data(sheet):
     headers = get_header_map(sheet.rows[0])
     get_cell = get_cell_by_name_extractor(headers)
-    for idx, row in enumerate(sheet.rows[1:], start=1):
+    for idx, row in enumerate(sheet.rows[1:], start=2):
         try:
             set_code = get_cell(row, 'set_code').value
             if set_code:
@@ -68,8 +68,8 @@ def import_set_data(sheet):
                     depth_cell = get_cell(row, 'depth')
                     depth = get_float_from_cell(depth_cell)
                 except ValueError:
-                    logging.error('Bad depth value "%s"', depth_cell.value)
-                    logging.error('Set "%s" not created', set_code)
+                    logger.error('Bad depth value "%s"', depth_cell.value)
+                    logger.error('Set "%s" not created', set_code)
                     continue
                 drop_time = get_time_from_cell(get_cell(row, 'drop_time'), format_str='%H:%M')
                 haul_time = get_time_from_cell(get_cell(row, 'haul_time'), format_str='%H:%M')
@@ -80,8 +80,14 @@ def import_set_data(sheet):
                 bait_str = get_cell(row, 'bait').value
                 visibility = get_cell(row, 'visibility').value
                 video = get_cell(row, 'video').value
-                camera = get_cell(row, 'camera').value
-                video_name = '{}_{}_{}.avi'.format(trip_code, set_code, camera)
+                video_name_array = [trip_code, set_code]
+                try:
+                    camera = get_cell(row, 'camera').value
+                    if camera:
+                        video_name_array.append(camera)
+                except KeyError:
+                    pass # No camera column
+                video_name = '{}.avi'.format('_'.join(video_name_array))
                 comment = get_cell(row, 'comment').value
 
                 ic.import_set(
@@ -104,48 +110,53 @@ def import_set_data(sheet):
                     comment
                 )                
         except:
-            logging.error('Unable to import set data for row %s', idx)
-            logging.error(traceback.format_exc)
+            logger.error('Unable to import set data for row %s', idx)
+            logger.error(traceback.format_exc())
             
 
 def import_environment_data(sheet):
     headers = get_header_map(sheet.rows[0])
     get_cell = get_cell_by_name_extractor(headers)
-    for row in sheet.rows[1:]:
-        trip_code = get_cell(row, 'trip_code').value
-        if trip_code:
-            set_code = get_cell(row, 'set_code').value
-            reading_date = get_date_from_cell(get_cell(row, 'date'))
-            drop_haul = get_cell(row, 'drop_haul').value
-            temp = get_float_from_cell(get_cell(row, 'temp'))
-            salinity = get_float_from_cell(get_cell(row, 'salinity'))
-            conductivity = get_float_from_cell(get_cell(row, 'conductivity'))
-            dissolved_oxygen = get_float_from_cell(get_cell(row, 'dissolved_oxygen'))
-            current_flow = get_float_from_cell(get_cell(row, 'current_flow'))
-            current_direction = get_cell(row, 'current_direction').value
-            tide_state = get_cell(row, 'tide_state').value
-            wind_speed = get_float_from_cell(get_cell(row, 'wind_speed'))
-            wind_direction = get_cell(row, 'wind_direction').value
-            cloud_cover = get_float_from_cell(get_cell(row, 'cloud_cover'))
-            surface_chop = get_cell(row, 'surface_chop').value
+    for idx, row in enumerate(sheet.rows[1:], start=2):
+        try:
+            trip_code = get_cell(row, 'trip_code').value
+            if trip_code:
+                set_code = get_cell(row, 'set_code').value
+                reading_date = get_date_from_cell(get_cell(row, 'date'))
+                drop_haul = get_cell(row, 'drop_haul').value
+                temp = get_float_from_cell(get_cell(row, 'temp'))
+                salinity = get_float_from_cell(get_cell(row, 'salinity'))
+                conductivity = get_float_from_cell(get_cell(row, 'conductivity'))
+                dissolved_oxygen = get_float_from_cell(get_cell(row, 'dissolved_oxygen'))
+                current_flow = get_float_from_cell(get_cell(row, 'current_flow'))
+                current_direction = get_cell(row, 'current_direction').value
+                tide_state = get_cell(row, 'tide_state').value
+                wind_speed = get_float_from_cell(get_cell(row, 'wind_speed'))
+                wind_direction = get_cell(row, 'wind_direction').value
+                cloud_cover = get_float_from_cell(get_cell(row, 'cloud_cover'))
+                surface_chop = get_cell(row, 'surface_chop').value
 
-            ic.import_environment_measure(
-                trip_code,
-                set_code,
-                reading_date,
-                drop_haul.lower() == 'drop',
-                temp,
-                salinity,
-                conductivity,
-                dissolved_oxygen,
-                current_flow,
-                current_direction,
-                tide_state,
-                wind_speed,
-                wind_direction,
-                cloud_cover,
-                surface_chop
-            )
+                ic.import_environment_measure(
+                    trip_code,
+                    set_code,
+                    reading_date,
+                    drop_haul.lower() == 'drop',
+                    temp,
+                    salinity,
+                    conductivity,
+                    dissolved_oxygen,
+                    current_flow,
+                    current_direction,
+                    tide_state,
+                    wind_speed,
+                    wind_direction,
+                    cloud_cover,
+                    surface_chop
+                )
+        except:
+            logger.error('Unable to import environment data for row %s', idx)
+            logger.error(traceback.format_exc())
+
 
 def import_observation_data(sheet):
     headers = get_header_map(sheet.rows[0])
@@ -212,10 +223,10 @@ def get_date_from_cell(cell):
     return result
     
 def get_time_from_cell(cell, format_str='%H:%M:%S %p'):
-    if cell.number_format == 'General':
-        return datetime.strptime(cell.value, '%H:%M:%S %p').time()
-    else:
-        return cell.value
+    result = cell.value
+    if isinstance(result, str):
+        result = datetime.strptime(cell.value, '%H:%M:%S %p').time()
+    return result
 
 class Command(BaseCommand):
     help = 'Imports observation data from excel format. Usage: python manage.py import_excel <excel_file>'
