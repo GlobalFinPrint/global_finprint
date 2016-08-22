@@ -9,7 +9,8 @@ from django.template import RequestContext
 
 from global_finprint.trip.models import Trip
 from global_finprint.bruv.models import Equipment
-from ..models import Set
+from global_finprint.annotation.models.video import Video
+from ..models import Set, EnvironmentMeasure
 from ..forms import SetForm, EnvironmentMeasureForm, \
     SetSearchForm, SetLevelCommentsForm, SetLevelDataForm
 from ...annotation.forms import VideoForm
@@ -200,12 +201,29 @@ class SetListView(UserAllowedMixin, View):
                 for k, v in set_form.cleaned_data.items():
                     if k not in ('reef', 'habitat'):
                         setattr(edited_set, k, v)
-                for k, v in drop_form.cleaned_data.items():
-                    setattr(edited_set.drop_measure, k, v)
-                for k, v in haul_form.cleaned_data.items():
-                    setattr(edited_set.haul_measure, k, v)
-                for k, v in video_form.cleaned_data.items():
-                    setattr(edited_set.video, k, v)
+
+                # check for children that might be missing but have data in their forms:
+                if not edited_set.drop_measure and \
+                    any(x is not None for x in list(drop_form.cleaned_data.values())):
+                        # note that the dissolved_oxygen_measure shows up as a value and should probably be filtered out
+                        edited_set.drop_measure = EnvironmentMeasure.objects.create()
+                if not edited_set.haul_measure and \
+                    any(x is not None for x in list(haul_form.cleaned_data.values())):
+                        # note that the dissolved_oxygen_measure shows up as a value and should probably be filtered out
+                        edited_set.haul_measure = EnvironmentMeasure.objects.create()
+                if not edited_set.video and \
+                    any(x is not None for x in list(video_form.cleaned_data.values())):
+                        edited_set.video = Video.objects.create()
+
+                if edited_set.drop_measure:
+                    for k, v in drop_form.cleaned_data.items():
+                        setattr(edited_set.drop_measure, k, v)
+                if edited_set.haul_measure:
+                    for k, v in haul_form.cleaned_data.items():
+                        setattr(edited_set.haul_measure, k, v)
+                if edited_set.video:
+                    for k, v in video_form.cleaned_data.items():
+                        setattr(edited_set.video, k, v)
                 for k, v in set_level_data_form.cleaned_data.items():
                     setattr(edited_set, k, v)
                 for k, v in set_level_comments_form.cleaned_data.items():
@@ -213,9 +231,12 @@ class SetListView(UserAllowedMixin, View):
 
                 edited_set.save()
                 edited_set.bait.save()
-                edited_set.drop_measure.save()
-                edited_set.haul_measure.save()
-                edited_set.video.save()
+                if edited_set.drop_measure:
+                    edited_set.drop_measure.save()
+                if edited_set.haul_measure:
+                    edited_set.haul_measure.save()
+                if edited_set.video:
+                    edited_set.video.save()
 
                 messages.success(self.request, 'Set updated')
 
