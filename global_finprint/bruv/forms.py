@@ -170,7 +170,7 @@ class SubstrateWidget(forms.Widget):
             <div class="center">
                 <div class="substrate-row">
                     <div class="input-holder">
-                        <input name="total-percent" type="text" readonly="readonly" value="100" />
+                        <input name="total-percent" type="number" readonly="readonly" value="0" />
                     </div>
                 </div>
             </div>

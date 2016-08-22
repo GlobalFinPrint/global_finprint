@@ -244,9 +244,11 @@ h3.form-title {
         margin-right: 15px;
       }
 
-      .habitat-substrate-parent {
+      #div_id_habitat_substrate {
         margin-left: 15px;
+      }
 
+      .habitat-substrate-parent {
         .right, .center, .left {
           float: left;
           vertical-align: center;
@@ -286,9 +288,9 @@ h3.form-title {
           width: 100px;
 
           .input-holder {
-            input[type="text"] {
+            input[type="number"] {
               width: 60px;
-              padding: 5px 10px;
+              padding: 5px 5px 5px 10px;
               border-radius: 4px;
               border: 1px solid $gray;
             }

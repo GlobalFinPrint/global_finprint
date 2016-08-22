@@ -383,11 +383,42 @@ var finprint = finprint || {};  //namespace if necessary...
         var $center = $parent.find('.center');
         var $right = $parent.find('.right');
 
+        function recalculateTotalPercent() {
+            var percents = $.map($('input[name="percent"]'), function(i) { return parseInt($(i).val()); });
+            var sum = percents.reduce(function(sum, x) { return sum + x; }, 0);
+            $parent.find('input[name="total-percent"]').val(sum);
+        }
+
+        $parent.on('click', 'a.split', function(e) {
+            e.preventDefault();
+            console.log('TODO');
+        });
+
+        $parent.on('change', 'input[name="percent"]', recalculateTotalPercent);
+
         $parent.find('button.add-substrate').click(function(e) {
             e.preventDefault();
-            $left.prepend('<div class="substrate-row"><select class="substrate select form-control"></select></div>'); //TODO add parent substrates
-            $center.prepend('<div class="substrate-row"><div class="input-holder"><input name="percent" type="text" value="0" /></div></div>');
-            $right.prepend('<div class="substrate-row"><a href="#" class="split">Split</a></div>'); //TODO make split do stuff
+
+            var remainingPercent = Math.max(0, 100 - $parent.find('input[name="total-percent"]').val());
+
+            $.get('/substrate/', function(res) {
+                var html = '<div class="substrate-row"><select class="substrate select form-control" name="substrate">';
+                res.substrates.forEach(function(s) {
+                    html += '<option value="' + s.id + '">' + s.name + '</option>';
+                });
+                html += '</select></div>';
+                $left.prepend(html);
+            });
+
+            $center.prepend('<div class="substrate-row"><div class="input-holder">' +
+                '<input class="percent" name="percent" type="number" step="1" min="1" max="100" value="' + remainingPercent + '" />' +
+                '</div></div>');
+
+            $right.prepend('<div class="substrate-row">' +
+                '<a href="#" class="split">Split</a>' +
+                '</div>');
+
+            recalculateTotalPercent();
         });
     }
 })(jQuery);
