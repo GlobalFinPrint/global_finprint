@@ -183,6 +183,9 @@ class Substrate(MPTTModel):
     class MPTTMeta:
         order_insertion_by = ['name']
 
+    def __str__(self):
+        return u"{0}".format(self.name)
+
 
 class Set(AuditableModel):
     # suggested code pattern:
