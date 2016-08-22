@@ -1,5 +1,6 @@
 from django import forms
 from django.forms.utils import flatatt
+from django.forms import ValidationError
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.contrib.staticfiles.templatetags.staticfiles import static
@@ -155,6 +156,47 @@ class ImageSelectWidget(forms.FileInput):
         return mark_safe(output)
 
 
+class SubstrateWidget(forms.Widget):
+    def render(self, name, value, attrs=None):
+        template = '''
+        <div class="habitat-substrate-parent clear">
+            <div class="left clear">
+                <div class="substrate-row">
+                    <button class="btn btn-primary btn-fp add-substrate">+</button>
+                    <span class="total">Total</span>
+                </div>
+            </div>
+
+            <div class="center">
+                <div class="substrate-row">
+                    <div class="input-holder">
+                        <input name="total-percent" type="text" readonly="readonly" value="100" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="right">
+                <div class="substrate-row">
+                    <span class="help-text">Substrates must total 100%</span>
+                </div>
+            </div>
+        </div>
+        '''
+        return mark_safe(format_html(template))
+
+
+class SubstrateField(forms.Field):
+    widget = SubstrateWidget
+
+    def clean(self, value):
+        pass
+
+    def validate(self, value):
+        super(SubstrateField, self).validate(value)
+        if value != 100:  # check into json (?) for total %
+            raise ValidationError('Substrate % must total 100', code='sumlessthan100')
+
+
 class SetLevelDataForm(forms.ModelForm):
     bruv_image_file = forms.FileField(required=False,
                                       widget=ImageSelectWidget,
@@ -162,11 +204,13 @@ class SetLevelDataForm(forms.ModelForm):
     splendor_image_file = forms.FileField(required=False,
                                           widget=ImageSelectWidget,
                                           label='Habitat photo: splendor of the reef')
+    habitat_substrate = SubstrateField(required=False,
+                                       label='Habitat substrate')
 
     class Meta:
         model = Set
         fields = ['visibility', 'current_flow_instrumented', 'current_flow_estimated',
-                  'bruv_image_file', 'splendor_image_file']
+                  'bruv_image_file', 'splendor_image_file', 'habitat_substrate']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -186,7 +230,7 @@ class SetLevelDataForm(forms.ModelForm):
         self.fields['visibility'].choices[0] = (None, '---')
         self.helper.layout = cfl.Layout(
             'visibility', 'current_flow_instrumented', 'current_flow_estimated',
-            cfl.Div('bruv_image_file', 'splendor_image_file')
+            cfl.Div('bruv_image_file', 'splendor_image_file', 'habitat_substrate')
         )
 
 

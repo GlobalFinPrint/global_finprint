@@ -18,6 +18,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initSelectizeWidgets();
         initImageSelectWidgets();
         initTabAccordion();
+        initSubstrateWidget();
     });
 
     function getCSRF() {
@@ -373,6 +374,20 @@ var finprint = finprint || {};  //namespace if necessary...
                 $('#headingFive.collapsed').click();
                 scrollTo('#headingFive');
             }
+        });
+    }
+
+    function initSubstrateWidget() {
+        var $parent = $('.habitat-substrate-parent');
+        var $left = $parent.find('.left');
+        var $center = $parent.find('.center');
+        var $right = $parent.find('.right');
+
+        $parent.find('button.add-substrate').click(function(e) {
+            e.preventDefault();
+            $left.prepend('<div class="substrate-row"><select class="substrate select form-control"></select></div>'); //TODO add parent substrates
+            $center.prepend('<div class="substrate-row"><div class="input-holder"><input name="percent" type="text" value="0" /></div></div>');
+            $right.prepend('<div class="substrate-row"><a href="#" class="split">Split</a></div>'); //TODO make split do stuff
         });
     }
 })(jQuery);
