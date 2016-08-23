@@ -158,6 +158,7 @@ class ImageSelectWidget(forms.FileInput):
 
 class SubstrateWidget(forms.Widget):
     def render(self, name, value, attrs=None):
+        # TODO add rows for values in here
         template = '''
         <div class="habitat-substrate-parent clear">
             <div class="left clear">
@@ -183,6 +184,13 @@ class SubstrateWidget(forms.Widget):
         </div>
         '''
         return mark_safe(format_html(template))
+
+    def value_from_datadict(self, data, files, name):
+        return {
+            'total_percent': data.get('total-percent'),
+            'percents': data.getlist('percent'),
+            'substrates': data.getlist('substrate')
+        }
 
 
 class SubstrateField(forms.Field):
