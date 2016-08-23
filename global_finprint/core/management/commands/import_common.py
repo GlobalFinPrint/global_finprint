@@ -225,20 +225,18 @@ def import_environment_measure(
                 try:
                     tide_state = get_tide_state_map()[tide_state.lower()]
                 except KeyError:
-                    valdiate_data(
+                    validate_data(
                         False,
-                        'Bad tide_state "%s" for set "%s" of trip "%s"', tide_state, set_code, trip_code
-                    )
+                        'Bad tide_state "%s" for set "%s" of trip "%s"', tide_state, set_code, trip_code)
             if wind_direction:
                 wind_direction = wind_direction.upper()
             if surface_chop:
                 try:
                     surface_chop = get_surface_chop_map()[surface_chop.lower()]
                 except KeyError:
-                    valdiate_data(
+                    validate_data(
                         False,
-                        'Bad tide_state "%s" for set "%s" of trip "%s"', tide_state, set_code, trip_code
-                    )
+                        'Bad surface chop "%s" for set "%s" of trip "%s"', surface_chop, set_code, trip_code)
 
             enviro_measure = gfbm.EnvironmentMeasure(
                 water_temperature=temp,
