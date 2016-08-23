@@ -238,18 +238,20 @@ class SubstrateField(forms.Field):
     widget = SubstrateWidget
 
     def to_python(self, value):
-        if 'substrates' in value and isinstance(value['substrates'][0], int):
+        if value is not None and 'substrates' in value and \
+                len(value['substrates']) > 0 and isinstance(value['substrates'][0], int):
             value['substrates'] = [Substrate.objects.get(pk=s_id) for s_id in value['substrates'][:]]
         return value
 
     def prepare_value(self, value):
-        if 'substrates' in value and isinstance(value['substrates'][0], Substrate):
+        if value is not None and 'substrates' in value and \
+                len(value['substrates']) > 0 and isinstance(value['substrates'][0], Substrate):
             value['substrates'] = [s.pk for s in value['substrates'][:]]
         return value
 
     def validate(self, value):
         super(SubstrateField, self).validate(value)
-        if value['total_percent'] != 100:
+        if value['total_percent'] != 100 and len(value['substrates']) > 0:
             raise ValidationError('Substrates must total 100%', code='less_than_100')
 
 
