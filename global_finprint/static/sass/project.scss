@@ -310,8 +310,12 @@ h3.form-title {
             line-height: 30px;
           }
 
-          a.split {
+          a {
             line-height: 30px;
+
+            &.remove {
+              margin-left: 10px;
+            }
           }
         }
       }

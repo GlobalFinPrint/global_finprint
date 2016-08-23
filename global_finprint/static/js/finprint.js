@@ -394,6 +394,15 @@ var finprint = finprint || {};  //namespace if necessary...
             console.log('TODO');
         });
 
+        $parent.on('click', 'a.remove', function(e) {
+            e.preventDefault();
+            var index = $right.find('a.remove').index($(this));
+            $left.find('.substrate-row').slice(index, index + 1).remove();
+            $center.find('.substrate-row').slice(index, index + 1).remove();
+            $right.find('.substrate-row').slice(index, index + 1).remove();
+            recalculateTotalPercent();
+        });
+
         $parent.on('change', 'input[name="percent"]', recalculateTotalPercent);
 
         $parent.find('button.add-substrate').click(function(e) {
@@ -416,6 +425,7 @@ var finprint = finprint || {};  //namespace if necessary...
 
             $right.prepend('<div class="substrate-row">' +
                 '<a href="#" class="split">Split</a>' +
+                '<a href="#" class="remove">Remove</a>' +
                 '</div>');
 
             recalculateTotalPercent();

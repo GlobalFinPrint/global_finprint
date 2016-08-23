@@ -189,6 +189,7 @@ class SubstrateWidget(forms.Widget):
                 right += '''
                 <div class="substrate-row">
                     <a href="#" class="split">Split</a>
+                    <a href="#" class="remove">Remove</a>
                 </div>
                 '''
         except (TypeError, AttributeError):
