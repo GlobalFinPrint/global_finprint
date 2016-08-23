@@ -97,15 +97,14 @@ def import_trip(
             location = gfhm.Location.objects.filter(name=location_name).first()
             validate_data(location, 'No location found with name "{}"'.format(location_name))
             lead_candidates = djam.User.objects.filter(last_name=investigator)
-            validate_data(
-                len(lead_candidates) > 0,
-                'No investigator with last name {}'.format(investigator))
-            validate_data(
-                len(lead_candidates) < 2,
-                'More than one investigator with last name {}'.format(investigator))
-
-            lead = gfcm.FinprintUser.objects.filter(user=lead_candidates[0]).first()
-            validate_data(lead, 'No FinprintUser associated with User "{}"'.format(investigator))
+            if len(lead_candidates) == 0:
+                lead = get_user(investigator, 'investigator')
+            else:
+                validate_data(
+                    len(lead_candidates) < 2,
+                    'More than one investigator with last name {}'.format(investigator))
+                lead = gfcm.FinprintUser.objects.filter(user=lead_candidates[0]).first()
+            validate_data(lead, 'No FinprintUser associated with "{}"'.format(investigator))
 
             team=gfcm.Team.objects.filter(lead=lead).first()
             validate_data(team, 'No such team: {} - {}'.format(investigator, collaborator))
@@ -227,7 +226,7 @@ def import_environment_measure(
                 except KeyError:
                     validate_data(
                         False,
-                        'Bad tide_state "%s" for set "%s" of trip "%s"'.format(tide_state, set_code, trip_code))
+                        'Bad tide_state "{}" for set "{}" of trip "{}"'.format(tide_state, set_code, trip_code))
             if wind_direction:
                 wind_direction = wind_direction.upper()
             if surface_chop:
@@ -236,7 +235,7 @@ def import_environment_measure(
                 except KeyError:
                     validate_data(
                         False,
-                        'Bad surface chop "%s" for set "%s" of trip "%s"'.format(surface_chop, set_code, trip_code))
+                        'Bad surface chop "{}" for set "{}" of trip "{}"'.format(surface_chop, set_code, trip_code))
 
             enviro_measure = gfbm.EnvironmentMeasure(
                 water_temperature=temp,
@@ -434,17 +433,20 @@ def get_assignment(annotator_user, video):
         assignment.save()
     return assignment
 
-def get_annotator(annotator):
-    validate_data(annotator, 'No annotator specified.')
-    annotator = annotator.strip()
-    anno_array = annotator.split(' ', maxsplit=1)
-    validate_data(len(anno_array) == 2, 'Need both first and last name for annotator ({})'.format(annotator))
+def get_user(full_name, column):
+    validate_data(full_name, 'No {} specified.'.format(column))
+    full_name = full_name.strip()
+    anno_array = full_name.split(' ', maxsplit=1)
+    validate_data(len(anno_array) == 2, 'Need both first and last name for {} ({})'.format(column, full_name))
     first_name, last_name = anno_array
     django_user = djam.User.objects.filter(first_name__iexact=first_name, last_name__iexact=last_name).first()
     validate_data(django_user, 'No user found with first name "{}" and last name "{}"'.format(first_name, last_name))
-    annotator_user = gfcm.FinprintUser.objects.filter(user=django_user).first()
-    validate_data(annotator_user, 'No finprint user associated with django user for "{}"'.format(annotator))
-    return annotator_user
+    finprint_user = gfcm.FinprintUser.objects.filter(user=django_user).first()
+    validate_data(finprint_user, 'No finprint user associated with django user for "{}"'.format(full_name))
+    return finprint_user
+
+def get_annotator(annotator):
+    return get_user(annotator, 'annotator')
 
 def get_reef_habitat(site_name, reef_name, habitat_type):
     site = gfhm.Site.objects.filter(name=site_name).first()
