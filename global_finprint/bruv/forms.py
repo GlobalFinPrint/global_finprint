@@ -191,7 +191,7 @@ class SubstrateWidget(forms.Widget):
                     <a href="#" class="split">Split</a>
                 </div>
                 '''
-        except TypeError:
+        except (TypeError, AttributeError):
             total_percent = 0
             left = ''
             center = ''
