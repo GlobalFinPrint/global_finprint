@@ -227,7 +227,7 @@ def import_environment_measure(
                 except KeyError:
                     validate_data(
                         False,
-                        'Bad tide_state "%s" for set "%s" of trip "%s"', tide_state, set_code, trip_code)
+                        'Bad tide_state "%s" for set "%s" of trip "%s"'.format(tide_state, set_code, trip_code))
             if wind_direction:
                 wind_direction = wind_direction.upper()
             if surface_chop:
@@ -236,7 +236,7 @@ def import_environment_measure(
                 except KeyError:
                     validate_data(
                         False,
-                        'Bad surface chop "%s" for set "%s" of trip "%s"', surface_chop, set_code, trip_code)
+                        'Bad surface chop "%s" for set "%s" of trip "%s"'.format(surface_chop, set_code, trip_code))
 
             enviro_measure = gfbm.EnvironmentMeasure(
                 water_temperature=temp,
