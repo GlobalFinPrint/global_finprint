@@ -60,7 +60,7 @@ def import_observation_data(trip_code, set_code, obs_data, annotator=None, date=
                 logger.error('Unknown "Stage" value: {}'.format(orig_stage_value))
                 break
         obvs_time = minutes2milliseconds(row['Time (mins)'])
-        duration = minutes2milliseconds(row['Period time (mins)'])
+        duration = None
         family = row['Family']
         genus = row['Genus']
         species = row['Species']
