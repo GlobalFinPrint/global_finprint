@@ -132,7 +132,7 @@ def import_environment_data(sheet):
                 salinity = get_float_from_cell(get_cell(row, 'salinity'))
                 conductivity = get_float_from_cell(get_cell(row, 'conductivity'))
                 dissolved_oxygen = get_float_from_cell(get_cell(row, 'dissolved_oxygen'))
-                current_flow = get_float_from_cell(get_cell(row, 'current_flow'))
+                current_flow = None #get_float_from_cell(get_cell(row, 'current_flow'))
                 current_direction = get_cell(row, 'current_direction').value
                 tide_state = get_cell(row, 'tide_state').value
                 wind_speed = get_float_from_cell(get_cell(row, 'wind_speed'))
