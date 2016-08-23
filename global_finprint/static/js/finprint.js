@@ -17,6 +17,8 @@ var finprint = finprint || {};  //namespace if necessary...
         initCollapse();
         initSelectizeWidgets();
         initImageSelectWidgets();
+        initTabAccordion();
+        initSubstrateWidget();
     });
 
     function getCSRF() {
@@ -334,6 +336,89 @@ var finprint = finprint || {};  //namespace if necessary...
                 e.preventDefault();
                 $(this).find('input').click();
             });
+        });
+    }
+
+    function initTabAccordion() {
+        var $form = $('#set-env-form');
+
+        function scrollTo(selector) {
+            $('html, body').animate({
+                scrollTop: $(selector).offset().top
+            }, 1000);
+        }
+
+        $form.on('keydown', '#id_code', function(e) {
+            if (e.which === 9) { // tab key
+                $('#headingTwo.collapsed').click();
+                scrollTo('#headingTwo');
+            }
+        });
+
+        $form.on('keydown', '.selectize-control input', function(e) {
+            if (e.which === 9) { // tab key
+                $('#headingThree.collapsed').click();
+                scrollTo('#headingThree');
+            }
+        });
+
+        $form.on('keydown', '#id_drop-surface_chop', function(e) {
+            if (e.which === 9) { // tab key
+                $('#headingFour.collapsed').click();
+                scrollTo('#headingFour');
+            }
+        });
+
+        $form.on('keydown', '#id_haul-surface_chop', function(e) {
+            if (e.which === 9) { // tab key
+                $('#headingFive.collapsed').click();
+                scrollTo('#headingFive');
+            }
+        });
+    }
+
+    function initSubstrateWidget() {
+        var $parent = $('.habitat-substrate-parent');
+        var $left = $parent.find('.left');
+        var $center = $parent.find('.center');
+        var $right = $parent.find('.right');
+
+        function recalculateTotalPercent() {
+            var percents = $.map($('input[name="percent"]'), function(i) { return parseInt($(i).val()); });
+            var sum = percents.reduce(function(sum, x) { return sum + x; }, 0);
+            $parent.find('input[name="total-percent"]').val(sum);
+        }
+
+        $parent.on('click', 'a.split', function(e) {
+            e.preventDefault();
+            console.log('TODO');
+        });
+
+        $parent.on('change', 'input[name="percent"]', recalculateTotalPercent);
+
+        $parent.find('button.add-substrate').click(function(e) {
+            e.preventDefault();
+
+            var remainingPercent = Math.max(0, 100 - $parent.find('input[name="total-percent"]').val());
+
+            $.get('/substrate/', function(res) {
+                var html = '<div class="substrate-row"><select class="substrate select form-control" name="substrate">';
+                res.substrates.forEach(function(s) {
+                    html += '<option value="' + s.id + '">' + s.name + '</option>';
+                });
+                html += '</select></div>';
+                $left.prepend(html);
+            });
+
+            $center.prepend('<div class="substrate-row"><div class="input-holder">' +
+                '<input class="percent" name="percent" type="number" step="1" min="1" max="100" value="' + remainingPercent + '" />' +
+                '</div></div>');
+
+            $right.prepend('<div class="substrate-row">' +
+                '<a href="#" class="split">Split</a>' +
+                '</div>');
+
+            recalculateTotalPercent();
         });
     }
 })(jQuery);

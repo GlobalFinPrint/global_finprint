@@ -1,5 +1,6 @@
 from django import forms
 from django.forms.utils import flatatt
+from django.forms import ValidationError
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.contrib.staticfiles.templatetags.staticfiles import static
@@ -7,7 +8,7 @@ from crispy_forms.helper import FormHelper
 import crispy_forms.layout as cfl
 import crispy_forms.bootstrap as cfb
 from bootstrap3_datetime.widgets import DateTimePicker
-from .models import Set, EnvironmentMeasure, Bait, Equipment, SetTag
+from .models import Set, EnvironmentMeasure, Bait, Equipment, SetTag, Substrate
 from ..trip.models import Trip
 from ..habitat.models import Reef, ReefType
 from django.conf import settings
@@ -155,6 +156,105 @@ class ImageSelectWidget(forms.FileInput):
         return mark_safe(output)
 
 
+class SubstrateWidget(forms.Widget):
+    def render(self, name, value, attrs=None):
+        try:
+            total_percent = value.pop('total_percent', 0)
+            left = ''
+            center = ''
+            right = ''
+            root_substrates = Substrate.objects.root_nodes()
+
+            for sp in list(zip(value['substrates'], value['percents'])):
+                left += '''
+                <div class="substrate-row">
+                    <select class="substrate select form-control" name="substrate">
+                '''
+                for s in root_substrates:
+                    left += '<option value="{}"{}>{}</option>'.format(
+                        s.pk,
+                        ' selected="selected"' if sp[0] == s.pk else '',
+                        s.name)
+                left += '''
+                    </select>
+                </div>
+                '''
+
+                center += '''
+                <div class="substrate-row"><div class="input-holder">
+                    <input class="percent" name="percent" type="number" step="1" min="1" max="100" value="{}" />
+                </div></div>
+                '''.format(sp[1])
+
+                right += '''
+                <div class="substrate-row">
+                    <a href="#" class="split">Split</a>
+                </div>
+                '''
+        except (TypeError, AttributeError):
+            total_percent = 0
+            left = ''
+            center = ''
+            right = ''
+
+        template = '''
+        <div class="habitat-substrate-parent clear">
+            <div class="left clear">
+                {}
+                <div class="substrate-row">
+                    <button class="btn btn-primary btn-fp add-substrate">+</button>
+                    <span class="total">Total</span>
+                </div>
+            </div>
+
+            <div class="center">
+                {}
+                <div class="substrate-row">
+                    <div class="input-holder">
+                        <input name="total-percent" type="number" readonly="readonly" value="{}" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="right">
+                {}
+                <div class="substrate-row">
+                    <span class="help-text">Substrates must total 100%</span>
+                </div>
+            </div>
+        </div>
+        '''
+        return mark_safe(format_html(template, mark_safe(left), mark_safe(center), total_percent, mark_safe(right)))
+
+    def value_from_datadict(self, data, files, name):
+        return {
+            'total_percent': int(data.get('total-percent')),
+            'percents': [int(p) for p in data.getlist('percent')],
+            'substrates': [int(s) for s in data.getlist('substrate')]
+        }
+
+
+class SubstrateField(forms.Field):
+    widget = SubstrateWidget
+
+    def to_python(self, value):
+        if value is not None and 'substrates' in value and \
+                len(value['substrates']) > 0 and isinstance(value['substrates'][0], int):
+            value['substrates'] = [Substrate.objects.get(pk=s_id) for s_id in value['substrates'][:]]
+        return value
+
+    def prepare_value(self, value):
+        if value is not None and 'substrates' in value and \
+                len(value['substrates']) > 0 and isinstance(value['substrates'][0], Substrate):
+            value['substrates'] = [s.pk for s in value['substrates'][:]]
+        return value
+
+    def validate(self, value):
+        super(SubstrateField, self).validate(value)
+        if value['total_percent'] != 100 and len(value['substrates']) > 0:
+            raise ValidationError('Substrates must total 100%', code='less_than_100')
+
+
 class SetLevelDataForm(forms.ModelForm):
     bruv_image_file = forms.FileField(required=False,
                                       widget=ImageSelectWidget,
@@ -162,11 +262,13 @@ class SetLevelDataForm(forms.ModelForm):
     splendor_image_file = forms.FileField(required=False,
                                           widget=ImageSelectWidget,
                                           label='Habitat photo: splendor of the reef')
+    habitat_substrate = SubstrateField(required=False,
+                                       label='Habitat substrate')
 
     class Meta:
         model = Set
         fields = ['visibility', 'current_flow_instrumented', 'current_flow_estimated',
-                  'bruv_image_file', 'splendor_image_file']
+                  'bruv_image_file', 'splendor_image_file', 'habitat_substrate']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -179,6 +281,17 @@ class SetLevelDataForm(forms.ModelForm):
             if 'instance' in kwargs and kwargs['instance'] and kwargs['instance'].splendor_image_url else None
         self.fields['bruv_image_file'].widget = ImageSelectWidget(image_url=bruv_image_url)
         self.fields['splendor_image_file'].widget = ImageSelectWidget(image_url=splendor_image_url)
+        if 'instance' in kwargs and kwargs['instance'] and kwargs['instance'].habitatsubstrate_set:
+            value = {
+                'total_percent': 0,
+                'percents': [],
+                'substrates': []
+            }
+            for hs in kwargs['instance'].habitatsubstrate_set.all():
+                value['percents'].append(hs.value)
+                value['substrates'].append(hs.substrate)
+            value['total_percent'] = sum(value['percents'])
+            self.fields['habitat_substrate'].initial = value
         self.fields['visibility'].required = False
         self.fields['visibility'].choices = \
             sorted(self.fields['visibility'].choices,
@@ -186,7 +299,7 @@ class SetLevelDataForm(forms.ModelForm):
         self.fields['visibility'].choices[0] = (None, '---')
         self.helper.layout = cfl.Layout(
             'visibility', 'current_flow_instrumented', 'current_flow_estimated',
-            cfl.Div('bruv_image_file', 'splendor_image_file')
+            cfl.Div('bruv_image_file', 'splendor_image_file', 'habitat_substrate')
         )
 
 

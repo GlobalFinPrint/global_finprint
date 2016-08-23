@@ -6,11 +6,11 @@ from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
+from django.db import transaction
 
 from global_finprint.trip.models import Trip
 from global_finprint.bruv.models import Equipment
-from global_finprint.annotation.models.video import Video
-from ..models import Set, EnvironmentMeasure
+from ..models import Set, HabitatSubstrate
 from ..forms import SetForm, EnvironmentMeasureForm, \
     SetSearchForm, SetLevelCommentsForm, SetLevelDataForm
 from ...annotation.forms import VideoForm
@@ -130,6 +130,13 @@ class SetListView(UserAllowedMixin, View):
             else:
                 messages.warning(request, 'Error uploading Habitat image')
 
+    def _process_habitat_substrate(self, set, request):
+        with transaction.atomic():
+            set.substrate.clear()
+            for (s_id, val) in zip(request.POST.getlist('substrate'), request.POST.getlist('percent')):
+                hs = HabitatSubstrate(set=set, substrate_id=s_id, value=val)
+                hs.save()
+
     def get(self, request, **kwargs):
         trip_pk, set_pk = kwargs.get('trip_pk', None), kwargs.get('set_pk', None)
         parent_trip = get_object_or_404(Trip, pk=trip_pk)
@@ -230,6 +237,9 @@ class SetListView(UserAllowedMixin, View):
                 # upload and save image urls
                 self._process_habitat_images(new_set, request)
 
+                # save habitat substrate values
+                self._process_habitat_substrate(new_set, request)
+
                 messages.success(self.request, 'Set created')
 
             # edit existing set and env measures
@@ -237,29 +247,12 @@ class SetListView(UserAllowedMixin, View):
                 for k, v in set_form.cleaned_data.items():
                     if k not in ('reef', 'habitat'):
                         setattr(edited_set, k, v)
-
-                # check for children that might be missing but have data in their forms:
-                if not edited_set.drop_measure and \
-                    any(x is not None for x in list(drop_form.cleaned_data.values())):
-                        # note that the dissolved_oxygen_measure shows up as a value and should probably be filtered out
-                        edited_set.drop_measure = EnvironmentMeasure.objects.create()
-                if not edited_set.haul_measure and \
-                    any(x is not None for x in list(haul_form.cleaned_data.values())):
-                        # note that the dissolved_oxygen_measure shows up as a value and should probably be filtered out
-                        edited_set.haul_measure = EnvironmentMeasure.objects.create()
-                if not edited_set.video and \
-                    any(x is not None for x in list(video_form.cleaned_data.values())):
-                        edited_set.video = Video.objects.create()
-
-                if edited_set.drop_measure:
-                    for k, v in drop_form.cleaned_data.items():
-                        setattr(edited_set.drop_measure, k, v)
-                if edited_set.haul_measure:
-                    for k, v in haul_form.cleaned_data.items():
-                        setattr(edited_set.haul_measure, k, v)
-                if edited_set.video:
-                    for k, v in video_form.cleaned_data.items():
-                        setattr(edited_set.video, k, v)
+                for k, v in drop_form.cleaned_data.items():
+                    setattr(edited_set.drop_measure, k, v)
+                for k, v in haul_form.cleaned_data.items():
+                    setattr(edited_set.haul_measure, k, v)
+                for k, v in video_form.cleaned_data.items():
+                    setattr(edited_set.video, k, v)
                 for k, v in set_level_data_form.cleaned_data.items():
                     if k not in ('bruv_image_file', 'splendor_image_file'):
                         setattr(edited_set, k, v)
@@ -268,15 +261,15 @@ class SetListView(UserAllowedMixin, View):
 
                 edited_set.save()
                 edited_set.bait.save()
-                if edited_set.drop_measure:
-                    edited_set.drop_measure.save()
-                if edited_set.haul_measure:
-                    edited_set.haul_measure.save()
-                if edited_set.video:
-                    edited_set.video.save()
+                edited_set.drop_measure.save()
+                edited_set.haul_measure.save()
+                edited_set.video.save()
 
                 # upload and save image urls
                 self._process_habitat_images(edited_set, request)
+
+                # save habitat substrate values
+                self._process_habitat_substrate(edited_set, request)
 
                 messages.success(self.request, 'Set updated')
 

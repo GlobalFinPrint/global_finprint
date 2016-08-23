@@ -172,6 +172,21 @@ class SetTag(MPTTModel):
             return [node] + [cls.get_choices(node=node) for node in node.get_children().filter(active=True)]
 
 
+class Substrate(MPTTModel):
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(null=True, blank=True)
+    active = models.BooleanField(
+        default=True,
+        help_text='overridden if parent is inactive')
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
+
+    def __str__(self):
+        return u"{0}".format(self.name)
+
+
 class Set(AuditableModel):
     # suggested code pattern:
     # [site.code][reef.code]_[set number within reef]
@@ -193,6 +208,8 @@ class Set(AuditableModel):
                                                     help_text='m/s')  # m/s .00
     bruv_image_url = models.CharField(max_length=200, null=True, blank=True)
     splendor_image_url = models.CharField(max_length=200, null=True, blank=True)
+
+    substrate = models.ManyToManyField(Substrate, through='HabitatSubstrate')
 
     # todo:  need some form changes here ...
     bait = models.ForeignKey(Bait, null=True)
@@ -255,3 +272,9 @@ class Set(AuditableModel):
 
     def __str__(self):
         return u"{0}_{1}".format(self.trip.code, self.code)
+
+
+class HabitatSubstrate(models.Model):
+    set = models.ForeignKey(Set)
+    substrate = TreeForeignKey(Substrate)
+    value = models.IntegerField()
