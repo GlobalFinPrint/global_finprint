@@ -77,7 +77,7 @@ def import_set_data(sheet):
                     continue
                 drop_time = get_time_from_cell(get_cell(row, 'drop_time'), format_str='%H:%M')
                 haul_time = get_time_from_cell(get_cell(row, 'haul_time'), format_str='%H:%M')
-                site_name = get_cell(row, 'site').value
+                site_name = get_cell(row, 'site').value.strip()
                 reef_name = get_cell(row, 'reef').value
                 habitat_type = get_cell(row, 'habitat').value
                 equipment_str = get_cell(row, 'equipment').value
