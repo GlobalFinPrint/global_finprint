@@ -6,10 +6,11 @@ from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
+from django.db import transaction
 
 from global_finprint.trip.models import Trip
 from global_finprint.bruv.models import Equipment
-from ..models import Set
+from ..models import Set, HabitatSubstrate
 from ..forms import SetForm, EnvironmentMeasureForm, \
     SetSearchForm, SetLevelCommentsForm, SetLevelDataForm
 from ...annotation.forms import VideoForm
@@ -129,6 +130,13 @@ class SetListView(UserAllowedMixin, View):
             else:
                 messages.warning(request, 'Error uploading Habitat image')
 
+    def _process_habitat_substrate(self, set, request):
+        with transaction.atomic():
+            set.substrate.clear()
+            for (s_id, val) in zip(request.POST.getlist('substrate'), request.POST.getlist('percent')):
+                hs = HabitatSubstrate(set=set, substrate_id=s_id, value=val)
+                hs.save()
+
     def get(self, request, **kwargs):
         trip_pk, set_pk = kwargs.get('trip_pk', None), kwargs.get('set_pk', None)
         parent_trip = get_object_or_404(Trip, pk=trip_pk)
@@ -229,6 +237,9 @@ class SetListView(UserAllowedMixin, View):
                 # upload and save image urls
                 self._process_habitat_images(new_set, request)
 
+                # save habitat substrate values
+                self._process_habitat_substrate(new_set, request)
+
                 messages.success(self.request, 'Set created')
 
             # edit existing set and env measures
@@ -256,6 +267,9 @@ class SetListView(UserAllowedMixin, View):
 
                 # upload and save image urls
                 self._process_habitat_images(edited_set, request)
+
+                # save habitat substrate values
+                self._process_habitat_substrate(edited_set, request)
 
                 messages.success(self.request, 'Set updated')
 
