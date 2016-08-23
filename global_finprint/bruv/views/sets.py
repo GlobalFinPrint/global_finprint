@@ -259,9 +259,6 @@ class SetListView(UserAllowedMixin, View):
                     any(x is not None for x in list(haul_form.cleaned_data.values())):
                     # note: again, the dissolved_oxygen_measure shows up as a value and should probably be filtered out?
                     edited_set.haul_measure = EnvironmentMeasure.objects.create()
-                if not edited_set.video and \
-                    any(x is not None for x in list(video_form.cleaned_data.values())):
-                    edited_set.video = Video.objects.create()
 
                 # guard against possibly missing drop_measure, haul_measure or video:
                 if edited_set.drop_measure:
@@ -270,9 +267,8 @@ class SetListView(UserAllowedMixin, View):
                 if edited_set.haul_measure:
                     for k, v in haul_form.cleaned_data.items():
                         setattr(edited_set.haul_measure, k, v)
-                if edited_set.video:
-                    for k, v in video_form.cleaned_data.items():
-                        setattr(edited_set.video, k, v)
+                for k, v in video_form.cleaned_data.items():
+                    setattr(edited_set.video, k, v)
                 for k, v in set_level_data_form.cleaned_data.items():
                     if k not in ('bruv_image_file', 'splendor_image_file'):
                         setattr(edited_set, k, v)
@@ -286,8 +282,7 @@ class SetListView(UserAllowedMixin, View):
                     edited_set.drop_measure.save()
                 if edited_set.haul_measure:
                     edited_set.haul_measure.save()
-                if edited_set.video:
-                    edited_set.video.save()
+                edited_set.video.save()
 
                 # upload and save image urls
                 self._process_habitat_images(edited_set, request)
