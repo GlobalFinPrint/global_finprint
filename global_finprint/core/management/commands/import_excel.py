@@ -33,25 +33,29 @@ def import_file(in_file):
 def import_trip_data(sheet):
     headers = get_header_map(sheet.rows[0])
     get_cell = get_cell_by_name_extractor(headers)
-    for idx, row in enumerate(sheet.rows[1:], start=1):
-        trip_code = get_cell(row, 'code').value
-        if trip_code:
-            location_name = get_cell(row, 'location').value
-            start_date = get_date_from_cell(get_cell(row, 'start_date'))
-            end_date = get_date_from_cell(get_cell(row, 'end_date'))
-            investigator = get_cell(row, 'investigator').value
-            collaborator = get_cell(row, 'collaborator').value
-            boat = get_cell(row, 'boat').value
+    for idx, row in enumerate(sheet.rows[1:], start=2):
+        try:
+            trip_code = get_cell(row, 'code').value
+            if trip_code:
+                location_name = get_cell(row, 'location').value
+                start_date = get_date_from_cell(get_cell(row, 'start_date'))
+                end_date = get_date_from_cell(get_cell(row, 'end_date'))
+                investigator = get_cell(row, 'investigator').value
+                collaborator = get_cell(row, 'collaborator').value
+                boat = get_cell(row, 'boat').value
 
-            ic.import_trip(
-                trip_code,
-                location_name,
-                start_date,
-                end_date,
-                investigator,
-                collaborator,
-                boat
-            )
+                ic.import_trip(
+                    trip_code,
+                    location_name,
+                    start_date,
+                    end_date,
+                    investigator,
+                    collaborator,
+                    boat
+                )
+        except:
+            logger.error('Unable to import trip data for row %s', idx)
+            logger.error(traceback.format_exc())
 
 def import_set_data(sheet):
     headers = get_header_map(sheet.rows[0])
