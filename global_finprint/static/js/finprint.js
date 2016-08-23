@@ -391,7 +391,61 @@ var finprint = finprint || {};  //namespace if necessary...
 
         $parent.on('click', 'a.split', function(e) {
             e.preventDefault();
-            console.log('TODO');
+
+            var index = $right.find('a.split').index($(this));
+            var parentId = $left.find('select.substrate').slice(index, index + 1).val();
+            var parentPercent = $center.find('input[type="number"]').slice(index, index + 1).val();
+            var $splitModal = $('div.split-modal');
+            var position = $(this).position().top + 30 + 'px';
+
+            if ($splitModal.length) {
+                return $splitModal.remove();
+            }
+
+            $.get('/substrate/', { parent_id: parentId }, function(res) {
+                var modalHtml = '<div class="split-modal clear">' +
+                    '<div class="left">' +
+                        '<div class="substrate-row">' +
+                            '<select class="substrate select form-control">';
+                res.substrates.forEach(function(s) {
+                    modalHtml += '<option value="' + s.id + '">' + s.name + '</option>';
+                });
+                modalHtml += '</select></div>';
+                modalHtml += '<div class="substrate-row"><button class="btn btn-primary btn-fp add-substrate">+</button>' +
+                    '<span class="total">Total</span>' +
+                    '</div></div>';
+
+                modalHtml += '<div class="center">' +
+                        '<div class="substrate-row">' +
+                            '<div class="input-holder"><input class="percent" type="number" /></div>' +
+                        '</div>' +
+                        '<div class="substrate-row">' +
+                            '<div class="input-holder"><input class="total" type="number" readonly="readonly" /></div>' +
+                        '</div>' +
+                    '</div>';
+
+                modalHtml += '<div class="right">' +
+                        '<div class="substrate-row">' +
+                            '<a href="#" class="modal-remove">Remove</a>' +
+                        '</div>' +
+                        '<div class="substrate-row">' +
+                            '<span class="help-text">Details must total ' + parentPercent + '%</span>' +
+                        '</div>' +
+                    '</div>';
+
+                modalHtml += '<div class="buttons">' +
+                        '<button class="btn btn-default btn-fp">Cancel</button>' +
+                        '<button class="btn btn-primary btn-fp">OK</button>' +
+                    '</div></div>';
+
+                $parent.append(modalHtml);
+                $splitModal = $($splitModal.selector);
+                $splitModal.css('top', position);
+
+                $splitModal.on('click', '> .left button.add-substrate', function(e) {
+                    e.preventDefault();
+                });
+            });
         });
 
         $parent.on('click', 'a.remove', function(e) {
@@ -405,7 +459,7 @@ var finprint = finprint || {};  //namespace if necessary...
 
         $parent.on('change', 'input[name="percent"]', recalculateTotalPercent);
 
-        $parent.find('button.add-substrate').click(function(e) {
+        $parent.find('> .left button.add-substrate').click(function(e) {
             e.preventDefault();
 
             var remainingPercent = Math.max(0, 100 - $parent.find('input[name="total-percent"]').val());
@@ -417,18 +471,19 @@ var finprint = finprint || {};  //namespace if necessary...
                 });
                 html += '</select></div>';
                 $left.prepend(html);
+
+                $center.prepend('<div class="substrate-row"><div class="input-holder">' +
+                    '<input class="percent" name="percent" type="number" ' +
+                        'step="1" min="1" max="100" value="' + remainingPercent + '" />' +
+                    '</div></div>');
+
+                $right.prepend('<div class="substrate-row">' +
+                    '<a href="#" class="split">Split</a>' +
+                    '<a href="#" class="remove">Remove</a>' +
+                    '</div>');
+
+                recalculateTotalPercent();
             });
-
-            $center.prepend('<div class="substrate-row"><div class="input-holder">' +
-                '<input class="percent" name="percent" type="number" step="1" min="1" max="100" value="' + remainingPercent + '" />' +
-                '</div></div>');
-
-            $right.prepend('<div class="substrate-row">' +
-                '<a href="#" class="split">Split</a>' +
-                '<a href="#" class="remove">Remove</a>' +
-                '</div>');
-
-            recalculateTotalPercent();
         });
     }
 })(jQuery);

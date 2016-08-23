@@ -9,5 +9,5 @@ class HabitatSubstrate(UserAllowedMixin, View):
         if 'parent_id' in request.GET:
             substrates = Substrate.objects.filter(parent_id=request.GET.get('parent_id'))
         else:
-            substrates = Substrate.objects.root_nodes()
+            substrates = Substrate.objects.all()
         return JsonResponse({'substrates': [{'id': s.id, 'name': s.name} for s in substrates]})
