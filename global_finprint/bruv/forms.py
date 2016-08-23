@@ -8,7 +8,7 @@ from crispy_forms.helper import FormHelper
 import crispy_forms.layout as cfl
 import crispy_forms.bootstrap as cfb
 from bootstrap3_datetime.widgets import DateTimePicker
-from .models import Set, EnvironmentMeasure, Bait, Equipment, SetTag
+from .models import Set, EnvironmentMeasure, Bait, Equipment, SetTag, Substrate
 from ..trip.models import Trip
 from ..habitat.models import Reef, ReefType
 from django.conf import settings
@@ -158,10 +158,49 @@ class ImageSelectWidget(forms.FileInput):
 
 class SubstrateWidget(forms.Widget):
     def render(self, name, value, attrs=None):
-        # TODO add rows for values in here
+        try:
+            total_percent = value.pop('total_percent', 0)
+            left = ''
+            center = ''
+            right = ''
+            root_substrates = Substrate.objects.root_nodes()
+
+            for sp in list(zip(value['substrates'], value['percents'])):
+                left += '''
+                <div class="substrate-row">
+                    <select class="substrate select form-control" name="substrate">
+                '''
+                for s in root_substrates:
+                    left += '<option value="{}"{}>{}</option>'.format(
+                        s.pk,
+                        ' selected="selected"' if sp[0] == s.pk else '',
+                        s.name)
+                left += '''
+                    </select>
+                </div>
+                '''
+
+                center += '''
+                <div class="substrate-row"><div class="input-holder">
+                    <input class="percent" name="percent" type="number" step="1" min="1" max="100" value="{}" />
+                </div></div>
+                '''.format(sp[1])
+
+                right += '''
+                <div class="substrate-row">
+                    <a href="#" class="split">Split</a>
+                </div>
+                '''
+        except TypeError:
+            total_percent = 0
+            left = ''
+            center = ''
+            right = ''
+
         template = '''
         <div class="habitat-substrate-parent clear">
             <div class="left clear">
+                {}
                 <div class="substrate-row">
                     <button class="btn btn-primary btn-fp add-substrate">+</button>
                     <span class="total">Total</span>
@@ -169,40 +208,49 @@ class SubstrateWidget(forms.Widget):
             </div>
 
             <div class="center">
+                {}
                 <div class="substrate-row">
                     <div class="input-holder">
-                        <input name="total-percent" type="number" readonly="readonly" value="0" />
+                        <input name="total-percent" type="number" readonly="readonly" value="{}" />
                     </div>
                 </div>
             </div>
 
             <div class="right">
+                {}
                 <div class="substrate-row">
                     <span class="help-text">Substrates must total 100%</span>
                 </div>
             </div>
         </div>
         '''
-        return mark_safe(format_html(template))
+        return mark_safe(format_html(template, mark_safe(left), mark_safe(center), total_percent, mark_safe(right)))
 
     def value_from_datadict(self, data, files, name):
         return {
-            'total_percent': data.get('total-percent'),
-            'percents': data.getlist('percent'),
-            'substrates': data.getlist('substrate')
+            'total_percent': int(data.get('total-percent')),
+            'percents': [int(p) for p in data.getlist('percent')],
+            'substrates': [int(s) for s in data.getlist('substrate')]
         }
 
 
 class SubstrateField(forms.Field):
     widget = SubstrateWidget
 
-    def clean(self, value):
-        pass
+    def to_python(self, value):
+        if 'substrates' in value and isinstance(value['substrates'][0], int):
+            value['substrates'] = [Substrate.objects.get(pk=s_id) for s_id in value['substrates'][:]]
+        return value
+
+    def prepare_value(self, value):
+        if 'substrates' in value and isinstance(value['substrates'][0], Substrate):
+            value['substrates'] = [s.pk for s in value['substrates'][:]]
+        return value
 
     def validate(self, value):
         super(SubstrateField, self).validate(value)
-        if value != 100:  # check into json (?) for total %
-            raise ValidationError('Substrate % must total 100', code='sumlessthan100')
+        if value['total_percent'] != 100:
+            raise ValidationError('Substrates must total 100%', code='less_than_100')
 
 
 class SetLevelDataForm(forms.ModelForm):
@@ -231,6 +279,17 @@ class SetLevelDataForm(forms.ModelForm):
             if 'instance' in kwargs and kwargs['instance'] and kwargs['instance'].splendor_image_url else None
         self.fields['bruv_image_file'].widget = ImageSelectWidget(image_url=bruv_image_url)
         self.fields['splendor_image_file'].widget = ImageSelectWidget(image_url=splendor_image_url)
+        if 'instance' in kwargs and kwargs['instance'] and kwargs['instance'].habitatsubstrate_set:
+            value = {
+                'total_percent': 0,
+                'percents': [],
+                'substrates': []
+            }
+            for hs in kwargs['instance'].habitatsubstrate_set.all():
+                value['percents'].append(hs.value)
+                value['substrates'].append(hs.substrate)
+            value['total_percent'] = sum(value['percents'])
+            self.fields['habitat_substrate'].initial = value
         self.fields['visibility'].required = False
         self.fields['visibility'].choices = \
             sorted(self.fields['visibility'].choices,
