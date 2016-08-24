@@ -77,8 +77,8 @@ def import_set_data(sheet):
                     continue
                 drop_time = get_time_from_cell(get_cell(row, 'drop_time'), format_str='%H:%M')
                 haul_time = get_time_from_cell(get_cell(row, 'haul_time'), format_str='%H:%M')
-                site_name = get_cell(row, 'site').value.strip()
-                reef_name = get_cell(row, 'reef').value
+                site_name = get_cell_value(get_cell(row, 'site'))
+                reef_name = get_cell_value(get_cell(row, 'reef'))
                 habitat_type = get_cell(row, 'habitat').value
                 equipment_str = get_cell(row, 'equipment').value
                 bait_str = get_cell(row, 'bait').value
@@ -204,6 +204,9 @@ def import_observation_data(sheet):
 def get_cell_by_name_extractor(headers):
     extractor_func = lambda row, column_name: row[headers[column_name]]
     return extractor_func
+
+def get_cell_value(cell):
+    return cell.value().strip()
 
 def get_header_map(header_row):
     result = {}
