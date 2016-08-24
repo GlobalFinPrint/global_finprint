@@ -134,7 +134,7 @@ def import_environment_data(sheet):
                 dissolved_oxygen = get_float_from_cell(get_cell(row, 'dissolved_oxygen'))
                 current_flow = None #get_float_from_cell(get_cell(row, 'current_flow'))
                 current_direction = get_cell(row, 'current_direction').value
-                tide_state = get_cell(row, 'tide_state').value
+                tide_state = get_cell_value(get_cell(row, 'tide_state'))
                 wind_speed = get_float_from_cell(get_cell(row, 'wind_speed'))
                 wind_direction = get_cell(row, 'wind_direction').value
                 cloud_cover = get_float_from_cell(get_cell(row, 'cloud_cover'))
