@@ -206,7 +206,7 @@ def get_cell_by_name_extractor(headers):
     return extractor_func
 
 def get_cell_value(cell):
-    return cell.value().strip()
+    return cell.value.strip()
 
 def get_header_map(header_row):
     result = {}
