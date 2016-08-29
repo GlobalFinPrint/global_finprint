@@ -403,8 +403,29 @@ var finprint = finprint || {};  //namespace if necessary...
             }
 
             $.get('/substrate/', { parent_id: parentId }, function(res) {
-                var $subLeft, $subCenter, $subRight;
-                var modalHtml = '<div class="split-modal clear">' +
+                var $subLeft, $subCenter, $subRight, modalHtml, messageHtml;
+
+                if (!res.substrates.length) {
+                    messageHtml = '<div class="message-modal clear">' +
+                        '<p class="no-children-message">' +
+                            'This substrate has no children; unable to split' +
+                        '</p></div>';
+                    $parent.append(messageHtml);
+                    $parent.find('.message-modal')
+                        .css('top', position)
+                        .delay(1500)
+                        .fadeOut(300, function() { $(this).remove(); });
+                    return false;
+                }
+
+                function recalculateModalPercent() {
+                    var $inputs = $parent.find('.split-modal .center input.percent');
+                    var percents = $.map($inputs, function(i) { return parseInt($(i).val()); });
+                    var sum = percents.reduce(function(sum, x) { return sum + x; }, 0);
+                    $parent.find('.split-modal .center input.total').val(sum);
+                }
+
+                modalHtml = '<div class="split-modal clear">' +
                     '<div class="left">' +
                         '<div class="substrate-row">' +
                             '<select class="substrate select form-control">';
@@ -418,7 +439,9 @@ var finprint = finprint || {};  //namespace if necessary...
 
                 modalHtml += '<div class="center">' +
                         '<div class="substrate-row">' +
-                            '<div class="input-holder"><input class="percent" type="number" /></div>' +
+                            '<div class="input-holder">' +
+                                '<input class="percent" type="number" value="' + parentPercent + '"/>' +
+                            '</div>' +
                         '</div>' +
                         '<div class="substrate-row">' +
                             '<div class="input-holder"><input class="total" type="number" readonly="readonly" /></div>' +
@@ -449,7 +472,26 @@ var finprint = finprint || {};  //namespace if necessary...
 
                 $splitModal.on('click', '> .left button.add-substrate', function(e) {
                     e.preventDefault();
-                    console.log('TODO add');
+
+                    var remainingPercent = Math.max(0, parentPercent - $subCenter.find('input.percent').val());
+
+                    var leftHTML = '<div class="substrate-row"><select class="substrate select form-control">';
+                    res.substrates.forEach(function(s) {
+                        leftHTML += '<option value="' + s.id + '">' + s.name + '</option>';
+                    });
+                    leftHTML += '</select></div>';
+                    $subLeft.prepend(leftHTML);
+
+                    $subCenter.prepend('<div class="substrate-row">' +
+                        '<div class="input-holder">' +
+                            '<input class="percent" type="number" value="' + remainingPercent + '"/>' +
+                    '</div></div>');
+
+                    $subRight.prepend('<div class="substrate-row">' +
+                        '<a href="#" class="modal-remove">Remove</a>' +
+                    '</div>');
+
+                    recalculateModalPercent();
                 });
 
                 $splitModal.on('click', '> .right a.modal-remove', function(e) {
@@ -468,7 +510,13 @@ var finprint = finprint || {};  //namespace if necessary...
                 $splitModal.on('click', '> .buttons button.sub-ok', function(e) {
                     e.preventDefault();
                     console.log('TODO ok');
+                    //TODO check for parent percent issues
+                    //TODO check for dupes in dropdown
                 });
+
+                $splitModal.on('change', 'input.percent', recalculateModalPercent);
+
+                recalculateModalPercent();
             });
         });
 
