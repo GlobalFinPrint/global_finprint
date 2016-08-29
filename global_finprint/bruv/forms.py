@@ -253,7 +253,9 @@ class SubstrateField(forms.Field):
     def validate(self, value):
         super(SubstrateField, self).validate(value)
         if value['total_percent'] != 100 and len(value['substrates']) > 0:
-            raise ValidationError('Substrates must total 100%', code='less_than_100')
+            raise ValidationError('Substrates must total 100%', code='not_100')
+        if len(value['substrates']) != len(set(value['substrates'])):
+            raise ValidationError('Must not have duplicate substrates', code='no_duplicates')
 
 
 class SetLevelDataForm(forms.ModelForm):
