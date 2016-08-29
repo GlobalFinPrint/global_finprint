@@ -163,7 +163,7 @@ class SubstrateWidget(forms.Widget):
             left = ''
             center = ''
             right = ''
-            root_substrates = Substrate.objects.root_nodes()
+            root_substrates = Substrate.objects.all()
 
             for sp in list(zip(value['substrates'], value['percents'])):
                 left += '''
