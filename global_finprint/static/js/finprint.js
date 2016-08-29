@@ -403,6 +403,7 @@ var finprint = finprint || {};  //namespace if necessary...
             }
 
             $.get('/substrate/', { parent_id: parentId }, function(res) {
+                var $subLeft, $subCenter, $subRight;
                 var modalHtml = '<div class="split-modal clear">' +
                     '<div class="left">' +
                         '<div class="substrate-row">' +
@@ -434,16 +435,39 @@ var finprint = finprint || {};  //namespace if necessary...
                     '</div>';
 
                 modalHtml += '<div class="buttons">' +
-                        '<button class="btn btn-default btn-fp">Cancel</button>' +
-                        '<button class="btn btn-primary btn-fp">OK</button>' +
+                        '<button class="btn btn-default btn-fp sub-cancel">Cancel</button>' +
+                        '<button class="btn btn-primary btn-fp sub-ok">OK</button>' +
                     '</div></div>';
 
                 $parent.append(modalHtml);
                 $splitModal = $($splitModal.selector);
                 $splitModal.css('top', position);
 
+                $subLeft = $splitModal.find('.left');
+                $subCenter = $splitModal.find('.center');
+                $subRight = $splitModal.find('.right');
+
                 $splitModal.on('click', '> .left button.add-substrate', function(e) {
                     e.preventDefault();
+                    console.log('TODO add');
+                });
+
+                $splitModal.on('click', '> .right a.modal-remove', function(e) {
+                    e.preventDefault();
+                    var index = $subRight.find('a.modal-remove').index($(this));
+                    $subLeft.find('.substrate-row').slice(index, index + 1).remove();
+                    $subCenter.find('.substrate-row').slice(index, index + 1).remove();
+                    $subRight.find('.substrate-row').slice(index, index + 1).remove();
+                });
+
+                $splitModal.on('click', '> .buttons button.sub-cancel', function(e) {
+                    e.preventDefault();
+                    return $splitModal.remove();
+                });
+
+                $splitModal.on('click', '> .buttons button.sub-ok', function(e) {
+                    e.preventDefault();
+                    console.log('TODO ok');
                 });
             });
         });
