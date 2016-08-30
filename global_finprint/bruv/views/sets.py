@@ -104,7 +104,7 @@ class SetListView(UserAllowedMixin, View):
     def _upload_image(self, file, filename):
         try:
             conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
-            bucket = conn.get_bucket(settings.HABITAT_IMAGE_BUCKET)
+            bucket = conn.get_bucket(settings.HABITAT_IMAGE_BUCKET, validate=False)
             key = bucket.get_key(filename)
             if not key:
                 key = bucket.new_key(filename)
