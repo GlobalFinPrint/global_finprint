@@ -280,6 +280,11 @@ h3.form-title {
 
   .buttons {
     text-align: right;
+
+    span.sub-error {
+      color: $error;
+      margin-right: 10px;
+    }
   }
 }
 

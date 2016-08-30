@@ -418,11 +418,22 @@ var finprint = finprint || {};  //namespace if necessary...
                     return false;
                 }
 
-                function recalculateModalPercent() {
+                function getModalPercentSum() {
                     var $inputs = $parent.find('.split-modal .center input.percent');
                     var percents = $.map($inputs, function(i) { return parseInt($(i).val()); });
-                    var sum = percents.reduce(function(sum, x) { return sum + x; }, 0);
-                    $parent.find('.split-modal .center input.total').val(sum);
+                    return percents.reduce(function(sum, x) { return sum + x; }, 0);
+                }
+
+                function recalculateModalPercent() {
+                    $parent.find('.split-modal .center input.total').val(getModalPercentSum());
+                }
+
+                function showSubError(message) {
+                    $splitModal.find('.buttons span.sub-error')
+                        .text(message)
+                        .fadeIn(500)
+                        .delay(1500)
+                        .fadeOut(500, function() { $(this).text(''); });
                 }
 
                 modalHtml = '<div class="split-modal clear">' +
@@ -440,7 +451,7 @@ var finprint = finprint || {};  //namespace if necessary...
                 modalHtml += '<div class="center">' +
                         '<div class="substrate-row">' +
                             '<div class="input-holder">' +
-                                '<input class="percent" type="number" value="' + parentPercent + '"/>' +
+                                '<input class="percent" type="number" value="' + parentPercent + '" step="1" min="1" max="100" />' +
                             '</div>' +
                         '</div>' +
                         '<div class="substrate-row">' +
@@ -458,6 +469,7 @@ var finprint = finprint || {};  //namespace if necessary...
                     '</div>';
 
                 modalHtml += '<div class="buttons">' +
+                        '<span class="sub-error"></span>' +
                         '<button class="btn btn-default btn-fp sub-cancel">Cancel</button>' +
                         '<button class="btn btn-primary btn-fp sub-ok">OK</button>' +
                     '</div></div>';
@@ -484,7 +496,7 @@ var finprint = finprint || {};  //namespace if necessary...
 
                     $subCenter.prepend('<div class="substrate-row">' +
                         '<div class="input-holder">' +
-                            '<input class="percent" type="number" value="' + remainingPercent + '"/>' +
+                            '<input class="percent" type="number" value="' + remainingPercent + '" step="1" min="1" max="100" />' +
                     '</div></div>');
 
                     $subRight.prepend('<div class="substrate-row">' +
@@ -509,9 +521,34 @@ var finprint = finprint || {};  //namespace if necessary...
 
                 $splitModal.on('click', '> .buttons button.sub-ok', function(e) {
                     e.preventDefault();
+                    var $substrates, subVals, $percents, checkRange;
+
+                    $splitModal.find('.buttons span.sub-error').hide().clearQueue();
+
+                    // allowed range check
+                    $percents = $subCenter.find('input.percent');
+                    checkRange = function(p) { return parseInt($(p).val()) > 100 || parseInt($(p).val()) < 1 };
+                    if ($.grep($percents, checkRange).length) {
+                        showSubError('Substrate value must be between 1 and 100');
+                        return false;
+                    }
+
+                    // check for dupe substrates
+                    $substrates = $subLeft.find('select.substrate');
+                    subVals = $.map($substrates, function(s) { return $(s).val(); });
+                    if (subVals.length !== $.unique(subVals).length) {
+                        showSubError('Must not have duplicate substrates');
+                        return false;
+                    }
+
+                    // check parent percent match
+                    if (parseInt($subCenter.find('input.total').val()) != parentPercent) {
+                        showSubError('Substrates must total ' + parentPercent + '%');
+                        return false;
+                    }
+
+
                     console.log('TODO ok');
-                    //TODO check for parent percent issues
-                    //TODO check for dupes in dropdown
                 });
 
                 $splitModal.on('change', 'input.percent', recalculateModalPercent);
