@@ -110,26 +110,28 @@ class SetListView(UserAllowedMixin, View):
                 key = bucket.new_key(filename)
             key.set_contents_from_string(file.read(), headers={'Content-Type': 'image/png'})
             key.set_acl('public-read')
-            return True
-        except BotoException.S3ResponseError:
-            return False
+            return True, None
+        except BotoException.S3ResponseError as e:
+            return False, e
 
     def _process_habitat_images(self, set, request):
         if request.FILES.get('bruv_image_file', False):
             filename = set.habitat_filename('bruv')
-            if self._upload_image(request.FILES['bruv_image_file'], filename):
+            success, error = self._upload_image(request.FILES['bruv_image_file'], filename)
+            if success:
                 set.bruv_image_url = filename
                 set.save()
             else:
-                messages.warning(request, 'Error uploading BRUV image')
+                messages.warning(request, 'Error uploading BRUV image: {}'.format(str(error)))
 
         if request.FILES.get('splendor_image_file', False):
             filename = set.habitat_filename('splendor')
-            if self._upload_image(request.FILES['splendor_image_file'], filename):
+            success, error = self._upload_image(request.FILES['splendor_image_file'], filename)
+            if success:
                 set.splendor_image_url = filename
                 set.save()
             else:
-                messages.warning(request, 'Error uploading Habitat image')
+                messages.warning(request, 'Error uploading Habitat image: {}'.format(str(error)))
 
     def _process_habitat_substrate(self, set, request):
         with transaction.atomic():
