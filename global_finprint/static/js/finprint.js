@@ -389,10 +389,49 @@ var finprint = finprint || {};  //namespace if necessary...
             $parent.find('input[name="total-percent"]').val(sum);
         }
 
-        $parent.on('click', 'a.split', function(e) {
+        function addSubstrateRow(e, substrate, value) {
             e.preventDefault();
 
-            var index = $right.find('a.split').index($(this));
+            var remainingPercent = Math.max(0, 100 - $parent.find('input[name="total-percent"]').val());
+
+            $.get('/substrate/', function(res) {
+                var html = '<div class="substrate-row"><select class="substrate select form-control" name="substrate">';
+                res.substrates.forEach(function(s) {
+                    var selected = (parseInt(s.id) === parseInt(substrate)) ? ' selected="selected"' : '';
+                    html += '<option value="' + s.id + '"' + selected + '>' + s.name + '</option>';
+                });
+                html += '</select></div>';
+                $left.prepend(html);
+
+                $center.prepend('<div class="substrate-row"><div class="input-holder">' +
+                    '<input class="percent" name="percent" type="number" ' +
+                        'step="1" min="1" max="100" value="' + (value ? parseInt(value) : parseInt(remainingPercent)) + '" />' +
+                    '</div></div>');
+
+                $right.prepend('<div class="substrate-row">' +
+                    '<a href="#" class="split">Split</a>' +
+                    '<a href="#" class="remove">Remove</a>' +
+                    '</div>');
+
+                recalculateTotalPercent();
+            });
+        }
+
+        function removeSubstrateRow(e) {
+            e.preventDefault();
+
+            var index = $right.find('a.remove').index($(this));
+            $left.find('.substrate-row').slice(index, index + 1).remove();
+            $center.find('.substrate-row').slice(index, index + 1).remove();
+            $right.find('.substrate-row').slice(index, index + 1).remove();
+            recalculateTotalPercent();
+        }
+
+        function splitModal(e) {
+            e.preventDefault();
+
+            var $originalThis = $(this);
+            var index = $right.find('a.split').index($originalThis);
             var parentId = $left.find('select.substrate').slice(index, index + 1).val();
             var parentPercent = $center.find('input[type="number"]').slice(index, index + 1).val();
             var $splitModal = $('div.split-modal');
@@ -527,7 +566,9 @@ var finprint = finprint || {};  //namespace if necessary...
 
                     // allowed range check
                     $percents = $subCenter.find('input.percent');
-                    checkRange = function(p) { return parseInt($(p).val()) > 100 || parseInt($(p).val()) < 1 };
+                    checkRange = function (p) {
+                        return parseInt($(p).val()) > 100 || parseInt($(p).val()) < 1
+                    };
                     if ($.grep($percents, checkRange).length) {
                         showSubError('Substrate value must be between 1 and 100');
                         return false;
@@ -535,7 +576,9 @@ var finprint = finprint || {};  //namespace if necessary...
 
                     // check for dupe substrates
                     $substrates = $subLeft.find('select.substrate');
-                    subVals = $.map($substrates, function(s) { return $(s).val(); });
+                    subVals = $.map($substrates, function (s) {
+                        return $(s).val();
+                    });
                     if (subVals.length !== $.unique(subVals).length) {
                         showSubError('Must not have duplicate substrates');
                         return false;
@@ -547,52 +590,25 @@ var finprint = finprint || {};  //namespace if necessary...
                         return false;
                     }
 
-
-                    console.log('TODO ok');
+                    // split on the parent
+                    $splitModal.hide();
+                    removeSubstrateRow.call($originalThis.siblings('a.remove'), new Event('remove row'));
+                    $substrates.each(function(i, sub) {
+                        addSubstrateRow(new Event('add row'), $(sub).val(), $percents.slice(i, i+1).val());
+                    });
+                    $splitModal.remove();
                 });
 
                 $splitModal.on('change', 'input.percent', recalculateModalPercent);
 
                 recalculateModalPercent();
             });
-        });
+        }
 
-        $parent.on('click', 'a.remove', function(e) {
-            e.preventDefault();
-            var index = $right.find('a.remove').index($(this));
-            $left.find('.substrate-row').slice(index, index + 1).remove();
-            $center.find('.substrate-row').slice(index, index + 1).remove();
-            $right.find('.substrate-row').slice(index, index + 1).remove();
-            recalculateTotalPercent();
-        });
+        $parent.find('> .left button.add-substrate').click(addSubstrateRow);
 
         $parent.on('change', 'input[name="percent"]', recalculateTotalPercent);
-
-        $parent.find('> .left button.add-substrate').click(function(e) {
-            e.preventDefault();
-
-            var remainingPercent = Math.max(0, 100 - $parent.find('input[name="total-percent"]').val());
-
-            $.get('/substrate/', function(res) {
-                var html = '<div class="substrate-row"><select class="substrate select form-control" name="substrate">';
-                res.substrates.forEach(function(s) {
-                    html += '<option value="' + s.id + '">' + s.name + '</option>';
-                });
-                html += '</select></div>';
-                $left.prepend(html);
-
-                $center.prepend('<div class="substrate-row"><div class="input-holder">' +
-                    '<input class="percent" name="percent" type="number" ' +
-                        'step="1" min="1" max="100" value="' + remainingPercent + '" />' +
-                    '</div></div>');
-
-                $right.prepend('<div class="substrate-row">' +
-                    '<a href="#" class="split">Split</a>' +
-                    '<a href="#" class="remove">Remove</a>' +
-                    '</div>');
-
-                recalculateTotalPercent();
-            });
-        });
+        $parent.on('click', 'a.split', splitModal);
+        $parent.on('click', 'a.remove', removeSubstrateRow);
     }
 })(jQuery);
