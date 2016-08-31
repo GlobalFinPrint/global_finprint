@@ -42,5 +42,12 @@ def get_date_from_cell(cell):
 def get_time_from_cell(cell, format_str='%H:%M:%S %p'):
     result = cell.value
     if isinstance(result, str):
-        result = datetime.strptime(cell.value, '%H:%M:%S %p').time()
+        for format_string in ['%H:%M:%S %p', ':%M', '%M:%Ss']:
+            try:
+                result = datetime.strptime(result, format_string).time()
+                break
+            except ValueError:
+                pass
+        else:
+            raise ValueError('Unable to parse time: "{}"'.format(result))
     return result

@@ -197,7 +197,8 @@ def import_observation_data(sheet):
                 length,
                 comment,
                 annotator,
-                annotation_date
+                annotation_date,
+                None
             )
 
 class Command(BaseCommand):

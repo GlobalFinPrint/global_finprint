@@ -59,7 +59,7 @@ def import_observation_data(trip_code, set_code, obs_data, annotator=None, date=
             else:
                 logger.error('Unknown "Stage" value: {}'.format(orig_stage_value))
                 break
-        obvs_time = minutes2milliseconds(row['Time (mins)'])
+        obvs_time = ic.minutes2milliseconds(row['Time (mins)'])
         duration = None
         family = row['Family']
         genus = row['Genus']
@@ -92,17 +92,6 @@ def import_observation_data(trip_code, set_code, obs_data, annotator=None, date=
             annotation_date,
             row
         )
-
-def minutes2milliseconds(minutes):
-    """
-    Converts minutes to milliseconds.
-    :param minutes: duration in minutes as string
-    :return: duration in milliseconds as int
-    """
-    if minutes:
-        return round(float(minutes) * 60 * 1000)
-    else:
-        return 0
 
 def string2date(date):
     """
