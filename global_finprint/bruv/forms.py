@@ -29,7 +29,8 @@ class SetForm(forms.ModelForm):
     )
     haul_time = forms.TimeField(
         input_formats=['%H:%M'],
-        widget=DateTimePicker(options=timepicker_opts, icon_attrs={'class': 'glyphicon glyphicon-time'})
+        widget=DateTimePicker(options=timepicker_opts, icon_attrs={'class': 'glyphicon glyphicon-time'}),
+        required=False
     )
     reef = forms.ModelChoiceField(
         queryset=Reef.objects.all()
