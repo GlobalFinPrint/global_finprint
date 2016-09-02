@@ -6,16 +6,21 @@ from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
+from django.db import transaction
 
 from global_finprint.trip.models import Trip
 from global_finprint.bruv.models import Equipment
-from ..models import Set
-from ..forms import SetForm, EnvironmentMeasureForm
+from global_finprint.annotation.models.video import Video
+from ..models import Set, HabitatSubstrate, EnvironmentMeasure
+from ..forms import SetForm, EnvironmentMeasureForm, \
+    SetSearchForm, SetLevelCommentsForm, SetLevelDataForm
 from ...annotation.forms import VideoForm
 from ...habitat.models import ReefHabitat
 from ...core.mixins import UserAllowedMixin
 
-from datetime import datetime
+from boto import exception as BotoException
+from boto.s3.connection import S3Connection
+from django.conf import settings
 
 
 # deprecated:
@@ -36,6 +41,16 @@ class SetListView(UserAllowedMixin, View):
     template = 'pages/sets/set_list.html'
 
     def _common_context(self, request, parent_trip):
+        return RequestContext(request, {
+            'request': request,
+            'trip_pk': parent_trip.pk,
+            'trip_name': str(parent_trip),
+            'sets': self._get_filtered_sets(parent_trip),
+            'search_form': SetSearchForm(self.request.GET or None, trip_id=parent_trip.pk)
+        })
+
+    def _get_filtered_sets(self, parent_trip):
+        result = Set.objects
         prefetch = [
             'trip',
             'drop_measure',
@@ -46,19 +61,29 @@ class SetListView(UserAllowedMixin, View):
             'equipment',
             'reef_habitat',
         ]
-        return RequestContext(request, {
-            'request': request,
-            'trip_pk': parent_trip.pk,
-            'trip_name': str(parent_trip),
-            'sets': Set.objects.filter(trip=parent_trip).prefetch_related(*prefetch).order_by('set_date', 'drop_time'),
-        })
+        search_terms = {}
+        form = SetSearchForm(self.request.GET)
+        if self.request.GET and form.is_valid():
+            search_values = form.cleaned_data
+            search_terms = dict((key, val) for (key, val) in search_values.items()
+                                if key in ['equipment', 'bait'] and val is not None)
+            if search_values['search_set_date']:
+                search_terms['set_date'] = search_values['search_set_date']
+            if search_values['reef']:
+                search_terms['reef_habitat__reef'] = search_values['reef']
+            if search_values['habitat']:
+                search_terms['reef_habitat__habitat'] = search_values['habitat']
+            if search_values['code']:
+                result = result.filter(code__contains=search_values['code'])
+        search_terms['trip'] = parent_trip
+        result = result.filter(**search_terms).prefetch_related(*prefetch).order_by('set_date', 'drop_time')
+
+        return result
 
     def _get_set_form_defaults(self, parent_trip):
         set_form_defaults = {
             'trip': parent_trip,
             'set_date': parent_trip.start_date,
-            'drop_time': datetime.min.time(),
-            'haul_time': datetime.min.time(),
             'equipment': Equipment.objects.all().first(),
         }
 
@@ -72,10 +97,48 @@ class SetListView(UserAllowedMixin, View):
                 'set_date': last_set.set_date,
                 'drop_time': last_set.drop_time,
                 'haul_time': last_set.haul_time,
-                'visibility': last_set.visibility,
             })
 
         return set_form_defaults
+
+    def _upload_image(self, file, filename):
+        try:
+            conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+            bucket = conn.get_bucket(settings.HABITAT_IMAGE_BUCKET, validate=False)
+            key = bucket.get_key(filename)
+            if not key:
+                key = bucket.new_key(filename)
+            key.set_contents_from_string(file.read(), headers={'Content-Type': 'image/png'})
+            key.set_acl('public-read')
+            return True, None
+        except BotoException.S3ResponseError as e:
+            return False, e
+
+    def _process_habitat_images(self, set, request):
+        if request.FILES.get('bruv_image_file', False):
+            filename = set.habitat_filename('bruv')
+            success, error = self._upload_image(request.FILES['bruv_image_file'], filename)
+            if success:
+                set.bruv_image_url = filename
+                set.save()
+            else:
+                messages.warning(request, 'Error uploading BRUV image: {}'.format(str(error)))
+
+        if request.FILES.get('splendor_image_file', False):
+            filename = set.habitat_filename('splendor')
+            success, error = self._upload_image(request.FILES['splendor_image_file'], filename)
+            if success:
+                set.splendor_image_url = filename
+                set.save()
+            else:
+                messages.warning(request, 'Error uploading Habitat image: {}'.format(str(error)))
+
+    def _process_habitat_substrate(self, set, request):
+        with transaction.atomic():
+            set.substrate.clear()
+            for (s_id, val) in zip(request.POST.getlist('substrate'), request.POST.getlist('percent')):
+                hs = HabitatSubstrate(set=set, substrate_id=s_id, value=val)
+                hs.save()
 
     def get(self, request, **kwargs):
         trip_pk, set_pk = kwargs.get('trip_pk', None), kwargs.get('set_pk', None)
@@ -103,6 +166,12 @@ class SetListView(UserAllowedMixin, View):
             context['video_form'] = VideoForm(
                 instance=edited_set.video
             )
+            context['set_level_data_form'] = SetLevelDataForm(
+                instance=edited_set
+            )
+            context['set_level_comments_form'] = SetLevelCommentsForm(
+                instance=edited_set
+            )
 
         # new set form
         else:
@@ -114,6 +183,8 @@ class SetListView(UserAllowedMixin, View):
             context['drop_form'] = EnvironmentMeasureForm(None, prefix='drop')
             context['haul_form'] = EnvironmentMeasureForm(None, prefix='haul')
             context['video_form'] = VideoForm()
+            context['set_level_data_form'] = SetLevelDataForm()
+            context['set_level_comments_form'] = SetLevelCommentsForm()
 
         return render_to_response(self.template, context=context)
 
@@ -126,19 +197,25 @@ class SetListView(UserAllowedMixin, View):
             set_form = SetForm(request.POST, trip_pk=trip_pk)
             drop_form = EnvironmentMeasureForm(request.POST, prefix='drop')
             haul_form = EnvironmentMeasureForm(request.POST, prefix='haul')
-            video_form = VideoForm(request.POST, request.FILES)
+            video_form = VideoForm(request.POST)
+            set_level_data_form = SetLevelDataForm(request.POST, request.FILES)
+            set_level_comments_form = SetLevelCommentsForm(request.POST)
         else:
             edited_set = get_object_or_404(Set, pk=set_pk)
             set_form = SetForm(request.POST, trip_pk=trip_pk, instance=edited_set)
             drop_form = EnvironmentMeasureForm(request.POST, prefix='drop', instance=edited_set.drop_measure)
             haul_form = EnvironmentMeasureForm(request.POST, prefix='haul', instance=edited_set.haul_measure)
-            video_form = VideoForm(request.POST, request.FILES, instance=edited_set.video)
+            video_form = VideoForm(request.POST, instance=edited_set.video)
+            set_level_data_form = SetLevelDataForm(request.POST, request.FILES, instance=edited_set)
+            set_level_comments_form = SetLevelCommentsForm(request.POST, instance=edited_set)
 
         # forms are valid
         if all(form.is_valid() for form in [set_form,
                                             drop_form,
                                             haul_form,
-                                            video_form]):
+                                            video_form,
+                                            set_level_data_form,
+                                            set_level_comments_form]):
 
             # get reef_habitat from reef + habitat
             # note: "create new set" uses the .instance, "edit existing set" is using the .cleaned_data
@@ -153,7 +230,18 @@ class SetListView(UserAllowedMixin, View):
                 new_set.drop_measure = drop_form.save()
                 new_set.haul_measure = haul_form.save()
                 new_set.video = video_form.save()
+                for k, v in set_level_data_form.cleaned_data.items():
+                    if k not in ('bruv_image_file', 'splendor_image_file'):
+                        setattr(new_set, k, v)
+                for k, v in set_level_comments_form.cleaned_data.items():
+                    setattr(new_set, k, v)
                 new_set.save()
+
+                # upload and save image urls
+                self._process_habitat_images(new_set, request)
+
+                # save habitat substrate values
+                self._process_habitat_substrate(new_set, request)
 
                 messages.success(self.request, 'Set created')
 
@@ -162,23 +250,56 @@ class SetListView(UserAllowedMixin, View):
                 for k, v in set_form.cleaned_data.items():
                     if k not in ('reef', 'habitat'):
                         setattr(edited_set, k, v)
-                for k, v in drop_form.cleaned_data.items():
-                    setattr(edited_set.drop_measure, k, v)
-                for k, v in haul_form.cleaned_data.items():
-                    setattr(edited_set.haul_measure, k, v)
+
+                # check for children that might be missing but have data in their forms:
+                if not edited_set.drop_measure and \
+                    any(x is not None for x in list(drop_form.cleaned_data.values())):
+                    # note: the dissolved_oxygen_measure shows up as a value and should probably be filtered out ...
+                    # otherwise measure is always created.
+                    edited_set.drop_measure = EnvironmentMeasure.objects.create()
+                if not edited_set.haul_measure and \
+                    any(x is not None for x in list(haul_form.cleaned_data.values())):
+                    # note: again, the dissolved_oxygen_measure shows up as a value and should probably be filtered out?
+                    edited_set.haul_measure = EnvironmentMeasure.objects.create()
+
+                # guard against possibly missing drop_measure, haul_measure or video:
+                if edited_set.drop_measure:
+                    for k, v in drop_form.cleaned_data.items():
+                        setattr(edited_set.drop_measure, k, v)
+                if edited_set.haul_measure:
+                    for k, v in haul_form.cleaned_data.items():
+                        setattr(edited_set.haul_measure, k, v)
                 for k, v in video_form.cleaned_data.items():
                     setattr(edited_set.video, k, v)
+                for k, v in set_level_data_form.cleaned_data.items():
+                    if k not in ('bruv_image_file', 'splendor_image_file'):
+                        setattr(edited_set, k, v)
+                for k, v in set_level_comments_form.cleaned_data.items():
+                    setattr(edited_set, k, v)
 
                 edited_set.save()
-                edited_set.bait.save()
-                edited_set.drop_measure.save()
-                edited_set.haul_measure.save()
+                if edited_set.bait:
+                    edited_set.bait.save()
+                if edited_set.drop_measure:
+                    edited_set.drop_measure.save()
+                if edited_set.haul_measure:
+                    edited_set.haul_measure.save()
                 edited_set.video.save()
+
+                # upload and save image urls
+                self._process_habitat_images(edited_set, request)
+
+                # save habitat substrate values
+                self._process_habitat_substrate(edited_set, request)
 
                 messages.success(self.request, 'Set updated')
 
             # navigate back to set list
             success_url = reverse_lazy('trip_set_list', args=[trip_pk])
+            if 'save-and-add' in request.POST:
+                success_url += '#set-form-parent'
+            else:
+                success_url += '#'
             return HttpResponseRedirect(success_url)
 
         # one or more forms have errors
@@ -191,6 +312,8 @@ class SetListView(UserAllowedMixin, View):
             context['drop_form'] = drop_form
             context['haul_form'] = haul_form
             context['video_form'] = video_form
+            context['set_level_data_form'] = set_level_data_form
+            context['set_level_comments_form'] = set_level_comments_form
 
             messages.error(self.request, 'Form errors found')
 

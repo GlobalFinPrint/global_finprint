@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 
 from .forms import TripForm, TripSearchForm
 from .models import Trip
-from ..habitat.models import Region
+from ..habitat.models import Region, Reef, ReefHabitat
 from ..bruv.models import Set
 from ..core.mixins import UserAllowedMixin
 
@@ -62,7 +62,10 @@ class TripListView(UserAllowedMixin, CreateView):
                 search_terms['location__in'] = Region.objects.get(pk=search_values['region'].id) \
                     .location_set.values_list('id', flat=True)
 
-            return Trip.objects.filter(**search_terms).order_by('start_date')
+            if search_values['reef']:
+                search_terms['set__reef_habitat__reef'] = search_values['reef']
+
+            return Trip.objects.filter(**search_terms).distinct().order_by('start_date')
         else:
             return Trip.objects.all().order_by('start_date')
 

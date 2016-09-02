@@ -150,6 +150,22 @@
   },
   {
     "fields": {
+      "type": "To Be Updated",
+      "code": "T"
+    },
+    "model": "habitat.reeftype",
+    "pk": 6
+  },
+  {
+    "fields": {
+      "type": "Lost Data",
+      "code": "U"
+    },
+    "model": "habitat.reeftype",
+    "pk": 7
+  },
+  {
+    "fields": {
       "type": "openly fished"
     },
     "model": "habitat.protectionstatus",

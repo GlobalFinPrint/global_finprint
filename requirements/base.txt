@@ -33,3 +33,6 @@ pytz==2015.7
 boto==2.38.0
 
 gunicorn==19.3.0
+
+# Bulk data import
+openpyxl==2.3.5

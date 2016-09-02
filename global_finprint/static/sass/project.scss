@@ -1,115 +1,42 @@
-// stylesheet variables
-$blue: #29566D;
-$green: #7ED321;
-$gray: #838C9E;
-$black: #4A4A4A;
-$link: #4A90E2;
-$table-header: transparentize($blue, 0.8);
-$parent-row: transparentize($green, 0.5);
-$child-row: transparentize($green, 0.75);
-$table-border: transparentize($blue, 0.95);
-
-@mixin glyphicon($code) {
-  content: $code;
-  font-family: 'Glyphicons Halflings';
-  font-size: 12px;
-  padding-left: 5px;
-}
-
-a {
-  color: $link;
-}
-
 // project specific CSS goes here
+@import 'lib';
+@import 'global';
 
-// bootstrap alert CSS, translated to the django-standard levels of
-// debug, info, success, warning, error
-.alert-debug {
-  color: black;
+.main-splash {
+  background-image: url("/static/images/fp_main.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.splash-header {
+  color: white;
+  background-color: $blue;
+  opacity: 0.9;
+  padding: 12px 18px;
+}
+
+.splash-actions {
   background-color: white;
-  border-color: #d6e9c6;
+  opacity: 0.9;
+  padding: 12px 18px;
+  li {
+    padding: 15px 0;
+  }
 }
 
-.alert-info {
-  color: #3a87ad;
-  background-color: #d9edf7;
-  border-color: #bce8f1;
-}
-
-.alert-success {
-  color: #468847;
-  background-color: #dff0d8;
-  border-color: #d6e9c6;
-}
-
-.alert-warning {
-  color: black;
-  background-color: orange;
-  border-color: #d6e9c6;
-}
-
-.alert-error {
-  color: #b94a48;
-  background-color: #f2dede;
-  border-color: #eed3d7;
+.splash-spacer {
+  height: 450px;
 }
 
 .generic-list {
   list-style-type: none;
 }
 
-.generic-list-item {
-
-}
-
-.search .form-inline .form-group:last-child {
-  display: inline-block;
-  vertical-align: bottom;
-  padding-bottom: 15px;
-}
-
-.form-inline {
-  .form-group {
-    vertical-align: top;
-    padding-bottom: 15px;
-    margin-right: 5px;
-
-    &.has-error {
-      position: relative;
-      padding-bottom: 30px;
-
-      span.help-block {
-        position: absolute;
-        top: 55px;
-        left: 0;
-      }
-    }
-
-    p.help-block {
-      display: inline;
-    }
-
-    &:last-child {
-      display: block;
-      text-align: right;
-      padding-bottom: 0;
-    }
-
-    a.cancel-button {
-      margin: 0 10px;
-    }
-  }
-
-  #div_id_oiled {
-    padding-top: 25px;
-  }
-}
-
-.set-table th#edit {
-  vertical-align: middle;
-}
-
 table.set-table {
+  th#edit {
+    vertical-align: middle;
+  }
+
   td a.hide-env {
     display: none;
   }
@@ -117,10 +44,6 @@ table.set-table {
   tr.env-headers, tr.env-row {
     display: none;
   }
-}
-
-span.disabled {
-  color: #ccc;
 }
 
 ul.annotators {
@@ -132,9 +55,6 @@ ul.annotators {
   }
 }
 
-h3.inline {
-  display: inline-block;
-}
 
 table.video-annotator-table {
   margin-top: 15px;
@@ -213,6 +133,295 @@ a.manual-assign {
       div.extent {
         position: absolute;
         border: 1px solid lightgreen;
+      }
+    }
+  }
+}
+
+form.trip {
+  small.help-block {
+    margin-left: 15px;
+  }
+}
+
+#set-search, #trip-search {
+  color: $blue;
+  border: none;
+  background: $form-background;
+  border-radius: 0;
+  margin: 15px 0;
+  padding: 0;
+
+  h4 {
+    margin-top: 15px;
+  }
+
+  form select#id_reef {
+    width: 215px;
+  }
+}
+
+h3.form-title {
+  color: white;
+  background-color: $blue;
+  margin-bottom: 0;
+  padding: 5px 15px;
+  font-size: 1.4em;
+}
+
+#trip-form-parent {
+  display: none;
+
+  div.trip-form-well {
+    padding: 15px 15px 0;
+    border-radius: 0;
+    border: 0;
+    background: $form-background;
+
+    form.trip {
+      color: $blue;
+
+      small.help-block {
+        margin-left: 0;
+      }
+    }
+  }
+}
+
+.message-modal {
+  width: 500px;
+  padding: 15px;
+  background: white;
+  border: 1px solid $gray;
+  border-radius: 4px;
+  position: absolute;
+
+  p.no-children-message {
+    width: 100%;
+    text-align: center;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+}
+
+.split-modal {
+  width: 500px;
+  padding: 15px;
+  background: white;
+  border: 1px solid $gray;
+  border-radius: 4px;
+  position: absolute;
+
+  .right, .center, .left {
+    float: left;
+    vertical-align: center;
+
+    .substrate-row {
+      height: 30px;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  }
+
+  .left {
+    width: 150px;
+    margin-right: 15px;
+
+    button.add-substrate {
+      float: left;
+      font-size: 20pt;
+      line-height: 22px;
+      vertical-align: middle;
+      padding: 1px 6px 5px;
+      outline: none;
+    }
+
+    span.total {
+      float: right;
+      line-height: 30px;
+    }
+
+    select.substrate {
+      width: 100%;
+      height: 30px;
+    }
+  }
+
+  .center {
+    width: 100px;
+
+    .input-holder {
+      input[type="number"] {
+        width: 60px;
+        padding: 5px 5px 5px 10px;
+        border-radius: 4px;
+        border: 1px solid $gray;
+      }
+
+      &:after {
+        content: ' %';
+      }
+    }
+  }
+
+  .right {
+    width: 200px;
+
+    span.help-text {
+      color: $gray;
+      font-size: 12px;
+      line-height: 30px;
+    }
+
+    a {
+      line-height: 30px;
+    }
+  }
+
+  .buttons {
+    text-align: right;
+
+    span.sub-error {
+      color: $error;
+      margin-right: 10px;
+    }
+  }
+}
+
+#set-form-parent {
+  display: none;
+
+  div.set-form-well {
+    padding: 0;
+    border-radius: 0;
+    border: 0;
+
+    form.set {
+      div.panel.sub-form {
+        margin: 0 0 2px 0;
+        border: none;
+        background: $accordian-panel;
+        color: $blue;
+
+        div.panel-heading {
+          background: $accordian-header-active;
+          border-radius: 0;
+          color: $blue;
+
+          &.collapsed {
+            background: $accordian-header;
+          }
+        }
+      }
+
+      div[data-toggle="collapse"] {
+        cursor: pointer;
+      }
+
+      #id_latitude, #id_longitude {
+        width: 130px;
+      }
+
+      #id_depth {
+        width: 100px;
+      }
+
+      #id_set_date {
+        width: 150px;
+        padding-right: 0;
+      }
+
+      #id_haul_time, #id_drop_time {
+        width: 50px;
+        padding-right: 0;
+      }
+
+      #div_id_tags {
+        min-width: 300px;
+      }
+
+      .cta-buttons {
+        margin-right: 15px;
+      }
+
+      #div_id_habitat_substrate {
+        margin-left: 15px;
+      }
+
+      .habitat-substrate-parent {
+        position: relative;
+
+        .left .substrate-row {
+          padding-right: 15px;
+        }
+
+        .right, .center, .left {
+          float: left;
+          vertical-align: center;
+
+          .substrate-row {
+            width: 100%;
+            padding: 5px;
+          }
+        }
+
+        .left {
+          width: 150px;
+
+          button.add-substrate {
+            float: left;
+            font-size: 20pt;
+            line-height: 22px;
+            vertical-align: middle;
+            padding: 1px 6px 5px;
+            outline: none;
+          }
+
+          span.total {
+            float: right;
+            line-height: 30px;
+          }
+
+          select.substrate {
+            width: 100%;
+            height: 30px;
+          }
+        }
+
+        .center {
+          width: 100px;
+
+          .input-holder {
+            input[type="number"] {
+              width: 60px;
+              padding: 4px 5px 4px 10px;
+              border-radius: 4px;
+              border: 1px solid $gray;
+            }
+
+            &:after {
+              content: ' %';
+            }
+          }
+        }
+
+        .right {
+          width: 200px;
+
+          span.help-text {
+            color: $gray;
+            font-size: 12px;
+            line-height: 30px;
+          }
+
+          a {
+            line-height: 30px;
+
+            &.remove {
+              margin-left: 10px;
+            }
+          }
+        }
       }
     }
   }

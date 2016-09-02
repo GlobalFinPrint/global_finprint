@@ -68,12 +68,16 @@ class Logout(APIView):
 
 class SetList(APIView):
     def get(self, request):
-        if request.annotator.is_lead() and 'for_review' in request.GET:
-            assignments = Assignment.objects.filter(status_id=3)
+        if request.annotator.is_lead() and 'filtered' in request.GET:
+            assignments = Assignment.get_active()
             if 'trip_id' in request.GET:
                 assignments = assignments.filter(video__set__trip__id=request.GET.get('trip_id'))
             if 'set_id' in request.GET:
                 assignments = assignments.filter(video__set__id=request.GET.get('set_id'))
+            if 'annotator_id' in request.GET:
+                assignments = assignments.filter(annotator_id=request.GET.get('annotator_id'))
+            if 'status_id' in request.GET:
+                assignments = assignments.filter(status_id=request.GET.get('status_id'))
         else:
             assignments = Assignment.get_active_for_annotator(request.annotator)
         return JsonResponse({'sets': list(va.to_json() for va in assignments)})
@@ -81,9 +85,26 @@ class SetList(APIView):
 
 class TripList(APIView):
     def get(self, request):
-        return JsonResponse({'trips': list({'id': t.id, 'trip': str(t),
-                                            'sets': list({'id': s.id, 'set': str(s)} for s in t.set_set.all())}
-                                           for t in Trip.objects.all())})
+        if request.GET.get('assigned', False):
+            assignments = Assignment.get_active()
+            sets = set(a.set() for a in assignments)
+            trips = set(s.trip for s in sets)
+            return JsonResponse({'trips': list({'id': t.id, 'trip': str(t),
+                                                'sets': list({'id': s.id, 'set': str(s)} for s in t.set_set.all()
+                                                             if s in sets)}
+                                               for t in trips)})
+        else:
+            trips = Trip.objects.all()
+            return JsonResponse({'trips': list({'id': t.id, 'trip': str(t),
+                                                'sets': list({'id': s.id, 'set': str(s)} for s in t.set_set.all())}
+                                               for t in trips)})
+
+
+class AnnotatorList(APIView):
+    def get(self, request):
+        assignments = Assignment.get_active()
+        return JsonResponse({'annotators': list({'id': an.id, 'annotator': str(an)}
+                                                for an in set(a.annotator for a in assignments))})
 
 
 class SetDetail(APIView):
@@ -91,10 +112,14 @@ class SetDetail(APIView):
         return JsonResponse({'set': {'id': request.va.id,
                                      'set_code': str(request.va.set()),
                                      'file': str(request.va.video.file),
-                                     'assigned_to': {'id': request.va.annotator_id, 'user': str(request.va.annotator)},
+                                     'assigned_to': {'id': request.va.annotator_id,
+                                                     'user': str(request.va.annotator)},
                                      'progress': request.va.progress,
                                      'observations': Observation.get_for_api(request.va),
-                                     'animals': Animal.get_for_api(request.va)}})
+                                     'animals': Animal.get_for_api(request.va),
+                                     'status': {'id': request.va.status_id,
+                                                'name': request.va.status.name}
+                                     }})
 
 
 class Observations(APIView):
@@ -164,6 +189,32 @@ class StatusUpdate(APIView):
         request.va.status_id = 3
         request.va.save()
         return JsonResponse({'status': 'OK'})
+
+
+class AcceptAssignment(APIView):
+    def post(self, request, set_id):
+        if not request.annotator.is_lead():
+            message = 'Assignment can only be Accepted by a lead'
+        elif request.va.status_id != 3:
+            message = 'Assignment must be Ready for Review to be Accepted'
+        else:
+            request.va.status_id = 4
+            request.va.save()
+            message = 'OK'
+        return JsonResponse({'status': message})
+
+
+class RejectAssignment(APIView):
+    def post(self, request, set_id):
+        if not request.annotator.is_lead():
+            message = 'Assignment can only be Rejected by a lead'
+        elif request.va.status_id != 3:
+            message = 'Assignment must be Ready for Review to be Rejected'
+        else:
+            request.va.status_id = 6
+            request.va.save()
+            message = 'OK'
+        return JsonResponse({'status': message})
 
 
 class ProgressUpdate(APIView):

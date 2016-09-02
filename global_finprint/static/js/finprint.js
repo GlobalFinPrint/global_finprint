@@ -1,57 +1,24 @@
 var finprint = finprint || {};  //namespace if necessary...
 
-(function ($) {
+(function($) {
     "use strict";
 
-    $(document).ready(function () {
-        $('.list-group-item').on('click', function (e) {
-            var $item = $(e.currentTarget);
-            $item.parent().children().removeClass('active');
-            $item.addClass('active');
-
-            var pk = $item.attr("data-pk-id");
-            var type = $item.attr("data-type");
-            var detail_obj = unknownType();
-            if (type === "trip") {
-                detail_obj = Trip();
-            } else if (type === "set") {
-                detail_obj = Set();
-            } else if (type === "observation") {
-                detail_obj = Observation();
-            }
-            else {
-                detail_obj = unknownType();
-            }
-            detail_obj.get(pk, function(){
-                detail_obj.display($('#detail_panel'));
-            });
-
-        });
-
-        var $list = $('.list-group').children();
-        if ($list.size() > 0) {
-            $list[0].click();
-        } else {
-            $('#detail_panel').hide();
-        }
-
-        $('table.set-table').find('a.show-env, a.hide-env').click(function(e) {
-            e.preventDefault();
-            $(this).hide()
-                .siblings().toggle().end()
-                .closest('table.set-table')
-                    .find('tr.set-' + $(this).data('set')).toggle();
-        });
-
+    $(function() {
+        initToggleEnv();
         initAssignForm();
         initAdjustAnnotator();
         initAssignButtons();
         initAssignmentSearch();
         initAssignmentModals();
+        initShowFormButtons();
         initManageStateButtons();
         initAutomaticAssignment();
         initAnnotatorPopover();
         initCollapse();
+        initSelectizeWidgets();
+        initImageSelectWidgets();
+        initTabAccordion();
+        initSubstrateWidget();
     });
 
     function getCSRF() {
@@ -62,6 +29,16 @@ var finprint = finprint || {};  //namespace if necessary...
                 return cookies[i].trim().split('=')[1];
             }
         }
+    }
+
+    function initToggleEnv() {
+        $('table.set-table').find('a.show-env, a.hide-env').click(function(e) {
+            e.preventDefault();
+            $(this).hide()
+                .siblings().toggle().end()
+                .closest('table.set-table')
+                    .find('tr.set-' + $(this).data('set')).toggle();
+        });
     }
 
     function initAnnotatorPopover() {
@@ -127,6 +104,34 @@ var finprint = finprint || {};  //namespace if necessary...
                 $('form#assignment-search-form button#search').click();
             });
         });
+    }
+
+    function initShowFormButtons() {
+        var showSetForm = function() {
+            $('#btn-show-set-form').hide();
+            $('#set-form-parent').show();
+            window.location.hash = '#set-form-parent';
+        };
+
+        var showTripForm = function() {
+            $('#btn-show-trip-form').hide();
+            $('#trip-form-parent').show();
+            window.location.hash = '#trip-form-parent';
+        };
+
+        var checkHash = function() {
+            if (window.location.hash === '#set-form-parent') {
+                showSetForm();
+            } else if (window.location.hash === '#trip-form-parent') {
+                showTripForm();
+            }
+        };
+
+        window.onhashchange = checkHash;
+        checkHash();
+
+        $('#btn-show-set-form').click(showSetForm);
+        $('#btn-show-trip-form').click(showTripForm);
     }
 
     function initManageStateButtons() {
@@ -310,137 +315,300 @@ var finprint = finprint || {};  //namespace if necessary...
         });
     }
 
-    function unknownType(container){
-        var $containerEl = container;
-
-        var get = function(id) {
-        };
-        var display = function($containerEl){
-                $containerEl.empty()
-                        .append($('<h4>Unknown Type</h4>'));
-        };
-        return {"get": get,
-                "display": display};
+    function initSelectizeWidgets() {
+        $('select[multiple="multiple"].selectize').selectize({ plugins: ['remove_button', 'restore_on_backspace'] });
     }
 
+    function initImageSelectWidgets() {
+        $('div.image-select-widget-parent').each(function(_, parent) {
+            var $parent = $(parent);
 
-    function Trip(){
-        var _fields = {"name": "",
-                        "start_date": null,
-                        "end_date": null,
-                        "location": null,
-                        "team": "",
-                        "boat": "",
-                        "pk": null};
-
-        var get = function(id, callback){
-            var cb =callback;
-            $.get('/api/trips/' + id, function (data) {
-                $.extend(true, _fields, data);
-                if (cb){
-                    cb();
-                }
+            $parent.find('input').click(function(e) {
+                e.stopPropagation();
+            }).change(function() {
+                var $this = $(this);
+                var file = $this.val().match(/[^\\]+$/)[0];
+                $parent.find('.caption').text('New file: ' + file);
+                $parent.find('.image-select-widget').css('opacity', 0.5)
             });
-        };
 
-        var display = function($containerEl){
-            $containerEl.empty()
-                    .append($('<h4>' + name + '</h4><dl><dt>Start Date:</dt><dd>' + _fields.start_date +
-                            '</dd><dt>End Date:</dt><dd>' + _fields.end_date +
-                            '</dd><dt>Location:</dt><dd>' + _fields.location +
-                            '</dd><dt>Team:</dt><dd>' + _fields.team +
-                            '</dd><dt>Boat:</dt><dd>' + _fields.boat + '</dd></dl>'));
-
-        };
-
-        return {"name": _fields.name,
-                "start_date": _fields.start_date,
-                "end_date": _fields.end_date,
-                "location": _fields.location,
-                "team": _fields.team,
-                "boat": _fields.boat,
-                "pk": _fields.pk,
-                "get": get,
-                "display": display};
-    }
-
-
-    function Set(){
-        var _fields = {"drop_time": null, "collection_time": null, "time_bait_gone": null, "equipment":"", "depth": "", "reef": "", "pk":0};
-
-        var get = function(id, cb){
-            $.get('/api/sets/' + id, function (data) {
-                $.extend(true, _fields, data);
-                if (cb){
-                    cb();
-                }
+            $parent.click(function(e) {
+                e.preventDefault();
+                $(this).find('input').click();
             });
-        };
-
-        var display = function($containerEl){
-            $containerEl.empty()
-                        .append($('<h4>' + moment(_fields.drop_time).format("dddd, MMMM Do YYYY, h:mm a") +
-                                '</h4><dl><dt>drop time:</dt><dd>' + moment(_fields.drop_time).format("H:mm:ss") +
-                                '</dd><dt>Collection Time</dt><dd>' + moment(_fields.collection_time).format("H:mm:ss") +
-                                '</dd><dt>Bait Gone</dt><dd> '+ moment(_fields.time_bait_gone).format("H:mm:ss") +
-                                '</dd><dt>Equipment</dt><dd> ' + _fields.equipment +
-                                '</dd><dt>Depth</dt><dd> ' + _fields.depth +
-                                '</dd><dt>Reef</dt><dd> ' + _fields.reef + '</dd></dl>'));
-
-        };
-
-        return {"drop_time": _fields.drop_time,
-                "collection_time": _fields.collection_time,
-                "time_bait_gone": _fields.time_bait_gone,
-                "equipment": _fields.equipment,
-                "depth": _fields.depth,
-                "reef": _fields.reef,
-                "pk": _fields.pk,
-                "get": get,
-                "display": display};
+        });
     }
 
-    function Observation(){
-        var _fields = {
-            "drop_time": null,
-            "collection_time": null,
-            "time_bait_gone": null,
-            "equipment":"",
-            "depth": "",
-            "reef": "",
-            "pk":0
-        };
+    function initTabAccordion() {
+        var $form = $('#set-env-form');
 
-        var get = function(id, cb){
-            $.get('/api/observations/' + id, function (data) {
-                $.extend(true, _fields, data);
-                if (cb){
-                    cb();
-                }
+        function scrollTo(selector) {
+            $('html, body').animate({
+                scrollTop: $(selector).offset().top
+            }, 1000);
+        }
+
+        $form.on('keydown', '#id_code', function(e) {
+            if (e.which === 9) { // tab key
+                $('#headingTwo.collapsed').click();
+                scrollTo('#headingTwo');
+            }
+        });
+
+        $form.on('keydown', '.selectize-control input', function(e) {
+            if (e.which === 9) { // tab key
+                $('#headingThree.collapsed').click();
+                scrollTo('#headingThree');
+            }
+        });
+
+        $form.on('keydown', '#id_drop-surface_chop', function(e) {
+            if (e.which === 9) { // tab key
+                $('#headingFour.collapsed').click();
+                scrollTo('#headingFour');
+            }
+        });
+
+        $form.on('keydown', '#id_haul-surface_chop', function(e) {
+            if (e.which === 9) { // tab key
+                $('#headingFive.collapsed').click();
+                scrollTo('#headingFive');
+            }
+        });
+    }
+
+    function initSubstrateWidget() {
+        var $parent = $('.habitat-substrate-parent');
+        var $left = $parent.find('.left');
+        var $center = $parent.find('.center');
+        var $right = $parent.find('.right');
+
+        function recalculateTotalPercent() {
+            var percents = $.map($('input[name="percent"]'), function(i) { return parseInt($(i).val()); });
+            var sum = percents.reduce(function(sum, x) { return sum + x; }, 0);
+            $parent.find('input[name="total-percent"]').val(sum);
+        }
+
+        function addSubstrateRow(e, substrate, value) {
+            e.preventDefault();
+
+            var remainingPercent = Math.max(0, 100 - $parent.find('input[name="total-percent"]').val());
+
+            $.get('/substrate/', function(res) {
+                var html = '<div class="substrate-row"><select class="substrate select form-control" name="substrate">';
+                res.substrates.forEach(function(s) {
+                    var selected = (parseInt(s.id) === parseInt(substrate)) ? ' selected="selected"' : '';
+                    html += '<option value="' + s.id + '"' + selected + '>' + s.name + '</option>';
+                });
+                html += '</select></div>';
+                $left.prepend(html);
+
+                $center.prepend('<div class="substrate-row"><div class="input-holder">' +
+                    '<input class="percent" name="percent" type="number" ' +
+                        'step="1" min="1" max="100" value="' + (value ? parseInt(value) : parseInt(remainingPercent)) + '" />' +
+                    '</div></div>');
+
+                $right.prepend('<div class="substrate-row">' +
+                    '<a href="#" class="split">Split</a>' +
+                    '<a href="#" class="remove">Remove</a>' +
+                    '</div>');
+
+                recalculateTotalPercent();
             });
-        };
+        }
 
-        var display = function($containerEl){
-            $containerEl.empty()
-                        .append($('<h4>' + moment(_fields.drop_time).format("dddd, MMMM Do YYYY, h:mm a") +
-                                '</h4><dl><dt>drop time:</dt><dd>' + moment(_fields.drop_time).format("H:mm:ss") +
-                                '</dd><dt>Collection Time</dt><dd>' + moment(_fields.collection_time).format("H:mm:ss") +
-                                '</dd><dt>Bait Gone</dt><dd> '+ moment(_fields.time_bait_gone).format("H:mm:ss") +
-                                '</dd><dt>Equipment</dt><dd> ' + _fields.equipment +
-                                '</dd><dt>Depth</dt><dd> ' + _fields.depth +
-                                '</dd><dt>Reef</dt><dd> ' + _fields.reef + '</dd></dl>'));
+        function removeSubstrateRow(e) {
+            e.preventDefault();
 
-        };
+            var index = $right.find('a.remove').index($(this));
+            $left.find('.substrate-row').slice(index, index + 1).remove();
+            $center.find('.substrate-row').slice(index, index + 1).remove();
+            $right.find('.substrate-row').slice(index, index + 1).remove();
+            recalculateTotalPercent();
+        }
 
-        return {"drop_time": _fields.drop_time,
-                "collection_time": _fields.collection_time,
-                "time_bait_gone": _fields.time_bait_gone,
-                "equipment": _fields.equipment,
-                "depth": _fields.depth,
-                "reef": _fields.reef,
-                "pk": _fields.pk,
-                "get": get,
-                "display": display};
+        function splitModal(e) {
+            e.preventDefault();
+
+            var $originalThis = $(this);
+            var index = $right.find('a.split').index($originalThis);
+            var parentId = $left.find('select.substrate').slice(index, index + 1).val();
+            var parentPercent = $center.find('input[type="number"]').slice(index, index + 1).val();
+            var $splitModal = $('div.split-modal');
+            var position = $(this).position().top + 30 + 'px';
+
+            if ($splitModal.length) {
+                return $splitModal.remove();
+            }
+
+            $.get('/substrate/', { parent_id: parentId }, function(res) {
+                var $subLeft, $subCenter, $subRight, modalHtml, messageHtml;
+
+                if (!res.substrates.length) {
+                    messageHtml = '<div class="message-modal clear">' +
+                        '<p class="no-children-message">' +
+                            'This substrate has no children; unable to split' +
+                        '</p></div>';
+                    $parent.append(messageHtml);
+                    $parent.find('.message-modal')
+                        .css('top', position)
+                        .delay(1500)
+                        .fadeOut(300, function() { $(this).remove(); });
+                    return false;
+                }
+
+                function getModalPercentSum() {
+                    var $inputs = $parent.find('.split-modal .center input.percent');
+                    var percents = $.map($inputs, function(i) { return parseInt($(i).val()); });
+                    return percents.reduce(function(sum, x) { return sum + x; }, 0);
+                }
+
+                function recalculateModalPercent() {
+                    $parent.find('.split-modal .center input.total').val(getModalPercentSum());
+                }
+
+                function showSubError(message) {
+                    $splitModal.find('.buttons span.sub-error')
+                        .text(message)
+                        .fadeIn(500)
+                        .delay(1500)
+                        .fadeOut(500, function() { $(this).text(''); });
+                }
+
+                modalHtml = '<div class="split-modal clear">' +
+                    '<div class="left">' +
+                        '<div class="substrate-row">' +
+                            '<select class="substrate select form-control">';
+                res.substrates.forEach(function(s) {
+                    modalHtml += '<option value="' + s.id + '">' + s.name + '</option>';
+                });
+                modalHtml += '</select></div>';
+                modalHtml += '<div class="substrate-row"><button class="btn btn-primary btn-fp add-substrate">+</button>' +
+                    '<span class="total">Total</span>' +
+                    '</div></div>';
+
+                modalHtml += '<div class="center">' +
+                        '<div class="substrate-row">' +
+                            '<div class="input-holder">' +
+                                '<input class="percent" type="number" value="' + parentPercent + '" step="1" min="1" max="100" />' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="substrate-row">' +
+                            '<div class="input-holder"><input class="total" type="number" readonly="readonly" /></div>' +
+                        '</div>' +
+                    '</div>';
+
+                modalHtml += '<div class="right">' +
+                        '<div class="substrate-row">' +
+                            '<a href="#" class="modal-remove">Remove</a>' +
+                        '</div>' +
+                        '<div class="substrate-row">' +
+                            '<span class="help-text">Details must total ' + parentPercent + '%</span>' +
+                        '</div>' +
+                    '</div>';
+
+                modalHtml += '<div class="buttons">' +
+                        '<span class="sub-error"></span>' +
+                        '<button class="btn btn-default btn-fp sub-cancel">Cancel</button>' +
+                        '<button class="btn btn-primary btn-fp sub-ok">OK</button>' +
+                    '</div></div>';
+
+                $parent.append(modalHtml);
+                $splitModal = $($splitModal.selector);
+                $splitModal.css('top', position);
+
+                $subLeft = $splitModal.find('.left');
+                $subCenter = $splitModal.find('.center');
+                $subRight = $splitModal.find('.right');
+
+                $splitModal.on('click', '> .left button.add-substrate', function(e) {
+                    e.preventDefault();
+
+                    var remainingPercent = Math.max(0, parentPercent - $subCenter.find('input.percent').val());
+
+                    var leftHTML = '<div class="substrate-row"><select class="substrate select form-control">';
+                    res.substrates.forEach(function(s) {
+                        leftHTML += '<option value="' + s.id + '">' + s.name + '</option>';
+                    });
+                    leftHTML += '</select></div>';
+                    $subLeft.prepend(leftHTML);
+
+                    $subCenter.prepend('<div class="substrate-row">' +
+                        '<div class="input-holder">' +
+                            '<input class="percent" type="number" value="' + remainingPercent + '" step="1" min="1" max="100" />' +
+                    '</div></div>');
+
+                    $subRight.prepend('<div class="substrate-row">' +
+                        '<a href="#" class="modal-remove">Remove</a>' +
+                    '</div>');
+
+                    recalculateModalPercent();
+                });
+
+                $splitModal.on('click', '> .right a.modal-remove', function(e) {
+                    e.preventDefault();
+                    var index = $subRight.find('a.modal-remove').index($(this));
+                    $subLeft.find('.substrate-row').slice(index, index + 1).remove();
+                    $subCenter.find('.substrate-row').slice(index, index + 1).remove();
+                    $subRight.find('.substrate-row').slice(index, index + 1).remove();
+                });
+
+                $splitModal.on('click', '> .buttons button.sub-cancel', function(e) {
+                    e.preventDefault();
+                    return $splitModal.remove();
+                });
+
+                $splitModal.on('click', '> .buttons button.sub-ok', function(e) {
+                    e.preventDefault();
+                    var $substrates, subVals, $percents, checkRange;
+
+                    $splitModal.find('.buttons span.sub-error').hide().clearQueue();
+
+                    // allowed range check
+                    $percents = $subCenter.find('input.percent');
+                    checkRange = function (p) {
+                        return parseInt($(p).val()) > 100 || parseInt($(p).val()) < 1
+                    };
+                    if ($.grep($percents, checkRange).length) {
+                        showSubError('Substrate value must be between 1 and 100');
+                        return false;
+                    }
+
+                    // check for dupe substrates
+                    $substrates = $subLeft.find('select.substrate');
+                    subVals = $.map($substrates, function (s) {
+                        return $(s).val();
+                    });
+                    if (subVals.length !== $.unique(subVals).length) {
+                        showSubError('Must not have duplicate substrates');
+                        return false;
+                    }
+
+                    // check parent percent match
+                    if (parseInt($subCenter.find('input.total').val()) != parentPercent) {
+                        showSubError('Substrates must total ' + parentPercent + '%');
+                        return false;
+                    }
+
+                    // split on the parent
+                    $splitModal.hide();
+                    removeSubstrateRow.call($originalThis.siblings('a.remove'), new Event('remove row'));
+                    $substrates.each(function(i, sub) {
+                        addSubstrateRow(new Event('add row'), $(sub).val(), $percents.slice(i, i+1).val());
+                    });
+                    $splitModal.remove();
+                });
+
+                $splitModal.on('change', 'input.percent', recalculateModalPercent);
+
+                recalculateModalPercent();
+            });
+        }
+
+        $parent.find('> .left button.add-substrate').click(addSubstrateRow);
+
+        $parent.on('change', 'input[name="percent"]', recalculateTotalPercent);
+        $parent.on('click', 'a.split', splitModal);
+        $parent.on('click', 'a.remove', removeSubstrateRow);
     }
-
 })(jQuery);

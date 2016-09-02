@@ -1,36 +1,57 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
-
 {% block content %}
+
+    {% if trip_pk or form_errors %}
+    {# jump to form if editing or there is an error #}
+        <script type="text/javascript">$(function() { window.location.hash = '#trip-form-parent'; });</script>
+    {% endif %}
+
     <div class="col-md-12">
         <div class="row">
-            <div class="well trail">
-                <a href="/">Global FinPrint</a> |
-                Trips
+            <h3>Trips</h3>
+        </div>
+
+        <div id="trip-search" class="row well">
+            <div class="search col-md-12 clearfix">
+                <h4>Use filters to limit trip results</h4>
+                {% crispy search_form %}
             </div>
         </div>
 
-        <div class="row">
-            <div class="search clearfix">
-                {% crispy search_form %}
+        <div>
+            <p class="text-right"><a id="btn-show-trip-form" class="btn btn-primary btn-fp">Create new trip</a></p>
+        </div>
+
+        <div id="trip-form-parent">
+            <div class="row">
+            {% if trip_pk %}
+                <h3 class="form-title">Edit trip</h3>
+            {% else %}
+                <h3 class="form-title">New trip</h3>
+            {% endif %}
             </div>
+            <div class="row well clearfix trip-form-well">{% crispy form %}</div>
         </div>
 
         <div class="row">
             <table class="table table-bordered table-condensed trip-table" cellspacing="0" width="100%">
                 <thead>
-                <tr class="success">
-                    <th>Code</th>
-                    <th>Source</th>
-                    <th>Start date</th>
-                    <th>End date</th>
-                    <th>Region</th>
-                    <th>Location</th>
-                    <th>Team</th>
-                    <th>Boat</th>
-                    <th>Sets</th>
-                    <th>Edit</th>
-                </tr>
+                    <tr class="table-header-title">
+                        <th colspan=10><h4>Showing all trips</h4></th>
+                    </tr>
+                    <tr class="table-header-labels well">
+                        <th>Trip code</th>
+                        <th>Source</th>
+                        <th>Start date</th>
+                        <th>End date</th>
+                        <th>Region</th>
+                        <th>Location</th>
+                        <th>Team</th>
+                        <th>Boat</th>
+                        <th>Sets</th>
+                        <th>Edit</th>
+                    </tr>
                 </thead>
                 <tbody>
                 {% for trip in trips %}
@@ -56,20 +77,5 @@
                 </tbody>
             </table>
         </div>
-
-        {% if request.user.is_authenticated %}
-        <div class="row">
-
-            {% if trip_pk %}
-            <h3>Edit trip "{{ trip_name }}"</h3>
-            {% else %}
-            <h3>Add a trip</h3>
-            {% endif %}
-
-            <div class="well clearfix">
-                {% crispy form %}
-            </div>
-        </div>
-        {% endif %}
     </div>
 {% endblock %}

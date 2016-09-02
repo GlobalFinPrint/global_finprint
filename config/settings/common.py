@@ -2,6 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import environ
+import sys
 
 
 ROOT_DIR = environ.Path(__file__) - 3  # (/a/b/myfile.py - 3 = /)
@@ -236,6 +237,11 @@ LOGGING = {
             'formatter': 'debug_formatter',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': LOG_DIR,
+        },
+        'stdout': {
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+            'formatter': 'terse_formatter'
         }
     },
     'loggers': {
@@ -248,6 +254,11 @@ LOGGING = {
         {
             'handlers': ['debug_log_file', 'log_file'],
         },
+        'scripts':
+        {
+            'handlers': ['stdout'],
+            'level': 'INFO'
+        }
     }
 }
 
@@ -272,6 +283,7 @@ LEAFLET_CONFIG = {
 
 DJANGO_SERVER_ENV = env('DJANGO_SERVER_ENV', default='local')
 FRAME_CAPTURE_BUCKET = 'finprint-annotator-screen-captures'
+HABITAT_IMAGE_BUCKET = 'finprint-habitat-images'
 
 # Custom auth backend
 AUTHENTICATION_BACKENDS = ['global_finprint.core.backends.FinprintAuth']

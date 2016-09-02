@@ -1,0 +1,161 @@
+// global style overrides go in here
+@import 'lib';
+
+// bootstrap alert CSS, translated to the django-standard levels of
+// debug, info, success, warning, error
+.alert-debug {
+  color: black;
+  background-color: white;
+  border-color: #d6e9c6;
+}
+
+.alert-info {
+  color: #3a87ad;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+}
+
+.alert-success {
+  color: #468847;
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+}
+
+.alert-warning {
+  color: black;
+  background-color: orange;
+  border-color: #d6e9c6;
+}
+
+.alert-error {
+  color: #b94a48;
+  background-color: #f2dede;
+  border-color: #eed3d7;
+}
+
+
+// global table style
+table {
+  thead {
+    tr{
+      border: 0;
+      th {
+        border: 0 !important;
+      }
+    }
+
+    tr.table-header-title {
+      color: white;
+      background-color: $blue;
+    }
+
+    tr.table-header-labels {
+      color: $blue;
+    }
+  }
+}
+
+
+// inline form style
+.form-inline {
+  .form-group {
+    vertical-align: top;
+    padding-bottom: 15px;
+    margin-right: 5px;
+
+    &.has-error {
+      position: relative;
+      padding-bottom: 30px;
+    }
+
+    a.cancel-button {
+      margin: 0 10px;
+    }
+  }
+}
+
+
+// accordion style
+.panel-heading .accordion-toggle:after {
+    /* symbol for "opened" panels */
+    @include glyphicon("\e114");
+    float: right;
+}
+
+.panel-heading.collapsed .accordion-toggle:after {
+    /* symbol for "collapsed" panels */
+    @include glyphicon("\e079");
+}
+
+
+// image selector widget
+form div.image-select-widget-parent {
+  cursor: pointer;
+
+  div.image-select-widget {
+    width: 216px;
+    height: 120px;
+    background-size: 216px 120px;
+    margin-right: 15px;
+  }
+
+  input {
+    display: none;
+  }
+
+  div.caption {
+    color: $link;
+  }
+}
+
+
+// styled buttons
+.btn.btn-fp {
+  background: none;
+  box-shadow: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  border-color: $blue;
+  margin-right: 10px;
+
+  &.btn-default {
+    background-color: white;
+    color: $blue;
+  }
+
+  &.btn-primary {
+    background-color: $blue;
+    color: white;
+  }
+}
+
+
+// datepicker style
+div.input-group.date {
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+
+  input {
+    border-right: none;
+    box-shadow: none;
+  }
+
+  span.input-group-addon {
+    background: white;
+    padding-left: 5px;
+  }
+}
+
+
+// misc. style
+span.disabled {
+  color: #ccc;
+}
+
+h3.inline {
+  display: inline-block;
+}
+
+a {
+  color: $link;
+}

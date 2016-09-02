@@ -2,15 +2,15 @@ from django import forms
 from django.db.models import Count
 from django.core.urlresolvers import reverse
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, HTML
-from crispy_forms.bootstrap import FormActions
+import crispy_forms.layout as cfl
+import crispy_forms.bootstrap as cfb
 from bootstrap3_datetime.widgets import DateTimePicker
-from ..habitat.models import Location, Region
+from ..habitat.models import Location, Region, Reef, ReefHabitat
 from .models import Trip
 from ..core.models import Team
 
 
-datepicker_opts = {"format": "MMMM DD YYYY"}
+datepicker_opts = {"format": "MMMM DD YYYY", "showClear": True, "extraFormats": ["D/M/Y"]}
 
 
 class TripForm(forms.ModelForm):
@@ -28,21 +28,30 @@ class TripForm(forms.ModelForm):
 
     class Meta:
         model = Trip
-        fields = ['source', 'code', 'team', 'start_date', 'end_date', 'location', 'boat']
+        fields = ['source', 'team', 'location', 'start_date', 'end_date', 'boat', 'code']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
-        self.helper.form_class = 'form-inline trip'
-        if 'instance' in kwargs and kwargs['instance']:
-            self.helper.form_action = reverse('trip_update', args=[kwargs['instance'].pk])
-        else:
-            self.helper.form_action = reverse('trip_list')
+        self.helper.form_class = 'form-inline trip form-group-sm'
         self.helper.form_method = "post"
-        self.helper.layout.append(
-            FormActions(HTML("""<a role="button" class="btn btn-default cancel-button"
-            href="{% url "trip_list" %}">Cancel</a>"""),
-                        Submit('save', 'Save trip')))
+        help_text = '<small class="help-block">*Required Field &nbsp;&nbsp;&nbsp; **Note: If code is left blank, ' \
+                    'it will be automatically generated.</small>'
+        self.helper.layout = cfl.Layout(
+            cfl.Fieldset(
+                *([None] + self.Meta.fields)
+            ),
+            cfl.Div(
+                cfl.Div(
+                    cfl.HTML(help_text),
+                    css_class='pull-left'),
+                cfl.Div(
+                    cfb.FormActions(
+                        cfl.HTML("""<a role="button" class="btn btn-default btn-fp cancel-button"
+                        href="{% url "trip_list" %}">Cancel</a>"""),
+                        cfl.Submit('save', 'Save trip', css_class='btn-fp')),
+                    css_class='pull-right')))
+        self.fields['code'].label += '**'
 
 
 class TripSearchForm(forms.Form):
@@ -58,14 +67,25 @@ class TripSearchForm(forms.Form):
                                       queryset=Location.objects.filter(trip__in=Trip.objects.all()).distinct())
     team = forms.ModelChoiceField(required=False,
                                   queryset=Team.objects.filter(trip__in=Trip.objects.all()).distinct())
+    reef = forms.ModelChoiceField(required=False,
+                                  queryset=Reef.objects.order_by('site__name', 'name'))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
-        self.helper.form_class = 'form-inline trip-search'
-        self.helper.form_action = reverse('trip_list')
+        self.helper.form_class = 'form-inline trip-search form-group-sm'
         self.helper.form_method = "get"
-        self.helper.layout.append(
-            FormActions(HTML("""<a role="button" class="btn btn-default cancel-button"
-                href="{% url "trip_list" %}">Reset search</a>"""),
-                        Submit('', 'Search trips')))
+        self.helper.layout = cfl.Layout(
+            cfl.Div(
+                'search_start_date',
+                'search_end_date',
+                'region',
+                'location',
+                'team',
+                'reef'),
+            cfl.Div(
+                cfb.FormActions(
+                    cfl.HTML("""<a role="button" class="btn btn-default cancel-button btn-fp"
+                    href="{% url "trip_list" %}">Reset</a>"""),
+                    cfl.Submit('', 'Search', css_class='btn-fp')),
+                css_class='row pull-right'))

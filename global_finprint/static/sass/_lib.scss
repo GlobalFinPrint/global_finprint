@@ -1,0 +1,25 @@
+// variables, mixins, etc. go in here
+
+// stylesheet variables
+$blue: #29566D;
+$green: #7ED321;
+$gray: #838C9E;
+$black: #4A4A4A;
+$link: #4A90E2;
+$error: darkred;
+$table-header: transparentize($blue, 0.8);
+$parent-row: transparentize($green, 0.5);
+$child-row: transparentize($green, 0.75);
+$table-border: transparentize($blue, 0.95);
+$form-background: #e9eef0;
+$accordian-panel: $form-background;
+$accordian-header: #c2cfd6;
+$accordian-header-active: #d5dee2;
+
+// mixins and helpers
+@mixin glyphicon($code) {
+  content: $code;
+  font-family: 'Glyphicons Halflings';
+  font-size: 12px;
+  padding-left: 5px;
+}
