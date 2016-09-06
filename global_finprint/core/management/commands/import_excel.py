@@ -85,12 +85,17 @@ def import_set_data(sheet):
                 video = get_cell(row, 'video').value
                 video_name_array = [trip_code, set_code]
                 try:
+                    video_format = get_cell(row, 'FORMAT').value.lower()
+                except KeyError:
+                    video_format = 'mp4'
+                try:
                     camera = get_cell(row, 'camera').value
                     if camera:
                         video_name_array.append(camera)
                 except KeyError:
                     pass # No camera column
-                video_name = '{}.avi'.format('_'.join(video_name_array))
+                video_name = '{}.{}'.format('_'.join(video_name_array), video_format)
+                logger.info('Video name: {}'.format(video_name))
                 comment = get_cell(row, 'comment').value
 
                 ic.import_set(
