@@ -32,15 +32,7 @@ def bulk_import(excel_files_root, video_length_file):
         )
 
 if __name__ == '__main__':
-    for log_path in ['/home/ubuntu/chapman_import.log', 'chapman_import.log']:
-        try:
-            logging.basicConfig(
-                format='%(asctime)s:%(levelname)s:%(message)s',
-                level=logging.INFO,
-                filename=log_path)
-            break
-        except FileNotFoundError:
-            pass # unable to open log file
-    else:
-        print('Unable to open a log file!')
+    logging.basicConfig(
+        format='%(asctime)s:%(levelname)s:%(message)s',
+        level=logging.INFO)
     bulk_import()

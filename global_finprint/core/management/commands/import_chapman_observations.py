@@ -28,6 +28,7 @@ def import_file(in_file, trip_code, set_code, video_length_file):
     global video_length_map
     video_length_map = get_video_length_map(video_length_file)
 
+    logging.info('Importing observations from "{}"'.format(in_file))
     wb = ec.open_workbook(in_file)
 
     for last_name in wb.sheetnames:
