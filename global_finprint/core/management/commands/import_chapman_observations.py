@@ -14,6 +14,7 @@ import os
 import logging
 import traceback
 import json
+import csv
 
 from django.core.management.base import BaseCommand, CommandError
 
@@ -21,8 +22,10 @@ import global_finprint.core.management.commands.import_common as ic
 import global_finprint.core.management.commands.excel_common as ec
 
 logger = logging.getLogger('scripts')
+video_length_map = None
 
 def import_file(in_file, trip_code, set_code, video_length_file):
+    global video_length_map
     video_length_map = get_video_length_map(video_length_file)
 
     wb = ec.open_workbook(in_file)
@@ -40,9 +43,29 @@ def import_observation_data(sheet, trip_code, set_code, last_name):
 
     headers = ec.get_header_map(sheet.rows[3])
     get_cell = ec.get_cell_by_name_extractor(headers)
+    cur_video = None
+    cur_offset = 0
+    next_offset = 0
+    try:
+        set_videos_map = video_length_map[trip_code][set_code]
+    except KeyError:
+        logger.error('Unable to find video info for trip "{}", set "{}".'.format(trip_code, set_code))
+        return
     for idx, row in enumerate(sheet.rows[4:], start=5):
         try:
-            obsv_time = ic.time2milliseconds(ec.get_time_from_cell(get_cell(row, 'Timestamp')))
+            basename = get_cell(row, 'File').value
+            if not basename in [None, '']:
+                filename = '{}.MP4'.format(get_cell(row, 'File').value).lower()
+                if cur_video != filename:
+                    if filename in set_videos_map:
+                        cur_video = filename
+                        cur_offset = next_offset
+                        next_offset += set_videos_map[filename]
+                        logger.info('Switching to video "{}", offset is now "{}"'.format(filename, cur_offset))
+                    else:
+                        logger.error('Video length for "{}" not found in mapping file.'.format(filename))
+                        break
+            obsv_time = ic.time2milliseconds(ec.get_time_from_cell(get_cell(row, 'Timestamp'))) + cur_offset
             duration = None
             family = None
             genus = get_cell(row, 'Genus').value
@@ -106,6 +129,21 @@ def get_dict_from_row(headers, row, get_cell_func):
 
 def get_video_length_map(video_length_file):
     result = {}
+    vlf = csv.reader(open(video_length_file), delimiter='\t')
+    for row in vlf:
+        trip_code = row[0]
+        set_code = row[1]
+        folder = row[2]
+        video = row[3].lower()
+        length_ms = round(float(row[4]) * 1000)
+
+        if trip_code not in result:
+            result[trip_code] = {}
+        trip_dict = result[trip_code]
+        if set_code not in trip_dict:
+            trip_dict[set_code] = {}
+        set_dict = trip_dict[set_code]
+        set_dict[video] = length_ms
     return result
 
 class Command(BaseCommand):

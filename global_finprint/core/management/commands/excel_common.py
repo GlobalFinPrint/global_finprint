@@ -22,7 +22,7 @@ def get_header_map(header_row):
     result = {}
     for idx, header in enumerate(header_row):
         if header.value:
-            result[header.value] = idx
+            result[header.value.strip()] = idx
     return result
 
 def get_float_from_cell(cell):
