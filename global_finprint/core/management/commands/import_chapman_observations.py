@@ -56,9 +56,12 @@ def import_observation_data(sheet, trip_code, set_code, last_name):
         return
     for idx, row in enumerate(sheet.rows[4:], start=5):
         try:
-            basename = get_cell(row, 'File').value
+            basename = ec.get_cell_value(get_cell(row, 'File'))
             if not basename in [None, '']:
-                filename = '{}.MP4'.format(get_cell(row, 'File').value).lower()
+                if basename.lower().endswith('.mp4'):
+                    filename = basename
+                else:
+                    filename = '{}.MP4'.format(basename).lower()
                 if cur_video != filename:
                     if filename in set_videos_map:
                         cur_video = filename
@@ -71,8 +74,8 @@ def import_observation_data(sheet, trip_code, set_code, last_name):
             obsv_time = ic.time2milliseconds(ec.get_time_from_cell(get_cell(row, 'Timestamp'))) + cur_offset
             duration = None
             family = None
-            genus = get_cell(row, 'Genus').value
-            species = get_cell(row, 'Species').value
+            genus = ec.get_cell_value(get_cell(row, 'Genus'))
+            species = ec.get_cell_value(get_cell(row, 'Species'))
             behavior = None
             sex = None
             stage = None
