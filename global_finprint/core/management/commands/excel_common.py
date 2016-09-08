@@ -42,7 +42,7 @@ def get_date_from_cell(cell):
 def get_time_from_cell(cell, format_str='%H:%M:%S %p'):
     result = cell.value
     if isinstance(result, str):
-        for format_string in ['%H:%M:%S %p', ':%M', '%M:%Ss']:
+        for format_string in ['%H:%M:%S %p', ':%M', '%M:%Ss', '%M:%S']:
             try:
                 result = datetime.strptime(result, format_string).time()
                 break
