@@ -84,10 +84,13 @@ def import_set_data(sheet):
                 visibility = get_cell(row, 'visibility').value
                 video = get_cell(row, 'video').value
                 video_name_array = [trip_code, set_code]
+                video_format = 'mp4'
                 try:
-                    video_format = get_cell(row, 'FORMAT').value.lower()
+                    video_format_tmp = get_cell(row, 'FORMAT').value.lower()
+                    if video_format_tmp:
+                        video_format = video_format_tmp
                 except KeyError:
-                    video_format = 'mp4'
+                    pass # column not included in this spreadsheet
                 try:
                     camera = get_cell(row, 'camera').value
                     if camera:
