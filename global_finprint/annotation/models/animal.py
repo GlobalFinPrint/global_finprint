@@ -48,7 +48,7 @@ class Animal(models.Model):
                                             help_text='Enter CAAB code without spaces')
 
     class Meta:
-        unique_together = ('genus', 'species')
+        unique_together = ('family', 'genus', 'species')
 
     @staticmethod
     def get_for_api(assignment):
