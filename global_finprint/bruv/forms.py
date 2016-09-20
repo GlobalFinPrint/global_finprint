@@ -33,7 +33,7 @@ class SetForm(forms.ModelForm):
         required=False
     )
     haul_time = forms.TimeField(
-        input_formats=['%B %d %Y %H:%M'],
+        input_formats=['%H:%M'],
         widget=DateTimePicker(options=timepicker_opts, icon_attrs={'class': 'glyphicon glyphicon-time'}),
         required=False
     )
