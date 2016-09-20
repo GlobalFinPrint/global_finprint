@@ -20,6 +20,7 @@ add error signaling.
 import logging
 import functools
 import json
+from datetime import datetime
 
 import django.contrib.auth.models as djam
 import global_finprint.trip.models as gftm
@@ -39,11 +40,12 @@ CAMERA_FIELD_LENGTH = 32
 LEGACY_USER_FORMAT = 'LEGACY_{}'
 LEGACY_EMAIL_FORMAT = '{}@sink.arpa'
 LEGACY_AFFILITATION = 'Legacy'
-LEGACY_COMMENT = 'Auto-imported legacy data.'
+LEGACY_COMMENT = 'Auto-imported data.'
 
 UNDETERMINED_HABITAT_TYPE = 'To Be Updated'
 
 logger = logging.getLogger('scripts')
+animal_map = None
 
 class DataError(Exception):
     pass
@@ -93,16 +95,16 @@ def import_trip(
         trip = gftm.Trip.objects.filter(code=trip_code).first()
         if not trip:
             location = gfhm.Location.objects.filter(name=location_name).first()
+            validate_data(location, 'No location found with name "{}"'.format(location_name))
             lead_candidates = djam.User.objects.filter(last_name=investigator)
-            validate_data(
-                len(lead_candidates) > 0,
-                'No investigator with last name {}'.format(investigator))
-            validate_data(
-                len(lead_candidates) < 2,
-                'More than one investigator with last name {}'.format(investigator))
-
-            lead = gfcm.FinprintUser.objects.filter(user=lead_candidates[0]).first()
-            validate_data(lead, 'No FinprintUser associated with User "{}"'.format(investigator))
+            if len(lead_candidates) == 0:
+                lead = get_user(investigator, 'investigator')
+            else:
+                validate_data(
+                    len(lead_candidates) < 2,
+                    'More than one investigator with last name {}'.format(investigator))
+                lead = gfcm.FinprintUser.objects.filter(user=lead_candidates[0]).first()
+            validate_data(lead, 'No FinprintUser associated with "{}"'.format(investigator))
 
             team=gfcm.Team.objects.filter(lead=lead).first()
             validate_data(team, 'No such team: {} - {}'.format(investigator, collaborator))
@@ -142,6 +144,7 @@ def import_set(
         bait_str,
         visibility,
         source_video_str,
+        aws_video_str,
         comment
 ):
     try:
@@ -150,12 +153,13 @@ def import_set(
         validate_data(trip, 'references non-existent trip "{}"'.format(trip_code))
         the_set = gfbm.Set.objects.filter(code=set_code, trip=trip).first()
         if not the_set:
+            validate_data(drop_time, 'No drop time supplied.')
+            validate_data(haul_time, 'No haul time supplied.')
             validate_data(drop_time < haul_time, 'Drop time must be before haul time.')
             reef_habitat = get_reef_habitat(site_name, reef_name, habitat_type)
             equipment = parse_equipment_string(equipment_str)
             bait = parse_bait_string(bait_str)
-            video_name = '{}_{}.avi'.format(trip_code, set_code)
-            video = gfav.Video(file=video_name, source_folder=source_video_str, user=get_import_user())
+            video = gfav.Video(file=aws_video_str, source_folder=source_video_str, user=get_import_user())
             video.save()
             if not visibility:
                 visibility = '0'
@@ -220,20 +224,18 @@ def import_environment_measure(
                 try:
                     tide_state = get_tide_state_map()[tide_state.lower()]
                 except KeyError:
-                    valdiate_data(
+                    validate_data(
                         False,
-                        'Bad tide_state "%s" for set "%s" of trip "%s"', tide_state, set_code, trip_code
-                    )
+                        'Bad tide_state "{}" for set "{}" of trip "{}"'.format(tide_state, set_code, trip_code))
             if wind_direction:
                 wind_direction = wind_direction.upper()
             if surface_chop:
                 try:
                     surface_chop = get_surface_chop_map()[surface_chop.lower()]
                 except KeyError:
-                    valdiate_data(
+                    validate_data(
                         False,
-                        'Bad tide_state "%s" for set "%s" of trip "%s"', tide_state, set_code, trip_code
-                    )
+                        'Bad surface chop "{}" for set "{}" of trip "{}"'.format(surface_chop, set_code, trip_code))
 
             enviro_measure = gfbm.EnvironmentMeasure(
                 water_temperature=temp,
@@ -281,7 +283,8 @@ def import_observation(
         length,
         comment,
         annotator,
-        annotation_date
+        annotation_date,
+        raw_import_json
 ):
     try:
         logger.info(
@@ -302,7 +305,7 @@ def import_observation(
             annotator_user = get_annotator(annotator)
             assignment = get_assignment(annotator_user, the_set.video)
 
-            if does_observation_exist(assignment, duration, obsv_time, comment):
+            if does_observation_exist(assignment, duration, obsv_time, raw_import_json):
                 logger.warning(
                     'Not importing: identical observation already exists from "%s" for set "%s" on trip "%s"',
                     annotator,
@@ -318,14 +321,22 @@ def import_observation(
                 )
                 observation.save()
 
-                if family:
+                if family or genus:
                     observation.type = 'A'
                     observation.save()
-                    animal = gfaa.Animal.objects.filter(
-                        family=family,
-                        genus=genus,
-                        species=species
-                    ).first()
+                    animal_id = get_animal_mapping(family, genus, species)
+                    if animal_id:
+                        animal = gfaa.Animal.objects.get(pk=animal_id)
+                    elif family == None:
+                        animal = gfaa.Animal.objects.filter(
+                            genus=genus,
+                            species=species).first()
+                    else:
+                        animal = gfaa.Animal.objects.filter(
+                            family=family,
+                            genus=genus,
+                            species=species
+                        ).first()
                     validate_data(animal, 'Unable to find animal {} - {} - {}'.format(family, genus, species))
                     animal_obsv_args = {
                         'observation': observation,
@@ -333,7 +344,10 @@ def import_observation(
                         'user': get_import_user()
                     }
                     if sex:
-                        animal_obsv_args['sex'] = get_animal_sex_map()[sex.lower()]
+                        try:
+                            animal_obsv_args['sex'] = get_animal_sex_map()[sex.lower()]
+                        except KeyError:
+                            validate_data(False, 'Unknown animal sex "{}"'.format(sex))
                     if length:
                         animal_obsv_args['length'] = length
                     if stage:
@@ -351,7 +365,8 @@ def import_observation(
                     event_time=obsv_time,
                     note=comment,
                     attribute=attribute_ids,
-                    user=get_import_user()
+                    user=get_import_user(),
+                    raw_import_json=raw_import_json
                 )
                 event.save()
                 logger.info(
@@ -363,18 +378,45 @@ def import_observation(
     except DataError:
         logger.error('Failed while adding observation for set "%s" of trip "%s"', set_code, trip_code)
 
+def update_set_data(trip_code, set_code, visibility):
+    try:
+        logger.info('Updating set data for set "{}" of trip "{}"'.format(set_code, trip_code))
+        the_trip = gftm.Trip.objects.filter(code=trip_code).first()
+        validate_data(the_trip, 'Trip "{}" not found when trying to import observation.'.format(trip_code))
+
+        the_set = gfbm.Set.objects.filter(code=set_code, trip=the_trip).first()
+        validate_data(the_set, 'Set "{}" not found when trying to import observation.'.format(set_code))
+
+        the_set.visibility = visibility
+        the_set.save()
+    except DataError:
+        logger.error('Failed to update visibility for set "{}" of trip "{}"'.format(set_code, trip_code))
+
+def load_animal_mapping(mapping_file):
+    global animal_map
+    animal_map = json.load(open(mapping_file))
+
+def get_animal_mapping(family, genus, species):
+    result = None
+    try:
+        if animal_map:
+            result = animal_map[family][genus][species]
+    except KeyError:
+        pass # no special mapping for this animal
+    return result
+
 def does_observation_exist(
         assignment,
         duration,
         obsv_time,
-        comment
+        raw_import_json
 ):
     result = False
     event = gfao.Event.objects.filter(
         observation__assignment=assignment,
         observation__duration=duration,
         event_time=obsv_time,
-        note=comment
+        raw_import_json=raw_import_json
     ).first()
     if event:
         result = True
@@ -395,16 +437,34 @@ def get_assignment(annotator_user, video):
         assignment.save()
     return assignment
 
-def get_annotator(annotator):
-    validate_data(annotator, 'No annotator specified.')
-    anno_array = annotator.split(' ', maxsplit=1)
-    validate_data(len(anno_array) == 2, 'Need both first and last name for annotator ({})'.format(annotator))
+def get_user(full_name, column):
+    validate_data(full_name, 'No {} specified.'.format(column))
+
+    # check that we didn't just get a last name
+    user_candidates = find_users_with_lastname(full_name)
+    if user_candidates and len(user_candidates) == 1:
+        return user_candidates.first()
+
+    # deal with full names
+    full_name = full_name.strip()
+    anno_array = full_name.split(' ', maxsplit=1)
+    validate_data(len(anno_array) == 2, 'Need both first and last name for {} "{}"'.format(column, full_name))
     first_name, last_name = anno_array
-    django_user = djam.User.objects.filter(first_name=first_name, last_name=last_name).first()
+    django_user = djam.User.objects.filter(first_name__iexact=first_name, last_name__iexact=last_name).first()
     validate_data(django_user, 'No user found with first name "{}" and last name "{}"'.format(first_name, last_name))
-    annotator_user = gfcm.FinprintUser.objects.filter(user=django_user).first()
-    validate_data(annotator_user, 'No finprint user associated with django user for "{}"'.format(annotator))
-    return annotator_user
+    finprint_user = gfcm.FinprintUser.objects.filter(user=django_user).first()
+    validate_data(finprint_user, 'No finprint user associated with django user for "{}"'.format(full_name))
+    return finprint_user
+
+def find_users_with_lastname(last_name):
+    django_user = djam.User.objects.filter(last_name__iexact=last_name).first()
+    if django_user:
+        return gfcm.FinprintUser.objects.filter(user=django_user)
+    else:
+        return None
+
+def get_annotator(annotator):
+    return get_user(annotator, 'annotator')
 
 def get_reef_habitat(site_name, reef_name, habitat_type):
     site = gfhm.Site.objects.filter(name=site_name).first()
@@ -421,21 +481,25 @@ def get_reef_habitat(site_name, reef_name, habitat_type):
     return gfhm.ReefHabitat.get_or_create(reef, reef_type)
 
 def parse_equipment_string(equipment_str):
-    equip_array = equipment_str.split('/')
-    validate_data(
-        len(equip_array) == 2,
-        'Unexpected equipment string: "{}"'.format(equipment_str))
-    frame_str = equip_array[0][:FRAME_FIELD_LENGTH]
-    camera_str = equip_array[1][:CAMERA_FIELD_LENGTH]
-    frame = gfbm.FrameType.objects.filter(type__iexact=frame_str).first()
-    validate_data(frame, 'Unknown frame type "{}" in equipment string "{}"'.format(frame_str, equipment_str))
-    equipment = gfbm.Equipment.objects.filter(
-        camera=camera_str,
-        frame_type=frame).first()
-    validate_data(
-        equipment,
-        'No equipment model found with camera "{}" and frame "{}" (frame_str "{}")'.format(
-            camera_str, frame_str, equipment_str))
+    if equipment_str == 'Stereo stainless rebar / GoPro3 Silver+':
+        equipment = gfbm.Equipment.objects.get(pk=5)
+        validate_data(equipment,'Equipment with id 5 missing.')
+    else:
+        equip_array = equipment_str.split('/')
+        validate_data(
+            len(equip_array) == 2,
+            'Unexpected equipment string: "{}"'.format(equipment_str))
+        frame_str = equip_array[0][:FRAME_FIELD_LENGTH].strip()
+        camera_str = equip_array[1][:CAMERA_FIELD_LENGTH].strip()
+        frame = gfbm.FrameType.objects.filter(type__iexact=frame_str).first()
+        validate_data(frame, 'Unknown frame type "{}" in equipment string "{}"'.format(frame_str, equipment_str))
+        equipment = gfbm.Equipment.objects.filter(
+            camera=camera_str,
+            frame_type=frame).first()
+        validate_data(
+            equipment,
+            'No equipment model found with camera "{}" and frame "{}" (frame_str "{}")'.format(
+                camera_str, frame_str, equipment_str))
     return equipment
 
 def parse_bait_string(bait_str):
@@ -450,10 +514,36 @@ def parse_bait_string(bait_str):
         except KeyError:
             validate_data(False, 'Unknown bait type: {}'.format(bait_type_str))
         bait = gfbm.Bait.objects.filter(
-            description=bait_description,
+            description__iexact=bait_description,
             type=bait_type).first()
         validate_data(bait, 'Unknown bait "{}"'.format(bait_str))
     return bait
+
+
+def minutes2milliseconds(minutes):
+    """
+    Converts minutes to milliseconds.
+    :param minutes: duration in minutes as string
+    :return: duration in milliseconds as int
+    """
+    if minutes:
+        return round(float(minutes) * 60 * 1000)
+    else:
+        return 0
+
+def time2milliseconds(the_time):
+    """
+    Converts the time part of a datetime to milliseconds.
+    """
+    result = 0
+    if the_time:
+        result += the_time.hour
+        result *= 60
+        result += the_time.minute
+        result *= 60
+        result += the_time.second
+        result *= 1000
+    return 0
 
 def validate_data(predicate, error_msg):
     if not predicate:

@@ -7,10 +7,12 @@ from django.contrib.gis.geos import Point
 
 from global_finprint.annotation.models.observation import Observation
 from global_finprint.annotation.models.video import Video
+from global_finprint.core.version import VersionInfo
 from global_finprint.core.models import AuditableModel
 from global_finprint.trip.models import Trip
 from global_finprint.habitat.models import ReefHabitat
 
+from mptt.models import MPTTModel, TreeForeignKey
 
 EQUIPMENT_BAIT_CONTAINER = {
     ('B', 'Bag'),
@@ -99,8 +101,7 @@ class EnvironmentMeasure(AuditableModel):
                                        max_digits=8, decimal_places=2,
                                        help_text='S/m')  # S/m .00
     dissolved_oxygen = models.DecimalField(null=True, blank=True,
-                                           max_digits=3, decimal_places=1,
-                                           help_text='%')  # % .0
+                                           max_digits=8, decimal_places=1)
     current_flow = models.DecimalField(null=True, blank=True,
                                        max_digits=5, decimal_places=2,
                                        help_text='m/s')  # m/s .00
@@ -112,6 +113,7 @@ class EnvironmentMeasure(AuditableModel):
                                   null=True, blank=True,
                                   choices=TIDE_CHOICES)
     estimated_wind_speed = models.IntegerField(null=True, blank=True, help_text='Beaufort')
+    measured_wind_speed = models.IntegerField(null=True, blank=True, help_text='kts')
     wind_direction = models.CharField(max_length=2,
                                       null=True, blank=True,
                                       choices=CURRENT_DIRECTION,
@@ -137,6 +139,54 @@ class Bait(AuditableModel):
         unique_together = ('description', 'type', 'oiled')
 
 
+# needed for SetTag#get_choices because python doesn't have this somehow (!!!)
+def flatten(x):
+    if type(x) is list:
+        return [a for i in x for a in flatten(i)]
+    else:
+        return [x]
+
+
+class SetTag(MPTTModel):
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(null=True, blank=True)
+    active = models.BooleanField(
+        default=True,
+        help_text='overridden if parent is inactive')
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
+
+    def __str__(self):
+        return u"{0}".format(self.name)
+
+    @classmethod
+    def get_choices(cls, node=None):
+        if node is None:
+            nodes = [cls.get_choices(node=node) for node in cls.objects.filter(parent=None, active=True)]
+            return [(node.pk, node.name) for node in flatten(nodes)]
+        elif node.is_leaf_node():
+            return node
+        else:
+            return [node] + [cls.get_choices(node=node) for node in node.get_children().filter(active=True)]
+
+
+class Substrate(MPTTModel):
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(null=True, blank=True)
+    active = models.BooleanField(
+        default=True,
+        help_text='overridden if parent is inactive')
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
+
+    def __str__(self):
+        return u"{0}".format(self.name)
+
+
 class Set(AuditableModel):
     # suggested code pattern:
     # [site.code][reef.code]_[set number within reef]
@@ -146,10 +196,20 @@ class Set(AuditableModel):
     latitude = models.DecimalField(max_digits=12, decimal_places=8)
     longitude = models.DecimalField(max_digits=12, decimal_places=8)
     drop_time = models.TimeField()
-    haul_time = models.TimeField()
+    haul_time = models.TimeField(null=True, blank=True)
     visibility = models.CharField(max_length=3, choices=VISIBILITY_CHOICES)
     depth = models.DecimalField(null=True, help_text='m', decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0.01'))])
     comments = models.TextField(null=True, blank=True)
+    message_to_annotators = models.TextField(null=True, blank=True)
+    tags = models.ManyToManyField(to=SetTag)
+    current_flow_estimated = models.CharField(max_length=50, null=True, blank=True, help_text='H, M, L')
+    current_flow_instrumented = models.DecimalField(null=True, blank=True,
+                                                    max_digits=5, decimal_places=2,
+                                                    help_text='m/s')  # m/s .00
+    bruv_image_url = models.CharField(max_length=200, null=True, blank=True)
+    splendor_image_url = models.CharField(max_length=200, null=True, blank=True)
+
+    substrate = models.ManyToManyField(Substrate, through='HabitatSubstrate')
 
     # todo:  need some form changes here ...
     bait = models.ForeignKey(Bait, null=True)
@@ -203,5 +263,18 @@ class Set(AuditableModel):
         if self.video:
             return Observation.objects.filter(assignment__in=self.video.assignment_set.all())
 
+    def habitat_filename(self, image_type):
+        server_env = VersionInfo.get_server_env()
+        return '/{0}/{1}/{2}/{3}.png'.format(server_env,
+                                             self.trip.code,
+                                             self.code,
+                                             image_type)
+
     def __str__(self):
         return u"{0}_{1}".format(self.trip.code, self.code)
+
+
+class HabitatSubstrate(models.Model):
+    set = models.ForeignKey(Set)
+    substrate = TreeForeignKey(Substrate)
+    value = models.IntegerField()

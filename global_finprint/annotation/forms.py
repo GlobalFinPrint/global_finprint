@@ -16,7 +16,7 @@ class VideoForm(forms.ModelForm):
         super(VideoForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        self.fields['file'] = forms.ChoiceField(choices=self.get_filenames(), required=False)
+        self.fields['file'] = forms.ChoiceField(choices=self.get_filenames(), required=False, label='Video')
 
     def get_filenames(self):
         pattern = re.compile('\.\w+$')
