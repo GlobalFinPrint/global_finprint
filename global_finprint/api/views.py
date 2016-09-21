@@ -104,7 +104,7 @@ class AnnotatorList(APIView):
     def get(self, request):
         assignments = Assignment.get_active()
         return JsonResponse({'annotators': list({'id': an.id, 'annotator': str(an)}
-                                                for an in set(a.annotator for a in assignments))})
+                                                for an in sorted(set(a.annotator for a in assignments), key=str))})
 
 
 class SetDetail(APIView):
