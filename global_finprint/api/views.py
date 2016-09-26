@@ -90,13 +90,15 @@ class TripList(APIView):
             sets = set(a.set() for a in assignments)
             trips = sorted(set(s.trip for s in sets), key=str)
             return JsonResponse({'trips': list({'id': t.id, 'trip': str(t),
-                                                'sets': list({'id': s.id, 'set': str(s)} for s in t.set_set.all()
+                                                'sets': list({'id': s.id, 'set': s.code}
+                                                             for s in t.set_set.all().order_by('code')
                                                              if s in sets)}
                                                for t in trips)})
         else:
             trips = sorted(Trip.objects.all(), key=str)
             return JsonResponse({'trips': list({'id': t.id, 'trip': str(t),
-                                                'sets': list({'id': s.id, 'set': str(s)} for s in t.set_set.all())}
+                                                'sets': list({'id': s.id, 'set': s.code}
+                                                             for s in t.set_set.all().order_by('code'))}
                                                for t in trips)})
 
 
