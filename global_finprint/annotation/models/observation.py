@@ -9,6 +9,7 @@ from .video import Assignment
 from .animal import Animal, ANIMAL_SEX_CHOICES, ANIMAL_STAGE_CHOICES
 from .annotation import Attribute
 from ...core.version import VersionInfo
+from datetime import datetime
 
 
 OBSERVATION_TYPE_CHOICES = {
@@ -171,7 +172,7 @@ class Event(AuditableModel):
             'extent': None if self.extent is None else str(self.extent),
             'note': self.note,
             'attribute': [a.to_json() for a in self.attribute.all()],
-            'create_datetime': self.create_datetime
+            'create_datetime': datetime.strftime(self.create_datetime, '%Y-%m-%d %H:%M:%S')
         }
 
     def filename(self):
