@@ -111,7 +111,7 @@ class Observation(AuditableModel):
         return json
 
     def initial_observation_time(self):
-        return self.event_set.order_by('event_time').first().event_time
+        return self.event_set.order_by('create_datetime').first().event_time
 
     def events_for_table(self):
         return self.event_set.order_by('event_time').all()
@@ -170,7 +170,8 @@ class Event(AuditableModel):
             'event_time': self.event_time,
             'extent': None if self.extent is None else str(self.extent),
             'note': self.note,
-            'attribute': [a.to_json() for a in self.attribute.all()]
+            'attribute': [a.to_json() for a in self.attribute.all()],
+            'create_datetime': self.create_datetime
         }
 
     def filename(self):
