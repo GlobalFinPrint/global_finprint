@@ -42,6 +42,8 @@ LEGACY_EMAIL_FORMAT = '{}@sink.arpa'
 LEGACY_AFFILITATION = 'Legacy'
 LEGACY_COMMENT = 'Auto-imported data.'
 
+DEFAULT_ASSIGNMENT_STATUS = 'Ready for review'
+
 UNDETERMINED_HABITAT_TYPE = 'To Be Updated'
 
 logger = logging.getLogger('scripts')
@@ -432,6 +434,7 @@ def get_assignment(annotator_user, video):
             annotator=annotator_user,
             video=video,
             assigned_by=gfcm.FinprintUser.objects.filter(user=get_import_user()).first(),
+            status=gfav.AnnotationState.objects.get(name=DEFAULT_ASSIGNMENT_STATUS),
             user=get_import_user()
         )
         assignment.save()
