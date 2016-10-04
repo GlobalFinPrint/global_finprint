@@ -156,8 +156,8 @@ def import_set(
         the_set = gfbm.Set.objects.filter(code=set_code, trip=trip).first()
         if not the_set:
             validate_data(drop_time, 'No drop time supplied.')
-            validate_data(haul_time, 'No haul time supplied.')
-            validate_data(drop_time < haul_time, 'Drop time must be before haul time.')
+            if haul_time:
+                validate_data(drop_time < haul_time, 'Drop time must be before haul time.')
             reef_habitat = get_reef_habitat(site_name, reef_name, habitat_type)
             equipment = parse_equipment_string(equipment_str)
             bait = parse_bait_string(bait_str)
@@ -470,15 +470,15 @@ def get_annotator(annotator):
     return get_user(annotator, 'annotator')
 
 def get_reef_habitat(site_name, reef_name, habitat_type):
-    site = gfhm.Site.objects.filter(name=site_name).first()
+    site = gfhm.Site.objects.filter(name__iexact=site_name).first()
     validate_data(site, 'Site "{}" not found'.format(site_name))
 
-    reef = gfhm.Reef.objects.filter(name=reef_name, site=site).first()
+    reef = gfhm.Reef.objects.filter(name__iexact=reef_name, site=site).first()
     validate_data(reef, 'Reef "{}" not found'.format(reef_name))
 
     if not habitat_type:
         habitat_type = UNDETERMINED_HABITAT_TYPE
-    reef_type = gfhm.ReefType.objects.filter(type=habitat_type).first()
+    reef_type = gfhm.ReefType.objects.filter(type__iexact=habitat_type).first()
     validate_data(reef_type, 'Unknown reef type: {}'.format(habitat_type))
 
     return gfhm.ReefHabitat.get_or_create(reef, reef_type)
