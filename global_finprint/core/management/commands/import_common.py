@@ -46,6 +46,8 @@ DEFAULT_ASSIGNMENT_STATUS = 'Ready for review'
 
 UNDETERMINED_HABITAT_TYPE = 'To Be Updated'
 
+IMPORT_USER = 'GFImport'
+
 logger = logging.getLogger('scripts')
 animal_map = None
 
@@ -81,7 +83,7 @@ def make_choices_reverse_map(choices_set):
 
 @functools.lru_cache()
 def get_import_user():
-    return djam.User.objects.filter(username='GFAdmin').first()
+    return djam.User.objects.filter(username=IMPORT_USER).first()
 
 def import_trip(
         trip_code,
