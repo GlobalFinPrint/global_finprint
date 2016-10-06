@@ -24,9 +24,13 @@ import global_finprint.core.management.commands.excel_common as ec
 logger = logging.getLogger('scripts')
 video_length_map = None
 
-def import_file(in_file, trip_code, set_code, video_length_file):
+def import_file(in_file, trip_code, set_code, video_length_file, animal_map):
     global video_length_map
     video_length_map = get_video_length_map(video_length_file)
+
+    if animal_map:
+        logger.info('Loading animal to id mappings from "{}"'.format(animal_map))
+        ic.load_animal_mapping(animal_map)
 
     logging.info('Importing observations from file "{}"'.format(in_file))
     wb = ec.open_workbook(in_file)
@@ -160,6 +164,8 @@ class Command(BaseCommand):
         parser.add_argument('set_code', type=str)
         parser.add_argument('in_file', type=str)
         parser.add_argument('video_length_map', type=str)
+        parser.add_argument('--animal_map', type=str, default=None)
 
     def handle(self, *args, **options):
-        import_file(options['in_file'], options['trip_code'], options['set_code'], options['video_length_map'])
+        import_file(options['in_file'], options['trip_code'], options['set_code'],
+                    options['video_length_map'], options['animal_map'])
