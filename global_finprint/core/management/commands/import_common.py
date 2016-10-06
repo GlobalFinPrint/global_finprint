@@ -405,6 +405,8 @@ def load_animal_mapping(mapping_file):
 
 def get_animal_mapping(family, genus, species):
     result = None
+    if species == None:
+        species = ''
     try:
         if animal_map:
             result = animal_map[str(family)][str(genus)][str(species)]
