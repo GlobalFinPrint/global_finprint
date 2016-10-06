@@ -407,7 +407,7 @@ def get_animal_mapping(family, genus, species):
     result = None
     try:
         if animal_map:
-            result = animal_map[family][genus][species]
+            result = animal_map[str(family)][str(genus)][str(species)]
     except KeyError:
         pass # no special mapping for this animal
     return result
