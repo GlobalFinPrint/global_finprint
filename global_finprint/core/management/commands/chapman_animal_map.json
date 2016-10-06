@@ -18,6 +18,9 @@
         "Carandoides": {
             "ruber": 42
         },
+        "Carangoides": {
+            "ruber": 42
+        },
         "Cararezii": {
             "": 24
         },
@@ -27,6 +30,8 @@
         "Carcharhinus": {
             "": 292,
             "chrysurus": 292,
+            "perezi": 24,
+            "perezii": 24,
             "rysarus": 292
         },
         "Carcharinus": {
@@ -110,6 +115,7 @@
             "chyrsurus": 41
         },
         "Lutjanis": {
+            "analis": 40,
             "Analis": 40,
             "chrysurus": 41
         },
