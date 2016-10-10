@@ -89,7 +89,7 @@ def import_set_data(sheet):
                     video_format_tmp = get_cell(row, 'FORMAT').value.lower()
                     if video_format_tmp:
                         video_format = video_format_tmp
-                except KeyError:
+                except (KeyError, AttributeError):
                     pass # column not included in this spreadsheet
                 try:
                     camera = get_cell(row, 'camera').value
