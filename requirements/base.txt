@@ -36,3 +36,6 @@ gunicorn==19.3.0
 
 # Bulk data import
 openpyxl==2.3.5
+
+# Click command line paramter support
+click==6.6
