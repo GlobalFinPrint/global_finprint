@@ -341,7 +341,7 @@ def import_observation(
                     else:
                         animal = gfaa.Animal.objects.filter(
                             family__iexact=family,
-                            genus__iexaxct=genus,
+                            genus__iexact=genus,
                             species__iexact=species
                         ).first()
                     validate_data(animal, 'Unable to find animal {} - {} - {}'.format(family, genus, species))
