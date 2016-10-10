@@ -20,7 +20,7 @@ add error signaling.
 import logging
 import functools
 import json
-from datetime import datetime
+import datetime
 
 import django.contrib.auth.models as djam
 import global_finprint.trip.models as gftm
@@ -42,7 +42,11 @@ LEGACY_EMAIL_FORMAT = '{}@sink.arpa'
 LEGACY_AFFILITATION = 'Legacy'
 LEGACY_COMMENT = 'Auto-imported data.'
 
+DEFAULT_ASSIGNMENT_STATUS = 'Ready for review'
+
 UNDETERMINED_HABITAT_TYPE = 'To Be Updated'
+
+IMPORT_USER = 'GFImport'
 
 logger = logging.getLogger('scripts')
 animal_map = None
@@ -79,7 +83,7 @@ def make_choices_reverse_map(choices_set):
 
 @functools.lru_cache()
 def get_import_user():
-    return djam.User.objects.filter(username='GFAdmin').first()
+    return djam.User.objects.filter(username=IMPORT_USER).first()
 
 def import_trip(
         trip_code,
@@ -153,9 +157,11 @@ def import_set(
         validate_data(trip, 'references non-existent trip "{}"'.format(trip_code))
         the_set = gfbm.Set.objects.filter(code=set_code, trip=trip).first()
         if not the_set:
+            haul_date = None
             validate_data(drop_time, 'No drop time supplied.')
-            validate_data(haul_time, 'No haul time supplied.')
-            validate_data(drop_time < haul_time, 'Drop time must be before haul time.')
+            if haul_time and drop_time > haul_time:
+                logger.warning('Drop time is before haul time. Setting haul_date to next day.')
+                haul_date = set_date + datetime.timedelta(days=1)
             reef_habitat = get_reef_habitat(site_name, reef_name, habitat_type)
             equipment = parse_equipment_string(equipment_str)
             bait = parse_bait_string(bait_str)
@@ -171,6 +177,7 @@ def import_set(
                 longitude=longitude,
                 drop_time=drop_time,
                 haul_time=haul_time,
+                haul_date=haul_date,
                 visibility=visibility,
                 depth=depth,
                 comments=comment,
@@ -321,17 +328,21 @@ def import_observation(
                 )
                 observation.save()
 
-                if family:
+                if family or genus:
                     observation.type = 'A'
                     observation.save()
                     animal_id = get_animal_mapping(family, genus, species)
                     if animal_id:
                         animal = gfaa.Animal.objects.get(pk=animal_id)
+                    elif family == None:
+                        animal = gfaa.Animal.objects.filter(
+                            genus__iexact=genus,
+                            species__iexact=species).first()
                     else:
                         animal = gfaa.Animal.objects.filter(
-                            family=family,
-                            genus=genus,
-                            species=species
+                            family__iexact=family,
+                            genus__iexaxct=genus,
+                            species__iexact=species
                         ).first()
                     validate_data(animal, 'Unable to find animal {} - {} - {}'.format(family, genus, species))
                     animal_obsv_args = {
@@ -394,9 +405,11 @@ def load_animal_mapping(mapping_file):
 
 def get_animal_mapping(family, genus, species):
     result = None
+    if species == None:
+        species = ''
     try:
         if animal_map:
-            result = animal_map[family][genus][species]
+            result = animal_map[str(family)][str(genus)][str(species)]
     except KeyError:
         pass # no special mapping for this animal
     return result
@@ -428,6 +441,7 @@ def get_assignment(annotator_user, video):
             annotator=annotator_user,
             video=video,
             assigned_by=gfcm.FinprintUser.objects.filter(user=get_import_user()).first(),
+            status=gfav.AnnotationState.objects.get(name=DEFAULT_ASSIGNMENT_STATUS),
             user=get_import_user()
         )
         assignment.save()
@@ -435,9 +449,16 @@ def get_assignment(annotator_user, video):
 
 def get_user(full_name, column):
     validate_data(full_name, 'No {} specified.'.format(column))
+
+    # check that we didn't just get a last name
+    user_candidates = find_users_with_lastname(full_name)
+    if user_candidates and len(user_candidates) == 1:
+        return user_candidates.first()
+
+    # deal with full names
     full_name = full_name.strip()
     anno_array = full_name.split(' ', maxsplit=1)
-    validate_data(len(anno_array) == 2, 'Need both first and last name for {} ({})'.format(column, full_name))
+    validate_data(len(anno_array) == 2, 'Need both first and last name for {} "{}"'.format(column, full_name))
     first_name, last_name = anno_array
     django_user = djam.User.objects.filter(first_name__iexact=first_name, last_name__iexact=last_name).first()
     validate_data(django_user, 'No user found with first name "{}" and last name "{}"'.format(first_name, last_name))
@@ -445,19 +466,26 @@ def get_user(full_name, column):
     validate_data(finprint_user, 'No finprint user associated with django user for "{}"'.format(full_name))
     return finprint_user
 
+def find_users_with_lastname(last_name):
+    django_user = djam.User.objects.filter(last_name__iexact=last_name).first()
+    if django_user:
+        return gfcm.FinprintUser.objects.filter(user=django_user)
+    else:
+        return None
+
 def get_annotator(annotator):
     return get_user(annotator, 'annotator')
 
 def get_reef_habitat(site_name, reef_name, habitat_type):
-    site = gfhm.Site.objects.filter(name=site_name).first()
+    site = gfhm.Site.objects.filter(name__iexact=site_name).first()
     validate_data(site, 'Site "{}" not found'.format(site_name))
 
-    reef = gfhm.Reef.objects.filter(name=reef_name, site=site).first()
+    reef = gfhm.Reef.objects.filter(name__iexact=reef_name, site=site).first()
     validate_data(reef, 'Reef "{}" not found'.format(reef_name))
 
     if not habitat_type:
         habitat_type = UNDETERMINED_HABITAT_TYPE
-    reef_type = gfhm.ReefType.objects.filter(type=habitat_type).first()
+    reef_type = gfhm.ReefType.objects.filter(type__iexact=habitat_type).first()
     validate_data(reef_type, 'Unknown reef type: {}'.format(habitat_type))
 
     return gfhm.ReefHabitat.get_or_create(reef, reef_type)
@@ -500,6 +528,32 @@ def parse_bait_string(bait_str):
             type=bait_type).first()
         validate_data(bait, 'Unknown bait "{}"'.format(bait_str))
     return bait
+
+
+def minutes2milliseconds(minutes):
+    """
+    Converts minutes to milliseconds.
+    :param minutes: duration in minutes as string
+    :return: duration in milliseconds as int
+    """
+    if minutes:
+        return round(float(minutes) * 60 * 1000)
+    else:
+        return 0
+
+def time2milliseconds(the_time):
+    """
+    Converts the time part of a datetime to milliseconds.
+    """
+    result = 0
+    if the_time:
+        result += the_time.hour
+        result *= 60
+        result += the_time.minute
+        result *= 60
+        result += the_time.second
+        result *= 1000
+    return 0
 
 def validate_data(predicate, error_msg):
     if not predicate:

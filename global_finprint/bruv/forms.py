@@ -27,6 +27,11 @@ class SetForm(forms.ModelForm):
         input_formats=['%H:%M'],
         widget=DateTimePicker(options=timepicker_opts, icon_attrs={'class': 'glyphicon glyphicon-time'})
     )
+    haul_date = forms.DateField(
+        input_formats=['%B %d %Y'],
+        widget=DateTimePicker(options=datepicker_opts),
+        required=False
+    )
     haul_time = forms.TimeField(
         input_formats=['%H:%M'],
         widget=DateTimePicker(options=timepicker_opts, icon_attrs={'class': 'glyphicon glyphicon-time'}),
@@ -41,8 +46,8 @@ class SetForm(forms.ModelForm):
 
     class Meta:
         model = Set
-        fields = ['trip', 'set_date', 'latitude', 'longitude', 'depth',
-                  'drop_time', 'haul_time', 'reef', 'habitat', 'equipment', 'bait',
+        fields = ['trip', 'set_date', 'drop_time', 'latitude', 'longitude', 'depth',
+                  'haul_date', 'haul_time', 'reef', 'habitat', 'equipment', 'bait',
                   'reef_habitat', 'code']
         exclude = ('reef_habitat',)
         widgets = {

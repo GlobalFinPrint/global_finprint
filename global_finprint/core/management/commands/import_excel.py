@@ -84,13 +84,21 @@ def import_set_data(sheet):
                 visibility = get_cell(row, 'visibility').value
                 video = get_cell(row, 'video').value
                 video_name_array = [trip_code, set_code]
+                video_format = 'mp4'
+                try:
+                    video_format_tmp = get_cell(row, 'FORMAT').value.lower()
+                    if video_format_tmp:
+                        video_format = video_format_tmp
+                except KeyError:
+                    pass # column not included in this spreadsheet
                 try:
                     camera = get_cell(row, 'camera').value
                     if camera:
                         video_name_array.append(camera)
                 except KeyError:
                     pass # No camera column
-                video_name = '{}.avi'.format('_'.join(video_name_array))
+                video_name = '{}.{}'.format('_'.join(video_name_array), video_format)
+                logger.info('Video name: {}'.format(video_name))
                 comment = get_cell(row, 'comment').value
 
                 ic.import_set(
@@ -197,7 +205,8 @@ def import_observation_data(sheet):
                 length,
                 comment,
                 annotator,
-                annotation_date
+                annotation_date,
+                None
             )
 
 class Command(BaseCommand):

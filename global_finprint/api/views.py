@@ -88,15 +88,17 @@ class TripList(APIView):
         if request.GET.get('assigned', False):
             assignments = Assignment.get_active()
             sets = set(a.set() for a in assignments)
-            trips = set(s.trip for s in sets)
+            trips = sorted(set(s.trip for s in sets), key=str)
             return JsonResponse({'trips': list({'id': t.id, 'trip': str(t),
-                                                'sets': list({'id': s.id, 'set': str(s)} for s in t.set_set.all()
+                                                'sets': list({'id': s.id, 'set': s.code}
+                                                             for s in t.set_set.all().order_by('code')
                                                              if s in sets)}
                                                for t in trips)})
         else:
-            trips = Trip.objects.all()
+            trips = sorted(Trip.objects.all(), key=str)
             return JsonResponse({'trips': list({'id': t.id, 'trip': str(t),
-                                                'sets': list({'id': s.id, 'set': str(s)} for s in t.set_set.all())}
+                                                'sets': list({'id': s.id, 'set': s.code}
+                                                             for s in t.set_set.all().order_by('code'))}
                                                for t in trips)})
 
 
@@ -104,7 +106,7 @@ class AnnotatorList(APIView):
     def get(self, request):
         assignments = Assignment.get_active()
         return JsonResponse({'annotators': list({'id': an.id, 'annotator': str(an)}
-                                                for an in set(a.annotator for a in assignments))})
+                                                for an in sorted(set(a.annotator for a in assignments), key=str))})
 
 
 class SetDetail(APIView):

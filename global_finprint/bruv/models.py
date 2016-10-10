@@ -196,6 +196,7 @@ class Set(AuditableModel):
     latitude = models.DecimalField(max_digits=12, decimal_places=8)
     longitude = models.DecimalField(max_digits=12, decimal_places=8)
     drop_time = models.TimeField()
+    haul_date = models.DateField(null=True, blank=True)
     haul_time = models.TimeField(null=True, blank=True)
     visibility = models.CharField(max_length=3, choices=VISIBILITY_CHOICES)
     depth = models.DecimalField(null=True, help_text='m', decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0.01'))])

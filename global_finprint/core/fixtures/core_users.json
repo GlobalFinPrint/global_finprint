@@ -19,6 +19,24 @@
   },
   {
     "model": "auth.user",
+    "pk": 201,
+    "fields": {
+      "password": "pbkdf2_sha256$24000$gjvFT63oFU01$DUARM6zhhrmkO3gHg0MkimZ7s8VhyE/ttz5z4gTSAdU=",
+      "last_login": "2016-01-29T22:07:58Z",
+      "is_superuser": true,
+      "username": "GFImport",
+      "first_name": "Finprint",
+      "last_name": "AutoImport",
+      "email": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2016-01-29T22:06:41Z",
+      "groups": [1, 2],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
     "pk": 15,
     "fields": {
       "password": "pbkdf2_sha256$24000$7Unpdq4dK9qp$HmP4cd4+/FDkk5o1+Ca8QMOapyB7LeGND3/X5z7lrjg=",

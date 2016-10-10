@@ -1,0 +1,276 @@
+{
+    "None": {
+        "Acanthurus": {
+            "coeruleus": 135
+        },
+        "Balistes": {
+            "vetula": 303
+        },
+        "Calamus": {
+            "pennatula": 304
+        },
+        "Caphalopholis": {
+            "fulva": 34
+        },
+        "Caracharhinus": {
+            "perezi": 24
+        },
+        "Carandoides": {
+            "ruber": 42
+        },
+        "Carangoides": {
+            "ruber": 42
+        },
+        "Cararezii": {
+            "": 24
+        },
+        "Carcharhinius": {
+            "limbatus": 292
+        },
+        "Carcharhinus": {
+            "": 292,
+            "chrysurus": 292,
+            "perezi": 24,
+            "perezii": 24,
+            "rysarus": 292
+        },
+        "Carcharinus": {
+            "perezi": 24
+        },
+        "Cepalopholis": {
+            "fulva": 34
+        },
+        "Cephalopholis": {
+            "cruentata": 33,
+            "fulva": 34,
+            "perezi": 34
+        },
+        "Charcarhinus": {
+            "perezi": 24
+        },
+        "Charcharhinus": {
+            "Perezi": 24
+        },
+        "Echeneis": {
+            "neucratoides": 305
+        },
+        "Ephinephelus": {
+            "guttatus": 35,
+            "straitus": 32,
+            "striatus": 32
+        },
+        "Epinepelus": {
+            "striatus": 32
+        },
+        "Epinephalus": {
+            "striatus": 32
+        },
+        "Epinephelus": {
+            "Striatus": 32,
+            "cruentata": 33,
+            "fulva": 34,
+            "guttatis": 35,
+            "guttatus": 35,
+            "itajara": 306,
+            "limbatus": 32,
+            "perezi": 32,
+            "straitus": 32
+        },
+        "Epinephelusad": {
+            "scensionis": 36,
+            "striatus": 32
+        },
+        "Epinepheluss": {
+            "triatus": 32
+        },
+        "Epinephilus": {
+            "striatus": 32
+        },
+        "Ginglymostoma": {
+            "Perezi": 23,
+            "chrysurus": 23
+        },
+        "Haemulon": {
+            "album": 307
+        },
+        "Himantura": {
+            "schmardae": 27
+        },
+        "Holacanthus": {
+            "ciliarus": 308
+        },
+        "Lautjanus": {
+            "analis": 40
+        },
+        "Long silver fish (not a barracuda)": {
+            "": 309
+        },
+        "Lujanus": {
+            "analis": 40
+        },
+        "Lutianus": {
+            "chrysurus": 41
+        },
+        "Lutjamus": {
+            "chyrsurus": 41
+        },
+        "Lutjanis": {
+            "analis": 40,
+            "Analis": 40,
+            "chrysurus": 41
+        },
+        "Lutjanus": {
+            "analis": 40,
+            "chrysurus": 41,
+            "chyrsurus": 41,
+            "crysurus": 41
+        },
+        "Lutjanusch": {
+            "ryasrus": 41,
+            "rysarus": 41,
+            "rysurus": 41
+        },
+        "Malacanthus": {
+            "pulmieri": 309
+        },
+        "Megalops": {
+            "atlanticus": 310
+        },
+        "Mycteroperca": {
+            "bonaci": 37,
+            "interstitialis": 311,
+            "venenosa": 38
+        },
+        "Not sure species- looks like some sort of black/blue angel fish with a white stripe around it's mouth": {
+            "": 53
+        },
+        "Paracanthurus": {
+            "hepatus": 135
+        },
+        "Parrot": {
+            "": 312
+        },
+        "Pomacanthus": {
+            "arcuatus": 308
+        },
+        "Pterois": {
+            "": 313,
+            "volitans": 313
+        },
+        "Remora": {
+            "remora": 305
+        },
+        "Scardae": {
+            "": 312
+        },
+        "Scardiae": {
+            "": 312
+        },
+        "Scaridae": {
+            "": 312,
+            "N/A": 312
+        },
+        "Scaridea": {
+            "": 312
+        },
+        "Scomberomorus": {
+            "regalis": 314
+        },
+        "Seriola": {
+            "riviolana": 315,
+            "rivoliana": 315
+        },
+        "Shyraena": {
+            "barracuda": 39
+        },
+        "Small fish shaped sort of like angel fish- white with a yellow rim and a black line on face": {
+            "": 308
+        },
+        "Sp?": {
+            "sp?": 53
+        },
+        "Sparisoma": {
+            "rubripinne": 312
+        },
+        "Sphyraena": {
+            "baraccuda": 39,
+            "barracuda": 39
+        },
+        "Sphyrna": {
+            "mokarram": 21,
+            "mokarran": 21
+        },
+        "Syphyraena": {
+            "barracuda": 39
+        },
+        "The barracuda comes up to the camera": {
+            "": 39
+        },
+        "Turtle": {
+            "": 316
+        },
+        "Undentified Fish 2": {
+            "": 53
+        },
+        "Unidentified Fish 1": {
+            "": 53
+        },
+        "Unidentified Fish 2": {
+            "": 53
+        },
+        "Unidentified Fish 3": {
+            "": 53
+        },
+        "Unidentified fish 2: Long, white": {
+            "": 53
+        },
+        "Unidentified fish 5": {
+            "": 53
+        },
+        "Unidentified fish: 1": {
+            "": 53
+        },
+        "Unidentified fish: 2": {
+            "": 53
+        },
+        "Unidentified fish: 3": {
+            "": 53
+        },
+        "Unidentified fish: 4": {
+            "": 53
+        },
+        "Unidentified fish: spotted top, yellow bottom": {
+            "": 53
+        },
+        "Unidentified fish: two large fins on top and bottom, as well as long tail": {
+            "": 53
+        },
+        "Unidentified small yellow fish": {
+            "": 53
+        },
+        "Unidentified white fish- looks like the dark \"angel fish\" from previous site": {
+            "": 53
+        },
+        "Unknown": {
+            "": 53
+        },
+        "Urobatis": {
+            "jamaicencis": 26
+        },
+        "carcharhinus": {
+            "perezi": 24
+        },
+        "ginglymostoma": {
+            "cirratum": 23
+        },
+        "possibly lion fish- in distance": {
+            "": 313
+        },
+        "same shape and size as Nassau Grouper- but black and white striped": {
+            "": 32
+        },
+        "unidentified fish 4": {
+            "": 53
+        }
+    }
+}
