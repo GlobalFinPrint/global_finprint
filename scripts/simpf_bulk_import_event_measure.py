@@ -72,6 +72,6 @@ def bulk_import(excel_file, em_files_root):
                 logging.error('Unable to find file for annotator "{}" in folder "{}"'.format(annotator, em_path))
 
 if __name__ == '__main__':
-    logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', level=logging.WARN, filename='/home/ubuntu/import.log')
+    logging.basicConfig(format='*BULK*:%(levelname)s %(asctime)s %(message)s', level=logging.INFO)
     bulk_import()
 
