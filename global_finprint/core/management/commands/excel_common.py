@@ -6,7 +6,7 @@ from datetime import datetime
 import openpyxl
 
 def open_workbook(file_name):
-    return openpyxl.load_workbook(file_name, data_only=True)
+    return openpyxl.load_workbook(file_name, data_only=True, read_only=True)
 
 def get_cell_by_name_extractor(headers):
     extractor_func = lambda row, column_name: row[headers[column_name]]
