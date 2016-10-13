@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+    <div class="row">
+        <h3>Videos > Compare Assignments</h3>
+    </div>
+
+    <div class="row compare-actions clear">
+        <div class="pull-right">
+            <button id="save-master" class="btn btn-primary btn-fp">Save</button>
+            <button id="review-master" class="btn btn-primary btn-fp">Review master assignment</button>
+        </div>
+    </div>
+
+    <div class="row master" data-length="{{ video_length }}">
+        <p class="review-label">
+            <span class="circle">M</span> Master
+        </p>
+        <div class="timeline-holder">
+            <div class="timeline"></div>
+        </div>
+    </div>
+
+    {% for a in set.video.assignment_set.all %}
+        <div class="row assignment" data-assignment-id="{{ a.pk }}" data-length="{{ video_length }}">
+            <p class="review-label">
+                <span class="circle">{{ forloop.counter }}</span> {{ a.annotator }}
+            </p>
+            <div class="timeline-holder">
+                <div class="timeline"></div>
+            </div>
+        </div>
+    {% endfor %}
+
+    <div id="full-image-modal" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="close" data-dismiss="modal">&times;</div>
+                <div class="event-image">
+                    <div class="extent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="busy-indicator">Loading...</div>
+
+    <script type="text/javascript" src="{% static 'js/templates.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/compare.js' %}"></script>
+{% endblock %}

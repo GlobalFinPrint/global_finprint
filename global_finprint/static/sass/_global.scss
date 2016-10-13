@@ -159,3 +159,9 @@ h3.inline {
 a {
   color: $link;
 }
+
+span.circle {
+  @include circle(25px);
+  color: white;
+  background-color: $blue;
+}

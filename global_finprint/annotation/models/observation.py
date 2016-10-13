@@ -10,6 +10,7 @@ from .animal import Animal, ANIMAL_SEX_CHOICES, ANIMAL_STAGE_CHOICES
 from .annotation import Attribute
 from ...core.version import VersionInfo
 from datetime import datetime
+from ...core.templatetags.time_display import time_display
 
 
 OBSERVATION_TYPE_CHOICES = {
@@ -87,14 +88,14 @@ class Observation(AuditableModel):
     def set(self):
         return self.assignment.video.set
 
-    def to_json(self):
+    def to_json(self, for_web=False):
         json = {
             'id': self.id,
             'type': self.get_type_display(),
             'type_choice': self.type,
             'duration': self.duration,
             'comment': self.comment,
-            'events': [e.to_json() for e in self.event_set.all()]
+            'events': [e.to_json(for_web=for_web) for e in self.event_set.all()]
         }
 
         if self.type == 'A':
@@ -109,10 +110,18 @@ class Observation(AuditableModel):
                 'length': animal.length,
             })
 
+        if for_web:
+            json['time'] = self.initial_observation_time()
+            json['pretty_time'] = time_display(self.initial_observation_time())
+            json['initial_event'] = self.initial_event().to_json(for_web=True)
+
         return json
 
+    def initial_event(self):
+        return self.event_set.order_by('create_datetime').first()
+
     def initial_observation_time(self):
-        return self.event_set.order_by('create_datetime').first().event_time
+        return self.initial_event().event_time
 
     def events_for_table(self):
         return self.event_set.order_by('event_time').all()
@@ -165,15 +174,19 @@ class Event(AuditableModel):
             'raw_import_json'
         ]
 
-    def to_json(self):
-        return {
+    def to_json(self, for_web=False):
+        json = {
             'id': self.pk,
             'event_time': self.event_time,
             'extent': None if self.extent is None else str(self.extent),
             'note': self.note,
-            'attribute': [a.to_json() for a in self.attribute.all()],
+            'attribute': [a.to_json(children=not for_web) for a in self.attribute.all()],
             'create_datetime': datetime.strftime(self.create_datetime, '%Y-%m-%d %H:%M:%S')
         }
+        if for_web:
+            json['extent_css'] = self.extent_to_css()
+            json['image_url'] = self.image_url()
+        return json
 
     def filename(self):
         set = self.observation.set()

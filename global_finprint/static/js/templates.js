@@ -1,0 +1,42 @@
+var Templates = {
+    eventView: '<div class="event" style="left:calc(<%= left %> - 6px);"></div>',
+    observationView: '<div class="observation" style="left:calc(<%= left %> - 10px);" tabindex="0">' +
+            '<div class="observation-popover clear">' +
+                '<div class="left">' +
+                    '<div><%= pretty_time %></div>' +
+                    '<div class="event-thumbnail" style="background-image:url(<%= initial_event.image_url %>)">' +
+                        '<div class="extent" style="<%= initial_event.extent_css %>">&nbsp;</div>' +
+                    '</div>' +
+                    '<div class="selector<%= selected ? " selected" : "" %>">' +
+                        '<span class="checkmark glyphicon glyphicon-ok"></span>' +
+                        '<div class="empty-selection">&nbsp;</div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="right">' +
+                    '<table><tbody>' +
+                        '<tr>' +
+                            '<td class="data-label">Organism</td>' +
+                            '<td class="data"><%= animal %></td>' +
+                        '</tr>' +
+                        '<tr>' +
+                            '<td class="data-label">Obs. note</td>' +
+                            '<td class="data"><%= comment %></td>' +
+                        '</tr>' +
+                        '<tr>' +
+                            '<td class="data-label">Duration</td>' +
+                            '<td class="data"><%= duration %></td>' +
+                        '</tr>' +
+                        '<tr>' +
+                            '<td class="data-label">Image notes</td>' +
+                            '<td class="data"><%= initial_event.note %></td>' +
+                        '</tr>' +
+                        '<tr>' +
+                            '<td class="data-label">Tags</td>' +
+                            '<td class="data"><%= initial_event.attribute %></td>' +
+                        '</tr>' +
+                    '</tbody></table>' +
+                '</div>' +
+                '<div class="close">&times;</div>' +
+            '</div>' +
+        '</div>'
+};
