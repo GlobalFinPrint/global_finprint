@@ -22,7 +22,7 @@ import global_finprint.core.management.commands.excel_common as ec
 logger = logging.getLogger('scripts')
 
 def import_file(in_file):
-    wb = ec.open_workbook(in_file)
+    wb = ec.open_workbook(in_file, read_only=True)
 
     import_trip_data(wb['Trip'])
     import_set_data(wb['Set'])
