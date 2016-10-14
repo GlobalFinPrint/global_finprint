@@ -63,7 +63,7 @@ def import_observation_data(sheet, trip_code, set_code, last_name):
             basename = ec.get_cell_value(get_cell(row, 'File'))
             if not basename in [None, '']:
                 if basename.lower().endswith('.mp4'):
-                    filename = basename
+                    filename = basename.lower()
                 else:
                     filename = '{}.MP4'.format(basename).lower()
                 if cur_video != filename:
