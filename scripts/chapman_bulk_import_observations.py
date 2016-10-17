@@ -39,6 +39,6 @@ def bulk_import(excel_files_root, video_length_file):
 
 if __name__ == '__main__':
     logging.basicConfig(
-        format='%(asctime)s:%(levelname)s:%(message)s',
+        format='*BULK*:%(levelname)s %(asctime)s %(message)s',
         level=logging.INFO)
     bulk_import()

@@ -100,7 +100,7 @@ def import_trip(
         if not trip:
             location = gfhm.Location.objects.filter(name=location_name).first()
             validate_data(location, 'No location found with name "{}"'.format(location_name))
-            lead_candidates = djam.User.objects.filter(last_name=investigator)
+            lead_candidates = djam.User.objects.filter(last_name=investigator, is_staff=True)
             if len(lead_candidates) == 0:
                 lead = get_user(investigator, 'investigator')
             else:

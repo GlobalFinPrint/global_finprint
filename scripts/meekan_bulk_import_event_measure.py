@@ -9,6 +9,7 @@ import click
 import subprocess
 
 ANNOTATOR = 'Conrad Speed'
+ANIMAL_MAP = 'global_finprint/core/management/commands/meekan_animal_map.json'
 
 @click.command()
 @click.argument('excel_file')
@@ -38,8 +39,8 @@ def bulk_import(excel_file, em_files_root):
                     logging.info('Found event measure file: "{}"'.format(file_to_process))
                     logging.info('Processing "{}"'.format(full_file_name))
                     subprocess.call(
-                        'python manage.py import_event_measure {} {} "{}" --annotator="{}" --date="{}"'.format(
-                            trip_code, set_code, full_file_name, ANNOTATOR, set_date),
+                        'python manage.py import_event_measure {} {} "{}" --annotator="{}" --date="{}" --animal_map "{}"'.format(
+                            trip_code, set_code, full_file_name, ANNOTATOR, set_date, ANIMAL_MAP),
                         shell=True
                     )
                     break
@@ -47,5 +48,5 @@ def bulk_import(excel_file, em_files_root):
                 logging.warning('No event measure files found for set "{}" of trip "{}"'.format(set_code, trip_code))
 
 if __name__ == '__main__':
-    logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', level=logging.INFO, filename='/home/ubuntu/meekan_import.log')
+    logging.basicConfig(format='*BULK*:%(levelname)s %(asctime)s %(message)s', level=logging.INFO)
     bulk_import()

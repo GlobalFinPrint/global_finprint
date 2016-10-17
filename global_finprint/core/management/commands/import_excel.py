@@ -22,7 +22,7 @@ import global_finprint.core.management.commands.excel_common as ec
 logger = logging.getLogger('scripts')
 
 def import_file(in_file):
-    wb = ec.open_workbook(in_file)
+    wb = ec.open_workbook(in_file, read_only=True)
 
     import_trip_data(wb['Trip'])
     import_set_data(wb['Set'])
@@ -30,9 +30,11 @@ def import_file(in_file):
     import_observation_data(wb['Observation'])
 
 def import_trip_data(sheet):
-    headers = ec.get_header_map(sheet.rows[0])
+    headers = ec.get_header_map(next(sheet.rows))
     get_cell = ec.get_cell_by_name_extractor(headers)
-    for idx, row in enumerate(sheet.rows[1:], start=2):
+    for idx, row in enumerate(sheet.rows, start=1):
+        if idx == 1:
+            continue
         try:
             trip_code = get_cell(row, 'code').value
             if trip_code:
@@ -57,9 +59,11 @@ def import_trip_data(sheet):
             logger.error(traceback.format_exc())
 
 def import_set_data(sheet):
-    headers = ec.get_header_map(sheet.rows[0])
+    headers = ec.get_header_map(next(sheet.rows))
     get_cell = ec.get_cell_by_name_extractor(headers)
-    for idx, row in enumerate(sheet.rows[1:], start=2):
+    for idx, row in enumerate(sheet.rows, start=1):
+        if idx == 1:
+            continue
         try:
             set_code = get_cell(row, 'set_code').value
             if set_code:
@@ -126,15 +130,20 @@ def import_set_data(sheet):
             
 
 def import_environment_data(sheet):
-    headers = ec.get_header_map(sheet.rows[0])
+    headers = ec.get_header_map(next(sheet.rows))
     get_cell = ec.get_cell_by_name_extractor(headers)
-    for idx, row in enumerate(sheet.rows[1:], start=2):
+    for idx, row in enumerate(sheet.rows, start=1):
+        if idx == 1:
+            continue
         try:
             trip_code = get_cell(row, 'trip_code').value
             if trip_code:
                 set_code = get_cell(row, 'set_code').value
                 reading_date = ec.get_date_from_cell(get_cell(row, 'date'))
                 drop_haul = get_cell(row, 'drop_haul').value
+                if drop_haul == None:
+                    logger.error('In row %s, column "drop_haul" must have a value of "drop" or "haul"', idx)
+                    break
                 temp = ec.get_float_from_cell(get_cell(row, 'temp'))
                 salinity = ec.get_float_from_cell(get_cell(row, 'salinity'))
                 conductivity = ec.get_float_from_cell(get_cell(row, 'conductivity'))
@@ -170,9 +179,11 @@ def import_environment_data(sheet):
 
 
 def import_observation_data(sheet):
-    headers = ec.get_header_map(sheet.rows[0])
+    headers = ec.get_header_map(next(sheet.rows))
     get_cell = ec.get_cell_by_name_extractor(headers)
-    for row in sheet.rows[1:]:
+    for idx, row in enumerate(sheet.rows, start=1):
+        if idx == 1:
+            continue
         trip_code = get_cell(row, 'trip_code').value
         if trip_code:
             set_code = get_cell(row, 'set_code').value
