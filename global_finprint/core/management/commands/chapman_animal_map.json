@@ -113,6 +113,9 @@
             "chrysurus": 23,
             "cirratun": 23
         },
+        "Haelmulon": {
+            "album": 307
+        },
         "Haemulon": {
             "album": 307
         },
@@ -152,6 +155,7 @@
             "chyrsurus": 41
         },
         "Lutjanis": {
+            "Alanis": 40,
             "analis": 40,
             "Analis": 40,
             "chrysurus": 41
@@ -266,10 +270,13 @@
         "UNIDENITFIABLE REEF FISH": {
             "": 53
         },
-        "UNIDENTIFIABLE REEF FISH": {
+        "Unidentifiable reef fish": {
             "": 53
         },
         "UNIDENTIFIABLE SHARK": {
+            "": 50
+        },
+        "Unidentifiable shark": {
             "": 50
         },
         "Undentified Fish 2": {
@@ -332,7 +339,28 @@
         "Unidentified white fish- looks like the dark \"angel fish\" from previous site": {
             "": 53
         },
+        "Undentified fish, small, silver, black coloring on lower back, folowing barracuda": {
+            "": 53
+        },
+        "Unidentifiable reef fish": {
+            "": 53
+        },
+        "Unidentified fish 3: large black strip from head and continuous down back": {
+            "": 53
+        },
+        "Unidentified fish 4: small, thing, one black strip down side, following nurse shark": {
+            "": 53
+        },
+        "Unidentified fish 5: black, rounded": {
+            "": 53
+        },
+        "Unidentified fish 6: rounded, silver, black eyes with yellow border": {
+            "": 53
+        },
         "Unknown": {
+            "": 53
+        },
+        "Unidentifiable shark": {
             "": 53
         },
         "Urobatis": {
