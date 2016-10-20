@@ -14,7 +14,14 @@
             "": 51
         },
         "Dasyatis": {
+            "kuhlii": 158,
             "sp": 51
+        },
+        "Pastinachus": {
+            "sephen": 246
+        },
+        "Taeniura": {
+            "meyeni": 207
         }
     },
     "Muraenidae": {
@@ -25,6 +32,7 @@
     "Rhinidae": {
         "Rhynchobatus": {
             "": 323,
+            "australiae": 322,
             "sp": 323
         }
     },
