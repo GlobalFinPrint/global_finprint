@@ -54,6 +54,8 @@ animal_map = None
 class DataError(Exception):
     pass
 
+# lru_cache automatically memoizes the result from the first call to
+# the following functions
 @functools.lru_cache()
 def get_bait_type_map():
     return  make_choices_reverse_map(gfbm.BAIT_TYPE_CHOICES)
@@ -74,7 +76,9 @@ def get_animal_sex_map():
 def get_animal_stage_map():
     return make_choices_reverse_map(gfaa.ANIMAL_STAGE_CHOICES)
 
+# TODO: add unit test (probably based off of one of the above functions)
 def make_choices_reverse_map(choices_set):
+    '''Creates a reverse mapping from a Django model choice set.'''
     result = {}
     for abrev, verbose in choices_set:
         result[verbose.lower()] = abrev
@@ -94,6 +98,7 @@ def import_trip(
         collaborator,
         boat,
 ):
+    '''Adds a trip, and associated objects to the database, using the Django models.'''
     try:
         logger.info('Working on trip "%s"', trip_code)
         trip = gftm.Trip.objects.filter(code=trip_code).first()
@@ -151,6 +156,7 @@ def import_set(
         aws_video_str,
         comment
 ):
+    '''Uses the django model interface to add a new set and associated objects.'''
     try:
         logger.info('Working on set "%s"', set_code)
         trip = gftm.Trip.objects.filter(code=trip_code).first()
@@ -212,6 +218,7 @@ def import_environment_measure(
         cloud_cover,
         surface_chop
 ):
+    '''Uses the django model interface to add an enviroment measure to a set.'''
     measure_type = 'drop' if is_drop else 'haul'
     try:
         logger.info('Trying to add %s data for set "%s" on trip "%s"', measure_type, set_code, trip_code)
@@ -293,6 +300,9 @@ def import_observation(
         annotation_date,
         raw_import_json
 ):
+    '''
+    Uses the django model to add an observation.
+    '''
     try:
         logger.info(
             'Trying to add observation data from "%s" for set "%s" on trip "%s"',
@@ -328,6 +338,7 @@ def import_observation(
                 )
                 observation.save()
 
+                # TODO: break out animal stuff below into separate function and create unit test.
                 if family or genus:
                     observation.type = 'A'
                     observation.save()
@@ -390,6 +401,9 @@ def import_observation(
         logger.error('Failed while adding observation for set "%s" of trip "%s"', set_code, trip_code)
 
 def update_set_data(trip_code, set_code, visibility):
+    '''
+    Updates the visibility value associated with a set.
+    '''
     try:
         logger.info('Updating set data for set "{}" of trip "{}"'.format(set_code, trip_code))
         the_trip = gftm.Trip.objects.filter(code=trip_code).first()
