@@ -116,7 +116,7 @@ form div.image-select-widget-parent {
   padding: 8px 20px;
   border-radius: 4px;
   font-size: 14px;
-  border-color: $blue;
+  border-color: darken($blue, 20%);
   margin-right: 10px;
 
   &.btn-default {
@@ -127,6 +127,18 @@ form div.image-select-widget-parent {
   &.btn-primary {
     background-color: $blue;
     color: white;
+  }
+
+  &.btn-success {
+    background-color: darken($green, 10%);
+    color: white;
+    border-color: darken($green, 20%);
+  }
+
+  &.btn-danger {
+    background-color: #b94a48;
+    color: white;
+    border-color: darken(#b94a48, 20%);
   }
 }
 
@@ -143,6 +155,35 @@ div.input-group.date {
   span.input-group-addon {
     background: white;
     padding-left: 5px;
+  }
+}
+
+
+// checkbutton style
+label.checkbutton {
+  input[type="checkbox"] {
+    display: none;
+  }
+
+  span.tick {
+    position: relative;
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background-color: white;
+    border: 1px solid $black;
+    margin-bottom: 1px;
+    vertical-align: middle;
+    font-family: 'Glyphicons Halflings';
+    color: $black;
+    font-size: 11px;
+  }
+
+  input[type="checkbox"]:checked + span.tick:after {
+    position: absolute;
+    content: "\e013";
+    top: -1px;
+    left: 1px;
   }
 }
 

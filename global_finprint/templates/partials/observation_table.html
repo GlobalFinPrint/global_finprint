@@ -20,11 +20,11 @@
         {% for e in o.events_for_table %}
             {% if e.id == firstevent.id %}
             <tr class="first-event accordion-toggle" data-target=".children-{{ o.id }}" data-rowspan="{{ rowspan }}">
-                <td class="rowspan">{{ o.assignment.annotator }}</td>
+                <td class="rowspan">{{ o.annotator }}</td>
                 {% if o.type == 'I' %}
                     <td class="rowspan"><i>N/A</i></td>
                 {% else %}
-                    <td class="rowspan">{{ o.animalobservation.animal }}</td>
+                    <td class="rowspan">{{ o.animal }}</td>
                 {% endif %}
                 <td class="rowspan">{{ o.comment|default_if_none:"<i>None</i>" }}</td>
                 <td class="rowspan">{{ o.duration }}</td>

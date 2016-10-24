@@ -1,12 +1,17 @@
 var Templates = {
     eventView: '<div class="event" style="left:calc(<%= left %> - 6px);"></div>',
     observationView: '<div class="observation" style="left:calc(<%= left %> - 10px);" tabindex="0">' +
-            '<div class="observation-popover clear">' +
+            '<%= label %>' +
+            '<div class="observation-popover clear <%= leftRightAligned %>-aligned" style="<%= popoverPosition %>">' +
                 '<div class="left">' +
                     '<div><%= pretty_time %></div>' +
-                    '<div class="event-thumbnail" style="background-image:url(<%= initial_event.image_url %>)">' +
-                        '<div class="extent" style="<%= initial_event.extent_css %>">&nbsp;</div>' +
-                    '</div>' +
+                    '<% if (initial_event.image_url) { %>' +
+                        '<div class="event-thumbnail" style="background-image:url(<%= initial_event.image_url %>)">' +
+                            '<div class="extent" style="<%= initial_event.extent_css %>">&nbsp;</div>' +
+                        '</div>' +
+                    '<% } else { %>' +
+                        '<div class="event-thumbnail empty"></div>' +
+                    '<% } %>' +
                     '<div class="selector<%= selected ? " selected" : "" %>">' +
                         '<span class="checkmark glyphicon glyphicon-ok"></span>' +
                         '<div class="empty-selection">&nbsp;</div>' +
@@ -32,7 +37,7 @@ var Templates = {
                         '</tr>' +
                         '<tr>' +
                             '<td class="data-label">Tags</td>' +
-                            '<td class="data"><%= initial_event.attribute %></td>' +
+                            '<td class="data"><%= initial_event.attribute_names.join(", ") %></td>' +
                         '</tr>' +
                     '</tbody></table>' +
                 '</div>' +

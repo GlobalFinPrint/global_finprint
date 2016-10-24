@@ -108,6 +108,7 @@ a.manual-assign {
 
       td.attributes:after {
         @include glyphicon('\e257');
+        float: right;
       }
 
       &.selected {
@@ -129,6 +130,7 @@ a.manual-assign {
       width: 160px;
       height: 90px;
       background-size: 160px 90px;
+      margin: 0 auto;
 
       div.extent {
         position: absolute;
@@ -435,6 +437,26 @@ h3.form-title {
   background-size: 160px 90px;
   -webkit-user-select: none;
 
+  &.empty {
+    border: 1px solid $gray;
+    background-color: lighten($gray, 25%);
+    cursor: default;
+
+    &:after {
+      content: 'NO IMAGE';
+      display: block;
+      top: 40%;
+      color: $black;
+      width: 100%;
+      text-align: center;
+      font-family: inherit;
+    }
+
+    &:hover:after {
+      font-size: 1.2em;
+    }
+  }
+
   &:after {
     position: absolute;
     bottom: 3px;
@@ -490,25 +512,55 @@ h3.form-title {
   }
 }
 
-.row.assignment p.review-label {
-  margin-top: 20px;
+.row.assignment {
+  p.review-label {
+    margin-top: 20px;
+  }
+
+  button.select-all {
+    padding: 4px 10px;
+    margin-left: 10px;
+
+    &:focus {
+      outline: none;
+    }
+  }
 }
 
-#busy-indicator {
+.busy-indicator {
   position: absolute;
   height: 40px;
   width: 160px;
-  top: calc(50% - 90px);
+  top: 10px;
   left: calc(50% - 80px);
   background-color: lighten($gray, 25%);
   border-radius: 0.35em;
   text-align: center;
   line-height: 40px;
   font-size: 30px;
+  z-index: 20;
 }
 
 .compare-actions {
   margin-bottom: 25px;
+
+  span#save-feedback {
+    padding-right: 10px;
+    display: none;
+    color: $black;
+
+    &.success {
+      color: $green;
+    }
+
+    &.failure {
+      color: red;
+    }
+  }
+}
+
+.row.master:focus, .row.assignment:focus {
+  outline: none;
 }
 
 .timeline-holder {
@@ -516,6 +568,11 @@ h3.form-title {
   height: 60px;
   padding: 0 25px;
   margin-bottom: 15px;
+  position: relative;
+
+  &.highlighted {
+    background-color: transparentize($green, 0.85);
+  }
 
   .timeline {
     position: relative;
@@ -524,18 +581,25 @@ h3.form-title {
     height: 30px;
 
     .observation {
-      @include circle(20px);
+      @include circle(15px);
       cursor: pointer;
       position: absolute;
-      top: 20px;
-      background-color: $blue;
+      top: 22px;
+      margin-left: 3px;
+      background-color: lighten($blue, 15%);
       z-index: 10;
+      color: white;
+      font-size: 10px;
 
       &:focus {
         outline: none;
 
         .observation-popover {
           border-color: $green;
+
+          &:before {
+            border-top-color: $green;
+          }
         }
       }
 
@@ -543,18 +607,65 @@ h3.form-title {
         visibility: visible;
       }
 
+      &:hover, &.selected {
+        @include circle(20px);
+        margin-left: 0;
+        top: 20px;
+        background-color: $blue;
+        font-size: 14px;
+      }
+
       .observation-popover {
+        position: absolute;
         visibility: hidden;
         cursor: default;
-        position: relative;
         text-align: left;
-        top: -170px; // TODO programmatically determine position
+        top: -170px;
         height: 160px;
         width: 600px;
         background-color: lighten($green, 25%);
         border: 2px solid lighten($gray, 25%);
         border-radius: 0.25em;
         z-index: 15;
+        color: $black;
+        line-height: 20px;
+        font-size: 14px;
+
+        &.left-aligned:after, &.left-aligned:before {
+            left: 21px;
+        }
+
+        &.right-aligned:after {
+          right: 1px;
+        }
+
+        &.right-aligned:before {
+          right: -2px;
+        }
+
+        &:after, &:before {
+            top: 100%;
+            border: solid transparent;
+            content: ' ';
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        &:after {
+            border-color: transparent;
+            border-top-color: lighten($green, 25%);
+            border-width: 15px;
+            margin-left: -20px;
+        }
+
+        &:before {
+            border-color: transparent;
+            border-top-color: lighten($gray, 25%);
+            border-width: 18px;
+            margin-left: -23px;
+        }
 
         .left, .right {
           float: left;
@@ -644,10 +755,17 @@ h3.form-title {
     }
 
     .event {
-      @include downTick(12px, 6px, transparentize($green, 0.25));
+      @include downTick(8px, 4px, transparentize($green, 0.50));
       position: absolute;
-      top: 15px;
+      top: 17px;
       z-index: 5;
+      margin-left: 2px;
+
+      &.activated {
+        @include downTick(12px, 6px, transparentize($green, 0.25));
+        top: 15px;
+        margin-left: 0;
+      }
     }
   }
 }

@@ -12,8 +12,8 @@
     <td>{{ a.observation_set.all|length }}</td>
     <td>
         <a class="open-assign-modal" data-id="{{ a.set.id }}" href="#">Assign</a> /
-        <a href="{% url 'assignment_manage' a.id %}" target="_blank">Manage</a><!-- /
-        <a href="#" target="_blank">Review</a> -->
+        <a href="{% url 'assignment_manage' a.id %}" target="_blank">Manage</a> /
+        <a href="{% url 'assignment_compare' a.set.id %}" target="_blank">Review</a>
     </td>
 </tr>
 {% endfor %}

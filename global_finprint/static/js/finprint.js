@@ -19,6 +19,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initImageSelectWidgets();
         initTabAccordion();
         initSubstrateWidget();
+        initCheckbuttons();
     });
 
     function getCSRF() {
@@ -610,5 +611,16 @@ var finprint = finprint || {};  //namespace if necessary...
         $parent.on('change', 'input[name="percent"]', recalculateTotalPercent);
         $parent.on('click', 'a.split', splitModal);
         $parent.on('click', 'a.remove', removeSubstrateRow);
+    }
+
+    function initCheckbuttons() {
+        var url, data;
+        $('.checkbutton').click(function(e) {
+            if (e.target === this) {
+                url = $(this).data('url');
+                data = {checked: !$(this).find('input[type="checkbox"]').is(':checked')};
+                $.get(url, data);
+            }
+        });
     }
 })(jQuery);
