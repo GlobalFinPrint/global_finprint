@@ -77,6 +77,11 @@
         "Sphyrna": {
             "": 294
         }
+    },
+    "Alopiidae":
+    {
+        "Alopias": {
+            "spp": 302
+        }
     }
-    
 }
