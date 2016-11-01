@@ -4,7 +4,8 @@
             "": 292
         },
         "Carcharhinus": {
-            "": 293
+            "": 50,
+            "tilstoni": 287
         }
     },
     "Cheloniidae": {
@@ -76,6 +77,18 @@
     {
         "Sphyrna": {
             "": 294
+        }
+    },
+    "Alopiidae":
+    {
+        "Alopias": {
+            "spp": 302
+        }
+    },
+    "Rhynchobatidae":
+    {
+        "Rhynchobatus": {
+            "": 330
         }
     }
 }

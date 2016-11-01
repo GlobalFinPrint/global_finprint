@@ -426,3 +426,228 @@ h3.form-title {
     }
   }
 }
+
+.event-thumbnail {
+  position: relative;
+  cursor: pointer;
+  width: 160px;
+  height: 90px;
+  background-size: 160px 90px;
+  -webkit-user-select: none;
+
+  &:after {
+    position: absolute;
+    bottom: 3px;
+    right: 5px;
+    content: "\e015";
+    font-family: 'Glyphicons Halflings';
+    color: white;
+    font-size: 1.2em;
+  }
+
+  &:hover:after {
+    font-size: 1.3em;
+  }
+
+  div.extent {
+    position: absolute;
+    border: 1px solid lightgreen;
+  }
+}
+
+#full-image-modal {
+  .event-image {
+    position: relative;
+    cursor: pointer;
+    width: 800px;
+    height: 450px;
+    background-size: 800px 450px;
+    -webkit-user-select: none;
+    margin: 40px auto;
+
+    div.extent {
+      position: absolute;
+      border: 1px solid lightgreen;
+    }
+  }
+
+  .close {
+    position: absolute;
+    cursor: pointer;
+    top: -10px;
+    right: -10px;
+    width: 35px;
+    line-height: 30px;
+    border: 1px solid $gray;
+    background-color: white;
+    color: $gray;
+    opacity: 1.0;
+    border-radius: 1em;
+    text-align: center;
+    font-size: 2.0em;
+    padding-bottom: 3px;
+    -webkit-user-select: none;
+  }
+}
+
+.row.assignment p.review-label {
+  margin-top: 20px;
+}
+
+#busy-indicator {
+  position: absolute;
+  height: 40px;
+  width: 160px;
+  top: calc(50% - 90px);
+  left: calc(50% - 80px);
+  background-color: lighten($gray, 25%);
+  border-radius: 0.35em;
+  text-align: center;
+  line-height: 40px;
+  font-size: 30px;
+}
+
+.compare-actions {
+  margin-bottom: 25px;
+}
+
+.timeline-holder {
+  background-color: transparentize($form-background, 0.5);
+  height: 60px;
+  padding: 0 25px;
+  margin-bottom: 15px;
+
+  .timeline {
+    position: relative;
+    margin: 0 0 25px;
+    border-bottom: 2px solid $gray;
+    height: 30px;
+
+    .observation {
+      @include circle(20px);
+      cursor: pointer;
+      position: absolute;
+      top: 20px;
+      background-color: $blue;
+      z-index: 10;
+
+      &:focus {
+        outline: none;
+
+        .observation-popover {
+          border-color: $green;
+        }
+      }
+
+      &.selected .observation-popover {
+        visibility: visible;
+      }
+
+      .observation-popover {
+        visibility: hidden;
+        cursor: default;
+        position: relative;
+        text-align: left;
+        top: -170px; // TODO programmatically determine position
+        height: 160px;
+        width: 600px;
+        background-color: lighten($green, 25%);
+        border: 2px solid lighten($gray, 25%);
+        border-radius: 0.25em;
+        z-index: 15;
+
+        .left, .right {
+          float: left;
+          padding: 10px;
+          height: 100%;
+        }
+
+        .left {
+          text-align: center;
+          width: 200px;
+
+          .event-thumbnail {
+            margin: 0 auto;
+          }
+
+          .selector {
+            width: 25px;
+            line-height: 25px;
+            background-color: $blue;
+            color: $form-background;
+            border-radius: 1em;
+            margin: 7px auto 0;
+            cursor: pointer;
+            -webkit-user-select: none;
+
+            .checkmark {
+              display: none;
+            }
+
+            &.selected .checkmark {
+              display: inline-block;
+            }
+
+            .empty-selection {
+              display: inline-block;
+              width: 19px;
+              line-height: 19px;
+              border-radius: 1em;
+              background-color: lighten($green, 25%);
+            }
+
+            &.selected .empty-selection {
+              display: none;
+            }
+          }
+        }
+
+        .right {
+          width: 375px;
+
+          table tbody tr {
+            margin-bottom: 10px;
+
+            td.data-label {
+              color: $blue;
+              font-weight: bold;
+              text-align: right;
+              vertical-align: top;
+              padding-right: 10px;
+              width: 100px;
+            }
+
+            td.data {
+              line-height: 1.2em;
+            }
+          }
+        }
+
+        .close {
+          position: absolute;
+          cursor: pointer;
+          top: -10px;
+          right: -10px;
+          width: 20px;
+          line-height: 16px;
+          border: 1px solid $gray;
+          background-color: white;
+          color: $gray;
+          opacity: 1.0;
+          border-radius: 1em;
+          text-align: center;
+          font-size: 1.15em;
+          padding-bottom: 3px;
+          -webkit-user-select: none;
+        }
+      }
+    }
+
+    .event {
+      @include downTick(12px, 6px, transparentize($green, 0.25));
+      position: absolute;
+      top: 15px;
+      z-index: 5;
+    }
+  }
+}

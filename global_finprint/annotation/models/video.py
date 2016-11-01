@@ -10,6 +10,12 @@ class Video(AuditableModel):
     def annotators_assigned(self):
         return list(a.annotator for a in self.assignment_set.all())
 
+    def length(self):
+        try:
+            return max(self.assignment_set.exclude(status_id__in=[1, 2]).values_list('progress', flat=True))
+        except ValueError:
+            return None
+
     def __str__(self):
         return u"{0}".format(self.file)
 

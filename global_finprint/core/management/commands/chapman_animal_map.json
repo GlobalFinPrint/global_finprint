@@ -27,14 +27,21 @@
         "Carcharhinius": {
             "limbatus": 292
         },
+        "Carcharhinu": {
+            "limbatus": 292
+        },
         "Carcharhinus": {
             "": 292,
             "chrysurus": 292,
             "perezi": 24,
             "perezii": 24,
+            "perzi": 24,
             "rysarus": 292
         },
         "Carcharinus": {
+            "perezi": 24
+        },
+        "Carhcarhinus": {
             "perezi": 24
         },
         "Cepalopholis": {
@@ -45,14 +52,22 @@
             "fulva": 34,
             "perezi": 34
         },
+        "Cephalopholi": {
+            "fulva": 34
+        },
+        "Cephlopholis": {
+            "cruentata": 33
+        },
         "Charcarhinus": {
             "perezi": 24
         },
         "Charcharhinus": {
-            "Perezi": 24
+            "Perezi": 24,
+            "perezi": 24
         },
         "Echeneis": {
-            "neucratoides": 305
+            "neucratoides": 305,
+            "E.naucrates": 317
         },
         "Ephinephelus": {
             "guttatus": 35,
@@ -63,7 +78,8 @@
             "striatus": 32
         },
         "Epinephalus": {
-            "striatus": 32
+            "striatus": 32,
+            "guttatus": 35
         },
         "Epinephelus": {
             "Striatus": 32,
@@ -80,15 +96,25 @@
             "scensionis": 36,
             "striatus": 32
         },
+        "Epinephelusod": {
+            "scensionis": 36
+        },
         "Epinepheluss": {
             "triatus": 32
         },
         "Epinephilus": {
             "striatus": 32
         },
+        "Ginglymostom": {
+            "cirratum": 23
+        },
         "Ginglymostoma": {
             "Perezi": 23,
-            "chrysurus": 23
+            "chrysurus": 23,
+            "cirratun": 23
+        },
+        "Haelmulon": {
+            "album": 307
         },
         "Haemulon": {
             "album": 307
@@ -96,12 +122,25 @@
         "Himantura": {
             "schmardae": 27
         },
+        "Himanturasch": {
+            "mardae": 27
+        },
         "Holacanthus": {
             "ciliarus": 308
         },
         "Lautjanus": {
             "analis": 40
         },
+        "Lutjanus": {
+            "analis": 40,
+            "Alanis": 40,
+            "analus": 40,
+            "Chyrsurus": 41,
+            "chysurus": 41,
+            "chrysurus": 41,
+            "chyrsurus": 41,
+            "crysurus": 41
+        },        
         "Long silver fish (not a barracuda)": {
             "": 309
         },
@@ -116,15 +155,10 @@
             "chyrsurus": 41
         },
         "Lutjanis": {
+            "Alanis": 40,
             "analis": 40,
             "Analis": 40,
             "chrysurus": 41
-        },
-        "Lutjanus": {
-            "analis": 40,
-            "chrysurus": 41,
-            "chyrsurus": 41,
-            "crysurus": 41
         },
         "Lutjanusch": {
             "ryasrus": 41,
@@ -154,6 +188,10 @@
         "Pomacanthus": {
             "arcuatus": 308
         },
+        "Possible blacktip or Caribbean Reef shark (distance makes hard to identify)": {
+            "": 50,
+            "limbatus": 50
+        },
         "Pterois": {
             "": 313,
             "volitans": 313
@@ -167,12 +205,18 @@
         "Scardiae": {
             "": 312
         },
+        "scaridae": {
+            "": 312
+        },
         "Scaridae": {
             "": 312,
             "N/A": 312
         },
         "Scaridea": {
             "": 312
+        },
+        "SEA TURTLE??": {
+            "": 316
         },
         "Scomberomorus": {
             "regalis": 314
@@ -187,6 +231,15 @@
         "Small fish shaped sort of like angel fish- white with a yellow rim and a black line on face": {
             "": 308
         },
+        "Small black and white striped fish, shaped like the ones above": {
+            "": 53
+        },
+        "Small fish- front half yellow, back half black": {
+            "": 53
+        },
+        "Small fish w/ black and white horizontal stripes swimming along with the Nurse Shark- not sure of species": {
+            "": 53
+        },
         "Sp?": {
             "sp?": 53
         },
@@ -194,7 +247,11 @@
             "rubripinne": 312
         },
         "Sphyraena": {
+            "": 39,
             "baraccuda": 39,
+            "barracuda": 39
+        },
+        "Sphyreana": {
             "barracuda": 39
         },
         "Sphyrna": {
@@ -210,6 +267,18 @@
         "Turtle": {
             "": 316
         },
+        "UNIDENITFIABLE REEF FISH": {
+            "": 53
+        },
+        "Unidentifiable reef fish": {
+            "": 53
+        },
+        "UNIDENTIFIABLE SHARK": {
+            "": 50
+        },
+        "Unidentifiable shark": {
+            "": 50
+        },
         "Undentified Fish 2": {
             "": 53
         },
@@ -220,6 +289,21 @@
             "": 53
         },
         "Unidentified Fish 3": {
+            "": 53
+        },
+        "Unidentified fish 1": {
+            "": 53
+        },
+        "Unidentified fish 2": {
+            "": 53
+        },
+        "Unidentified fish 3": {
+            "": 53
+        },
+        "Unidentified fish 4": {
+            "": 53
+        },
+        "Unidentified fish 6": {
             "": 53
         },
         "Unidentified fish 2: Long, white": {
@@ -240,6 +324,9 @@
         "Unidentified fish: 4": {
             "": 53
         },
+        "Unidentified fish 3: silver, black on fin, following blacktip shark": {
+            "": 53
+        },
         "Unidentified fish: spotted top, yellow bottom": {
             "": 53
         },
@@ -250,6 +337,21 @@
             "": 53
         },
         "Unidentified white fish- looks like the dark \"angel fish\" from previous site": {
+            "": 53
+        },
+        "Undentified fish, small, silver, black coloring on lower back, folowing barracuda": {
+            "": 53
+        },
+        "Unidentified fish 3: large black strip from head and continuous down back": {
+            "": 53
+        },
+        "Unidentified fish 4: small, thing, one black strip down side, following nurse shark": {
+            "": 53
+        },
+        "Unidentified fish 5: black, rounded": {
+            "": 53
+        },
+        "Unidentified fish 6: rounded, silver, black eyes with yellow border": {
             "": 53
         },
         "Unknown": {
