@@ -5,7 +5,7 @@ from django.core.validators import MinValueValidator
 from django.core.urlresolvers import reverse
 from django.contrib.gis.geos import Point
 
-from global_finprint.annotation.models.observation import Observation
+from global_finprint.annotation.models.observation import Observation, MasterRecord
 from global_finprint.annotation.models.video import Video
 from global_finprint.core.version import VersionInfo
 from global_finprint.core.models import AuditableModel
@@ -270,6 +270,16 @@ class Set(AuditableModel):
                                              self.trip.code,
                                              self.code,
                                              image_type)
+
+    def master(self):
+        try:
+            return self.masterrecord
+        except MasterRecord.DoesNotExist:
+            return None
+
+    def completed(self):
+        master = self.master()
+        return master and (master.completed or master.deprecated)
 
     def __str__(self):
         return u"{0}_{1}".format(self.trip.code, self.code)
