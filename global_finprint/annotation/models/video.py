@@ -15,8 +15,13 @@ class Video(AuditableModel):
             return max(self.assignment_set.exclude(status_id__in=[1, 2]).values_list('progress', flat=True))
         except ValueError:
             try:
-                from .observation import Event  # lazy import to avoid circular nonsense
-                return max(e.event_time for e in Event.objects.filter(observation__assignment__video=self))
+                sql = '''select max(e.event_time) from annotation_event e
+                join annotation_observation o on (e.observation_id = o.id)
+                join annotation_assignment a on (o.assignment_id = a.id)
+                where a.video_id = ?'''
+                with connection.cursor() as cursor:
+                    cursor.execute(sql, self.id)
+                    return cursor.fetchone()[0]
             except ValueError:
                 return None
 
