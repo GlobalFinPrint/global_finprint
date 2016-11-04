@@ -19,9 +19,9 @@ class Video(AuditableModel):
                 sql = '''select max(e.event_time) from annotation_event e
                 join annotation_observation o on (e.observation_id = o.id)
                 join annotation_assignment a on (o.assignment_id = a.id)
-                where a.video_id = ?'''
+                where a.video_id = %s'''
                 with connection.cursor() as cursor:
-                    cursor.execute(sql, self.id)
+                    cursor.execute(sql, [self.id])
                     return cursor.fetchone()[0]
             except:  # TODO be more specific here
                 return None
