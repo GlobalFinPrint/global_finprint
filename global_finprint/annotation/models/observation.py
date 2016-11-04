@@ -263,6 +263,9 @@ class AbstractEvent(AuditableModel):
             return None
 
     def extent_to_css(self):
+        if self.extent is None:
+            return None
+
         x = self.extent.boundary.x
         y = self.extent.boundary.y
         css = 'width: {0}%; height: {1}%; left: {2}%; top: {3}%;'.format(
