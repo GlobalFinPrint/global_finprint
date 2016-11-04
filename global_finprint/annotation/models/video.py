@@ -12,7 +12,8 @@ class Video(AuditableModel):
 
     def length(self):
         try:
-            return max(self.assignment_set.exclude(status_id__in=[1, 2]).values_list('progress', flat=True))
+            progress_list = self.assignment_set.exclude(status_id__in=[1, 2]).values_list('progress', flat=True)
+            return max(p for p in progress_list if p > 0)
         except ValueError:
             try:
                 sql = '''select max(e.event_time) from annotation_event e
@@ -22,7 +23,7 @@ class Video(AuditableModel):
                 with connection.cursor() as cursor:
                     cursor.execute(sql, self.id)
                     return cursor.fetchone()[0]
-            except ValueError:
+            except:  # TODO be more specific here
                 return None
 
     def __str__(self):
