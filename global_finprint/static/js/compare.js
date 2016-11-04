@@ -258,8 +258,11 @@ $(function() {
                 }
             }
         },
-        selectAll: function() {
+        selectAll: function(e) {
+            var $selectAllButton = $(e.target);
+            $selectAllButton.attr('disabled', 'disabled');
             this.collection.each(function(observation) { observation.select(); });
+            $selectAllButton.removeAttr('disabled');
         },
         onKeypress: function(e) {
             var $prev, $next;
