@@ -1,6 +1,6 @@
 from django.db import models, connection
 from global_finprint.core.models import AuditableModel, FinprintUser
-from global_finprint.annotation.models.observation import Event
+# from global_finprint.annotation.models.observation import Event
 
 
 # todo:  pull video file names into ranked list (for l & r, etc.)
@@ -15,10 +15,10 @@ class Video(AuditableModel):
         try:
             return max(self.assignment_set.exclude(status_id__in=[1, 2]).values_list('progress', flat=True))
         except ValueError:
-            try:
-                return max(e.event_time for e in Event.objects.filter(observation__assignment__video=self))
-            except ValueError:
-                return None
+            # try:
+            #     return max(e.event_time for e in Event.objects.filter(observation__assignment__video=self))
+            # except ValueError:
+            return None
 
     def __str__(self):
         return u"{0}".format(self.file)
