@@ -62,9 +62,9 @@ class AssignmentListView(UserAllowedMixin, View):
 
     def get(self, request):
         context = RequestContext(request, {
-            'locations': Location.objects.order_by('name').all(),
-            'trips': Trip.objects.order_by('start_date').all(),
-            'affils': Affiliation.objects.order_by('name').all(),
+            'locations': Location.objects.order_by('name').all().prefetch_related('trip_set'),
+            'trips': Trip.objects.order_by('start_date').all().prefetch_related('set_set'),
+            'affils': Affiliation.objects.order_by('name').all().prefetch_related('finprintuser_set'),
             'statuses': AnnotationState.objects.all()
         })
         return render_to_response(self.template_name, context=context)
