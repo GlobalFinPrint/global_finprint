@@ -190,6 +190,7 @@ class Reef(models.Model):
 
     mpa = models.ForeignKey(to=MPA, null=True, blank=True)
 
+    old_manager = models.Manager()
     objects = models.GeoManager()
 
     def __str__(self):

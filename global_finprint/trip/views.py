@@ -65,9 +65,9 @@ class TripListView(UserAllowedMixin, CreateView):
             if search_values['reef']:
                 search_terms['set__reef_habitat__reef'] = search_values['reef']
 
-            return Trip.objects.filter(**search_terms).distinct().order_by('start_date')
+            return Trip.objects.filter(**search_terms).distinct().order_by('start_date').select_related('location')
         else:
-            return Trip.objects.all().order_by('start_date')
+            return Trip.objects.all().order_by('start_date').select_related('location')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
