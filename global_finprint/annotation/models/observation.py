@@ -154,9 +154,6 @@ class Observation(AbstractObservation):
     def initial_event(self):
         return self.event_set.order_by('create_datetime').first()
 
-    def events_for_table(self):
-        return self.event_set.order_by('event_time').all()
-
     def __str__(self):
         # todo:  update to first event?
         return u"{0}".format(self.type)
@@ -199,8 +196,8 @@ class MasterObservation(AbstractObservation):
     def initial_event(self):
         return self.masterevent_set.order_by('create_datetime').first()
 
-    def events_for_table(self):
-        return self.masterevent_set.order_by('event_time').all()
+    def event_set(self):
+        return self.masterevent_set.order_by('event_time')
 
     def annotator(self):
         return self.original.annotator()

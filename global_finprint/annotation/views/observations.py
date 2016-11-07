@@ -36,7 +36,13 @@ class ObservationListView(UserAllowedMixin, ListView):
     template_name = 'pages/observations/observation_list.html'
 
     def get_queryset(self):
-        return get_object_or_404(Set, pk=self.kwargs['set_pk']).observations()
+        selected_related = [
+            'animalobservation__animal',
+            'assignment__annotator__user',
+            'assignment__video__set__trip',
+        ]
+        return get_object_or_404(Set, pk=self.kwargs['set_pk']).observations() \
+            .select_related(*selected_related).prefetch_related('event_set')
 
     def get_context_data(self, **kwargs):
         context = super(ObservationListView, self).get_context_data(**kwargs)
