@@ -74,7 +74,10 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
     template_name = 'pages/annotation/assignment_list_tbody.html'
 
     def post(self, request):
-        query = Assignment.objects.all()
+        selected_related = [
+            'video', 'video__set', 'video__set__trip', 'annotator', 'annotator__user'
+        ]
+        query = Assignment.objects.all().select_related(*selected_related).prefetch_related('observation_set')
         unassigned = Set.objects.annotate(Count('video__assignment')) \
                                 .filter(video__assignment__count=0) \
                                 .exclude(video__file__isnull=True).exclude(video__file='')

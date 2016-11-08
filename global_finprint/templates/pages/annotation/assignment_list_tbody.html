@@ -9,11 +9,11 @@
     <td>{{ a.create_datetime|date }} ({{ a.create_datetime|naturaltime }})</td>
     <td>{{ a.status }}</td>
     <td>{{ a.progress|time_display }}</td>
-    <td>{{ a.observation_set.all|length }}</td>
+    <td>{{ a.observation_set.count }}</td>
     <td>
-        <a class="open-assign-modal" data-id="{{ a.set.id }}" href="#">Assign</a> /
+        <a class="open-assign-modal" data-id="{{ a.video.set.id }}" href="#">Assign</a> /
         <a href="{% url 'assignment_manage' a.id %}" target="_blank">Manage</a> /
-        <a href="{% url 'assignment_compare' a.set.id %}" target="_blank">Review</a>
+        <a href="{% url 'assignment_compare' a.video.set.id %}" target="_blank">Review</a>
     </td>
 </tr>
 {% endfor %}
