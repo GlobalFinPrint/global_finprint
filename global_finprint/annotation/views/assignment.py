@@ -161,7 +161,12 @@ class AssignmentManageView(UserAllowedMixin, View):
             'assignment': assignment,
             'trip': assignment.video.set.trip,
             'set': assignment.video.set,
-            'observations': assignment.observation_set.all(),
+            'observations': assignment.observation_set.all()
+                                 .select_related('animalobservation__animal',
+                                                 'assignment__annotator__user',
+                                                 'assignment__annotator__affiliation',
+                                                 'assignment__video__set__trip',)
+                                 .prefetch_related('event_set', 'event_set__attribute'),
             'for': ' for {0} by {1}'.format(assignment.video.set, assignment.annotator)
         })
         return render_to_response(self.template_name, context=context)
