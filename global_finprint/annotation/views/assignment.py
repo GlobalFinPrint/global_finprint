@@ -126,7 +126,9 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
             except ValueError:
                 pass
 
-        context = RequestContext(request, {'assignments': query, 'unassigned': unassigned})
+        context = RequestContext(request, {'assignments': sorted(query, key=lambda a: str(a.set())),
+                                           'unassigned': sorted(unassigned, key=lambda s: str(s))
+                                           })
         return render_to_response(self.template_name, context=context)
 
 
