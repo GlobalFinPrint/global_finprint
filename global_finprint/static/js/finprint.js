@@ -79,8 +79,14 @@ var finprint = finprint || {};  //namespace if necessary...
             $form.find(selector).selectize(options);
         });
         $form.find('button#search').click(function() {
+            var $this = $(this);
+            var oldText = $this.text();
+            $this.attr('disabled', 'disabled');
+            $this.text('Searching...');
             $.post('/assignment/search', $form.serialize(), function(res) {
                 $target.html(res);
+                $this.removeAttr('disabled');
+                $this.text(oldText);
             });
         });
     }
