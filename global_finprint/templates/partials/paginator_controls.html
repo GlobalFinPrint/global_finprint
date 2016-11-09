@@ -1,0 +1,19 @@
+{% load page_link %}
+<p class="paginator-controls">
+    {% if page.has_previous %}
+        <a href="{% page_link request page.previous_page_number %}">
+            <span class="glyphicon glyphicon-backward"></span>
+            Previous
+        </a>
+    {% endif %}
+
+    Page {{ page.number }} of {{ page.paginator.num_pages }}
+    ({{ page.paginator.count }} total {{ thing_name }})
+
+    {% if page.has_next %}
+        <a href="{% page_link request page.next_page_number %}">
+            Next
+            <span class="glyphicon glyphicon-forward"></span>
+        </a>
+    {% endif %}
+</p>

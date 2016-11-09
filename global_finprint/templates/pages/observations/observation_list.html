@@ -14,6 +14,7 @@
         </div>
 
         <div class="row">
+            {% include 'partials/paginator_controls.html' with page=observations thing_name='observations' %}
             {% include 'partials/observation_table.html' with observations=observations for=for %}
         </div>
     </div>
