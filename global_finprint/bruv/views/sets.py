@@ -92,11 +92,16 @@ class SetListView(UserAllowedMixin, View):
         if last_set is not None:
             set_form_defaults.update({
                 'reef_habitat': last_set.reef_habitat,
+                'reef': last_set.reef_habitat.reef,
+                'habitat': last_set.reef_habitat.habitat,
                 'latitude': round(last_set.latitude, 1),
                 'longitude': round(last_set.longitude, 1),
                 'set_date': last_set.set_date,
                 'drop_time': last_set.drop_time,
+                'haul_date': last_set.haul_date,
                 'haul_time': last_set.haul_time,
+                'equipment': last_set.equipment,
+                'bait': last_set.bait
             })
 
         return set_form_defaults
