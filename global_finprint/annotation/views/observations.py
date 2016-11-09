@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from global_finprint.annotation.models.observation import Observation
 from global_finprint.bruv.models import Set, Trip
 from global_finprint.core.mixins import UserAllowedMixin
@@ -47,6 +47,14 @@ class ObservationListView(UserAllowedMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ObservationListView, self).get_context_data(**kwargs)
+        page = self.request.GET.get('page', 1)
+        paginator = Paginator(context['observations'], 50)
+        try:
+            context['observations'] = paginator.page(page)
+        except PageNotAnInteger:
+            context['observations'] = paginator.page(1)
+        except EmptyPage:
+            context['observations'] = paginator.page(paginator.num_pages)
         context['trip_pk'] = self.kwargs['trip_pk']
         context['set_pk'] = self.kwargs['set_pk']
         context['trip_name'] = str(Trip.objects.get(pk=self.kwargs['trip_pk']))

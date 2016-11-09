@@ -35,6 +35,7 @@
         </div>
 
         <div class="row">
+            {% include 'partials/paginator_controls.html' with page=trips thing_name='trips' %}
             <table class="table table-bordered table-condensed trip-table" cellspacing="0" width="100%">
                 <thead>
                     <tr class="table-header-title">

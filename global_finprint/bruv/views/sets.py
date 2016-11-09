@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import View
 from django.contrib import messages
 from django.http.response import JsonResponse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
@@ -41,11 +42,19 @@ class SetListView(UserAllowedMixin, View):
     template = 'pages/sets/set_list.html'
 
     def _common_context(self, request, parent_trip):
+        page = request.GET.get('page', 1)
+        paginator = Paginator(self._get_filtered_sets(parent_trip), 50)
+        try:
+            sets = paginator.page(page)
+        except PageNotAnInteger:
+            sets = paginator.page(1)
+        except EmptyPage:
+            sets = paginator.page(paginator.num_pages)
         return RequestContext(request, {
             'request': request,
             'trip_pk': parent_trip.pk,
             'trip_name': str(parent_trip),
-            'sets': self._get_filtered_sets(parent_trip),
+            'sets': sets,
             'search_form': SetSearchForm(self.request.GET or None, trip_id=parent_trip.pk)
         })
 
