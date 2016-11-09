@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models.functions import Lower
 from django.forms.utils import flatatt
 from django.forms import ValidationError
 from django.utils.html import format_html
@@ -80,13 +81,19 @@ class SetSearchForm(forms.Form):
                                input_formats=['%B %d %Y'],
                                widget=DateTimePicker(options=datepicker_opts))
     reef = forms.ModelChoiceField(required=False,
-                                  queryset=Reef.objects.all())
+                                  queryset=Reef.objects.all().order_by(
+                                      Lower('site__name'), Lower('name'), Lower('site__code'), Lower('code')
+                                  ))
     habitat = forms.ModelChoiceField(required=False,
-                                     queryset=ReefType.objects.all())
+                                     queryset=ReefType.objects.all().order_by(Lower('type')))
     equipment = forms.ModelChoiceField(required=False,
-                                       queryset=Equipment.objects.filter(set__in=Set.objects.all()).distinct())
+                                       queryset=Equipment.objects.filter(set__in=Set.objects.all())
+                                       .distinct().order_by(Lower('frame_type__type'), Lower('camera'), 'stereo')
+                                       )
     bait = forms.ModelChoiceField(required=False,
-                                  queryset=Bait.objects.filter(set__in=Set.objects.all()).distinct())
+                                  queryset=Bait.objects.filter(set__in=Set.objects.all())
+                                  .distinct().order_by(Lower('type'), Lower('description'), 'oiled')
+                                  )
     code = forms.CharField(required=False)
 
     def __init__(self, *args, **kwargs):
