@@ -20,6 +20,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initTabAccordion();
         initSubstrateWidget();
         initCheckbuttons();
+        initColoredRows();
     });
 
     function getCSRF() {
@@ -627,6 +628,30 @@ var finprint = finprint || {};  //namespace if necessary...
                 data = {checked: !$(this).find('input[type="checkbox"]').is(':checked')};
                 $.get(url, data);
             }
+        });
+    }
+
+    function initColoredRows() {
+        var palette = colorbrewer.Set1[9];
+        var pallIndex = 0;
+        var $colorRowContainer = $('.color-rows');
+        var diffCell = parseInt($colorRowContainer.data('diff-cell'));
+        var diffDict = {};
+        var rows = $colorRowContainer.find('table tbody tr.first-event');
+        var css = 'content: ""; display: inline-block; height: 5px; width: 5px; border: 5px solid black; ' +
+            'border-radius: 5px; margin-right: 5px;';
+        rows.each(function(i, row) {
+            var cell = $(row).find('td')[diffCell];
+            var diffKey = cell.innerText;
+            if (diffDict[diffKey] === undefined) {
+                document.styleSheets[0].addRule(
+                    '.color-rows table tbody tr td[data-pall-index="' + pallIndex + '"]:before',
+                    css + 'border-color: ' + palette[pallIndex] + ';'
+                );
+                diffDict[diffKey] = pallIndex;
+                pallIndex +=1 ;
+            }
+            $(cell).attr('data-pall-index', diffDict[diffKey]);
         });
     }
 })(jQuery);

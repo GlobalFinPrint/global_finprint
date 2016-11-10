@@ -210,3 +210,7 @@ span.circle {
 p.paginator-controls {
   text-align: center;
 }
+
+.color-rows table tbody tr[data-diff-color]:before {
+  content: attr(data-diff-color);
+}
