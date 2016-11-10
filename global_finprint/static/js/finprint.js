@@ -660,8 +660,9 @@ var finprint = finprint || {};  //namespace if necessary...
     }
 
     function initDisableOnSubmit() {
-        // $('input[type="submit"]').click(function() {
-        //     $('input[type="submit"]').attr('disabled', 'disabled');
-        // });
+        $('input[type="submit"]').click(function() {
+            $('input[type="submit"]').attr('disabled', 'disabled');
+            $(this).parents('form').submit();
+        });
     }
 })(jQuery);
