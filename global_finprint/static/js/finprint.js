@@ -21,6 +21,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initSubstrateWidget();
         initCheckbuttons();
         initColoredRows();
+        initDisableOnSubmit();
     });
 
     function getCSRF() {
@@ -656,5 +657,11 @@ var finprint = finprint || {};  //namespace if necessary...
             }
             $(cell).attr('data-pall-index', diffDict[diffKey]);
         });
+    }
+
+    function initDisableOnSubmit() {
+        // $('input[type="submit"]').click(function() {
+        //     $('input[type="submit"]').attr('disabled', 'disabled');
+        // });
     }
 })(jQuery);
