@@ -79,6 +79,14 @@ a.manual-assign {
 }
 
 #automatic-modal {
+  .row:last-child {
+    margin-top: 10px;
+  }
+
+  .include-leads {
+    margin: 30px 0 5px;
+  }
+
   .modal-footer span.success-message {
     display: none;
     color: forestgreen;
