@@ -16,13 +16,13 @@ from ..models.project import Project
 
 
 class VideoAutoAssignView(UserAllowedMixin, View):
-    def assign_video(self, annotators, video, num):
+    def assign_video(self, annotators, video, num, project):
         avail = list(a for a in annotators if a not in video.annotators_assigned())
         assigned_by = FinprintUser.objects.get(user=self.request.user)
         assign_count = 0
         while len(video.annotators_assigned()) < num and len(annotators) > 0 and len(avail) > 0:
             ann = min(avail, key=lambda a: len(a.active_assignments()))
-            Assignment(annotator=ann, video=video, assigned_by=assigned_by).save()
+            Assignment(annotator=ann, video=video, assigned_by=assigned_by, project=project).save()
             avail.remove(ann)
             assign_count += 1
         return assign_count
@@ -32,6 +32,7 @@ class VideoAutoAssignView(UserAllowedMixin, View):
         aff_id = request.POST.get('affiliation')
         num = int(request.POST.get('num'))
         include_leads = bool(request.POST.get('include_leads', False))
+        project = get_object_or_404(Project, id=request.POST.get('project'))
 
         annotators = FinprintUser.objects.filter(affiliation_id=aff_id).all()
         if not include_leads:
@@ -41,18 +42,18 @@ class VideoAutoAssignView(UserAllowedMixin, View):
         new_count = 0
         for video in Video.objects.filter(set__trip_id=trip_id).exclude(file__isnull=True).exclude(file='').all():
             video_count += 1
-            new_count += self.assign_video(annotators, video, num)
+            new_count += self.assign_video(annotators, video, num, project)
             assigned_count += len(video.annotators_assigned())
 
         return JsonResponse(
             {
                 'status': 'ok',
                 'video_count': video_count,
-                'assignments' :
+                'assignments':
                 {
-                    'total' : video_count * num,
-                    'assigned' : assigned_count,
-                    'newly_assigned' : new_count
+                    'total': video_count * num,
+                    'assigned': assigned_count,
+                    'newly_assigned': new_count
                 }
             }
         )
@@ -66,7 +67,8 @@ class AssignmentListView(UserAllowedMixin, View):
             'locations': Location.objects.order_by('name').all().prefetch_related('trip_set'),
             'trips': Trip.objects.order_by('start_date').all().prefetch_related('set_set'),
             'affils': Affiliation.objects.order_by('name').all().prefetch_related('finprintuser_set'),
-            'statuses': AnnotationState.objects.all()
+            'statuses': AnnotationState.objects.all(),
+            'projects': Project.objects.order_by('id').all()
         })
         return render_to_response(self.template_name, context=context)
 

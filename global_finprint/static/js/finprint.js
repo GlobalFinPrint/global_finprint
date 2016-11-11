@@ -174,6 +174,8 @@ var finprint = finprint || {};  //namespace if necessary...
         });
 
         $modal.find('#assign-auto').click(function() {
+            var $button = $('button#assign-auto');
+            $button.attr('disabled', 'disabled');
             $modal.find('div.modal-footer span.success-message').fadeOut().removeClass('alert-error');
             $.post('/assignment/auto', $modalForm.serialize(), function(data) {
                 var $aa = data['assignments'];
@@ -188,6 +190,7 @@ var finprint = finprint || {};  //namespace if necessary...
                     $modal.find('div.modal-footer span.success-message').addClass('alert-error')
                 }
                 $modal.find('div.modal-footer span.success-message').text($message).fadeIn();
+                $button.removeAttr('disabled');
             });
         });
     }
