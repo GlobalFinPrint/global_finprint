@@ -12,6 +12,7 @@ from ...bruv.models import Set
 from ...habitat.models import Location
 from ...core.models import Affiliation, FinprintUser
 from ..models.video import Assignment, Video, AnnotationState
+from ..models.project import Project
 
 
 class VideoAutoAssignView(UserAllowedMixin, View):
@@ -139,17 +140,20 @@ class AssignmentModalBodyView(UserAllowedMixin, View):
             'set': set,
             'current': current_assignments,
             'current_annos': [a.annotator for a in current_assignments],
-            'affiliations': Affiliation.objects.order_by('name').all()
+            'affiliations': Affiliation.objects.order_by('name').all(),
+            'projects': Project.objects.order_by('id').all()
         })
         return render_to_response(self.template_name, context=context)
 
     def post(self, request, set_id):
         set = get_object_or_404(Set, id=set_id)
+        project = get_object_or_404(Project, id=request.POST.get('project'))
         for anno_id in request.POST.getlist('anno[]'):
             Assignment(
                 annotator=FinprintUser.objects.get(id=anno_id),
                 video=set.video,
                 assigned_by=FinprintUser.objects.get(user_id=request.user),
+                project=project
             ).save()
         return JsonResponse({'status': 'ok'})
 
