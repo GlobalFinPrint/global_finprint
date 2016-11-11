@@ -15,7 +15,7 @@
     </tr>
     </thead>
     <tbody id="collapse-parent">
-    {% for o in observations|dictsortreversed:'initial_observation_time' %}
+    {% for o in observations %}
         {% with firstevent=o.event_set.first rowspan=o.event_set.count %}
         {% for e in o.event_set.all %}
             {% if e.id == firstevent.id %}
