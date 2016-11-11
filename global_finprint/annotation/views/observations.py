@@ -42,8 +42,10 @@ class ObservationListView(UserAllowedMixin, ListView):
             'assignment__annotator__affiliation',
             'assignment__video__set__trip',
         ]
-        return get_object_or_404(Set, pk=self.kwargs['set_pk']).observations() \
-            .select_related(*selected_related).prefetch_related('event_set', 'event_set__attribute')
+        return sorted(get_object_or_404(Set, pk=self.kwargs['set_pk']).observations()
+                      .select_related(*selected_related)
+                      .prefetch_related('event_set', 'event_set__attribute'),
+                      key=lambda o: o.initial_observation_time(), reverse=True)
 
     def get_context_data(self, **kwargs):
         context = super(ObservationListView, self).get_context_data(**kwargs)

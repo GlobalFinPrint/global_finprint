@@ -29,6 +29,9 @@ class MasterReviewView(UserAllowedMixin, View):
         master_record = get_object_or_404(MasterRecord, pk=master_id)
         context = RequestContext(request, {
             'master': master_record,
+            'master_observations': sorted(master_record.masterobservation_set.all(),
+                                          key=lambda o: o.initial_observation_time(),
+                                          reverse=True),
             'for': ' for {}'.format(master_record.set)
         })
         return render_to_response(self.template_name, context=context)
