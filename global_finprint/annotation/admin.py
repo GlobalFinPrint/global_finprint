@@ -15,4 +15,14 @@ admin.site.register(animal.Animal, AnimalAdmin)
 admin.site.register(animal.AnimalGroup)
 admin.site.register(video.AnnotationState)
 admin.site.register(annotation.Attribute, MPTTModelAdmin)
-admin.site.register(project.Project)
+
+
+class TagInline(admin.StackedInline):
+    model = annotation.Attribute
+
+
+class ProjectAdmin(admin.ModelAdmin):
+    inlines = [TagInline]
+
+
+admin.site.register(project.Project, ProjectAdmin)

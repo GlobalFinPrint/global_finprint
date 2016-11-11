@@ -7,3 +7,6 @@ class Project(AuditableModel):
     name = models.CharField(max_length=100)
     description = models.TextField(default=True, blank=True)
     animals = models.ManyToManyField(Animal)
+
+    def __str__(self):
+        return u'{0}'.format(self.name)
