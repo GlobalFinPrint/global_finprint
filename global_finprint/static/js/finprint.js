@@ -657,9 +657,12 @@ var finprint = finprint || {};  //namespace if necessary...
     }
 
     function initDisableOnSubmit() {
-        $('input[type="submit"]').click(function() {
+        $('input[type="submit"]').click(function(e) {
+            var $form = $(this).parents('form');
+            var param = $(e.target).attr('name');
+            $form.append('<input type="hidden" name="' + param + '">1</input>');
             $('input[type="submit"]').attr('disabled', 'disabled');
-            $(this).parents('form').submit();
+            $form.submit();
         });
     }
 })(jQuery);
