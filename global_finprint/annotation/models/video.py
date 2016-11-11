@@ -1,5 +1,6 @@
 from django.db import models, connection
 from global_finprint.core.models import AuditableModel, FinprintUser
+from .project import Project
 
 
 # todo:  pull video file names into ranked list (for l & r, etc.)
@@ -49,6 +50,7 @@ class Assignment(AuditableModel):
     assigned_by = models.ForeignKey(to=FinprintUser, related_name='assigned_by')
     status = models.ForeignKey(to=AnnotationState, default=1)
     progress = models.IntegerField(default=0)
+    project = models.ForeignKey(Project, default=1)
 
     def set(self):
         return self.video.set
