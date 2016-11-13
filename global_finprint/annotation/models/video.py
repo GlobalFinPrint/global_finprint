@@ -61,11 +61,13 @@ class Assignment(AuditableModel):
 
     @classmethod
     def get_active(cls):
-        return cls.objects.filter(status_id__in=[1, 2, 3])
+        return cls.objects.filter(status_id__in=[1, 2, 3]).select_related(
+            'status').select_related('annotator')
 
     @classmethod
     def get_active_for_annotator(cls, annotator):
-        return cls.objects.filter(annotator=annotator, status_id__in=[1, 2])
+        return cls.objects.filter(annotator=annotator, status_id__in=[1, 2]).select_related(
+            'status').select_related('annotator')
 
     def to_json(self):
         last_activity = self.last_activity()
@@ -76,7 +78,8 @@ class Assignment(AuditableModel):
                 'progress': self.progress,
                 'status': {'id': self.status_id, 'name': self.status.name},
                 'assigned_at': self.create_datetime.strftime('%b %d, %Y %I:%m %p'),
-                'last_activity': last_activity.strftime('%b %d, %Y %I:%m %p') if last_activity else 'None'}
+                'last_activity': last_activity.strftime('%b %d, %Y %I:%m %p') if last_activity else 'None'
+                }
 
     def last_activity(self):
         sql = '''
