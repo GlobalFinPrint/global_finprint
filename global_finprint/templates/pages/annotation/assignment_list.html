@@ -168,7 +168,16 @@
                         </div>
                         <div class="row">
                             <div class="col-md-4">
-                                <div class="checkbox">
+                                <label for="project">Project</label>
+                                <select id="project" name="project" class="form-control">
+                                    {% for project in projects %}
+                                        <option value="{{ project.id }}">{{ project.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="checkbox include-leads">
                                     <label for="include-leads">
                                         <input type="checkbox" id="include-leads" name="include_leads" />
                                         Include leads?

@@ -1,5 +1,6 @@
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
+from .project import Project
 
 
 class Attribute(MPTTModel):
@@ -13,6 +14,7 @@ class Attribute(MPTTModel):
         help_text='overridden if parent is lead only')
 
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
+    project = models.ForeignKey(Project, default=1)
 
     class MPTTMeta:
         order_insertion_by = ['name']
