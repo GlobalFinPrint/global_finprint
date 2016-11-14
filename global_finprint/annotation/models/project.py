@@ -5,7 +5,7 @@ from .animal import Animal
 
 class Project(AuditableModel):
     name = models.CharField(max_length=100)
-    description = models.TextField(default=True, blank=True)
+    description = models.TextField(null=True, blank=True)
     animals = models.ManyToManyField(Animal)
 
     def __str__(self):

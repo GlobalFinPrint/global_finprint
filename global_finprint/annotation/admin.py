@@ -22,7 +22,10 @@ class TagInline(admin.StackedInline):
 
 
 class ProjectAdmin(admin.ModelAdmin):
+    actions = None
     inlines = [TagInline]
 
+    def has_delete_permission(self, request, obj=None):
+        return (obj and obj.id != 1) or False
 
 admin.site.register(project.Project, ProjectAdmin)
