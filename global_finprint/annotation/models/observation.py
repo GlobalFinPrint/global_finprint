@@ -49,12 +49,16 @@ class AbstractObservation(AuditableModel):
     # duration could be redundant ... at best it's an optimization:
     duration = models.PositiveIntegerField(null=True, blank=True)
     comment = models.TextField(null=True)
+    observation_time = models.PositiveIntegerField(null=True, blank=True)
 
     class Meta:
         abstract = True
 
     def initial_observation_time(self):
-        return self.initial_event().event_time
+        if self.observation_time is None:
+            self.observation_time = self.initial_event().event_time
+            self.save()
+        return self.observation_time
 
 
 class Observation(AbstractObservation):
