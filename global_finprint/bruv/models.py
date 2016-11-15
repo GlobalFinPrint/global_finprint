@@ -10,7 +10,7 @@ from global_finprint.annotation.models.video import Video
 from global_finprint.core.version import VersionInfo
 from global_finprint.core.models import AuditableModel
 from global_finprint.trip.models import Trip
-from global_finprint.habitat.models import ReefHabitat
+from global_finprint.habitat.models import ReefHabitat, Substrate, SubstrateComplexity
 
 from mptt.models import MPTTModel, TreeForeignKey
 
@@ -172,7 +172,7 @@ class SetTag(MPTTModel):
             return [node] + [cls.get_choices(node=node) for node in node.get_children().filter(active=True)]
 
 
-class Substrate(MPTTModel):
+class BenthicCategory(MPTTModel):
     name = models.CharField(max_length=50, unique=True)
     description = models.TextField(null=True, blank=True)
     active = models.BooleanField(
@@ -185,6 +185,9 @@ class Substrate(MPTTModel):
 
     def __str__(self):
         return u"{0}".format(self.name)
+
+    class Meta:
+        verbose_name_plural = 'benthic categories'
 
 
 class Set(AuditableModel):
@@ -210,7 +213,9 @@ class Set(AuditableModel):
     bruv_image_url = models.CharField(max_length=200, null=True, blank=True)
     splendor_image_url = models.CharField(max_length=200, null=True, blank=True)
 
-    substrate = models.ManyToManyField(Substrate, through='HabitatSubstrate')
+    benthic_category = models.ManyToManyField(BenthicCategory, through='BenthicCategoryValue')
+    substrate = models.ForeignKey(Substrate, blank=True, null=True)
+    substrate_complexity = models.ForeignKey(SubstrateComplexity, blank=True, null=True)
 
     # todo:  need some form changes here ...
     bait = models.ForeignKey(Bait, null=True)
@@ -285,7 +290,7 @@ class Set(AuditableModel):
         return u"{0}_{1}".format(self.trip.code, self.code)
 
 
-class HabitatSubstrate(models.Model):
+class BenthicCategoryValue(models.Model):
     set = models.ForeignKey(Set)
-    substrate = TreeForeignKey(Substrate)
+    benthic_category = TreeForeignKey(BenthicCategory)
     value = models.IntegerField()

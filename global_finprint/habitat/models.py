@@ -13,6 +13,17 @@ class Substrate(models.Model):
         return u"{0}".format(self.type)
 
 
+class SubstrateComplexity(models.Model):
+    name = models.CharField(max_length=24, unique=True)
+    description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return u"{0}".format(self.name)
+
+    class Meta:
+        verbose_name_plural = 'substrate complexities'
+
+
 class Region(models.Model):
     name = models.CharField(max_length=100)
 

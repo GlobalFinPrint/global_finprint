@@ -407,7 +407,7 @@ var finprint = finprint || {};  //namespace if necessary...
             var remainingPercent = Math.max(0, 100 - $parent.find('input[name="total-percent"]').val());
 
             $.get('/substrate/', function(res) {
-                var html = '<div class="substrate-row"><select class="substrate select form-control" name="substrate">';
+                var html = '<div class="substrate-row"><select class="substrate select form-control" name="benthic-category">';
                 res.substrates.forEach(function(s) {
                     var selected = (parseInt(s.id) === parseInt(substrate)) ? ' selected="selected"' : '';
                     html += '<option value="' + s.id + '"' + selected + '>' + s.name + '</option>';
@@ -459,7 +459,7 @@ var finprint = finprint || {};  //namespace if necessary...
                 if (!res.substrates.length) {
                     messageHtml = '<div class="message-modal clear">' +
                         '<p class="no-children-message">' +
-                            'This substrate has no children; unable to split' +
+                            'This category has no children; unable to split' +
                         '</p></div>';
                     $parent.append(messageHtml);
                     $parent.find('.message-modal')
@@ -515,7 +515,7 @@ var finprint = finprint || {};  //namespace if necessary...
                             '<a href="#" class="modal-remove">Remove</a>' +
                         '</div>' +
                         '<div class="substrate-row">' +
-                            '<span class="help-text">Details must total ' + parentPercent + '%</span>' +
+                            '<span class="help-text">Categories must total ' + parentPercent + '%</span>' +
                         '</div>' +
                     '</div>';
 
@@ -582,7 +582,7 @@ var finprint = finprint || {};  //namespace if necessary...
                         return parseInt($(p).val()) > 100 || parseInt($(p).val()) < 1
                     };
                     if ($.grep($percents, checkRange).length) {
-                        showSubError('Substrate value must be between 1 and 100');
+                        showSubError('Category value must be between 1 and 100');
                         return false;
                     }
 
@@ -592,13 +592,13 @@ var finprint = finprint || {};  //namespace if necessary...
                         return $(s).val();
                     });
                     if (subVals.length !== $.unique(subVals).length) {
-                        showSubError('Must not have duplicate substrates');
+                        showSubError('Must not have duplicate category');
                         return false;
                     }
 
                     // check parent percent match
                     if (parseInt($subCenter.find('input.total').val()) != parentPercent) {
-                        showSubError('Substrates must total ' + parentPercent + '%');
+                        showSubError('Categories must total ' + parentPercent + '%');
                         return false;
                     }
 
@@ -663,7 +663,7 @@ var finprint = finprint || {};  //namespace if necessary...
         $('input[type="submit"]').click(function(e) {
             var $form = $(this).parents('form');
             var param = $(e.target).attr('name');
-            $form.append('<input type="hidden" name="' + param + '">1</input>');
+            $form.append('<input type="hidden" name="' + param + '" value="1" />');
             $('input[type="submit"]').attr('disabled', 'disabled');
             $form.submit();
         });
