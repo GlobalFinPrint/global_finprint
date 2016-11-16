@@ -11,6 +11,7 @@
                 <thead>
                     <tr class="success">
                         <th>Annotator</th>
+                        <th>Project</th>
                         <th>Status</th>
                         <th>Other assignments</th>
                     </tr>
@@ -19,6 +20,7 @@
                 {% for a in current %}
                     <tr>
                         <td>{{ a.annotator }}</td>
+                        <td>{{ a.project }}</td>
                         <td>{{ a.status }}</td>
                         <td>{{ a.annotator.active_assignments.count }}</td>
                     </tr>
@@ -50,12 +52,17 @@
                     <label for="project">Project</label>
                     <select id="project" name="project" class="form-control">
                         {% for project in projects %}
-                            <option value="{{ project.id }}">{{ project.name }}</option>
+                            <option value="{{ project.id }}"{% if project == current_project %} selected="selected"{% endif %}>
+                                {{ project.name }}
+                            </option>
                         {% endfor %}
                     </select>
                 </div>
             </form>
         </div>
+    </div>
+    <div class="loading">
+        Loading...
     </div>
 </div>
 

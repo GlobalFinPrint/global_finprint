@@ -17,10 +17,10 @@ from ..models.project import Project
 
 class VideoAutoAssignView(UserAllowedMixin, View):
     def assign_video(self, annotators, video, num, project):
-        avail = list(a for a in annotators if a not in video.annotators_assigned())
+        avail = list(a for a in annotators if a not in video.annotators_assigned(project))
         assigned_by = FinprintUser.objects.get(user=self.request.user)
         assign_count = 0
-        while len(video.annotators_assigned()) < num and len(annotators) > 0 and len(avail) > 0:
+        while len(video.annotators_assigned(project)) < num and len(annotators) > 0 and len(avail) > 0:
             ann = min(avail, key=lambda a: len(a.active_assignments()))
             Assignment(annotator=ann, video=video, assigned_by=assigned_by, project=project).save()
             avail.remove(ann)
@@ -43,7 +43,7 @@ class VideoAutoAssignView(UserAllowedMixin, View):
         for video in Video.objects.filter(set__trip_id=trip_id).exclude(file__isnull=True).exclude(file='').all():
             video_count += 1
             new_count += self.assign_video(annotators, video, num, project)
-            assigned_count += len(video.annotators_assigned())
+            assigned_count += len(video.annotators_assigned(project))
 
         return JsonResponse(
             {
@@ -91,6 +91,7 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
         status = request.POST.getlist('status[]')
         assigned = request.POST.get('assigned')
         assigned_ago = request.POST.get('assigned-ago')
+        project_id = request.POST.get('project_id')
 
         if trips:
             query = query.filter(video__set__trip_id__in=(int(t) for t in trips))
@@ -126,6 +127,10 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
             except ValueError:
                 pass
 
+        if project_id != '':
+            query = query.filter(project_id=project_id)
+            unassigned = unassigned.none()
+
         context = RequestContext(request, {'assignments': sorted(query, key=lambda a: str(a.set())),
                                            'unassigned': sorted(unassigned, key=lambda s: str(s))
                                            })
@@ -137,13 +142,15 @@ class AssignmentModalBodyView(UserAllowedMixin, View):
 
     def get(self, request, set_id):
         set = get_object_or_404(Set, id=set_id)
-        current_assignments = set.video.assignment_set.all()
+        project = get_object_or_404(Project, id=request.GET.get('project_id', 1))
+        current_assignments = set.video.assignment_set.filter(project=project).all()
         context = RequestContext(request, {
             'set': set,
             'current': current_assignments,
             'current_annos': [a.annotator for a in current_assignments],
             'affiliations': Affiliation.objects.order_by('name').all(),
-            'projects': Project.objects.order_by('id').all()
+            'projects': Project.objects.order_by('id').all(),
+            'current_project': project,
         })
         return render_to_response(self.template_name, context=context)
 

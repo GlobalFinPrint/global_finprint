@@ -6,6 +6,7 @@
     <td>{{ a.video.set.trip.code }}</td>
     <td>{{ a.video.set.code }}</td>
     <td><a href="#" data-annotator-id="{{ a.annotator.id }}">{{ a.annotator }}</a></td>
+    <td>{{ a.project }}</td>
     <td>{{ a.create_datetime|date }} ({{ a.create_datetime|naturaltime }})</td>
     <td>{{ a.status }}</td>
     <td>{{ a.progress|time_display }}</td>
@@ -27,6 +28,7 @@
     <td><i>N/A</i></td>
     <td><i>N/A</i></td>
     <td><i>N/A</i></td>
+    <td><i>N/A</i></td>
     <td>
         <a class="open-assign-modal" data-id="{{ u.id }}" href="#">Assign</a>
     </td>
@@ -34,6 +36,6 @@
 {% endfor %}
 {% if unassigned|length == 0 and assignments|length == 0 %}
 <tr>
-    <td colspan="9"><h4 class="text-center">No videos found with given parameters</h4></td>
+    <td colspan="10"><h4 class="text-center">No videos found with given parameters</h4></td>
 </tr>
 {% endif %}

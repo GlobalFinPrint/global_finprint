@@ -777,3 +777,18 @@ h3.form-title {
     }
   }
 }
+
+.modal-body .loading {
+  display: none;
+  position: absolute;
+  width: 400px;
+  height: 40px;
+  top: calc(50% - 75px);
+  left: calc(50% - 200px);
+  font-size: 20px;
+  line-height: 40px;
+  text-align: center;
+  background: white;
+  border: 1px solid $black;
+  border-radius: 5px;
+}

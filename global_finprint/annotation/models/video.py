@@ -8,8 +8,8 @@ class Video(AuditableModel):
     file = models.CharField(max_length=100, null=True, blank=True)
     source_folder = models.CharField(max_length=100, null=True, blank=True)
 
-    def annotators_assigned(self):
-        return list(a.annotator for a in self.assignment_set.all())
+    def annotators_assigned(self, project):
+        return list(a.annotator for a in self.assignment_set.filter(project=project).all())
 
     def length(self):
         try:

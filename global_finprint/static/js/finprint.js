@@ -97,14 +97,30 @@ var finprint = finprint || {};  //namespace if necessary...
         var $buttons = $('tbody#assignment-target');
         var $modal = $('div#assign-modal');
 
-        $buttons.on('click', 'a.open-assign-modal', function(e) {
-            e.preventDefault();
-            $.get('/assignment/modal/' + $(this).data('id'), function(html) {
+        function loadModal(id, params) {
+            params = params || {};
+            $.get('/assignment/modal/' + id, params, function(html) {
                 $modal.find('div.modal-content').html(html);
+                $modal.data('id', id);
                 $modal.find('form').submit(false);
                 $modal.find('#new-annotators').selectize({ plugins: ['remove_button', 'restore_on_backspace'] });
-                $modal.modal('show');
             });
+        }
+
+        $modal.on('change', 'select#project', function() {
+            $modal
+                .find('.loading')
+                    .show()
+                    .end()
+                .find('button')
+                    .attr('disabled', 'disabled');
+            loadModal($modal.data('id'), { project_id: $(this).val() });
+        });
+
+        $buttons.on('click', 'a.open-assign-modal', function(e) {
+            e.preventDefault();
+            loadModal($(this).data('id'), { project_id: 1 });
+            $modal.modal('show');
         });
 
         $modal.on('click', 'button#save-changes', function() {
