@@ -49,7 +49,7 @@ class Login(View):
         except FinprintUser.DoesNotExist:
             return HttpResponseForbidden()
 
-        assignments = Assignment.get_active() if annotator.is_lead() \
+        assignments = Assignment.get_active().filter(assigned_by=annotator) if annotator.is_lead() \
             else Assignment.get_active_for_annotator(annotator)
 
         return JsonResponse({

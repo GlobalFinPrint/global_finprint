@@ -53,6 +53,9 @@ class Assignment(AuditableModel):
     progress = models.IntegerField(default=0)
     project = models.ForeignKey(Project, default=1)
 
+    _selected_related_list = ['annotator', 'annotator__affiliation', 'video',
+                              'video__set', 'video__set__trip', 'status']
+
     def set(self):
         return self.video.set
 
@@ -64,13 +67,13 @@ class Assignment(AuditableModel):
 
     @classmethod
     def get_active(cls):
-        return cls.objects.filter(status_id__in=[1, 2, 3]).select_related(
-            'status').select_related('annotator')
+        return cls.objects.filter(status_id__in=[1, 2, 3]) \
+            .select_related(*cls._selected_related_list)
 
     @classmethod
     def get_active_for_annotator(cls, annotator):
-        return cls.objects.filter(annotator=annotator, status_id__in=[1, 2]).select_related(
-            'status').select_related('annotator')
+        return cls.objects.filter(annotator=annotator, status_id__in=[1, 2]) \
+            .select_related(*cls._selected_related_list)
 
     def to_json(self):
         last_activity = self.last_activity()
