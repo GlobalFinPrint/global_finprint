@@ -345,6 +345,7 @@ var finprint = finprint || {};  //namespace if necessary...
 
     function initSelectizeWidgets() {
         $('select[multiple="multiple"].selectize').selectize({ plugins: ['remove_button', 'restore_on_backspace'] });
+        $('select[multiple!="multiple"].selectize').selectize({ create: true, plugins: ['restore_on_backspace'] });
     }
 
     function initImageSelectWidgets() {

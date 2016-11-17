@@ -4,7 +4,32 @@ from .models.video import Video
 from boto import exception as BotoException
 from boto.s3.connection import S3Connection
 from django.conf import settings
+from django.forms.utils import flatatt
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 import re
+
+
+class FlexibleChoiceField(forms.ChoiceField):
+    def validate(self, value):
+        forms.Field.validate(self, value)
+
+
+class SingleSelectizeWidget(forms.Select):
+    template = '<select class="selectize form-control"{}>'
+
+    def render(self, name, value, attrs=None, choices=()):
+        if value is None:
+            value = ''
+        if (value, value) not in self.choices:
+            self.choices += [(value, value)]
+        final_attrs = self.build_attrs(attrs, name=name)
+        output = [format_html(self.template, flatatt(final_attrs))]
+        options = self.render_options(choices, [value])
+        if options:
+            output.append(options)
+        output.append('</select>')
+        return mark_safe('\n'.join(output))
 
 
 class VideoForm(forms.ModelForm):
@@ -16,11 +41,14 @@ class VideoForm(forms.ModelForm):
         super(VideoForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        self.fields['file'] = forms.ChoiceField(choices=self.get_filenames(), required=False, label='Video')
+        self.fields['file'] = FlexibleChoiceField(choices=self.get_filenames(),
+                                                  required=False,
+                                                  label='Video',
+                                                  widget=SingleSelectizeWidget)
 
     def get_filenames(self):
         pattern = re.compile('\.\w+$')
-        file_names = [('', '---')]
+        file_names = [('', '(None)')]
         try:
             conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
             files = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME).list()

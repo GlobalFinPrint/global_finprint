@@ -324,11 +324,13 @@ class SetLevelDataForm(forms.ModelForm):
 
 
 class SelectizeWidget(forms.SelectMultiple):
+    template = '<select class="selectize" multiple="multiple"{}>'
+
     def render(self, name, value, attrs=None, choices=()):
         if value is None:
             value = []
         final_attrs = self.build_attrs(attrs, name=name)
-        output = [format_html('<select class="selectize" multiple="multiple"{}>', flatatt(final_attrs))]
+        output = [format_html(self.template, flatatt(final_attrs))]
         options = self.render_options(choices, value)
         if options:
             output.append(options)
