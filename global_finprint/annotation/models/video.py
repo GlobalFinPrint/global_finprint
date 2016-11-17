@@ -1,6 +1,7 @@
 from django.db import models, connection
 from global_finprint.core.models import AuditableModel, FinprintUser
 from .project import Project
+from itertools import chain
 
 
 # todo:  pull video file names into ranked list (for l & r, etc.)
@@ -84,12 +85,9 @@ class Assignment(AuditableModel):
                 }
 
     def last_activity(self):
-        sql = '''
-        SELECT max(greatest(e.last_modified_datetime, o.last_modified_datetime))
-        FROM annotation_observation o
-        JOIN annotation_event e ON (e.observation_id = o.id)
-        WHERE o.assignment_id = %s
-        '''
-        with connection.cursor() as cursor:
-            cursor.execute(sql, [self.id])
-            return cursor.fetchone()[0]
+        try:
+            return max(chain.from_iterable(
+                self.observation_set.values_list('event__last_modified_datetime', 'last_modified_datetime')
+            ))
+        except ValueError:
+            return None
