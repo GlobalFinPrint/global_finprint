@@ -66,6 +66,10 @@ class Assignment(AuditableModel):
         return self.progress
 
     @classmethod
+    def get_all(cls):
+        return cls.objects.all().select_related(*cls._selected_related_list)
+
+    @classmethod
     def get_active(cls):
         return cls.objects.filter(status_id__in=[1, 2, 3]) \
             .select_related(*cls._selected_related_list)
