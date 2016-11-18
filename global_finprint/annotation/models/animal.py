@@ -52,7 +52,8 @@ class Animal(models.Model):
 
     @staticmethod
     def get_for_api(assignment):
-        return list(a.to_json() for a in assignment.video.set.trip.region.animal_set.all())
+        return list(a.to_json() for a in assignment.video.set.trip.region.animal_set.all()
+                    if a in assignment.project.animals.all())
 
     def to_json(self):
         return {
