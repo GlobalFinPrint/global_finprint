@@ -40,9 +40,17 @@ class MasterReviewView(UserAllowedMixin, View):
 class AssignmentDetailView(UserAllowedMixin, View):
     def get(self, _, assignment_id):
         assignment = get_object_or_404(Assignment, pk=assignment_id)
+        observations = assignment.observation_set.all() \
+            .prefetch_related('event_set',
+                              'event_set__attribute') \
+            .select_related('animalobservation',
+                            'animalobservation__animal',
+                            'assignment',
+                            'assignment__annotator',
+                            'assignment__annotator__user')
         return JsonResponse({
-            'observations': list(a.to_json(for_web=True)
-                                 for a in sorted(assignment.observation_set.all(),
+            'observations': list(o.to_json(for_web=True)
+                                 for o in sorted(observations,
                                                  key=lambda x: x.initial_observation_time()))
         })
 
