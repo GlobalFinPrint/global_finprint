@@ -254,7 +254,13 @@ class AbstractEvent(AuditableModel):
         abstract = True
 
     # TODO do we need to check for every key? maybe just use filename and a base_url
-    def image_url(self):
+    def image_url(self, verify=True):
+        if self.extent is None:
+            return None
+
+        if verify is False:
+            return 'https://s3-us-west-2.amazonaws.com/finprint-annotator-screen-captures{}'.format(self.filename())
+
         try:
             conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
             bucket = conn.get_bucket(settings.FRAME_CAPTURE_BUCKET)
@@ -312,10 +318,12 @@ class Event(AbstractEvent):
             'attribute': [a.to_json(children=not for_web) for a in self.attribute.all()],
             'create_datetime': datetime.strftime(self.create_datetime, '%Y-%m-%d %H:%M:%S')
         }
+
         if for_web:
             json['extent_css'] = self.extent_to_css()
-            json['image_url'] = self.image_url()
+            json['image_url'] = self.image_url(verify=False)
             json['attribute_names'] = list(a.name for a in self.attribute.all())
+
         return json
 
     def filename(self):

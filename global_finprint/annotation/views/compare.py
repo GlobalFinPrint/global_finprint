@@ -48,10 +48,9 @@ class AssignmentDetailView(UserAllowedMixin, View):
                             'assignment',
                             'assignment__annotator',
                             'assignment__annotator__user')
+        observations = sorted(observations, key=lambda x: x.initial_observation_time())
         return JsonResponse({
-            'observations': list(o.to_json(for_web=True)
-                                 for o in sorted(observations,
-                                                 key=lambda x: x.initial_observation_time()))
+            'observations': list(o.to_json(for_web=True) for o in observations)
         })
 
 
