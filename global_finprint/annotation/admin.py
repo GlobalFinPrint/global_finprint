@@ -37,7 +37,7 @@ class ProjectAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
         if db_field.name == 'user':
-            kwargs['queryset'] = FinprintUser.get_leads()
+            kwargs['queryset'] = FinprintUser.get_lead_users()
         return super(ProjectAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 admin.site.register(project.Project, ProjectAdmin)

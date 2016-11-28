@@ -42,6 +42,10 @@ class FinprintUser(models.Model):
     def get_leads(cls):
         return cls.objects.filter(user__groups__id=1)
 
+    @staticmethod
+    def get_lead_users():
+        return User.objects.filter(groups__id=1)
+
     def set_token(self):
         self.token = uuid.uuid4().hex
         self.save()
