@@ -32,6 +32,13 @@ class ProjectAdmin(admin.ModelAdmin):
     actions = None
     inlines = [TagInline]
 
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(ProjectAdmin, self).get_form(request, obj, **kwargs)
+        form.base_fields['user'].widget.can_add_related = False
+        form.base_fields['user'].widget.can_change_related = False
+        form.base_fields['animals'].widget.can_add_related = False
+        return form
+
     def has_delete_permission(self, request, obj=None):
         return (obj and obj.id != 1) or False
 
