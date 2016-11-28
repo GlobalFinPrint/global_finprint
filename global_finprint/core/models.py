@@ -38,6 +38,10 @@ class FinprintUser(models.Model):
     affiliation = models.ForeignKey(to=Affiliation)
     token = models.CharField(max_length=32, null=True, blank=True)
 
+    @classmethod
+    def get_leads(cls):
+        return cls.objects.filter(user__groups__id=1)
+
     def set_token(self):
         self.token = uuid.uuid4().hex
         self.save()

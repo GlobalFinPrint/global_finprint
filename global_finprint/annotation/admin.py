@@ -3,6 +3,7 @@ from django.contrib import admin
 from mptt.admin import MPTTModelAdmin
 
 from .models import animal, video, annotation, project
+from ..core.models import FinprintUser
 
 
 class AnimalAdmin(admin.ModelAdmin):
@@ -33,5 +34,10 @@ class ProjectAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return (obj and obj.id != 1) or False
+
+    def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
+        if db_field.name == 'user':
+            kwargs['queryset'] = FinprintUser.get_leads()
+        return super(ProjectAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 admin.site.register(project.Project, ProjectAdmin)
