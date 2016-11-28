@@ -24,6 +24,7 @@ admin.site.register(annotation.Attribute, TagAdmin)
 
 class TagInline(admin.StackedInline):
     model = annotation.Attribute
+    fields = ('parent', 'name', 'description', 'active', 'lead_only', 'project')
 
 
 class ProjectAdmin(admin.ModelAdmin):
