@@ -63,6 +63,13 @@ class UserAdmin(admin.UserAdmin):
     )
     add_form = UserCreationForm
 
+    def get_formsets_with_inlines(self, request, obj=None):
+        for inline in self.get_inline_instances(request, obj):
+            # hide FinprintUserInline in the add view
+            if isinstance(inline, FinprintUserInline) and obj is None:
+                continue
+            yield inline.get_formset(request, obj), inline
+
 
 class FinprintUserAdmin(ModelAdmin):
     actions = None
