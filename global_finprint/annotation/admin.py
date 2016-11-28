@@ -27,6 +27,12 @@ class TagInline(admin.StackedInline):
     model = annotation.Attribute
     fields = ('parent', 'name', 'description', 'active', 'lead_only', 'project')
 
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super(TagInline, self).get_formset(request, obj, **kwargs)
+        formset.form.base_fields['parent'].widget.can_add_related = False
+        formset.form.base_fields['parent'].widget.can_change_related = False
+        return formset
+
 
 class ProjectAdmin(admin.ModelAdmin):
     actions = None
