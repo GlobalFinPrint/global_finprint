@@ -797,3 +797,21 @@ h3.form-title {
 form #div_id_file .selectize-control {
   width: 350px;
 }
+
+#observation-table .annotool-thumbnail {
+  cursor: pointer;
+
+  &:after {
+    position: absolute;
+    bottom: 3px;
+    right: 5px;
+    content: "\e015";
+    font-family: 'Glyphicons Halflings';
+    color: white;
+    font-size: 1.2em;
+  }
+
+  &:hover:after {
+    font-size: 1.3em;
+  }
+}

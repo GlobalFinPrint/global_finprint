@@ -158,6 +158,10 @@ class Observation(AbstractObservation):
     def initial_event(self):
         return self.event_set.order_by('create_datetime').first()
 
+    def event_set_for_table(self):
+        initial_event = self.initial_event()
+        return [initial_event] + list(self.event_set.exclude(id=initial_event.id).order_by('-event_time'))
+
     def __str__(self):
         # todo:  update to first event?
         return u"{0}".format(self.type)
