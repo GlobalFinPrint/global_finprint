@@ -1,11 +1,11 @@
 from django import forms
 from django.db.models import Count
-from django.core.urlresolvers import reverse
+from django.db.models.functions import Lower
 from crispy_forms.helper import FormHelper
 import crispy_forms.layout as cfl
 import crispy_forms.bootstrap as cfb
 from bootstrap3_datetime.widgets import DateTimePicker
-from ..habitat.models import Location, Region, Reef, ReefHabitat
+from ..habitat.models import Location, Region, Reef
 from .models import Trip
 from ..core.models import Team
 
@@ -62,13 +62,16 @@ class TripSearchForm(forms.Form):
                                       input_formats=['%B %d %Y'],
                                       widget=DateTimePicker(options=datepicker_opts))
     region = forms.ModelChoiceField(required=False,
-                                    queryset=Region.objects.all())
+                                    queryset=Region.objects.all().order_by(Lower('name')))
     location = forms.ModelChoiceField(required=False,
-                                      queryset=Location.objects.filter(trip__in=Trip.objects.all()).distinct())
+                                      queryset=Location.objects.filter(trip__in=Trip.objects.all())
+                                      .distinct().order_by(Lower('name'), Lower('code')))
     team = forms.ModelChoiceField(required=False,
-                                  queryset=Team.objects.filter(trip__in=Trip.objects.all()).distinct())
+                                  queryset=Team.objects.filter(trip__in=Trip.objects.all())
+                                  .distinct().order_by(Lower('lead__user__username'), Lower('sampler_collaborator')))
     reef = forms.ModelChoiceField(required=False,
-                                  queryset=Reef.objects.order_by('site__name', 'name'))
+                                  queryset=Reef.old_manager.order_by(Lower('site__name'), Lower('name'))
+                                  .select_related('site'))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

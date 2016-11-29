@@ -25,7 +25,7 @@ class APIView(View):
 
         if 'set_id' in kwargs:
             try:
-                assignments = Assignment.objects.all() if request.annotator.is_lead() \
+                assignments = Assignment.get_all() if request.annotator.is_lead() \
                     else Assignment.get_active_for_annotator(request.annotator)
                 request.va = assignments.get(pk=kwargs['set_id'])
             except Assignment.DoesNotExist:
@@ -49,7 +49,7 @@ class Login(View):
         except FinprintUser.DoesNotExist:
             return HttpResponseForbidden()
 
-        assignments = Assignment.get_active() if annotator.is_lead() \
+        assignments = Assignment.get_active().filter(assigned_by=annotator) if annotator.is_lead() \
             else Assignment.get_active_for_annotator(annotator)
 
         return JsonResponse({
@@ -227,6 +227,7 @@ class ProgressUpdate(APIView):
 
 class AttributeList(APIView):
     def get(self, request, set_id):
+        # TODO only use project tags
         return JsonResponse({'attributes': Attribute.tree_json(is_lead=request.annotator.is_lead())})
 
 

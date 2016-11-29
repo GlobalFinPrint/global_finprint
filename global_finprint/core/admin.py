@@ -1,5 +1,5 @@
 from django.forms import ChoiceField, ModelChoiceField, RadioSelect
-from django.contrib.admin import site, ModelAdmin
+from django.contrib.admin import site, ModelAdmin, StackedInline
 from django.contrib.auth import admin, forms, models
 from .models import Affiliation, FinprintUser, Team
 
@@ -40,7 +40,21 @@ class UserCreationForm(forms.UserCreationForm):
         return user
 
 
+class FinprintUserInline(StackedInline):
+    actions = None
+    model = FinprintUser
+    fields = ('affiliation',)
+
+
 class UserAdmin(admin.UserAdmin):
+    actions = None
+    fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'password', 'first_name', 'last_name', 'email', 'groups')
+        }),
+    )
+    inlines = (FinprintUserInline,)
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
@@ -48,6 +62,13 @@ class UserAdmin(admin.UserAdmin):
         }),
     )
     add_form = UserCreationForm
+
+    def get_formsets_with_inlines(self, request, obj=None):
+        for inline in self.get_inline_instances(request, obj):
+            # hide FinprintUserInline in the add view
+            if isinstance(inline, FinprintUserInline) and obj is None:
+                continue
+            yield inline.get_formset(request, obj), inline
 
 
 class FinprintUserAdmin(ModelAdmin):

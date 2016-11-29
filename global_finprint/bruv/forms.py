@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models.functions import Lower
 from django.forms.utils import flatatt
 from django.forms import ValidationError
 from django.utils.html import format_html
@@ -8,9 +9,9 @@ from crispy_forms.helper import FormHelper
 import crispy_forms.layout as cfl
 import crispy_forms.bootstrap as cfb
 from bootstrap3_datetime.widgets import DateTimePicker
-from .models import Set, EnvironmentMeasure, Bait, Equipment, SetTag, Substrate
+from .models import Set, EnvironmentMeasure, Bait, Equipment, SetTag, BenthicCategory
 from ..trip.models import Trip
-from ..habitat.models import Reef, ReefType
+from ..habitat.models import Reef, ReefType, Substrate, SubstrateComplexity
 from django.conf import settings
 
 
@@ -46,8 +47,8 @@ class SetForm(forms.ModelForm):
 
     class Meta:
         model = Set
-        fields = ['trip', 'set_date', 'drop_time', 'latitude', 'longitude', 'depth',
-                  'haul_date', 'haul_time', 'reef', 'habitat', 'equipment', 'bait',
+        fields = ['trip', 'set_date', 'haul_date', 'latitude', 'longitude', 'depth',
+                  'drop_time', 'haul_time', 'reef', 'habitat', 'equipment', 'bait',
                   'reef_habitat', 'code']
         exclude = ('reef_habitat',)
         widgets = {
@@ -80,13 +81,19 @@ class SetSearchForm(forms.Form):
                                input_formats=['%B %d %Y'],
                                widget=DateTimePicker(options=datepicker_opts))
     reef = forms.ModelChoiceField(required=False,
-                                  queryset=Reef.objects.all())
+                                  queryset=Reef.objects.all().order_by(
+                                      Lower('site__name'), Lower('name'), Lower('site__code'), Lower('code')
+                                  ))
     habitat = forms.ModelChoiceField(required=False,
-                                     queryset=ReefType.objects.all())
+                                     queryset=ReefType.objects.all().order_by(Lower('type')))
     equipment = forms.ModelChoiceField(required=False,
-                                       queryset=Equipment.objects.filter(set__in=Set.objects.all()).distinct())
+                                       queryset=Equipment.objects.filter(set__in=Set.objects.all())
+                                       .distinct().order_by(Lower('frame_type__type'), Lower('camera'), 'stereo')
+                                       )
     bait = forms.ModelChoiceField(required=False,
-                                  queryset=Bait.objects.filter(set__in=Set.objects.all()).distinct())
+                                  queryset=Bait.objects.filter(set__in=Set.objects.all())
+                                  .distinct().order_by(Lower('type'), Lower('description'), 'oiled')
+                                  )
     code = forms.CharField(required=False)
 
     def __init__(self, *args, **kwargs):
@@ -162,25 +169,25 @@ class ImageSelectWidget(forms.FileInput):
         return mark_safe(output)
 
 
-class SubstrateWidget(forms.Widget):
+class BenthicWidget(forms.Widget):
     def render(self, name, value, attrs=None):
         try:
             total_percent = value.pop('total_percent', 0)
             left = ''
             center = ''
             right = ''
-            root_substrates = Substrate.objects.all()
+            root_substrates = BenthicCategory.objects.all()
 
             for sp in list(zip(value['substrates'], value['percents'])):
                 left += '''
                 <div class="substrate-row">
-                    <select class="substrate select form-control" name="substrate">
+                    <select class="substrate select form-control" name="benthic-category">
                 '''
                 for s in root_substrates:
                     left += '<option value="{}"{}>{}</option>'.format(
                         s.pk,
-                        ' selected="selected"' if sp[0] == s.pk else '',
-                        s.name)
+                        ' selected="selected"' if sp[0].pk == s.pk else '',
+                        (s.get_level() * '-' + ' ') + s.name)
                 left += '''
                     </select>
                 </div>
@@ -226,7 +233,7 @@ class SubstrateWidget(forms.Widget):
             <div class="right">
                 {}
                 <div class="substrate-row">
-                    <span class="help-text">Substrates must total 100%</span>
+                    <span class="help-text">Categories must total 100%</span>
                 </div>
             </div>
         </div>
@@ -237,31 +244,29 @@ class SubstrateWidget(forms.Widget):
         return {
             'total_percent': int(data.get('total-percent')),
             'percents': [int(p) for p in data.getlist('percent')],
-            'substrates': [int(s) for s in data.getlist('substrate')]
+            'substrates': [int(s) for s in data.getlist('benthic-category')]
         }
 
 
-class SubstrateField(forms.Field):
-    widget = SubstrateWidget
+class BenthicField(forms.Field):
+    widget = BenthicWidget
 
     def to_python(self, value):
         if value is not None and 'substrates' in value and \
                 len(value['substrates']) > 0 and isinstance(value['substrates'][0], int):
-            value['substrates'] = [Substrate.objects.get(pk=s_id) for s_id in value['substrates'][:]]
+            value['substrates'] = [BenthicCategory.objects.get(pk=s_id) for s_id in value['substrates'][:]]
         return value
 
     def prepare_value(self, value):
-        if value is not None and 'substrates' in value and \
-                len(value['substrates']) > 0 and isinstance(value['substrates'][0], Substrate):
-            value['substrates'] = [s.pk for s in value['substrates'][:]]
-        return value
+        if hasattr(self, 'initial'):
+            return self.initial
 
     def validate(self, value):
-        super(SubstrateField, self).validate(value)
+        super(BenthicField, self).validate(value)
         if value['total_percent'] != 100 and len(value['substrates']) > 0:
-            raise ValidationError('Substrates must total 100%', code='not_100')
+            raise ValidationError('Categories must total 100%', code='not_100')
         if len(value['substrates']) != len(set(value['substrates'])):
-            raise ValidationError('Must not have duplicate substrates', code='no_duplicates')
+            raise ValidationError('Must not have duplicate categories', code='no_duplicates')
 
 
 class SetLevelDataForm(forms.ModelForm):
@@ -271,13 +276,18 @@ class SetLevelDataForm(forms.ModelForm):
     splendor_image_file = forms.FileField(required=False,
                                           widget=ImageSelectWidget,
                                           label='Habitat photo: splendor of the reef')
-    habitat_substrate = SubstrateField(required=False,
-                                       label='Habitat substrate')
+    benthic_category = BenthicField(required=False,
+                                    label='Benthos Categories & Forms')
+    substrate = forms.ModelChoiceField(required=False,
+                                       queryset=Substrate.objects.all().order_by('type'))
+    substrate_complexity = forms.ModelChoiceField(required=False,
+                                                  queryset=SubstrateComplexity.objects.all().order_by('name'))
 
     class Meta:
         model = Set
         fields = ['visibility', 'current_flow_instrumented', 'current_flow_estimated',
-                  'bruv_image_file', 'splendor_image_file', 'habitat_substrate']
+                  'bruv_image_file', 'splendor_image_file', 'benthic_category',
+                  'substrate', 'substrate_complexity']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -290,17 +300,17 @@ class SetLevelDataForm(forms.ModelForm):
             if 'instance' in kwargs and kwargs['instance'] and kwargs['instance'].splendor_image_url else None
         self.fields['bruv_image_file'].widget = ImageSelectWidget(image_url=bruv_image_url)
         self.fields['splendor_image_file'].widget = ImageSelectWidget(image_url=splendor_image_url)
-        if 'instance' in kwargs and kwargs['instance'] and kwargs['instance'].habitatsubstrate_set:
+        if 'instance' in kwargs and kwargs['instance'] and kwargs['instance'].benthiccategoryvalue_set:
             value = {
                 'total_percent': 0,
                 'percents': [],
                 'substrates': []
             }
-            for hs in kwargs['instance'].habitatsubstrate_set.all():
-                value['percents'].append(hs.value)
-                value['substrates'].append(hs.substrate)
+            for bcv in kwargs['instance'].benthiccategoryvalue_set.all():
+                value['percents'].append(bcv.value)
+                value['substrates'].append(bcv.benthic_category)
             value['total_percent'] = sum(value['percents'])
-            self.fields['habitat_substrate'].initial = value
+            self.fields['benthic_category'].initial = value
         self.fields['visibility'].required = False
         self.fields['visibility'].choices = \
             sorted(self.fields['visibility'].choices,
@@ -308,16 +318,19 @@ class SetLevelDataForm(forms.ModelForm):
         self.fields['visibility'].choices[0] = (None, '---')
         self.helper.layout = cfl.Layout(
             'visibility', 'current_flow_instrumented', 'current_flow_estimated',
-            cfl.Div('bruv_image_file', 'splendor_image_file', 'habitat_substrate')
+            cfl.Div('bruv_image_file', 'splendor_image_file', 'benthic_category'),
+            'substrate', 'substrate_complexity'
         )
 
 
 class SelectizeWidget(forms.SelectMultiple):
+    template = '<select class="selectize" multiple="multiple"{}>'
+
     def render(self, name, value, attrs=None, choices=()):
         if value is None:
             value = []
         final_attrs = self.build_attrs(attrs, name=name)
-        output = [format_html('<select class="selectize" multiple="multiple"{}>', flatatt(final_attrs))]
+        output = [format_html(self.template, flatatt(final_attrs))]
         options = self.render_options(choices, value)
         if options:
             output.append(options)

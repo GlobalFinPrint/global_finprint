@@ -48,5 +48,8 @@ class Trip(AuditableModel):
     def region(self):
         return self.location.region
 
+    def completed(self):
+        return all(s.completed() for s in self.set_set.all())
+
     def __str__(self):
         return u"{0}".format(self.code)

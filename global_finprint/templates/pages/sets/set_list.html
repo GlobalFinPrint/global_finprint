@@ -182,6 +182,7 @@
         </div>
 
         <div class="row">
+            {% include 'partials/paginator_controls.html' with page=sets thing_name='sets' %}
             <table class="table table-bordered table-condensed set-table" cellspacing="0" width="100%">
                 <thead>
                 <tr class="table-header-title">

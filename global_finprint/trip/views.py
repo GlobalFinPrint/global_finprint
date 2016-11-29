@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.serializers import serialize
 from django.http.response import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse_lazy
@@ -8,7 +9,7 @@ from django.shortcuts import get_object_or_404
 
 from .forms import TripForm, TripSearchForm
 from .models import Trip
-from ..habitat.models import Region, Reef, ReefHabitat
+from ..habitat.models import Region
 from ..bruv.models import Set
 from ..core.mixins import UserAllowedMixin
 
@@ -65,13 +66,21 @@ class TripListView(UserAllowedMixin, CreateView):
             if search_values['reef']:
                 search_terms['set__reef_habitat__reef'] = search_values['reef']
 
-            return Trip.objects.filter(**search_terms).distinct().order_by('start_date')
+            return Trip.objects.filter(**search_terms).distinct().order_by('start_date').select_related('location')
         else:
-            return Trip.objects.all().order_by('start_date')
+            return Trip.objects.all().order_by('start_date').select_related('location')
 
     def get_context_data(self, **kwargs):
+        page = self.request.GET.get('page', 1)
+        queryset = self.get_queryset()
+        paginator = Paginator(queryset, 50)
         context = super().get_context_data(**kwargs)
-        context['trips'] = self.get_queryset()
+        try:
+            context['trips'] = paginator.page(page)
+        except PageNotAnInteger:
+            context['trips'] = paginator.page(1)
+        except EmptyPage:
+            context['trips'] = paginator.page(paginator.num_pages)
         context['search_form'] = TripSearchForm(self.request.GET or None)
         if 'trip_pk' in self.kwargs:
             context['trip_pk'] = self.kwargs['trip_pk']

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.gis.db import models as geomodels
 from django.contrib.postgres.fields import JSONField
+from django.db import transaction
 from global_finprint.core.models import AuditableModel, FinprintUser
 from django.conf import settings
 from boto.s3.connection import S3Connection
@@ -19,12 +20,49 @@ OBSERVATION_TYPE_CHOICES = {
 }
 
 
-class Observation(AuditableModel):
-    assignment = models.ForeignKey(Assignment)
+class MasterRecord(AuditableModel):
+    set = models.OneToOneField(to='bruv.Set')
+    note = models.TextField()
+    completed = models.BooleanField(default=False)
+    deprecated = models.BooleanField(default=False)
+
+    @transaction.atomic
+    def copy_observations(self, observation_ids):
+        try:
+            for old_master_observation in self.masterobservation_set.all():
+                old_master_observation.delete()
+            for observation in Observation.objects.filter(pk__in=observation_ids):
+                MasterObservation.create_from_original(self, observation)
+            return True, None
+        except Exception as e:
+            return False, str(e)
+
+    def original_observations(self):
+        return list(obs.original for obs in self.masterobservation_set.all())
+
+    def to_json(self):
+        return {'original_observation_ids': list(obs.id for obs in self.original_observations())}
+
+
+class AbstractObservation(AuditableModel):
     type = models.CharField(max_length=1, choices=OBSERVATION_TYPE_CHOICES, default='I')
     # duration could be redundant ... at best it's an optimization:
     duration = models.PositiveIntegerField(null=True, blank=True)
     comment = models.TextField(null=True)
+    observation_time = models.PositiveIntegerField(null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+    def initial_observation_time(self):
+        if self.observation_time is None:
+            self.observation_time = self.initial_event().event_time
+            self.save()
+        return self.observation_time
+
+
+class Observation(AbstractObservation):
+    assignment = models.ForeignKey(Assignment)
     created_by = models.ForeignKey(to=FinprintUser, related_name='observations_created', null=True)
     updated_by = models.ForeignKey(to=FinprintUser, related_name='observations_updated', null=True)
 
@@ -120,37 +158,134 @@ class Observation(AuditableModel):
     def initial_event(self):
         return self.event_set.order_by('create_datetime').first()
 
-    def initial_observation_time(self):
-        return self.initial_event().event_time
-
-    def events_for_table(self):
-        return self.event_set.order_by('event_time').all()
-
     def __str__(self):
         # todo:  update to first event?
         return u"{0}".format(self.type)
 
+    def annotator(self):
+        return self.assignment.annotator
 
-class AnimalObservation(AuditableModel):
-    observation = models.OneToOneField(to=Observation)
+    def animal(self):
+        return self.animalobservation.animal
+
+
+class MasterObservation(AbstractObservation):
+    master_record = models.ForeignKey(to=MasterRecord)
+    original = models.ForeignKey(to=Observation, null=True, blank=True, on_delete=models.SET_NULL)
+    created_by = models.ForeignKey(to=FinprintUser, related_name='master_observations_created', null=True)
+    updated_by = models.ForeignKey(to=FinprintUser, related_name='master_observations_updated', null=True)
+
+    @classmethod
+    def create_from_original(cls, master_record, original_observation):
+        master_observation = cls(
+            type=original_observation.type,
+            duration=original_observation.duration,
+            comment=original_observation.comment,
+            master_record=master_record,
+            original=original_observation,
+            created_by=original_observation.created_by,
+            updated_by=original_observation.updated_by
+        )
+        master_observation.save()
+
+        if original_observation.type == 'A':
+            MasterAnimalObservation.create_from_original(master_observation, original_observation.animalobservation)
+
+        for event in original_observation.event_set.all():
+            MasterEvent.create_from_original(master_observation, event)
+
+    def set(self):
+        return self.master_record.set
+
+    def initial_event(self):
+        return self.masterevent_set.order_by('create_datetime').first()
+
+    def event_set(self):
+        return self.masterevent_set.order_by('event_time')
+
+    def annotator(self):
+        return self.original.annotator()
+
+    def animal(self):
+        return self.masteranimalobservation.animal
+
+
+class AbstractAnimalObservation(AuditableModel):
     animal = models.ForeignKey(Animal)
-    sex = models.CharField(max_length=1,
-                           choices=ANIMAL_SEX_CHOICES, default='U')
-    stage = models.CharField(max_length=2,
-                             choices=ANIMAL_STAGE_CHOICES, default='U')
+    sex = models.CharField(max_length=1, choices=ANIMAL_SEX_CHOICES, default='U')
+    stage = models.CharField(max_length=2, choices=ANIMAL_STAGE_CHOICES, default='U')
     length = models.IntegerField(null=True, help_text='centimeters')
+
+    class Meta:
+        abstract = True
+
+
+class AnimalObservation(AbstractAnimalObservation):
+    observation = models.OneToOneField(to=Observation)
 
     def behavior_display(self):
         return list()
 
 
-class Event(AuditableModel):
-    observation = models.ForeignKey(to=Observation)
+class MasterAnimalObservation(AbstractAnimalObservation):
+    master_observation = models.OneToOneField(to=MasterObservation)
+    original = models.ForeignKey(to=AnimalObservation, null=True, blank=True, on_delete=models.SET_NULL)
 
+    @classmethod
+    def create_from_original(cls, master_observation, original_animal_observation):
+        master_animal_observation = cls(
+            animal=original_animal_observation.animal,
+            sex=original_animal_observation.sex,
+            stage=original_animal_observation.stage,
+            length=original_animal_observation.length,
+            master_observation=master_observation,
+            original=original_animal_observation
+        )
+        master_animal_observation.save()
+
+
+class AbstractEvent(AuditableModel):
     event_time = models.IntegerField(help_text='ms', default=0)
     extent = geomodels.PolygonField(null=True)
     attribute = models.ManyToManyField(to=Attribute)
     note = models.TextField(null=True)
+
+    class Meta:
+        abstract = True
+
+    # TODO do we need to check for every key? maybe just use filename and a base_url
+    def image_url(self, verify=True):
+        if self.extent is None:
+            return None
+
+        if verify is False:
+            return 'https://s3-us-west-2.amazonaws.com/finprint-annotator-screen-captures{}'.format(self.filename())
+
+        try:
+            conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+            bucket = conn.get_bucket(settings.FRAME_CAPTURE_BUCKET)
+            key = bucket.get_key(self.filename())
+            return key.generate_url(expires_in=300, query_auth=False) if key else None
+        except S3ResponseError:
+            return None
+
+    def extent_to_css(self):
+        if self.extent is None:
+            return None
+
+        x = self.extent.boundary.x
+        y = self.extent.boundary.y
+        css = 'width: {0}%; height: {1}%; left: {2}%; top: {3}%;'.format(
+            int(abs(x[1] - x[0]) * 100),
+            int(abs(y[2] - y[1]) * 100),
+            int(x[0] * 100),
+            int(y[1] * 100)
+        )
+        return css
+
+
+class Event(AbstractEvent):
+    observation = models.ForeignKey(to=Observation)
     raw_import_json = JSONField(null=True)
 
     @classmethod
@@ -183,9 +318,12 @@ class Event(AuditableModel):
             'attribute': [a.to_json(children=not for_web) for a in self.attribute.all()],
             'create_datetime': datetime.strftime(self.create_datetime, '%Y-%m-%d %H:%M:%S')
         }
+
         if for_web:
             json['extent_css'] = self.extent_to_css()
-            json['image_url'] = self.image_url()
+            json['image_url'] = self.image_url(verify=False)
+            json['attribute_names'] = list(a.name for a in self.attribute.all())
+
         return json
 
     def filename(self):
@@ -197,23 +335,23 @@ class Event(AuditableModel):
                                                  self.observation_id,
                                                  self.id)
 
-    # TODO do we need to check for every key? maybe just use filename and a base_url
-    def image_url(self):
-        try:
-            conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
-            bucket = conn.get_bucket(settings.FRAME_CAPTURE_BUCKET)
-            key = bucket.get_key(self.filename())
-            return key.generate_url(expires_in=300, query_auth=False) if key else None
-        except S3ResponseError:
-            return None
 
-    def extent_to_css(self):
-        x = self.extent.boundary.x
-        y = self.extent.boundary.y
-        css = 'width: {0}%; height: {1}%; left: {2}%; top: {3}%;'.format(
-            int(abs(x[1] - x[0]) * 100),
-            int(abs(y[2] - y[1]) * 100),
-            int(x[0] * 100),
-            int(y[1] * 100)
+class MasterEvent(AbstractEvent):
+    master_observation = models.ForeignKey(to=MasterObservation)
+    original = models.ForeignKey(to=Event, null=True, blank=True, on_delete=models.SET_NULL)
+
+    @classmethod
+    def create_from_original(cls, master_observation, original_event):
+        master_event = cls(
+            event_time=original_event.event_time,
+            extent=original_event.extent,
+            note=original_event.note,
+            master_observation=master_observation,
+            original=original_event
         )
-        return css
+        master_event.save()
+        for attribute in original_event.attribute.all():
+            master_event.attribute.add(attribute)
+
+    def filename(self):
+        return self.original.filename()

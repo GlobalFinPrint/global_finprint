@@ -1,5 +1,7 @@
 from django.db import models, connection
 from global_finprint.core.models import AuditableModel, FinprintUser
+from .project import Project
+from itertools import chain
 
 
 # todo:  pull video file names into ranked list (for l & r, etc.)
@@ -7,14 +9,24 @@ class Video(AuditableModel):
     file = models.CharField(max_length=100, null=True, blank=True)
     source_folder = models.CharField(max_length=100, null=True, blank=True)
 
-    def annotators_assigned(self):
-        return list(a.annotator for a in self.assignment_set.all())
+    def annotators_assigned(self, project):
+        return list(a.annotator for a in self.assignment_set.filter(project=project).all())
 
     def length(self):
         try:
-            return max(self.assignment_set.exclude(status_id__in=[1, 2]).values_list('progress', flat=True))
+            progress_list = self.assignment_set.exclude(status_id__in=[1, 2]).values_list('progress', flat=True)
+            return max(p for p in progress_list if p > 0)
         except ValueError:
-            return None
+            try:
+                sql = '''select max(e.event_time) from annotation_event e
+                join annotation_observation o on (e.observation_id = o.id)
+                join annotation_assignment a on (o.assignment_id = a.id)
+                where a.video_id = %s'''
+                with connection.cursor() as cursor:
+                    cursor.execute(sql, [self.id])
+                    return cursor.fetchone()[0]
+            except:  # TODO be more specific here
+                return None
 
     def __str__(self):
         return u"{0}".format(self.file)
@@ -39,6 +51,10 @@ class Assignment(AuditableModel):
     assigned_by = models.ForeignKey(to=FinprintUser, related_name='assigned_by')
     status = models.ForeignKey(to=AnnotationState, default=1)
     progress = models.IntegerField(default=0)
+    project = models.ForeignKey(Project, default=1)
+
+    _selected_related_list = ['annotator', 'annotator__affiliation', 'video',
+                              'video__set', 'video__set__trip', 'status']
 
     def set(self):
         return self.video.set
@@ -50,12 +66,18 @@ class Assignment(AuditableModel):
         return self.progress
 
     @classmethod
+    def get_all(cls):
+        return cls.objects.all().select_related(*cls._selected_related_list)
+
+    @classmethod
     def get_active(cls):
-        return cls.objects.filter(status_id__in=[1, 2, 3])
+        return cls.objects.filter(status_id__in=[1, 2, 3]) \
+            .select_related(*cls._selected_related_list)
 
     @classmethod
     def get_active_for_annotator(cls, annotator):
-        return cls.objects.filter(annotator=annotator, status_id__in=[1, 2])
+        return cls.objects.filter(annotator=annotator, status_id__in=[1, 2]) \
+            .select_related(*cls._selected_related_list)
 
     def to_json(self):
         last_activity = self.last_activity()
@@ -66,15 +88,13 @@ class Assignment(AuditableModel):
                 'progress': self.progress,
                 'status': {'id': self.status_id, 'name': self.status.name},
                 'assigned_at': self.create_datetime.strftime('%b %d, %Y %I:%m %p'),
-                'last_activity': last_activity.strftime('%b %d, %Y %I:%m %p') if last_activity else 'None'}
+                'last_activity': last_activity.strftime('%b %d, %Y %I:%m %p') if last_activity else 'None'
+                }
 
     def last_activity(self):
-        sql = '''
-        SELECT max(greatest(e.last_modified_datetime, o.last_modified_datetime))
-        FROM annotation_observation o
-        JOIN annotation_event e ON (e.observation_id = o.id)
-        WHERE o.assignment_id = %s
-        '''
-        with connection.cursor() as cursor:
-            cursor.execute(sql, [self.id])
-            return cursor.fetchone()[0]
+        try:
+            return max(chain.from_iterable(
+                self.observation_set.values_list('event__last_modified_datetime', 'last_modified_datetime')
+            ))
+        except ValueError:
+            return None

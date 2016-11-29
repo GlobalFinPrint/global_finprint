@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import View
 from django.contrib import messages
 from django.http.response import JsonResponse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
@@ -10,8 +11,7 @@ from django.db import transaction
 
 from global_finprint.trip.models import Trip
 from global_finprint.bruv.models import Equipment
-from global_finprint.annotation.models.video import Video
-from ..models import Set, HabitatSubstrate, EnvironmentMeasure
+from ..models import Set, BenthicCategoryValue, EnvironmentMeasure
 from ..forms import SetForm, EnvironmentMeasureForm, \
     SetSearchForm, SetLevelCommentsForm, SetLevelDataForm
 from ...annotation.forms import VideoForm
@@ -41,11 +41,19 @@ class SetListView(UserAllowedMixin, View):
     template = 'pages/sets/set_list.html'
 
     def _common_context(self, request, parent_trip):
+        page = request.GET.get('page', 1)
+        paginator = Paginator(self._get_filtered_sets(parent_trip), 50)
+        try:
+            sets = paginator.page(page)
+        except PageNotAnInteger:
+            sets = paginator.page(1)
+        except EmptyPage:
+            sets = paginator.page(paginator.num_pages)
         return RequestContext(request, {
             'request': request,
             'trip_pk': parent_trip.pk,
             'trip_name': str(parent_trip),
-            'sets': self._get_filtered_sets(parent_trip),
+            'sets': sets,
             'search_form': SetSearchForm(self.request.GET or None, trip_id=parent_trip.pk)
         })
 
@@ -92,11 +100,16 @@ class SetListView(UserAllowedMixin, View):
         if last_set is not None:
             set_form_defaults.update({
                 'reef_habitat': last_set.reef_habitat,
-                'latitude': round(last_set.latitude, 1),
-                'longitude': round(last_set.longitude, 1),
+                'reef': last_set.reef_habitat.reef,
+                'habitat': last_set.reef_habitat.habitat,
+                'latitude': last_set.latitude,
+                'longitude': last_set.longitude,
                 'set_date': last_set.set_date,
                 'drop_time': last_set.drop_time,
+                'haul_date': last_set.haul_date,
                 'haul_time': last_set.haul_time,
+                'equipment': last_set.equipment,
+                'bait': last_set.bait
             })
 
         return set_form_defaults
@@ -135,10 +148,10 @@ class SetListView(UserAllowedMixin, View):
 
     def _process_habitat_substrate(self, set, request):
         with transaction.atomic():
-            set.substrate.clear()
-            for (s_id, val) in zip(request.POST.getlist('substrate'), request.POST.getlist('percent')):
-                hs = HabitatSubstrate(set=set, substrate_id=s_id, value=val)
-                hs.save()
+            set.benthic_category.clear()
+            for (s_id, val) in zip(request.POST.getlist('benthic-category'), request.POST.getlist('percent')):
+                bcv = BenthicCategoryValue(set=set, benthic_category_id=s_id, value=val)
+                bcv.save()
 
     def get(self, request, **kwargs):
         trip_pk, set_pk = kwargs.get('trip_pk', None), kwargs.get('set_pk', None)
@@ -231,7 +244,7 @@ class SetListView(UserAllowedMixin, View):
                 new_set.haul_measure = haul_form.save()
                 new_set.video = video_form.save()
                 for k, v in set_level_data_form.cleaned_data.items():
-                    if k not in ('bruv_image_file', 'splendor_image_file'):
+                    if k not in ('bruv_image_file', 'splendor_image_file', 'benthic_category'):
                         setattr(new_set, k, v)
                 for k, v in set_level_comments_form.cleaned_data.items():
                     setattr(new_set, k, v)
@@ -272,7 +285,7 @@ class SetListView(UserAllowedMixin, View):
                 for k, v in video_form.cleaned_data.items():
                     setattr(edited_set.video, k, v)
                 for k, v in set_level_data_form.cleaned_data.items():
-                    if k not in ('bruv_image_file', 'splendor_image_file'):
+                    if k not in ('bruv_image_file', 'splendor_image_file', 'benthic_category'):
                         setattr(edited_set, k, v)
                 for k, v in set_level_comments_form.cleaned_data.items():
                     setattr(edited_set, k, v)

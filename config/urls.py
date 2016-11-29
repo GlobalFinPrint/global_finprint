@@ -14,7 +14,7 @@ from django.views.defaults import bad_request, permission_denied, page_not_found
 
 from global_finprint.core.views import UrlRedirect, UserInfoView
 from global_finprint.core.forms import FinprintAuthenticationForm
-from global_finprint.bruv.views.habitat_substrate import HabitatSubstrate
+from global_finprint.bruv.views.benthic_category import BenthicCategoryView
 
 
 urlpatterns = [
@@ -27,7 +27,7 @@ urlpatterns = [
     url(r'^api/', include('global_finprint.api.urls')),
     url(r"^assignment/", include('global_finprint.annotation.urls.assignment')),
 
-    url(r"^substrate/$", HabitatSubstrate.as_view(), name="ajax_substrate"),
+    url(r"^substrate/$", BenthicCategoryView.as_view(), name="ajax_substrate"),
 
     url(r"^about/$", TemplateView.as_view(template_name='pages/about.html'), name="about"),
 

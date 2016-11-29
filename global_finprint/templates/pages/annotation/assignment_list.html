@@ -62,6 +62,16 @@
 
             <div class="row">
                 <div class="col-md-3">
+                    <label for="select-project">Project</label>
+                    <select id="select-project" name="project_id" class="form-control">
+                        <option value="" selected="selected">---</option>
+                        {% for p in projects %}
+                            <option value="{{ p.id }}">{{ p }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
                     <label for="select-assigned">Num. annotators assigned</label>
                     <select id="select-assigned" name="assigned" class="form-control">
                         <option value="" selected="selected">---</option>
@@ -96,6 +106,7 @@
                     <th>Trip</th>
                     <th>Set</th>
                     <th>Annotator</th>
+                    <th>Project</th>
                     <th>Date assigned</th>
                     <th>Status</th>
                     <th>Progress</th>
@@ -104,7 +115,7 @@
                 </tr>
             </thead>
             <tbody id="assignment-target">
-                <tr><td colspan="9">
+                <tr><td colspan="10">
                     <h4 class="text-center">Use the form above to limit selection</h4>
                 </td></tr>
             </tbody>
@@ -168,7 +179,16 @@
                         </div>
                         <div class="row">
                             <div class="col-md-4">
-                                <div class="checkbox">
+                                <label for="project">Project</label>
+                                <select id="project" name="project" class="form-control">
+                                    {% for project in projects %}
+                                        <option value="{{ project.id }}">{{ project.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="checkbox include-leads">
                                     <label for="include-leads">
                                         <input type="checkbox" id="include-leads" name="include_leads" />
                                         Include leads?

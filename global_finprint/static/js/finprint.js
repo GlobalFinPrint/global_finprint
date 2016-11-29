@@ -19,6 +19,9 @@ var finprint = finprint || {};  //namespace if necessary...
         initImageSelectWidgets();
         initTabAccordion();
         initSubstrateWidget();
+        initCheckbuttons();
+        initColoredRows();
+        initDisableOnSubmit();
     });
 
     function getCSRF() {
@@ -78,8 +81,14 @@ var finprint = finprint || {};  //namespace if necessary...
             $form.find(selector).selectize(options);
         });
         $form.find('button#search').click(function() {
+            var $this = $(this);
+            var oldText = $this.text();
+            $this.attr('disabled', 'disabled');
+            $this.text('Searching...');
             $.post('/assignment/search', $form.serialize(), function(res) {
                 $target.html(res);
+                $this.removeAttr('disabled');
+                $this.text(oldText);
             });
         });
     }
@@ -88,14 +97,30 @@ var finprint = finprint || {};  //namespace if necessary...
         var $buttons = $('tbody#assignment-target');
         var $modal = $('div#assign-modal');
 
-        $buttons.on('click', 'a.open-assign-modal', function(e) {
-            e.preventDefault();
-            $.get('/assignment/modal/' + $(this).data('id'), function(html) {
+        function loadModal(id, params) {
+            params = params || {};
+            $.get('/assignment/modal/' + id, params, function(html) {
                 $modal.find('div.modal-content').html(html);
+                $modal.data('id', id);
                 $modal.find('form').submit(false);
                 $modal.find('#new-annotators').selectize({ plugins: ['remove_button', 'restore_on_backspace'] });
-                $modal.modal('show');
             });
+        }
+
+        $modal.on('change', 'select#project', function() {
+            $modal
+                .find('.loading')
+                    .show()
+                    .end()
+                .find('button')
+                    .attr('disabled', 'disabled');
+            loadModal($modal.data('id'), { project_id: $(this).val() });
+        });
+
+        $buttons.on('click', 'a.open-assign-modal', function(e) {
+            e.preventDefault();
+            loadModal($(this).data('id'), { project_id: 1 });
+            $modal.modal('show');
         });
 
         $modal.on('click', 'button#save-changes', function() {
@@ -167,6 +192,8 @@ var finprint = finprint || {};  //namespace if necessary...
         });
 
         $modal.find('#assign-auto').click(function() {
+            var $button = $('button#assign-auto');
+            $button.attr('disabled', 'disabled');
             $modal.find('div.modal-footer span.success-message').fadeOut().removeClass('alert-error');
             $.post('/assignment/auto', $modalForm.serialize(), function(data) {
                 var $aa = data['assignments'];
@@ -181,6 +208,7 @@ var finprint = finprint || {};  //namespace if necessary...
                     $modal.find('div.modal-footer span.success-message').addClass('alert-error')
                 }
                 $modal.find('div.modal-footer span.success-message').text($message).fadeIn();
+                $button.removeAttr('disabled');
             });
         });
     }
@@ -317,6 +345,7 @@ var finprint = finprint || {};  //namespace if necessary...
 
     function initSelectizeWidgets() {
         $('select[multiple="multiple"].selectize').selectize({ plugins: ['remove_button', 'restore_on_backspace'] });
+        $('select[multiple!="multiple"].selectize').selectize({ create: true, plugins: ['restore_on_backspace'] });
     }
 
     function initImageSelectWidgets() {
@@ -389,29 +418,40 @@ var finprint = finprint || {};  //namespace if necessary...
             $parent.find('input[name="total-percent"]').val(sum);
         }
 
-        function addSubstrateRow(e, substrate, value) {
+        function addSubstrateRow(e, substrate, value, rowNum) {
             e.preventDefault();
 
             var remainingPercent = Math.max(0, 100 - $parent.find('input[name="total-percent"]').val());
 
             $.get('/substrate/', function(res) {
-                var html = '<div class="substrate-row"><select class="substrate select form-control" name="substrate">';
+                var leftHTML, centerHTML, rightHTML;
+
+                leftHTML = '<div class="substrate-row"><select class="substrate select form-control" name="benthic-category">';
                 res.substrates.forEach(function(s) {
                     var selected = (parseInt(s.id) === parseInt(substrate)) ? ' selected="selected"' : '';
-                    html += '<option value="' + s.id + '"' + selected + '>' + s.name + '</option>';
+                    leftHTML += '<option value="' + s.id + '"' + selected + '>' + s.name + '</option>';
                 });
-                html += '</select></div>';
-                $left.prepend(html);
+                leftHTML += '</select></div>';
 
-                $center.prepend('<div class="substrate-row"><div class="input-holder">' +
+                centerHTML = '<div class="substrate-row"><div class="input-holder">' +
                     '<input class="percent" name="percent" type="number" ' +
                         'step="1" min="1" max="100" value="' + (value ? parseInt(value) : parseInt(remainingPercent)) + '" />' +
-                    '</div></div>');
+                    '</div></div>';
 
-                $right.prepend('<div class="substrate-row">' +
+                rightHTML = '<div class="substrate-row">' +
                     '<a href="#" class="split">Split</a>' +
                     '<a href="#" class="remove">Remove</a>' +
-                    '</div>');
+                    '</div>';
+
+                if (rowNum === undefined) {
+                    $left.find('.substrate-row:last').before(leftHTML);
+                    $center.find('.substrate-row:last').before(centerHTML);
+                    $right.find('.substrate-row:last').before(rightHTML);
+                } else {
+                    $left.find('.substrate-row:nth-child(' + (rowNum + 1) + ')').before(leftHTML);
+                    $center.find('.substrate-row:nth-child(' + (rowNum + 1) + ')').before(centerHTML);
+                    $right.find('.substrate-row:nth-child(' + (rowNum + 1) + ')').before(rightHTML);
+                }
 
                 recalculateTotalPercent();
             });
@@ -447,7 +487,7 @@ var finprint = finprint || {};  //namespace if necessary...
                 if (!res.substrates.length) {
                     messageHtml = '<div class="message-modal clear">' +
                         '<p class="no-children-message">' +
-                            'This substrate has no children; unable to split' +
+                            'This category has no children; unable to split' +
                         '</p></div>';
                     $parent.append(messageHtml);
                     $parent.find('.message-modal')
@@ -503,7 +543,7 @@ var finprint = finprint || {};  //namespace if necessary...
                             '<a href="#" class="modal-remove">Remove</a>' +
                         '</div>' +
                         '<div class="substrate-row">' +
-                            '<span class="help-text">Details must total ' + parentPercent + '%</span>' +
+                            '<span class="help-text">Categories must total ' + parentPercent + '%</span>' +
                         '</div>' +
                     '</div>';
 
@@ -531,14 +571,14 @@ var finprint = finprint || {};  //namespace if necessary...
                         leftHTML += '<option value="' + s.id + '">' + s.name + '</option>';
                     });
                     leftHTML += '</select></div>';
-                    $subLeft.prepend(leftHTML);
+                    $subLeft.find('.substrate-row:last').before(leftHTML);
 
-                    $subCenter.prepend('<div class="substrate-row">' +
+                    $subCenter.find('.substrate-row:last').before('<div class="substrate-row">' +
                         '<div class="input-holder">' +
                             '<input class="percent" type="number" value="' + remainingPercent + '" step="1" min="1" max="100" />' +
                     '</div></div>');
 
-                    $subRight.prepend('<div class="substrate-row">' +
+                    $subRight.find('.substrate-row:last').before('<div class="substrate-row">' +
                         '<a href="#" class="modal-remove">Remove</a>' +
                     '</div>');
 
@@ -560,7 +600,7 @@ var finprint = finprint || {};  //namespace if necessary...
 
                 $splitModal.on('click', '> .buttons button.sub-ok', function(e) {
                     e.preventDefault();
-                    var $substrates, subVals, $percents, checkRange;
+                    var $substrates, subVals, $percents, checkRange, insertIndex;
 
                     $splitModal.find('.buttons span.sub-error').hide().clearQueue();
 
@@ -570,7 +610,7 @@ var finprint = finprint || {};  //namespace if necessary...
                         return parseInt($(p).val()) > 100 || parseInt($(p).val()) < 1
                     };
                     if ($.grep($percents, checkRange).length) {
-                        showSubError('Substrate value must be between 1 and 100');
+                        showSubError('Category value must be between 1 and 100');
                         return false;
                     }
 
@@ -580,21 +620,22 @@ var finprint = finprint || {};  //namespace if necessary...
                         return $(s).val();
                     });
                     if (subVals.length !== $.unique(subVals).length) {
-                        showSubError('Must not have duplicate substrates');
+                        showSubError('Must not have duplicate category');
                         return false;
                     }
 
                     // check parent percent match
                     if (parseInt($subCenter.find('input.total').val()) != parentPercent) {
-                        showSubError('Substrates must total ' + parentPercent + '%');
+                        showSubError('Categories must total ' + parentPercent + '%');
                         return false;
                     }
 
                     // split on the parent
                     $splitModal.hide();
+                    insertIndex = $right.find('a.remove').index($originalThis.siblings('a.remove'));
                     removeSubstrateRow.call($originalThis.siblings('a.remove'), new Event('remove row'));
                     $substrates.each(function(i, sub) {
-                        addSubstrateRow(new Event('add row'), $(sub).val(), $percents.slice(i, i+1).val());
+                        addSubstrateRow(new Event('add row'), $(sub).val(), $percents.slice(i, i+1).val(), insertIndex);
                     });
                     $splitModal.remove();
                 });
@@ -610,5 +651,50 @@ var finprint = finprint || {};  //namespace if necessary...
         $parent.on('change', 'input[name="percent"]', recalculateTotalPercent);
         $parent.on('click', 'a.split', splitModal);
         $parent.on('click', 'a.remove', removeSubstrateRow);
+    }
+
+    function initCheckbuttons() {
+        var url, data;
+        $('.checkbutton').click(function(e) {
+            if (e.target === this) {
+                url = $(this).data('url');
+                data = {checked: !$(this).find('input[type="checkbox"]').is(':checked')};
+                $.get(url, data);
+            }
+        });
+    }
+
+    function initColoredRows() {
+        var palette = colorbrewer.Set1[9];
+        var pallIndex = 0;
+        var $colorRowContainer = $('.color-rows');
+        var diffCell = parseInt($colorRowContainer.data('diff-cell'));
+        var diffDict = {};
+        var rows = $colorRowContainer.find('table tbody tr.first-event');
+        var css = 'content: ""; display: inline-block; height: 5px; width: 5px; border: 5px solid black; ' +
+            'border-radius: 5px; margin-right: 5px;';
+        rows.each(function(i, row) {
+            var cell = $(row).find('td')[diffCell];
+            var diffKey = cell.innerText;
+            if (diffDict[diffKey] === undefined) {
+                document.styleSheets[0].addRule(
+                    '.color-rows table tbody tr td[data-pall-index="' + pallIndex + '"]:before',
+                    css + 'border-color: ' + palette[pallIndex] + ';'
+                );
+                diffDict[diffKey] = pallIndex;
+                pallIndex +=1 ;
+            }
+            $(cell).attr('data-pall-index', diffDict[diffKey]);
+        });
+    }
+
+    function initDisableOnSubmit() {
+        $('input[type="submit"]').click(function(e) {
+            var $form = $(this).parents('form');
+            var param = $(e.target).attr('name');
+            $form.append('<input type="hidden" name="' + param + '" value="1" />');
+            $('input[type="submit"]').attr('disabled', 'disabled');
+            $form.submit();
+        });
     }
 })(jQuery);

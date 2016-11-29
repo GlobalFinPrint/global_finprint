@@ -2,31 +2,35 @@
 {% load staticfiles %}
 {% block content %}
     <div class="row">
-        <h3>Videos > Compare Assignments</h3>
+        <h3>Videos > Compare Assignments for {{ set }}</h3>
     </div>
 
     <div class="row compare-actions clear">
         <div class="pull-right">
-            <button id="save-master" class="btn btn-primary btn-fp">Save</button>
-            <button id="review-master" class="btn btn-primary btn-fp">Review master assignment</button>
+            <span id="save-feedback"></span>
+            <button id="save-master" class="btn btn-primary btn-fp" disabled="disabled">Save</button>
+            <a href="{% url 'master_review' master.id %}" id="review-master" class="btn btn-primary btn-fp" disabled="disabled">Review</a>
         </div>
     </div>
 
-    <div class="row master" data-length="{{ video_length }}">
+    <div class="row master" data-set-id="{{ set.id }}" data-length="{{ video_length }}" tabindex="0">
         <p class="review-label">
             <span class="circle">M</span> Master
         </p>
         <div class="timeline-holder">
+            <div class="busy-indicator">Loading...</div>
             <div class="timeline"></div>
         </div>
     </div>
 
     {% for a in set.video.assignment_set.all %}
-        <div class="row assignment" data-assignment-id="{{ a.pk }}" data-length="{{ video_length }}">
+        <div class="row assignment" data-assignment-id="{{ a.pk }}" data-length="{{ video_length }}" data-label="{{ forloop.counter }}" tabindex="0">
             <p class="review-label">
                 <span class="circle">{{ forloop.counter }}</span> {{ a.annotator }}
+                <button class="select-all btn btn-primary btn-fp" disabled="disabled">Select All</button>
             </p>
             <div class="timeline-holder">
+                <div class="busy-indicator">Loading...</div>
                 <div class="timeline"></div>
             </div>
         </div>
@@ -42,8 +46,6 @@
             </div>
         </div>
     </div>
-
-    <div id="busy-indicator">Loading...</div>
 
     <script type="text/javascript" src="{% static 'js/templates.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/compare.js' %}"></script>
