@@ -418,29 +418,40 @@ var finprint = finprint || {};  //namespace if necessary...
             $parent.find('input[name="total-percent"]').val(sum);
         }
 
-        function addSubstrateRow(e, substrate, value) {
+        function addSubstrateRow(e, substrate, value, rowNum) {
             e.preventDefault();
 
             var remainingPercent = Math.max(0, 100 - $parent.find('input[name="total-percent"]').val());
 
             $.get('/substrate/', function(res) {
-                var html = '<div class="substrate-row"><select class="substrate select form-control" name="benthic-category">';
+                var leftHTML, centerHTML, rightHTML;
+
+                leftHTML = '<div class="substrate-row"><select class="substrate select form-control" name="benthic-category">';
                 res.substrates.forEach(function(s) {
                     var selected = (parseInt(s.id) === parseInt(substrate)) ? ' selected="selected"' : '';
-                    html += '<option value="' + s.id + '"' + selected + '>' + s.name + '</option>';
+                    leftHTML += '<option value="' + s.id + '"' + selected + '>' + s.name + '</option>';
                 });
-                html += '</select></div>';
-                $left.find('.substrate-row:last').before(html);
+                leftHTML += '</select></div>';
 
-                $center.find('.substrate-row:last').before('<div class="substrate-row"><div class="input-holder">' +
+                centerHTML = '<div class="substrate-row"><div class="input-holder">' +
                     '<input class="percent" name="percent" type="number" ' +
                         'step="1" min="1" max="100" value="' + (value ? parseInt(value) : parseInt(remainingPercent)) + '" />' +
-                    '</div></div>');
+                    '</div></div>';
 
-                $right.find('.substrate-row:last').before('<div class="substrate-row">' +
+                rightHTML = '<div class="substrate-row">' +
                     '<a href="#" class="split">Split</a>' +
                     '<a href="#" class="remove">Remove</a>' +
-                    '</div>');
+                    '</div>';
+
+                if (rowNum === undefined) {
+                    $left.find('.substrate-row:last').before(leftHTML);
+                    $center.find('.substrate-row:last').before(centerHTML);
+                    $right.find('.substrate-row:last').before(rightHTML);
+                } else {
+                    $left.find('.substrate-row:nth-child(' + (rowNum + 1) + ')').before(leftHTML);
+                    $center.find('.substrate-row:nth-child(' + (rowNum + 1) + ')').before(centerHTML);
+                    $right.find('.substrate-row:nth-child(' + (rowNum + 1) + ')').before(rightHTML);
+                }
 
                 recalculateTotalPercent();
             });
@@ -589,7 +600,7 @@ var finprint = finprint || {};  //namespace if necessary...
 
                 $splitModal.on('click', '> .buttons button.sub-ok', function(e) {
                     e.preventDefault();
-                    var $substrates, subVals, $percents, checkRange;
+                    var $substrates, subVals, $percents, checkRange, insertIndex;
 
                     $splitModal.find('.buttons span.sub-error').hide().clearQueue();
 
@@ -621,9 +632,10 @@ var finprint = finprint || {};  //namespace if necessary...
 
                     // split on the parent
                     $splitModal.hide();
+                    insertIndex = $right.find('a.remove').index($originalThis.siblings('a.remove'));
                     removeSubstrateRow.call($originalThis.siblings('a.remove'), new Event('remove row'));
                     $substrates.each(function(i, sub) {
-                        addSubstrateRow(new Event('add row'), $(sub).val(), $percents.slice(i, i+1).val());
+                        addSubstrateRow(new Event('add row'), $(sub).val(), $percents.slice(i, i+1).val(), insertIndex);
                     });
                     $splitModal.remove();
                 });
