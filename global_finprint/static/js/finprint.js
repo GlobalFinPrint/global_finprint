@@ -430,14 +430,14 @@ var finprint = finprint || {};  //namespace if necessary...
                     html += '<option value="' + s.id + '"' + selected + '>' + s.name + '</option>';
                 });
                 html += '</select></div>';
-                $left.prepend(html);
+                $left.find('.substrate-row:last').before(html);
 
-                $center.prepend('<div class="substrate-row"><div class="input-holder">' +
+                $center.find('.substrate-row:last').before('<div class="substrate-row"><div class="input-holder">' +
                     '<input class="percent" name="percent" type="number" ' +
                         'step="1" min="1" max="100" value="' + (value ? parseInt(value) : parseInt(remainingPercent)) + '" />' +
                     '</div></div>');
 
-                $right.prepend('<div class="substrate-row">' +
+                $right.find('.substrate-row:last').before('<div class="substrate-row">' +
                     '<a href="#" class="split">Split</a>' +
                     '<a href="#" class="remove">Remove</a>' +
                     '</div>');
@@ -560,14 +560,14 @@ var finprint = finprint || {};  //namespace if necessary...
                         leftHTML += '<option value="' + s.id + '">' + s.name + '</option>';
                     });
                     leftHTML += '</select></div>';
-                    $subLeft.prepend(leftHTML);
+                    $subLeft.find('.substrate-row:last').before(leftHTML);
 
-                    $subCenter.prepend('<div class="substrate-row">' +
+                    $subCenter.find('.substrate-row:last').before('<div class="substrate-row">' +
                         '<div class="input-holder">' +
                             '<input class="percent" type="number" value="' + remainingPercent + '" step="1" min="1" max="100" />' +
                     '</div></div>');
 
-                    $subRight.prepend('<div class="substrate-row">' +
+                    $subRight.find('.substrate-row:last').before('<div class="substrate-row">' +
                         '<a href="#" class="modal-remove">Remove</a>' +
                     '</div>');
 
