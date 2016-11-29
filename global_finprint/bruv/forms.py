@@ -266,7 +266,7 @@ class BenthicField(forms.Field):
         if value['total_percent'] != 100 and len(value['substrates']) > 0:
             raise ValidationError('Categories must total 100%', code='not_100')
         if len(value['substrates']) != len(set(value['substrates'])):
-            raise ValidationError('Must not have duplicate substrates', code='no_duplicates')
+            raise ValidationError('Must not have duplicate categories', code='no_duplicates')
 
 
 class SetLevelDataForm(forms.ModelForm):
