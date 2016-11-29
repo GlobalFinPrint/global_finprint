@@ -10,4 +10,5 @@ class BenthicCategoryView(UserAllowedMixin, View):
             substrates = BenthicCategory.objects.filter(parent_id=request.GET.get('parent_id'))
         else:
             substrates = BenthicCategory.objects.all()
-        return JsonResponse({'substrates': [{'id': s.id, 'name': s.name} for s in substrates]})
+        return JsonResponse({'substrates': [{'id': s.id, 'name': (s.get_level() * '-' + ' ') + s.name}
+                                            for s in substrates]})

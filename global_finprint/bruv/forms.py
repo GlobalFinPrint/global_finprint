@@ -187,7 +187,7 @@ class BenthicWidget(forms.Widget):
                     left += '<option value="{}"{}>{}</option>'.format(
                         s.pk,
                         ' selected="selected"' if sp[0].pk == s.pk else '',
-                        s.name)
+                        (s.get_level() * '-' + ' ') + s.name)
                 left += '''
                     </select>
                 </div>
