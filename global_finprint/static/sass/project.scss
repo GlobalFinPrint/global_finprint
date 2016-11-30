@@ -798,20 +798,34 @@ form #div_id_file .selectize-control {
   width: 350px;
 }
 
-#observation-table .annotool-thumbnail {
-  cursor: pointer;
+#observation-table {
+  .annotool-thumbnail {
+    cursor: pointer;
 
-  &:after {
-    position: absolute;
-    bottom: 3px;
-    right: 5px;
-    content: "\e015";
-    font-family: 'Glyphicons Halflings';
-    color: white;
-    font-size: 1.2em;
+    &:after {
+      position: absolute;
+      bottom: 3px;
+      right: 5px;
+      content: "\e015";
+      font-family: 'Glyphicons Halflings';
+      color: white;
+      font-size: 1.2em;
+    }
+
+    &:hover:after {
+      font-size: 1.3em;
+    }
   }
 
-  &:hover:after {
-    font-size: 1.3em;
+  select.edit-animal {
+    width: 150px;
+  }
+
+  input.edit-duration {
+    width: 75px;
+  }
+
+  div.edit-attributes.selectize-control {
+    width: 150px;
   }
 }

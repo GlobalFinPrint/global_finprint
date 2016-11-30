@@ -24,10 +24,10 @@
                 {% if o.type == 'I' %}
                     <td class="rowspan"><i>N/A</i></td>
                 {% else %}
-                    <td class="rowspan">{{ o.animal }}</td>
+                    <td class="animal rowspan">{{ o.animal }}</td>
                 {% endif %}
-                <td class="rowspan">{{ o.comment|default_if_none:"<i>None</i>" }}</td>
-                <td class="rowspan">{{ o.duration }}</td>
+                <td class="obs-note rowspan">{{ o.comment|default_if_none:"<i>None</i>" }}</td>
+                <td class="duration rowspan">{{ o.duration|default_if_none:"<i>None</i>" }}</td>
             {% else %}
             <tr class="children-{{ o.id }} child-row">
             {% endif %}
@@ -43,9 +43,13 @@
                 {% endif %}
                 {% endwith %}
                 <td>{{ e.event_time|time_display }}</td>
-                <td>{{ e.note }}</td>
+                <td class="event-note">{{ e.note|default_if_none:"<i>None</i>" }}</td>
                 <td class="attributes">{{ e.attribute.all|join:', ' }}</td>
-                <td></td>
+                <td>
+                    {% with set=e.observation.set %}
+                    <a href="#" class="obs-edit" data-event="{% url 'observation_edit_data' set.trip.pk set.pk e.pk %}">Edit</a>
+                    {% endwith %}
+                </td>
             </tr>
         {% endfor %}
         {% endwith %}

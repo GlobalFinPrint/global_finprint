@@ -1,9 +1,10 @@
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView
+from django.views.generic import View, ListView
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.db import transaction
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from global_finprint.annotation.models.observation import Observation
+from global_finprint.annotation.models.observation import Observation, Event, Animal, Attribute
 from global_finprint.bruv.models import Set, Trip
 from global_finprint.core.mixins import UserAllowedMixin
 
@@ -63,3 +64,59 @@ class ObservationListView(UserAllowedMixin, ListView):
         context['set_name'] = str(Set.objects.get(pk=self.kwargs['set_pk']))
         context['for'] = ' for {0}'.format(context['set_name'])
         return context
+
+
+class ObservationEditData(UserAllowedMixin, View):
+    def get(self, request, evt_id, **kwargs):
+        event = get_object_or_404(Event, pk=evt_id)
+        project = event.observation.assignment.project
+        animals = Animal.objects.filter(project=project).select_related('group')
+        tags = project.attribute_set.all()
+        return JsonResponse({
+            'animals': list({'id': a.id, 'name': str(a)} for a in animals),
+            'tags': list({'id': t.id, 'name': str(t)} for t in tags),
+            'selected_animal': event.observation.animal().id if event.observation.type == 'A' else None,
+            'obs_note': event.observation.comment,
+            'duration': event.observation.duration,
+            'event_note': event.note,
+            'selected_tags': list(a.id for a in event.attribute.all())
+        })
+
+
+class ObservationSaveData(UserAllowedMixin, View):
+    def post(self, request, evt_id, **kwargs):
+        event = get_object_or_404(Event, pk=evt_id)
+        observation = event.observation
+
+        is_obs = request.POST.get('is_obs', 'false')
+        animal_id = request.POST.get('animal_id', None)
+        obs_note = request.POST.get('obs_note', None)
+        duration = request.POST.get('duration', None)
+        event_note = request.POST.get('event_note', None)
+        tags = list(int(t) for t in request.POST.getlist('tags[]', []))
+
+        with transaction.atomic():
+            if is_obs != 'false':
+                if observation.type == 'A':
+                    animal = get_object_or_404(Animal, pk=animal_id)
+                    observation.animalobservation.animal = animal
+                    observation.animalobservation.save()
+                observation.comment = obs_note if obs_note is not '' else None
+                try:
+                    observation.duration = int(duration)
+                except ValueError:
+                    observation.duration = None
+                observation.save()
+            event.note = event_note if event_note is not '' else None
+            event.attribute.clear()
+            for att in Attribute.objects.filter(id__in=tags).all():
+                event.attribute.add(att)
+            event.save()
+
+        return JsonResponse({
+            'animal': str(observation.animal()) if event.observation.type == 'A' else '<i>N/A</i>',
+            'obs_note': observation.comment if observation.comment is not None else '<i>None</i>',
+            'duration': observation.duration if observation.duration is not None else '<i>None</i>',
+            'event_note': event.note if event.note is not None else '<i>None</i>',
+            'attributes': ', '.join(map(str, event.attribute.all())),
+        })
