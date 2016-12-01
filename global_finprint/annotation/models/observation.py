@@ -213,6 +213,10 @@ class MasterObservation(AbstractObservation):
     def animal(self):
         return self.masteranimalobservation.animal
 
+    def event_set_for_table(self):
+        initial_event = self.initial_event()
+        return [initial_event] + list(self.masterevent_set.exclude(id=initial_event.id).order_by('-event_time'))
+
 
 class AbstractAnimalObservation(AuditableModel):
     animal = models.ForeignKey(Animal)
