@@ -20,6 +20,12 @@ admin.site.register(video.AnnotationState)
 class TagAdmin(MPTTModelAdmin):
     fields = ('parent', 'name', 'description', 'active', 'lead_only', 'project')
 
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(TagAdmin, self).get_form(request, obj, **kwargs)
+        form.base_fields['parent'].widget.can_add_related = False
+        form.base_fields['parent'].widget.can_change_related = False
+        return form
+
 admin.site.register(annotation.Attribute, TagAdmin)
 
 

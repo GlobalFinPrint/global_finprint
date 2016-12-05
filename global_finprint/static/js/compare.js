@@ -17,7 +17,7 @@ $(function() {
     // logic and data for events
     var Event = Backbone.Model.extend({
         initialize: function() {
-            this.view = new EventView({model: this})
+            this.view = new EventView({model: this});
         },
         getAssignment: function() {
             return this.collection.observation.getAssignment();
@@ -289,9 +289,9 @@ $(function() {
             selected: true
         },
         toggleSelected: function() {
-            var $collectionEl = this.collection.view.$el;
+            var nextModelView = this.nextModel().view;
             this.get('original').view.selectObservation();
-            $collectionEl.focus();
+            nextModelView.openPopover();
         }
     });
 
@@ -404,6 +404,4 @@ $(function() {
                 .fadeOut();
         });
     });
-
-    //TODO hook up review button
 });

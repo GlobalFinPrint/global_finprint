@@ -22,6 +22,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initCheckbuttons();
         initColoredRows();
         initDisableOnSubmit();
+        initExpandEventThumbnail();
     });
 
     function getCSRF() {
@@ -695,6 +696,24 @@ var finprint = finprint || {};  //namespace if necessary...
             $form.append('<input type="hidden" name="' + param + '" value="1" />');
             $('input[type="submit"]').attr('disabled', 'disabled');
             $form.submit();
+        });
+    }
+
+    function initExpandEventThumbnail() {
+        var $modal = $('#full-image-modal');
+
+        $('#observation-table .annotool-thumbnail').click(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            $modal
+                .find('.event-image')
+                    .attr('style', $(e.target).attr('style'))
+                    .end()
+                .find('.extent')
+                    .attr('style', $(e.target).find('.extent').attr('style'))
+                .end()
+                .modal('show');
         });
     }
 })(jQuery);
