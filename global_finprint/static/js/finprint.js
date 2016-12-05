@@ -713,12 +713,13 @@ var finprint = finprint || {};  //namespace if necessary...
             e.preventDefault();
             e.stopPropagation();
 
+            var $target = $(e.target).closest('.annotool-thumbnail');
             $modal
                 .find('.event-image')
-                    .attr('style', $(e.target).attr('style'))
+                    .attr('style', $target.attr('style'))
                     .end()
                 .find('.extent')
-                    .attr('style', $(e.target).find('.extent').attr('style'))
+                    .attr('style', $target.find('.extent').attr('style'))
                 .end()
                 .modal('show');
         });
