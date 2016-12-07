@@ -35,4 +35,7 @@ CREATE OR REPLACE VIEW public.v_report_usage_metrics AS
   UNION
   SELECT 'Number of videos started but not completed' as metric, count(1) AS value
   FROM annotation_assignment
-  WHERE progress > 0 AND status_id = 1;
+  WHERE progress > 0 AND status_id = 1
+  UNION
+  SELECT 'Total number of videos' as metric, count(1) as value
+  FROM annotation_video;
