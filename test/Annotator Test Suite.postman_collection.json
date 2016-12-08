@@ -88,7 +88,7 @@
 							"tests[\"set code actual value: \" + jsonData.set.set_code + \" | expected value: \" + globals.set_code] = jsonData.set.set_code === globals.set_code;",
 							"",
 							"//verify the set is assigned to the annotator in the global variable =  globals.username",
-							"tests[\"username actual value: \" + jsonData.set.assigned_to.user + \" | expected value: \" + globals.username] = jsonData.set.assigned_to.user === globals.username;",
+							"tests[\"username actual value: \" + jsonData.set.assigned_to.user + \" | expected value: \" + globals.username_actual] = jsonData.set.assigned_to.user === globals.username_actual;",
 							"",
 							""
 						]
@@ -447,7 +447,9 @@
 							"tests[\"Successful POST request\"] = responseCode.code === 200;",
 							"",
 							"//verify # of observation is - 1, back to the number before new observation was created",
-							"tests[\"Observations count actual: \" + jsonData.observations.length + \" | expected: \" + globals.total_observations_before] = jsonData.observations.length == parseInt(globals.total_observations_before);"
+							"tests[\"Observations count actual: \" + jsonData.observations.length + \" | expected: \" + globals.total_observations_before] = jsonData.observations.length == parseInt(globals.total_observations_before);",
+							"",
+							"postman.clearGlobalVariables();"
 						]
 					}
 				}
