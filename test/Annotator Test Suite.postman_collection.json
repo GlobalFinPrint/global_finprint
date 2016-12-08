@@ -88,7 +88,7 @@
 							"tests[\"set code actual value: \" + jsonData.set.set_code + \" | expected value: \" + globals.set_code] = jsonData.set.set_code === globals.set_code;",
 							"",
 							"//verify the set is assigned to the annotator in the global variable =  globals.username",
-							"tests[\"username actual value: \" + jsonData.set.assigned_to.user + \" | expected value: \" + globals.username_actual] = jsonData.set.assigned_to.user === globals.username_actual;",
+							"tests[\"username actual value: \" + jsonData.set.assigned_to.user + \" | expected value: \" + globals.username] = jsonData.set.assigned_to.user === globals.username;",
 							"",
 							""
 						]
