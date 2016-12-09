@@ -227,6 +227,7 @@
 							"",
 							"postman.setGlobalVariable(\"observation_comment\", \"api regression - annotator adding new observation for \" +  globals.set_code);",
 							"postman.setGlobalVariable(\"image_notes\", \"api regression - image note for \" + globals.set_code); //reserving this global incase i want to do event checking later",
+							"postman.setGlobalVariable(\"observation_id\", jsonData.observations[0].id);",
 							"",
 							"//verify response code is 200",
 							"tests[\"Successful POST request\"] = responseCode.code === 200;",
@@ -234,8 +235,17 @@
 							"//verify the # of observation increase after creating a new observation",
 							"tests[\"observation total actual: \" + total_observations_after  + \" | expected value: \" + expected_total_observations_after] = total_observations_after == expected_total_observations_after; ",
 							"",
+							"//verify the observation comment match input/request since the last entry is added to the top of the array",
+							"tests[\"observation[0] comment-  actual: \" + jsonData.observations[0].comment + \" - observation_id: \" +  jsonData.observations[0].id + \" | expected: \" + globals.observation_comment] = jsonData.observations[0].comment === globals.observation_comment;",
+							"        ",
+							"//verify the animal id match the input/request since the last entry is added to the top of the array",
+							"tests[\"observation[0] animal id -  actual: \" + jsonData.observations[0].animal_id + \" - observation_id: \" +  jsonData.observations[0].id + \" | expected: \" + globals.animal_id_value] = parseInt(jsonData.observations[0].animal_id) == globals.animal_id_value;",
+							"//set global varioable to the length of the count of edit observation just to make it easier incase i change this test",
+							"postman.setGlobalVariable(\"expected_total_observations_after\", expected_total_observations_after);",
+							"",
+							"",
 							"//loop through the observation array to look for the added observation",
-							"for (var i = 0; i < expected_total_observations_after; i++)",
+							"/*for (var i = 0; i < expected_total_observations_after; i++)",
 							"{",
 							"   ",
 							"    if(!comment_found) {",
@@ -252,7 +262,7 @@
 							"        break;",
 							"    }",
 							"    ",
-							"}"
+							"}*/"
 						]
 					}
 				}
