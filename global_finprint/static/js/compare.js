@@ -137,7 +137,8 @@ $(function() {
     var Observation = Backbone.Model.extend({
         defaults: {
             animal: 'None <i>(Of Interest)</i>',
-            selected: false
+            selected: false,
+            group: 'int'
         },
         constructor: function(attributes) {
             this.events = new Events;
@@ -410,5 +411,22 @@ $(function() {
                 .delay(1000)
                 .fadeOut();
         });
+    });
+
+    $(function() {
+        var $style;
+        var colors = colorbrewer.Set1[9];
+        var intColor = colors.pop();
+        $('head').append('<style class="legend-style"></style>');
+        $style = $('style.legend-style');
+        $('.compare-actions .legend .legend-item').each(function(i, li) {
+            var style = '.group-' + $(li).data('group') + ' { background-color: ' + colors[i + 1] + ' !important; ';
+            if (i === 4) { // for bright colors that need black text color
+                style += 'color: black !important; ';
+            }
+            style += '}\n';
+            $style.append(style);
+        });
+        $style.append('.group-int { background-color: ' + intColor + ' !important; }\n')
     });
 });

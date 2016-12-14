@@ -552,6 +552,27 @@ h3.form-title {
 .compare-actions {
   margin-bottom: 25px;
 
+  h4 {
+    margin-top: 0;
+  }
+
+  .legend .legend-item {
+    display: inline-block;
+
+    .pip {
+      @include circle(15px);
+      vertical-align: middle;
+      font-size: 10px;
+      color: white;
+    }
+
+    .legend-label {
+      display: inline-block;
+      vertical-align: top;
+      padding-top: 1px;
+    }
+  }
+
   span#save-feedback {
     padding-right: 10px;
     display: none;
@@ -590,6 +611,7 @@ h3.form-title {
 
     .observation {
       @include circle(15px);
+      border: 1px solid #333;
       cursor: pointer;
       position: absolute;
       top: 22px;

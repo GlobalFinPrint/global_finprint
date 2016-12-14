@@ -150,6 +150,8 @@ class Observation(AbstractObservation):
                 'stage': animal.get_stage_display(),
                 'stage_choice': animal.stage,
                 'length': animal.length,
+                'group': animal.animal.group.id,
+                'group_name': str(animal.animal.group)
             })
 
         if for_web:

@@ -6,6 +6,19 @@
     </div>
 
     <div class="row compare-actions clear">
+        <div class="pull-left legend">
+            <h4>Legend</h4>
+            {% for group in project.animal_groups %}
+                <div class="legend-item" data-group="{{ group.id }}">
+                    <span class="pip group-{{ group.id }}">X</span>
+                    <span class="legend-label">{{ group }}</span>
+                </div>
+            {% endfor %}
+            <div class="legend-item" data-group="int">
+                <span class="pip group-int">X</span>
+                <span class="legend-label">Of interest</span>
+            </div>
+        </div>
         <div class="pull-right">
             <span id="save-feedback"></span>
             <button id="save-master" class="btn btn-primary btn-fp" disabled="disabled">Save</button>
@@ -47,6 +60,7 @@
         </div>
     </div>
 
+    <script type="text/javascript" src="{% static 'bower_components/colorbrewer/colorbrewer.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/templates.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/compare.js' %}"></script>
 {% endblock %}
