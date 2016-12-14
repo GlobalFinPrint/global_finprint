@@ -117,6 +117,8 @@
 						"exec": [
 							"var jsonData = JSON.parse(responseBody);",
 							"",
+							"postman.setGlobalVariable(\"observation_comment\", \"api regression - annotator adding new observation for \" +  globals.set_code);",
+							"postman.setGlobalVariable(\"image_note\", \"api regression - image note for \" + globals.set_code); ",
 							"postman.setGlobalVariable(\"total_observations_before\", jsonData.observations.length);",
 							"",
 							"//verify response is 200",
@@ -225,8 +227,7 @@
 							"var expected_total_observations_after = parseInt(globals.total_observations_before) + 1; //globals var can only be string hence need to convert it to int",
 							"var comment_found = false;",
 							"",
-							"postman.setGlobalVariable(\"observation_comment\", \"api regression - annotator adding new observation for \" +  globals.set_code);",
-							"postman.setGlobalVariable(\"image_notes\", \"api regression - image note for \" + globals.set_code); //reserving this global incase i want to do event checking later",
+							"//reserving this global incase i want to do event checking later",
 							"postman.setGlobalVariable(\"observation_id\", jsonData.observations[0].id);",
 							"",
 							"//verify response code is 200",
@@ -325,28 +326,28 @@
 						},
 						{
 							"key": "comment",
-							"value": "api regression - annotator adding new observation for {{set_code}}",
+							"value": "{{observation_comment}}",
 							"type": "text",
 							"enabled": true,
 							"warning": ""
 						},
 						{
 							"key": "event_time",
-							"value": "10",
+							"value": "60000",
 							"type": "text",
 							"enabled": true,
 							"warning": ""
 						},
 						{
 							"key": "extent",
-							"value": "POLYGON((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2))",
+							"value": "POLYGON ((0.0075000000000000 0.3911100000000000, 0.5487500000000000 0.3911100000000000, 0.5487500000000000 0.8111100000000000, 0.0075000000000000 0.8111100000000000, 0.0075000000000000 0.3911100000000000))",
 							"type": "text",
 							"enabled": true,
 							"warning": ""
 						},
 						{
 							"key": "note",
-							"value": "api regression - initial observation -  image note for {{set_code}}",
+							"value": "{{image_note}}",
 							"type": "text",
 							"enabled": true,
 							"warning": ""
@@ -391,16 +392,15 @@
 							"for (var i = 0; i < jsonData.observations.length ; i++)",
 							"{",
 							"   ",
-							"    if(!comment_found) {",
+							"    if(jsonData.observations[i].id == globals.observation_id) {",
 							"        //verify comment contain the word edit in it",
-							"        tests[\"observation[\" + i + \"]-  actual: \" + jsonData.observations[i].comment + \" - observation_id: \" +  jsonData.observations[i].id + \" | expected: \" + globals.observation_comment] = jsonData.observations[i].comment.has(\"edit\");",
+							"        tests[\"observation[\" + i + \"]-  actual: \" + jsonData.observations[i].comment + \" - observation_id: \" +  jsonData.observations[i].id] = jsonData.observations[i].comment.has(\"edit\");",
 							"        ",
 							"        //verify the animal id returned is the edited value        ",
 							"        tests[\"observation[\" + i + \"] animal id -  actual: \" + jsonData.observations[i].animal_id + \" - observation_id: \" +  jsonData.observations[i].id + \" | expected: \" + globals.animal_id_edit_value] = parseInt(jsonData.observations[i].animal_id) == globals.animal_id_edit_value;",
 							"        ",
 							"        break;",
 							"    }",
-							"    ",
 							"}",
 							"",
 							"",
@@ -425,7 +425,7 @@
 						},
 						{
 							"key": "comment",
-							"value": "edit - api regression - initial observation -  image note for {{set_code}}",
+							"value": "edit - {{observation_comment}}",
 							"type": "text",
 							"enabled": true,
 							"warning": ""
