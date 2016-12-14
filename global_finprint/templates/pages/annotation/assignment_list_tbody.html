@@ -14,7 +14,7 @@
     <td>
         <a class="open-assign-modal" data-id="{{ a.video.set.id }}" href="#">Assign</a> /
         <a href="{% url 'assignment_manage' a.id %}" target="_blank">Manage</a> /
-        <a href="{% url 'assignment_compare' a.video.set.id %}" target="_blank">Review</a>
+        <a href="{% url 'assignment_compare' a.video.set.id %}?project={{ a.project.pk }}" target="_blank">Review</a>
     </td>
 </tr>
 {% endfor %}

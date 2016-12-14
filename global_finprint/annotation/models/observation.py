@@ -8,7 +8,7 @@ from boto.s3.connection import S3Connection
 from boto.exception import S3ResponseError
 from .video import Assignment
 from .animal import Animal, ANIMAL_SEX_CHOICES, ANIMAL_STAGE_CHOICES
-from .annotation import Attribute
+from .annotation import Attribute, Project
 from ...core.version import VersionInfo
 from datetime import datetime
 from ...core.templatetags.time_display import time_display
@@ -21,10 +21,14 @@ OBSERVATION_TYPE_CHOICES = {
 
 
 class MasterRecord(AuditableModel):
-    set = models.OneToOneField(to='bruv.Set')
+    set = models.ForeignKey(to='bruv.Set')
     note = models.TextField()
     completed = models.BooleanField(default=False)
     deprecated = models.BooleanField(default=False)
+    project = models.ForeignKey(Project, default=1)
+
+    class Meta:
+        unique_together = (('set', 'project'),)
 
     @transaction.atomic
     def copy_observations(self, observation_ids):

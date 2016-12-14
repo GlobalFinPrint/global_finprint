@@ -303,6 +303,7 @@ $(function() {
         initialize: function(models, options) {
             this.view = options.view;
             this.url = '/assignment/master/' + options.id;
+            this.project = options.project;
         },
         addObservation: function(model) {
             var attributes = model.toJSON();
@@ -324,12 +325,13 @@ $(function() {
             this.loadingPromises = options.loadingPromises;
             this.collection = new MasterRecord([], {
                 id: this.$el.data('set-id'),
+                project: this.$el.data('project-id'),
                 view: this
             });
         },
         load: function(loadingPromises) {
             var self = this;
-            $.get(this.collection.url, function(res) {
+            $.get(this.collection.url + '?project=' + this.collection.project, function(res) {
                 $.when.apply($, loadingPromises).done(function() {
                     var ids = res.original_observation_ids;
                     _.each(assignmentViews, function(view) {
@@ -373,9 +375,14 @@ $(function() {
 
         var $this = $(this);
         var $feedback = $('span#save-feedback');
-        var ids = masterView.collection.pluck('id');
+        var data = {
+            observation_ids: masterView.collection.pluck('id'),
+            project: masterView.collection.project
+        };
+
         $this.attr('disabled', 'disabled');
-        $.post(masterView.collection.url, {observation_ids: ids}, function(res) {
+
+        $.post(masterView.collection.url, data, function(res) {
             $this.removeAttr('disabled');
             if (res.success === 'ok') {
                 $feedback

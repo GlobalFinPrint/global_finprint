@@ -2,7 +2,7 @@
 {% load staticfiles %}
 {% block content %}
     <div class="row">
-        <h3>Videos > Compare Assignments for {{ set }}</h3>
+        <h3>Videos > Compare Assignments for {{ set }} ({{ project }})</h3>
     </div>
 
     <div class="row compare-actions clear">
@@ -13,7 +13,7 @@
         </div>
     </div>
 
-    <div class="row master" data-set-id="{{ set.id }}" data-length="{{ video_length }}" tabindex="0">
+    <div class="row master" data-set-id="{{ set.id }}" data-project-id="{{ project.pk }}" data-length="{{ video_length }}" tabindex="0">
         <p class="review-label">
             <span class="circle">M</span> Master
         </p>
@@ -23,8 +23,8 @@
         </div>
     </div>
 
-    {% for a in set.video.assignment_set.all %}
-        <div class="row assignment" data-assignment-id="{{ a.pk }}" data-length="{{ video_length }}" data-label="{{ forloop.counter }}" tabindex="0">
+    {% for a in assignment_set %}
+        <div class="row assignment" data-assignment-id="{{ a.pk }}" data-project-id="{{ project.pk }}" data-length="{{ video_length }}" data-label="{{ forloop.counter }}" tabindex="0">
             <p class="review-label">
                 <span class="circle">{{ forloop.counter }}</span> {{ a.annotator }}
                 <button class="select-all btn btn-primary btn-fp" disabled="disabled">Select All</button>
