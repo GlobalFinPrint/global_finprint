@@ -755,7 +755,7 @@ var finprint = finprint || {};  //namespace if necessary...
                 // change new data fields into JSON
                 function serialize() {
                     return {
-                        is_obs: $animalCell.length > 0,
+                        is_obs: $obsNoteCell.length > 0,
                         animal_id: $animalCell.find('select.edit-animal').val(),
                         obs_note: $obsNoteCell.find('textarea.edit-obsnote').val(),
                         duration: $durationCell.find('input.edit-duration').val(),
