@@ -147,7 +147,7 @@
                         </div>
 
                         <div class="panel panel-default sub-form">
-                            <div class="panel-heading {% if not video_form.errors and not set_level_data_form.errors %}collapsed{% endif %}"
+                            <div class="panel-heading {% if not set_level_data_form.errors %}collapsed{% endif %}"
                                  role="tab"
                                  id="headingFive"
                                  data-toggle="collapse"
@@ -155,16 +155,37 @@
                                  area-expanded="false"
                                  aria-controls="collapseFive">
                                 <h4 class="panel-title">
-                                    <a class="accordion-toggle">Video, photos, and flow/substrate measures</a>
+                                    <a class="accordion-toggle">Photos and flow/substrate measures</a>
                                 </h4>
                             </div>
                             <div id="collapseFive"
-                                 class="panel-collapse collapse {% if video_form.errors or set_level_data_form.errors %}in{% endif %}"
+                                 class="panel-collapse collapse {% if set_level_data_form.errors %}in{% endif %}"
                                  role="tabpanel"
                                  aria-labelledby="headingFive">
                                 <div class="panel-body">
-                                    {% crispy video_form %}
                                     {% crispy set_level_data_form %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-default sub-form">
+                            <div class="panel-heading {% if not video_form.errors %}collapsed{% endif %}"
+                                 role="tab"
+                                 id="headingSix"
+                                 data-toggle="collapse"
+                                 href="#collapseSix"
+                                 area-expanded="false"
+                                 aria-controls="collapseSix">
+                                <h4 class="panel-title">
+                                    <a class="accordion-toggle">Video</a>
+                                </h4>
+                            </div>
+                            <div id="collapseSix"
+                                 class="panel-collapse collapse {% if video_form.errors %}in{% endif %}"
+                                 role="tabpanel"
+                                 aria-labelledby="headingSix">
+                                <div class="panel-body">
+                                    {% crispy video_form %}
                                 </div>
                             </div>
                         </div>
