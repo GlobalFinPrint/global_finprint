@@ -850,12 +850,26 @@ var finprint = finprint || {};  //namespace if necessary...
 
     function initVideoForm() {
         var $panel = $('#collapseSix');
-        $panel.find('#div_id_remove_row a.remove').click(function(e) {
+        var $filenameCol = $panel.find('#div_id_file');
+        var $sourceCol = $panel.find('#div_id_source');
+        var $pathCol = $panel.find('#div_id_path');
+        var $primaryCol = $panel.find('#div_id_primary');
+        var $removeCol = $panel.find('#div_id_remove_row');
+
+        $removeCol.find('a.remove').click(function(e) {
+            var index;
             e.preventDefault();
-            console.log('TODO remove row');
+            if ($removeCol.find('a.remove').length > 1) {
+                index = $removeCol.find('a.remove').index($(this));
+                console.log('TODO remove row ' + index);
+            } else {
+                $filenameCol.find('id_file').selectize.clear();
+                $sourceCol.find('input').val('');
+                $pathCol.find('input').val('');
+            }
         });
 
-        $panel.find('p.add-video span.plus').click(function(e) {
+        $panel.find('p.add-video span.plus').click(function() {
             console.log('TODO add row');
         });
     }
