@@ -870,7 +870,13 @@ var finprint = finprint || {};  //namespace if necessary...
         });
 
         $panel.find('p.add-video span.plus').click(function() {
-            console.log('TODO add row');
+            $filenameCol.find('.controls:first').clone().appendTo($filenameCol);
+            //TODO selectize and clear new field
+            $sourceCol.find('.controls:first').clone().appendTo($sourceCol);
+            $pathCol.find('.controls:first').clone().appendTo($pathCol);
+            $primaryCol.find('.controls:first').clone().appendTo($primaryCol);
+            //TODO keep radio button selection
+            $removeCol.find('.controls:first').clone().appendTo($removeCol);
         });
     }
 })(jQuery);
