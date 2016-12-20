@@ -392,7 +392,7 @@ var finprint = finprint || {};  //namespace if necessary...
             }
         });
 
-        $form.on('keydown', '.selectize-control input', function(e) {
+        $form.on('keydown', '#div_id_tags .selectize-control input', function(e) {
             if (e.which === 9) { // tab key
                 $('#headingThree.collapsed').click();
                 scrollTo('#headingThree');
@@ -410,6 +410,13 @@ var finprint = finprint || {};  //namespace if necessary...
             if (e.which === 9) { // tab key
                 $('#headingFive.collapsed').click();
                 scrollTo('#headingFive');
+            }
+        });
+
+        $form.on('keydown', '#id_substrate_complexity', function(e) {
+            if (e.which === 9) { // tab key
+                $('#headingSix.collapsed').click();
+                scrollTo('#headingSix');
             }
         });
     }

@@ -35,7 +35,10 @@ class SingleSelectizeWidget(forms.Select):
 class VideoForm(forms.ModelForm):
     class Meta:
         model = Video
-        fields = ['file']
+        fields = ['file', 'source', 'path']
+
+    source = forms.CharField(required=False, label='File system/source')
+    path = forms.CharField(required=False, label='Path')
 
     def __init__(self, *args, **kwargs):
         super(VideoForm, self).__init__(*args, **kwargs)
@@ -43,7 +46,7 @@ class VideoForm(forms.ModelForm):
         self.helper.form_tag = False
         self.fields['file'] = FlexibleChoiceField(choices=self.get_filenames(),
                                                   required=False,
-                                                  label='Video',
+                                                  label='File name',
                                                   widget=SingleSelectizeWidget)
 
     def get_filenames(self):
