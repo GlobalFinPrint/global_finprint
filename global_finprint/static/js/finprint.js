@@ -24,6 +24,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initDisableOnSubmit();
         initExpandEventThumbnail();
         initInlineObsEdit();
+        initVideoForm();
     });
 
     function getCSRF() {
@@ -844,6 +845,18 @@ var finprint = finprint || {};  //namespace if necessary...
                     { allowEmptyOption: true, plugins: ['remove_button', 'restore_on_backspace'] }
                 );
             });
+        });
+    }
+
+    function initVideoForm() {
+        var $panel = $('#collapseSix');
+        $panel.find('#div_id_remove_row a.remove').click(function(e) {
+            e.preventDefault();
+            console.log('TODO remove row');
+        });
+
+        $panel.find('p.add-video span.plus').click(function(e) {
+            console.log('TODO add row');
         });
     }
 })(jQuery);

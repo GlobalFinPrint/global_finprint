@@ -32,13 +32,21 @@ class SingleSelectizeWidget(forms.Select):
         return mark_safe('\n'.join(output))
 
 
+class RemoveWidget(forms.Widget):
+    def render(self, name, value, attrs=None):
+        html = '<a href="#" class="remove">Remove</a>'
+        return mark_safe(html)
+
+
 class VideoForm(forms.ModelForm):
     class Meta:
         model = Video
-        fields = ['file', 'source', 'path']
+        fields = ['file', 'source', 'path', 'primary', 'remove_row']
 
     source = forms.CharField(required=False, label='File system/source')
     path = forms.CharField(required=False, label='Path')
+    primary = forms.ChoiceField(required=False, choices=[0], label='Annotation video', widget=forms.RadioSelect)
+    remove_row = forms.Field(required=False, label='', widget=RemoveWidget)
 
     def __init__(self, *args, **kwargs):
         super(VideoForm, self).__init__(*args, **kwargs)

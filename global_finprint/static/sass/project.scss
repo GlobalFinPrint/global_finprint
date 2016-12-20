@@ -851,3 +851,45 @@ form #div_id_file .selectize-control {
     width: 150px;
   }
 }
+
+#collapseSix {
+  #div_id_primary {
+    text-align: center;
+
+    .radio {
+      line-height: 32px;
+    }
+  }
+
+  #div_id_remove_row {
+    padding-top: 20px;
+
+    .controls {
+      height: 32px;
+      line-height: 32px;
+    }
+  }
+
+  .add-video {
+    color: $gray;
+    font-size: 12px;
+
+    span.plus {
+      display: inline-block;
+      background-color: $blue;
+      border-radius: 0.25em;
+      width: 25px;
+      height: 25px;
+      font-size: 20px;
+      line-height: 20px;
+      text-align: center;
+      margin-right: 15px;
+      cursor: pointer;
+
+      &:before {
+        content: '+';
+        color: white;
+      }
+    }
+  }
+}
