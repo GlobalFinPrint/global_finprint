@@ -2,7 +2,7 @@
 {% load humanize %}
 {% for a in assignments %}
 <tr>
-    <td>{{ a.video.file|default:"<i>None</i>" }}</td>
+    <td>{{ a.video.primary|default:"<i>None</i>" }}</td>
     <td>{{ a.video.set.trip.code }}</td>
     <td>{{ a.video.set.code }}</td>
     <td><a href="#" data-annotator-id="{{ a.annotator.id }}">{{ a.annotator }}</a></td>
@@ -20,7 +20,7 @@
 {% endfor %}
 {% for u in unassigned %}
 <tr>
-    <td>{{ u.video.file|default:"<i>None</i>" }}</td>
+    <td>{{ u.video.primary|default:"<i>None</i>" }}</td>
     <td>{{ u.trip.code }}</td>
     <td>{{ u.code }}</td>
     <td><i>None</i></td>

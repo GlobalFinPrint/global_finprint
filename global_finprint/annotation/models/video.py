@@ -6,9 +6,6 @@ from itertools import chain
 
 # todo:  pull video file names into ranked list (for l & r, etc.)
 class Video(AuditableModel):
-    file = models.CharField(max_length=100, null=True, blank=True)
-    source_folder = models.CharField(max_length=100, null=True, blank=True)
-
     def annotators_assigned(self, project):
         return list(a.annotator for a in self.assignment_set.filter(project=project).all())
 
@@ -28,8 +25,20 @@ class Video(AuditableModel):
             except:  # TODO be more specific here
                 return None
 
+    def primary(self):
+        return self.files.get(primary=True)
+
     def __str__(self):
-        return u"{0}".format(self.file)
+        return u"{0}".format(self.primary())
+
+
+class VideoFile(AuditableModel):
+    file = models.CharField(max_length=100)
+    source_folder = models.CharField(max_length=100, null=True, blank=True)
+    path = models.CharField(max_length=100, null=True, blank=True)
+    rank = models.PositiveIntegerField()
+    primary = models.BooleanField()
+    video = models.ForeignKey(Video, related_name='files')
 
 
 # 1 = Not Started, 2 = In progress, 3 = Ready for review
@@ -83,7 +92,7 @@ class Assignment(AuditableModel):
         last_activity = self.last_activity()
         return {'id': self.id,
                 'set_code': str(self.set()),
-                'file': str(self.video.file),
+                'file': str(self.video.primary()),
                 'assigned_to': {'id': self.annotator.id, 'user': str(self.annotator)},
                 'progress': self.progress,
                 'status': {'id': self.status_id, 'name': self.status.name},

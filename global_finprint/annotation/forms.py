@@ -1,6 +1,6 @@
 from django import forms
 from crispy_forms.helper import FormHelper
-from .models.video import Video
+from .models.video import VideoFile
 from boto import exception as BotoException
 from boto.s3.connection import S3Connection
 from django.conf import settings
@@ -40,7 +40,7 @@ class RemoveWidget(forms.Widget):
 
 class VideoForm(forms.ModelForm):
     class Meta:
-        model = Video
+        model = VideoFile
         fields = ['file', 'source', 'path', 'primary', 'remove_row']
 
     source = forms.CharField(required=False, label='File system/source')

@@ -113,7 +113,7 @@ class SetDetail(APIView):
     def get(self, request, set_id):
         return JsonResponse({'set': {'id': request.va.id,
                                      'set_code': str(request.va.set()),
-                                     'file': str(request.va.video.file),
+                                     'file': str(request.va.video.primary()),
                                      'assigned_to': {'id': request.va.annotator_id,
                                                      'user': str(request.va.annotator)},
                                      'progress': request.va.progress,
