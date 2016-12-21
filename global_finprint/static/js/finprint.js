@@ -861,7 +861,14 @@ var finprint = finprint || {};  //namespace if necessary...
             e.preventDefault();
             if ($removeCol.find('a.remove').length > 1) {
                 index = $removeCol.find('a.remove').index($(this));
-                console.log('TODO remove row ' + index); //TODO remve row
+                $filenameCol.find('.controls').slice(index, index +  1).remove();
+                $sourceCol.find('.controls').slice(index, index +  1).remove();
+                $pathCol.find('.controls').slice(index, index +  1).remove();
+                $primaryCol.find('.controls').slice(index, index +  1).remove();
+                $removeCol.find('.controls').slice(index, index +  1).remove();
+                if ($primaryCol.find('input:checked').length === 0) {
+                    $primaryCol.find('input:first').prop('checked', true);
+                }
             } else {
                 $filenameCol.find('#id_file')[0].selectize.clear();
                 $sourceCol.find('input').val('');
@@ -870,20 +877,22 @@ var finprint = finprint || {};  //namespace if necessary...
         });
 
         $panel.find('p.add-video span.plus').click(function() {
-            var newSelectize;
-            var items = $filenameCol.find('select.selectize')[0].selectize.options;
+            var options = $.map($filenameCol.find('select.selectize')[0].selectize.options, function(o) {
+                return '<option value="' + o.value + '">' + o.text + '</option>';
+            });
+            options.unshift('<option value="">(None)</option>');
+            options.join("\n");
 
             $filenameCol.find('.controls:first').clone()
                 .find('div.selectize-control')
                     .remove()
                     .end()
                 .find('select.selectize')
-                    .empty()
-                    .selectize({ create: true, plugins: ['restore_on_backspace'], options: items })
+                    .html(options)
+                    .selectize({ create: true, plugins: ['restore_on_backspace'] })
                     .end()
                 .appendTo($filenameCol);
-            newSelectize = $filenameCol.find('select.selectize:last')[0].selectize;
-            newSelectize.clear();
+            $filenameCol.find('select.selectize:last')[0].selectize.clear();
 
             $sourceCol.find('.controls:first').clone()
                 .find('input')
