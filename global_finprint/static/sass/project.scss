@@ -853,6 +853,10 @@ form #div_id_file .selectize-control {
 }
 
 #collapseSix {
+  .controls input.textInput {
+    width: 250px;
+  }
+
   #div_id_source, #div_id_path, #div_id_primary, #div_id_remove_row {
     .controls {
       margin-top: 5px;
