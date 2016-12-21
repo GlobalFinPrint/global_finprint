@@ -238,7 +238,7 @@
                         <td>{{ set.bait }}</td>
                         <td colspan=2>
                             {% if set.video %}
-                                {{ set.video.primary() }}
+                                {{ set.video }}
                             {% else %}
                                 <a href="{% url 'set_update' set.trip.id set.id %}">Add</a>
                             {% endif %}

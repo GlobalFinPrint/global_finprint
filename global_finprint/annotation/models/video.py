@@ -40,6 +40,9 @@ class VideoFile(AuditableModel):
     primary = models.BooleanField()
     video = models.ForeignKey(Video, related_name='files')
 
+    def __str__(self):
+        return u"{0}".format(self.file)
+
 
 # 1 = Not Started, 2 = In progress, 3 = Ready for review
 # 4 = Completed, 5 = Disabled, 6 = Rejected
