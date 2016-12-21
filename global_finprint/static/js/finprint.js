@@ -856,26 +856,47 @@ var finprint = finprint || {};  //namespace if necessary...
         var $primaryCol = $panel.find('#div_id_primary');
         var $removeCol = $panel.find('#div_id_remove_row');
 
-        $removeCol.find('a.remove').click(function(e) {
+        $removeCol.on('click', 'a.remove', function(e) {
             var index;
             e.preventDefault();
             if ($removeCol.find('a.remove').length > 1) {
                 index = $removeCol.find('a.remove').index($(this));
-                console.log('TODO remove row ' + index);
+                console.log('TODO remove row ' + index); //TODO remve row
             } else {
-                $filenameCol.find('id_file').selectize.clear();
+                $filenameCol.find('#id_file')[0].selectize.clear();
                 $sourceCol.find('input').val('');
                 $pathCol.find('input').val('');
             }
         });
 
         $panel.find('p.add-video span.plus').click(function() {
-            $filenameCol.find('.controls:first').clone().appendTo($filenameCol);
-            //TODO selectize and clear new field
-            $sourceCol.find('.controls:first').clone().appendTo($sourceCol);
-            $pathCol.find('.controls:first').clone().appendTo($pathCol);
-            $primaryCol.find('.controls:first').clone().appendTo($primaryCol);
-            //TODO keep radio button selection
+            var items = $.map($filenameCol.find('select.selectize')[0].selectize.options, function(o) {
+                return o.text;
+            });
+            $filenameCol.find('.controls:first').clone()
+                .find('div.selectize-control')
+                    .remove()
+                    .end()
+                .find('select.selectize')
+                    .selectize({ create: true, plugins: ['restore_on_backspace'] })
+                    .end()
+                .appendTo($filenameCol);
+            $filenameCol.find('select.selectize:last')[0].selectize.clear(); //TODO add items
+            $sourceCol.find('.controls:first').clone()
+                .find('input')
+                    .val('')
+                    .end()
+                .appendTo($sourceCol);
+            $pathCol.find('.controls:first').clone()
+                .find('input')
+                    .val('')
+                    .end()
+                .appendTo($pathCol);
+            $primaryCol.find('.controls:first').clone()
+                .find('input')
+                    .prop('checked', false)
+                    .end()
+                .appendTo($primaryCol);
             $removeCol.find('.controls:first').clone().appendTo($removeCol);
         });
     }

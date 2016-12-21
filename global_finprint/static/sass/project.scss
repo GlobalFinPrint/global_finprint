@@ -853,11 +853,21 @@ form #div_id_file .selectize-control {
 }
 
 #collapseSix {
+  #div_id_source, #div_id_path, #div_id_primary, #div_id_remove_row {
+    .controls {
+      margin-top: 5px;
+
+      &:first-of-type {
+        margin-top: 0;
+      }
+    }
+  }
+
   #div_id_primary {
     text-align: center;
 
     .radio {
-      line-height: 32px;
+      line-height: 34px;
     }
   }
 
@@ -865,8 +875,8 @@ form #div_id_file .selectize-control {
     padding-top: 20px;
 
     .controls {
-      height: 32px;
-      line-height: 32px;
+      height: 34px;
+      line-height: 34px;
     }
   }
 
