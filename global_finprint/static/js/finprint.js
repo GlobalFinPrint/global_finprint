@@ -870,33 +870,39 @@ var finprint = finprint || {};  //namespace if necessary...
         });
 
         $panel.find('p.add-video span.plus').click(function() {
-            var items = $.map($filenameCol.find('select.selectize')[0].selectize.options, function(o) {
-                return o.text;
-            });
+            var newSelectize;
+            var items = $filenameCol.find('select.selectize')[0].selectize.options;
+
             $filenameCol.find('.controls:first').clone()
                 .find('div.selectize-control')
                     .remove()
                     .end()
                 .find('select.selectize')
-                    .selectize({ create: true, plugins: ['restore_on_backspace'] })
+                    .empty()
+                    .selectize({ create: true, plugins: ['restore_on_backspace'], options: items })
                     .end()
                 .appendTo($filenameCol);
-            $filenameCol.find('select.selectize:last')[0].selectize.clear(); //TODO add items
+            newSelectize = $filenameCol.find('select.selectize:last')[0].selectize;
+            newSelectize.clear();
+
             $sourceCol.find('.controls:first').clone()
                 .find('input')
                     .val('')
                     .end()
                 .appendTo($sourceCol);
+
             $pathCol.find('.controls:first').clone()
                 .find('input')
                     .val('')
                     .end()
                 .appendTo($pathCol);
+
             $primaryCol.find('.controls:first').clone()
                 .find('input')
                     .prop('checked', false)
                     .end()
                 .appendTo($primaryCol);
+
             $removeCol.find('.controls:first').clone().appendTo($removeCol);
         });
     }
