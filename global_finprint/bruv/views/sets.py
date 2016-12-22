@@ -242,7 +242,7 @@ class SetListView(UserAllowedMixin, View):
                 new_set = set_form.save()
                 new_set.drop_measure = drop_form.save()
                 new_set.haul_measure = haul_form.save()
-                new_set.video = video_form.save()
+                new_set.video = video_form.save()  # TODO fix video saving
                 for k, v in set_level_data_form.cleaned_data.items():
                     if k not in ('bruv_image_file', 'splendor_image_file', 'benthic_category'):
                         setattr(new_set, k, v)
@@ -283,7 +283,7 @@ class SetListView(UserAllowedMixin, View):
                     for k, v in haul_form.cleaned_data.items():
                         setattr(edited_set.haul_measure, k, v)
                 for k, v in video_form.cleaned_data.items():
-                    setattr(edited_set.video, k, v)
+                    setattr(edited_set.video, k, v)  # TODO fix video saving
                 for k, v in set_level_data_form.cleaned_data.items():
                     if k not in ('bruv_image_file', 'splendor_image_file', 'benthic_category'):
                         setattr(edited_set, k, v)

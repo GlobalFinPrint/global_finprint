@@ -861,11 +861,11 @@ var finprint = finprint || {};  //namespace if necessary...
             e.preventDefault();
             if ($removeCol.find('a.remove').length > 1) {
                 index = $removeCol.find('a.remove').index($(this));
-                $filenameCol.find('.controls').slice(index, index +  1).remove();
-                $sourceCol.find('.controls').slice(index, index +  1).remove();
-                $pathCol.find('.controls').slice(index, index +  1).remove();
-                $primaryCol.find('.controls').slice(index, index +  1).remove();
-                $removeCol.find('.controls').slice(index, index +  1).remove();
+                $filenameCol.find('.sub-control').slice(index, index +  1).remove();
+                $sourceCol.find('.sub-control').slice(index, index +  1).remove();
+                $pathCol.find('.sub-control').slice(index, index +  1).remove();
+                $primaryCol.find('.sub-control').slice(index, index +  1).remove();
+                $removeCol.find('.sub-control').slice(index, index +  1).remove();
                 if ($primaryCol.find('input:checked').length === 0) {
                     $primaryCol.find('input:first').prop('checked', true);
                 }
@@ -883,7 +883,7 @@ var finprint = finprint || {};  //namespace if necessary...
             options.unshift('<option value="">(None)</option>');
             options.join("\n");
 
-            $filenameCol.find('.controls:first').clone()
+            $filenameCol.find('.sub-control:first').clone()
                 .find('div.selectize-control')
                     .remove()
                     .end()
@@ -894,25 +894,25 @@ var finprint = finprint || {};  //namespace if necessary...
                 .appendTo($filenameCol);
             $filenameCol.find('select.selectize:last')[0].selectize.clear();
 
-            $sourceCol.find('.controls:first').clone()
+            $sourceCol.find('.sub-control:first').clone()
                 .find('input')
                     .val('')
                     .end()
                 .appendTo($sourceCol);
 
-            $pathCol.find('.controls:first').clone()
+            $pathCol.find('.sub-control:first').clone()
                 .find('input')
                     .val('')
                     .end()
                 .appendTo($pathCol);
 
-            $primaryCol.find('.controls:first').clone()
+            $primaryCol.find('.sub-control:first').clone()
                 .find('input')
                     .prop('checked', false)
                     .end()
                 .appendTo($primaryCol);
 
-            $removeCol.find('.controls:first').clone().appendTo($removeCol);
+            $removeCol.find('.sub-control:first').clone().appendTo($removeCol);
         });
     }
 })(jQuery);
