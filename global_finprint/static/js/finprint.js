@@ -850,11 +850,11 @@ var finprint = finprint || {};  //namespace if necessary...
 
     function initVideoForm() {
         var $panel = $('#collapseSix');
-        var $filenameCol = $panel.find('#div_id_file');
-        var $sourceCol = $panel.find('#div_id_source');
-        var $pathCol = $panel.find('#div_id_path');
-        var $primaryCol = $panel.find('#div_id_primary');
-        var $removeCol = $panel.find('#div_id_remove_row');
+        var $filenameCol = $panel.find('#div_id_file .controls');
+        var $sourceCol = $panel.find('#div_id_source .controls');
+        var $pathCol = $panel.find('#div_id_path .controls');
+        var $primaryCol = $panel.find('#div_id_primary .controls');
+        var $removeCol = $panel.find('#div_id_remove_row .controls');
 
         $removeCol.on('click', 'a.remove', function(e) {
             var index;
