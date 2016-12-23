@@ -26,7 +26,10 @@ class Video(AuditableModel):
                 return None
 
     def primary(self):
-        return self.files.get(primary=True)
+        try:
+            return self.files.get(primary=True)
+        except VideoFile.DoesNotExist:
+            return None
 
     def __str__(self):
         return u"{0}".format(self.primary())
@@ -34,10 +37,10 @@ class Video(AuditableModel):
 
 class VideoFile(AuditableModel):
     file = models.CharField(max_length=100)
-    source_folder = models.CharField(max_length=100, null=True, blank=True)
+    source = models.CharField(max_length=100, null=True, blank=True)
     path = models.CharField(max_length=100, null=True, blank=True)
-    rank = models.PositiveIntegerField()
-    primary = models.BooleanField()
+    rank = models.PositiveIntegerField(default=1)
+    primary = models.BooleanField(default=False)
     video = models.ForeignKey(Video, related_name='files')
 
     def __str__(self):

@@ -11,8 +11,16 @@ import re
 
 
 class FlexibleChoiceField(forms.ChoiceField):
+    def to_python(self, value):
+        return value
+
     def validate(self, value):
         forms.Field.validate(self, value)
+
+
+class MultiRowCharField(forms.CharField):
+    def to_python(self, value):
+        return value
 
 
 class SingleSelectizeWidget(forms.Select):
@@ -46,7 +54,7 @@ class MultiRowTextInput(forms.Widget):
                '</div>'
 
     def value_from_datadict(self, data, files, name):
-        return data.getlist(name, [None])
+        return list(None if datum == '' else datum for datum in data.getlist(name, [None]))
 
     def render(self, name, value, attrs=None):
         html = ''
@@ -87,9 +95,9 @@ class RemoveWidget(forms.Widget):
 
 class VideoForm(forms.Form):
     file = FlexibleChoiceField(required=False, label='File name', widget=SingleSelectizeWidget)
-    source = forms.CharField(required=False, label='File system/source', max_length=100, widget=MultiRowTextInput)
-    path = forms.CharField(required=False, label='Path', max_length=100, widget=MultiRowTextInput)
-    primary = forms.Field(required=False, label='Annotation video', widget=MultiRowRadioSelect)
+    source = MultiRowCharField(required=False, label='File system/source', max_length=100, widget=MultiRowTextInput)
+    path = MultiRowCharField(required=False, label='Path', max_length=100, widget=MultiRowTextInput)
+    primary = MultiRowCharField(required=False, label='Annotation video', widget=MultiRowRadioSelect)
     remove_row = forms.Field(required=False, label='', widget=RemoveWidget)
 
     field_order = ['file', 'source', 'path', 'primary', 'remove_row']
@@ -110,7 +118,7 @@ class VideoForm(forms.Form):
             video_files = video.files.order_by('rank')
             if video_files.count() > 0:
                 self.fields['file'].initial = list(f.file for f in video_files)
-                self.fields['source'].initial = list(f.source_folder for f in video_files)
+                self.fields['source'].initial = list(f.source for f in video_files)
                 self.fields['path'].initial = list(f.path for f in video_files)
                 self.fields['primary'].initial = list(f.primary for f in video_files)
                 self.fields['remove_row'].initial = list(range(max(video_files.count(), 1)))
@@ -127,15 +135,45 @@ class VideoForm(forms.Form):
         return file_names
 
     def save(self, new_set):
+        data = self.cleaned_data
         video = Video()
         video.save()
         new_set.video = video
         new_set.save()
-        1/0
-        # TODO make new videofile rows
+        for idx, file in enumerate(data['file']):
+            vf = VideoFile(file=file,
+                           source=data['source'][idx],
+                           path=data['path'][idx],
+                           primary=data['primary'][idx],
+                           rank=(idx + 1),
+                           video=video)
+            vf.save()
 
     def update(self, existing_set):
-        video = existing_set.video
         data = self.cleaned_data
-        1/0
-        # TODO update changed videofile rows
+        video = existing_set.video
+        skip_rows = 0
+        rank = 0
+        for idx, file in enumerate(data['file']):
+            if file == '':
+                skip_rows += 1
+                continue
+            rank = idx + 1 - skip_rows
+            vf, created = VideoFile.objects.get_or_create(video=video, rank=rank)
+            vf.file = file
+            vf.source = data['source'][idx]
+            vf.path = data['path'][idx]
+            vf.primary = data['primary'][idx]
+            vf.save()
+
+        # delete unused rows
+        VideoFile.objects.filter(video=video, rank__gt=rank).delete()
+
+        # ensure at least one row is primary
+        try:
+            video.primary()
+        except VideoFile.DoesNotExist:
+            if video.files.count() > 0:
+                vf = VideoFile.objects.filter(video=video).order_by('rank').first()
+                vf.primary = True
+                vf.save()

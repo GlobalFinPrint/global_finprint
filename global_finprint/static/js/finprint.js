@@ -909,6 +909,7 @@ var finprint = finprint || {};  //namespace if necessary...
             $primaryCol.find('.sub-control:first').clone()
                 .find('input')
                     .prop('checked', false)
+                    .val(parseInt($primaryCol.find('.sub-control:last input').val()) + 1)
                     .end()
                 .appendTo($primaryCol);
 

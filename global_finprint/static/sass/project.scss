@@ -44,6 +44,10 @@ table.set-table {
   tr.env-headers, tr.env-row {
     display: none;
   }
+
+  tbody tr td i {
+    color: #999;
+  }
 }
 
 ul.annotators {
