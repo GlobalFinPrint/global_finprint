@@ -2,7 +2,6 @@ from django import forms
 from crispy_forms.helper import FormHelper
 from boto import exception as BotoException
 from boto.s3.connection import S3Connection
-from django.db import transaction
 from django.conf import settings
 from django.forms.utils import flatatt
 from django.utils.html import format_html
@@ -47,7 +46,6 @@ class MultiRowTextInput(forms.Widget):
                '</div>'
 
     def value_from_datadict(self, data, files, name):
-        1/0
         return data.getlist(name, [None])
 
     def render(self, name, value, attrs=None):
@@ -87,15 +85,10 @@ class RemoveWidget(forms.Widget):
         return mark_safe(html)
 
 
-class MultiCharField(forms.CharField):
-    def to_python(self, value):
-        return list(super(MultiCharField, self).to_python(value))
-
-
 class VideoForm(forms.Form):
     file = FlexibleChoiceField(required=False, label='File name', widget=SingleSelectizeWidget)
-    source = MultiCharField(required=False, label='File system/source', max_length=100, widget=MultiRowTextInput)
-    path = MultiCharField(required=False, label='Path', max_length=100, widget=MultiRowTextInput)
+    source = forms.CharField(required=False, label='File system/source', max_length=100, widget=MultiRowTextInput)
+    path = forms.CharField(required=False, label='Path', max_length=100, widget=MultiRowTextInput)
     primary = forms.Field(required=False, label='Annotation video', widget=MultiRowRadioSelect)
     remove_row = forms.Field(required=False, label='', widget=RemoveWidget)
 
@@ -139,8 +132,10 @@ class VideoForm(forms.Form):
         new_set.video = video
         new_set.save()
         1/0
+        # TODO make new videofile rows
 
     def update(self, existing_set):
         video = existing_set.video
         data = self.cleaned_data
         1/0
+        # TODO update changed videofile rows
