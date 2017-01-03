@@ -24,6 +24,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initDisableOnSubmit();
         initExpandEventThumbnail();
         initInlineObsEdit();
+        initVideoForm();
     });
 
     function getCSRF() {
@@ -392,7 +393,7 @@ var finprint = finprint || {};  //namespace if necessary...
             }
         });
 
-        $form.on('keydown', '.selectize-control input', function(e) {
+        $form.on('keydown', '#div_id_tags .selectize-control input', function(e) {
             if (e.which === 9) { // tab key
                 $('#headingThree.collapsed').click();
                 scrollTo('#headingThree');
@@ -410,6 +411,13 @@ var finprint = finprint || {};  //namespace if necessary...
             if (e.which === 9) { // tab key
                 $('#headingFive.collapsed').click();
                 scrollTo('#headingFive');
+            }
+        });
+
+        $form.on('keydown', '#id_substrate_complexity', function(e) {
+            if (e.which === 9) { // tab key
+                $('#headingSix.collapsed').click();
+                scrollTo('#headingSix');
             }
         });
     }
@@ -837,6 +845,75 @@ var finprint = finprint || {};  //namespace if necessary...
                     { allowEmptyOption: true, plugins: ['remove_button', 'restore_on_backspace'] }
                 );
             });
+        });
+    }
+
+    function initVideoForm() {
+        var $panel = $('#collapseSix');
+        var $filenameCol = $panel.find('#div_id_file .controls');
+        var $sourceCol = $panel.find('#div_id_source .controls');
+        var $pathCol = $panel.find('#div_id_path .controls');
+        var $primaryCol = $panel.find('#div_id_primary .controls');
+        var $removeCol = $panel.find('#div_id_remove_row .controls');
+
+        $removeCol.on('click', 'a.remove', function(e) {
+            var index;
+            e.preventDefault();
+            if ($removeCol.find('a.remove').length > 1) {
+                index = $removeCol.find('a.remove').index($(this));
+                $filenameCol.find('.sub-control').slice(index, index +  1).remove();
+                $sourceCol.find('.sub-control').slice(index, index +  1).remove();
+                $pathCol.find('.sub-control').slice(index, index +  1).remove();
+                $primaryCol.find('.sub-control').slice(index, index +  1).remove();
+                $removeCol.find('.sub-control').slice(index, index +  1).remove();
+                if ($primaryCol.find('input:checked').length === 0) {
+                    $primaryCol.find('input:first').prop('checked', true);
+                }
+            } else {
+                $filenameCol.find('#id_file')[0].selectize.clear();
+                $sourceCol.find('input').val('');
+                $pathCol.find('input').val('');
+            }
+        });
+
+        $panel.find('p.add-video span.plus').click(function() {
+            var options = $.map($filenameCol.find('select.selectize')[0].selectize.options, function(o) {
+                return '<option value="' + o.value + '">' + o.text + '</option>';
+            });
+            options.unshift('<option value="">(None)</option>');
+            options.join("\n");
+
+            $filenameCol.find('.sub-control:first').clone()
+                .find('div.selectize-control')
+                    .remove()
+                    .end()
+                .find('select.selectize')
+                    .html(options)
+                    .selectize({ create: true, plugins: ['restore_on_backspace'] })
+                    .end()
+                .appendTo($filenameCol);
+            $filenameCol.find('select.selectize:last')[0].selectize.clear();
+
+            $sourceCol.find('.sub-control:first').clone()
+                .find('input')
+                    .val('')
+                    .end()
+                .appendTo($sourceCol);
+
+            $pathCol.find('.sub-control:first').clone()
+                .find('input')
+                    .val('')
+                    .end()
+                .appendTo($pathCol);
+
+            $primaryCol.find('.sub-control:first').clone()
+                .find('input')
+                    .prop('checked', false)
+                    .val(parseInt($primaryCol.find('.sub-control:last input').val()) + 1)
+                    .end()
+                .appendTo($primaryCol);
+
+            $removeCol.find('.sub-control:first').clone().appendTo($removeCol);
         });
     }
 })(jQuery);

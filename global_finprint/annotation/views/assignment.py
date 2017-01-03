@@ -80,10 +80,11 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
         selected_related = [
             'video', 'video__set', 'video__set__trip', 'annotator', 'annotator__user'
         ]
-        query = Assignment.objects.all().select_related(*selected_related).prefetch_related('observation_set')
+        query = Assignment.objects.all().select_related(*selected_related) \
+            .prefetch_related('observation_set', 'video__files')
         unassigned = Set.objects.annotate(Count('video__assignment')) \
                                 .filter(video__assignment__count=0) \
-                                .exclude(video__file__isnull=True).exclude(video__file='')
+                                .exclude(video__files=None)
 
         trips = request.POST.getlist('trip[]')
         sets = request.POST.getlist('set[]')

@@ -44,6 +44,10 @@ table.set-table {
   tr.env-headers, tr.env-row {
     display: none;
   }
+
+  tbody tr td i {
+    color: #999;
+  }
 }
 
 ul.annotators {
@@ -849,5 +853,66 @@ form #div_id_file .selectize-control {
 
   div.edit-attributes.selectize-control {
     width: 150px;
+  }
+}
+
+#collapseSix {
+  .controls .sub-control input.textInput {
+    width: 250px;
+  }
+
+  #div_id_source, #div_id_path, #div_id_primary, #div_id_remove_row {
+    .controls .sub-control {
+      margin-top: 5px;
+
+      &:first-of-type {
+        margin-top: 0;
+      }
+    }
+  }
+
+  #div_id_primary {
+    text-align: center;
+
+    .controls .sub-control {
+      height: 34px;
+
+      .radio {
+        line-height: 34px;
+        vertical-align: bottom;
+      }
+    }
+  }
+
+  #div_id_remove_row {
+    padding-top: 20px;
+
+    .controls .sub-control {
+      height: 34px;
+      line-height: 34px;
+    }
+  }
+
+  .add-video {
+    color: $gray;
+    font-size: 12px;
+
+    span.plus {
+      display: inline-block;
+      background-color: $blue;
+      border-radius: 0.25em;
+      width: 25px;
+      height: 25px;
+      font-size: 20px;
+      line-height: 20px;
+      text-align: center;
+      margin-right: 15px;
+      cursor: pointer;
+
+      &:before {
+        content: '+';
+        color: white;
+      }
+    }
   }
 }
