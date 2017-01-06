@@ -70,4 +70,5 @@ CREATE OR REPLACE VIEW public.v_report_usage_metrics AS
     count(1)                 AS value
   FROM annotation_video
   WHERE id NOT IN (SELECT id
-                   FROM legacy_videos);
+                   FROM legacy_videos)
+  ORDER BY metric;
