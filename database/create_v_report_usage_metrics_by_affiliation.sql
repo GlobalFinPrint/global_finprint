@@ -96,4 +96,16 @@ WHERE progress > 0 AND status_id = 1
       AND video_id NOT IN (SELECT id
                            FROM legacy_videos)
 GROUP BY ca.name
+UNION
+SELECT
+  'Total number of videos - ' || ca.name AS metric,
+  count(1)                               AS value
+FROM annotation_video av
+  JOIN bruv_set bs ON (bs.video_id = av.id)
+  JOIN trip_trip tt ON (bs.trip_id = tt.id)
+  JOIN core_team ct ON (tt.team_id = ct.id)
+  JOIN core_finprintuser cf ON (ct.lead_id = cf.id)
+  JOIN core_affiliation ca ON (cf.affiliation_id = ca.id)
+WHERE av.id NOT IN (SELECT id FROM legacy_videos)
+GROUP BY ca.name
 ORDER BY metric;
