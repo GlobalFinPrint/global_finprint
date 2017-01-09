@@ -4,6 +4,7 @@ from global_finprint.annotation.views.assignment import VideoAutoAssignView, Ass
     AssignmentListView, AssignmentListTbodyView, AssignmentModalBodyView
 from global_finprint.annotation.views.compare import AssignmentCompareView, AssignmentDetailView, \
     GetMasterView, MasterReviewView, MasterSetCompleted, MasterSetDeprecated
+from global_finprint.annotation.views.observations import MasterObservationEditData, MasterObservationSaveData
 
 urlpatterns = [
     url(r"^$", AssignmentListView.as_view(), name='assignment_list'),
@@ -15,6 +16,12 @@ urlpatterns = [
     url(r"^review/(?P<master_id>\d+)$", MasterReviewView.as_view(), name='master_review'),
     url(r"^detail/(?P<assignment_id>\d+)$", AssignmentDetailView.as_view(), name='get_assignment_detail'),
     url(r"^master/(?P<set_id>\d+)$", csrf_exempt(GetMasterView.as_view()), name='get_master'),
-    url(r"^master/(?P<master_id>\d+)/complete$", csrf_exempt(MasterSetCompleted.as_view()), name='master_set_completed'),
-    url(r"^master/(?P<master_id>\d+)/deprecate$", csrf_exempt(MasterSetDeprecated.as_view()), name='master_set_deprecated'),
+    url(r"^master/(?P<set_id>\d+)/edit_data/(?P<evt_id>\d+)$", csrf_exempt(MasterObservationEditData.as_view()),
+        name='master_edit_obs'),
+    url(r"^master/(?P<set_id>\d+)/save_data/(?P<evt_id>\d+)$", csrf_exempt(MasterObservationSaveData.as_view()),
+        name='master_save_obs'),
+    url(r"^master/(?P<master_id>\d+)/complete$", csrf_exempt(MasterSetCompleted.as_view()),
+        name='master_set_completed'),
+    url(r"^master/(?P<master_id>\d+)/deprecate$", csrf_exempt(MasterSetDeprecated.as_view()),
+        name='master_set_deprecated'),
 ]

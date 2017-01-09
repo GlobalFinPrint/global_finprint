@@ -46,9 +46,15 @@
                 <td class="event-note">{{ e.note|default_if_none:"<i>None</i>" }}</td>
                 <td class="attributes">{{ e.attribute.all|join:', ' }}</td>
                 <td>
-                    {% with set=e.observation.set %}
-                    <a href="#" class="obs-edit" data-event="{% url 'observation_edit_data' set.trip.pk set.pk e.pk %}">Edit</a>
-                    {% endwith %}
+                    {% if master %}
+                        {% with set=e.master_observation.set %}
+                        <a href="#" class="obs-edit" data-event="{% url 'master_edit_obs' set.pk e.pk %}">Edit</a>
+                        {% endwith %}
+                    {% else %}
+                        {% with set=e.observation.set %}
+                        <a href="#" class="obs-edit" data-event="{% url 'observation_edit_data' set.trip.pk set.pk e.pk %}">Edit</a>
+                        {% endwith %}
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}
