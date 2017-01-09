@@ -14,3 +14,6 @@ DROP VIEW IF EXISTS public.v_report_sets_without_video;
 DROP VIEW IF EXISTS public.v_report_sitelist_summary;
 
 DROP VIEW IF EXISTS public.v_report_species_observation_counts;
+
+DROP VIEW IF EXISTS public.v_report_usage_metrics;
+DROP VIEW IF EXISTS public.v_report_usage_metrics_by_affiliation;
