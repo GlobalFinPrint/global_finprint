@@ -4,7 +4,7 @@ from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, render_to_response
 from global_finprint.core.mixins import UserAllowedMixin
 from global_finprint.bruv.models import Set
-from global_finprint.annotation.models.video import Assignment
+from global_finprint.annotation.models.video import Assignment, Project
 from global_finprint.annotation.models.observation import MasterRecord
 
 
@@ -13,11 +13,14 @@ class AssignmentCompareView(UserAllowedMixin, View):
 
     def get(self, request, set_id):
         set = get_object_or_404(Set, pk=set_id)
-        master, created = MasterRecord.objects.get_or_create(set=set)
+        project = get_object_or_404(Project, pk=request.GET.get('project', 1))
+        master, created = MasterRecord.objects.get_or_create(set=set, project=project)
         context = RequestContext(request, {
             'set': set,
             'video_length': set.video.length(),
-            'master': master
+            'master': master,
+            'project': project,
+            'assignment_set': set.video.assignment_set.filter(project=project)
         })
         return render_to_response(self.template_name, context=context)
 
@@ -55,12 +58,14 @@ class AssignmentDetailView(UserAllowedMixin, View):
 
 
 class GetMasterView(UserAllowedMixin, View):
-    def get(self, _, set_id):
-        master = get_object_or_404(MasterRecord, set=get_object_or_404(Set, pk=set_id))
+    def get(self, request, set_id):
+        project = get_object_or_404(Project, pk=request.GET.get('project', 1))
+        master = get_object_or_404(MasterRecord, project=project, set=get_object_or_404(Set, pk=set_id))
         return JsonResponse(master.to_json())
 
     def post(self, request, set_id):
-        master_record = get_object_or_404(MasterRecord, set=get_object_or_404(Set, pk=set_id))
+        project = get_object_or_404(Project, pk=request.POST.get('project', 1))
+        master_record = get_object_or_404(MasterRecord, project=project, set=get_object_or_404(Set, pk=set_id))
         observation_ids = list(int(obs_id) for obs_id in request.POST.getlist('observation_ids[]'))
 
         if set(observation_ids) == set(obs.id for obs in master_record.original_observations()):

@@ -8,7 +8,7 @@ from boto.s3.connection import S3Connection
 from boto.exception import S3ResponseError
 from .video import Assignment
 from .animal import Animal, ANIMAL_SEX_CHOICES, ANIMAL_STAGE_CHOICES
-from .annotation import Attribute
+from .annotation import Attribute, Project
 from ...core.version import VersionInfo
 from datetime import datetime
 from ...core.templatetags.time_display import time_display
@@ -21,10 +21,14 @@ OBSERVATION_TYPE_CHOICES = {
 
 
 class MasterRecord(AuditableModel):
-    set = models.OneToOneField(to='bruv.Set')
+    set = models.ForeignKey(to='bruv.Set')
     note = models.TextField()
     completed = models.BooleanField(default=False)
     deprecated = models.BooleanField(default=False)
+    project = models.ForeignKey(Project, default=1)
+
+    class Meta:
+        unique_together = (('set', 'project'),)
 
     @transaction.atomic
     def copy_observations(self, observation_ids):
@@ -146,6 +150,8 @@ class Observation(AbstractObservation):
                 'stage': animal.get_stage_display(),
                 'stage_choice': animal.stage,
                 'length': animal.length,
+                'group': animal.animal.group.id,
+                'group_name': str(animal.animal.group)
             })
 
         if for_web:
@@ -281,15 +287,18 @@ class AbstractEvent(AuditableModel):
         if self.extent is None:
             return None
 
-        x = self.extent.boundary.x
-        y = self.extent.boundary.y
-        css = 'width: {0}%; height: {1}%; left: {2}%; top: {3}%;'.format(
-            int(abs(x[1] - x[0]) * 100),
-            int(abs(y[2] - y[1]) * 100),
-            int(x[0] * 100),
-            int(y[1] * 100)
-        )
-        return css
+        try:
+            x = self.extent.boundary.x
+            y = self.extent.boundary.y
+            css = 'width: {0}%; height: {1}%; left: {2}%; top: {3}%;'.format(
+                int(abs(x[1] - x[0]) * 100),
+                int(abs(y[2] - y[1]) * 100),
+                int(x[0] * 100),
+                int(y[1] * 100)
+            )
+            return css
+        except AttributeError:  # handle bad extents
+            return None
 
 
 class Event(AbstractEvent):

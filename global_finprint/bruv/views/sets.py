@@ -242,13 +242,15 @@ class SetListView(UserAllowedMixin, View):
                 new_set = set_form.save()
                 new_set.drop_measure = drop_form.save()
                 new_set.haul_measure = haul_form.save()
-                new_set.video = video_form.save()
                 for k, v in set_level_data_form.cleaned_data.items():
                     if k not in ('bruv_image_file', 'splendor_image_file', 'benthic_category'):
                         setattr(new_set, k, v)
                 for k, v in set_level_comments_form.cleaned_data.items():
                     setattr(new_set, k, v)
                 new_set.save()
+
+                # update video
+                video_form.save(new_set)
 
                 # upload and save image urls
                 self._process_habitat_images(new_set, request)
@@ -275,15 +277,13 @@ class SetListView(UserAllowedMixin, View):
                     # note: again, the dissolved_oxygen_measure shows up as a value and should probably be filtered out?
                     edited_set.haul_measure = EnvironmentMeasure.objects.create()
 
-                # guard against possibly missing drop_measure, haul_measure or video:
+                # guard against possibly missing drop_measure, haul_measure:
                 if edited_set.drop_measure:
                     for k, v in drop_form.cleaned_data.items():
                         setattr(edited_set.drop_measure, k, v)
                 if edited_set.haul_measure:
                     for k, v in haul_form.cleaned_data.items():
                         setattr(edited_set.haul_measure, k, v)
-                for k, v in video_form.cleaned_data.items():
-                    setattr(edited_set.video, k, v)
                 for k, v in set_level_data_form.cleaned_data.items():
                     if k not in ('bruv_image_file', 'splendor_image_file', 'benthic_category'):
                         setattr(edited_set, k, v)
@@ -297,7 +297,9 @@ class SetListView(UserAllowedMixin, View):
                     edited_set.drop_measure.save()
                 if edited_set.haul_measure:
                     edited_set.haul_measure.save()
-                edited_set.video.save()
+
+                # update video
+                video_form.update(edited_set)
 
                 # upload and save image urls
                 self._process_habitat_images(edited_set, request)

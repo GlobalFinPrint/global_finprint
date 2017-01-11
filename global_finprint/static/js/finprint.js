@@ -23,6 +23,8 @@ var finprint = finprint || {};  //namespace if necessary...
         initColoredRows();
         initDisableOnSubmit();
         initExpandEventThumbnail();
+        initInlineObsEdit();
+        initVideoForm();
     });
 
     function getCSRF() {
@@ -317,7 +319,13 @@ var finprint = finprint || {};  //namespace if necessary...
     function initCollapse() {
         var $parent = $('tbody#collapse-parent');
 
-        $parent.find('tr.first-event').on('click', function() {
+        $parent.find('tr.first-event').on('click', function(e) {
+            // don't collapse/expand when clicking on editing fields
+            if ($(e.target).is('.obs-edit, .edit-save, .edit-cancel, input, textarea, ' +
+                    'select, .selectize-input, .item, a.remove')) {
+                return null;
+            }
+
             var target, rowspan;
             var alreadyToggled = $(this).hasClass('selected');
 
@@ -385,7 +393,7 @@ var finprint = finprint || {};  //namespace if necessary...
             }
         });
 
-        $form.on('keydown', '.selectize-control input', function(e) {
+        $form.on('keydown', '#div_id_tags .selectize-control input', function(e) {
             if (e.which === 9) { // tab key
                 $('#headingThree.collapsed').click();
                 scrollTo('#headingThree');
@@ -403,6 +411,13 @@ var finprint = finprint || {};  //namespace if necessary...
             if (e.which === 9) { // tab key
                 $('#headingFive.collapsed').click();
                 scrollTo('#headingFive');
+            }
+        });
+
+        $form.on('keydown', '#id_substrate_complexity', function(e) {
+            if (e.which === 9) { // tab key
+                $('#headingSix.collapsed').click();
+                scrollTo('#headingSix');
             }
         });
     }
@@ -706,14 +721,199 @@ var finprint = finprint || {};  //namespace if necessary...
             e.preventDefault();
             e.stopPropagation();
 
+            var $target = $(e.target).closest('.annotool-thumbnail');
             $modal
                 .find('.event-image')
-                    .attr('style', $(e.target).attr('style'))
+                    .attr('style', $target.attr('style'))
                     .end()
                 .find('.extent')
-                    .attr('style', $(e.target).find('.extent').attr('style'))
+                    .attr('style', $target.find('.extent').attr('style'))
                 .end()
                 .modal('show');
+        });
+    }
+
+    function initInlineObsEdit() {
+        $('#observation-table').on('click', 'a.obs-edit', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var $this = $(e.target);
+            var dataUrl = $this.data('event');
+            var saveUrl = dataUrl.replace('edit_data', 'save_data');
+            var $thisRow = $this.closest('tr');
+            var $actionsCell = $this.closest('td');
+            var $animalCell = $thisRow.find('td.animal');
+            var $obsNoteCell = $thisRow.find('td.obs-note');
+            var $durationCell = $thisRow.find('td.duration');
+            var $eventNoteCell = $thisRow.find('td.event-note');
+            var $attributesCell = $thisRow.find('td.attributes');
+
+            $.get(dataUrl, function(resp) {
+                var oldActions, oldAnimal, oldObsNote, oldDuration, oldEventNote, oldAttributes;
+                var actionsHTML, animalHTML, obsNoteHTML, durationHTML, eventNoteHTML, attributesHTML;
+                var animals = resp.animals;
+                var duration = (resp.duration === null ? '' : resp.duration);
+                var obs_note = (resp.obs_note === null ? '' : resp.obs_note);
+                var event_note = (resp.event_note === null ? '' : resp.event_note);
+                var tags = resp.tags;
+                var selectedAnimalId = resp.selected_animal;
+                var selectedTagIds = resp.selected_tags;
+
+                // change new data fields into JSON
+                function serialize() {
+                    return {
+                        is_obs: $obsNoteCell.length > 0,
+                        animal_id: $animalCell.find('select.edit-animal').val(),
+                        obs_note: $obsNoteCell.find('textarea.edit-obsnote').val(),
+                        duration: $durationCell.find('input.edit-duration').val(),
+                        event_note: $eventNoteCell.find('textarea.edit-eventnote').val(),
+                        tags: $attributesCell.find('select.edit-attributes').val()
+                    }
+                }
+
+                // actions
+                oldActions = $actionsCell.html();
+                actionsHTML = '<a href="#" class="edit-save" data-save="' + saveUrl + '">Save</a>' +
+                    '<br /><a href="#" class="edit-cancel">Cancel</a>';
+                $actionsCell.html(actionsHTML);
+
+                // wire links in actions
+                $actionsCell
+                    .find('.edit-save').one('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        $.post(saveUrl, serialize(), function(res) {
+                            $actionsCell.html(oldActions);
+                            $animalCell.html(res.animal);
+                            $obsNoteCell.html(res.obs_note);
+                            $durationCell.html(res.duration);
+                            $eventNoteCell.html(res.event_note);
+                            $attributesCell.html(res.attributes);
+                        });
+                    }).end()
+                    .find('.edit-cancel').one('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        $actionsCell.html(oldActions);
+                        $animalCell.html(oldAnimal);
+                        $obsNoteCell.html(oldObsNote);
+                        $durationCell.html(oldDuration);
+                        $eventNoteCell.html(oldEventNote);
+                        $attributesCell.html(oldAttributes);
+                    });
+
+                // animal dropdown
+                oldAnimal = $animalCell.html();
+                animalHTML = '<select class="edit-animal">';
+                animalHTML += animals.map(function(animal) {
+                    return '<option value="' + animal.id + '"' +
+                        (animal.id === selectedAnimalId ? ' selected="selected"' : '') +
+                        '>' + animal.name + '</option>';
+                });
+                animalHTML += '</select>';
+                $animalCell.html(animalHTML);
+
+                // observation note
+                oldObsNote = $obsNoteCell.html();
+                obsNoteHTML = '<textarea class="edit-obsnote">' + obs_note + '</textarea>';
+                $obsNoteCell.html(obsNoteHTML);
+
+                // duration
+                oldDuration = $durationCell.html();
+                durationHTML = '<input type="number" min="0" class="edit-duration" value="' + duration + '" />';
+                $durationCell.html(durationHTML);
+
+                // event note
+                oldEventNote = $eventNoteCell.html();
+                eventNoteHTML = '<textarea class="edit-eventnote">' + event_note + '</textarea>';
+                $eventNoteCell.html(eventNoteHTML);
+
+                // attributes
+                oldAttributes = $attributesCell.html();
+                attributesHTML = '<select class="edit-attributes" multiple="multiple">';
+                attributesHTML += tags.map(function(tag) {
+                    return '<option value="' + tag.id + '"' +
+                        (selectedTagIds.indexOf(tag.id) !== -1 ? ' selected="selected"' : '') +
+                        '>' + tag.name + '</option>';
+                });
+                attributesHTML += '</select>';
+                $attributesCell.html(attributesHTML);
+                $attributesCell.find('select[multiple="multiple"]').selectize(
+                    { allowEmptyOption: true, plugins: ['remove_button', 'restore_on_backspace'] }
+                );
+            });
+        });
+    }
+
+    function initVideoForm() {
+        var $panel = $('#collapseSix');
+        var $filenameCol = $panel.find('#div_id_file .controls');
+        var $sourceCol = $panel.find('#div_id_source .controls');
+        var $pathCol = $panel.find('#div_id_path .controls');
+        var $primaryCol = $panel.find('#div_id_primary .controls');
+        var $removeCol = $panel.find('#div_id_remove_row .controls');
+
+        $removeCol.on('click', 'a.remove', function(e) {
+            var index;
+            e.preventDefault();
+            if ($removeCol.find('a.remove').length > 1) {
+                index = $removeCol.find('a.remove').index($(this));
+                $filenameCol.find('.sub-control').slice(index, index +  1).remove();
+                $sourceCol.find('.sub-control').slice(index, index +  1).remove();
+                $pathCol.find('.sub-control').slice(index, index +  1).remove();
+                $primaryCol.find('.sub-control').slice(index, index +  1).remove();
+                $removeCol.find('.sub-control').slice(index, index +  1).remove();
+                if ($primaryCol.find('input:checked').length === 0) {
+                    $primaryCol.find('input:first').prop('checked', true);
+                }
+            } else {
+                $filenameCol.find('#id_file')[0].selectize.clear();
+                $sourceCol.find('input').val('');
+                $pathCol.find('input').val('');
+            }
+        });
+
+        $panel.find('p.add-video span.plus').click(function() {
+            var options = $.map($filenameCol.find('select.selectize')[0].selectize.options, function(o) {
+                return '<option value="' + o.value + '">' + o.text + '</option>';
+            });
+            options.unshift('<option value="">(None)</option>');
+            options.join("\n");
+
+            $filenameCol.find('.sub-control:first').clone()
+                .find('div.selectize-control')
+                    .remove()
+                    .end()
+                .find('select.selectize')
+                    .html(options)
+                    .selectize({ create: true, plugins: ['restore_on_backspace'] })
+                    .end()
+                .appendTo($filenameCol);
+            $filenameCol.find('select.selectize:last')[0].selectize.clear();
+
+            $sourceCol.find('.sub-control:first').clone()
+                .find('input')
+                    .val('')
+                    .end()
+                .appendTo($sourceCol);
+
+            $pathCol.find('.sub-control:first').clone()
+                .find('input')
+                    .val('')
+                    .end()
+                .appendTo($pathCol);
+
+            $primaryCol.find('.sub-control:first').clone()
+                .find('input')
+                    .prop('checked', false)
+                    .val(parseInt($primaryCol.find('.sub-control:last input').val()) + 1)
+                    .end()
+                .appendTo($primaryCol);
+
+            $removeCol.find('.sub-control:first').clone().appendTo($removeCol);
         });
     }
 })(jQuery);

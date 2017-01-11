@@ -28,10 +28,11 @@ $accordian-header-active: #d5dee2;
   display: inline-block;
   height: $radius;
   width: $radius;
-  line-height: $radius;
+  line-height: $radius - 2px;
   padding: 0;
   text-align: center;
   border-radius: $radius;
+  border: 1px solid #333;
 }
 
 @mixin downTick($width, $height, $color) {

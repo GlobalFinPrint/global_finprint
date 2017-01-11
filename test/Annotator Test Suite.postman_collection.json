@@ -1,0 +1,658 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Annotator Test Suite",
+		"_postman_id": "27085ba3-0ed7-0bae-a264-deba352b6f42",
+		"description": "E2E Annotator Test - Positive Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login as Annotator",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var total_sets = jsonData.sets.length;",
+							"",
+							"//set all the global variables for the next request",
+							"postman.setGlobalVariable(\"username_actual\", \"Global FinPrint, Annotator1 Test (Global Finprint)\");",
+							"postman.setGlobalVariable(\"token\", jsonData.token);",
+							"postman.setGlobalVariable(\"set_code_id\", jsonData.sets[0].id); //grab the first id of the set",
+							"postman.setGlobalVariable(\"set_code\", jsonData.sets[0].set_code);",
+							"",
+							"//verify response code is 200",
+							"tests[\"Successful POST request\"] = responseCode.code === 200;",
+							"",
+							"//verify token is returned",
+							"tests[\"Token returned\"] = Boolean(jsonData.token);",
+							"",
+							"//verify the sets listed are assigned to the annotator that's logging in ",
+							"for (var i = 0; i < total_sets; i++)",
+							"{",
+							"    tests[\"username is \" + i + \", actual: \" + jsonData.sets[i].assigned_to.user + \" | expected value: \" + globals.username_actual] = jsonData.sets[i].assigned_to.user === globals.username_actual;",
+							"}",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{url}}/api/login",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "annotator1TestGlobalFinPrint",
+							"type": "text",
+							"enabled": true,
+							"warning": ""
+						},
+						{
+							"key": "password",
+							"value": "annotator1TestGlobalFinPrint",
+							"type": "text",
+							"enabled": true,
+							"warning": ""
+						}
+					]
+				},
+				"description": "Login as annotator\nVerify successful login\nVerify all the sets belongs to the annotator"
+			},
+			"response": []
+		},
+		{
+			"name": "Get set detail as annotator",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"//verify response code is 200",
+							"tests[\"Successful POST request\"] = responseCode.code === 200;",
+							"",
+							"//verify the set code id match the global variable = globals.set_code_id",
+							"tests[\"set code ID actual value: \" + jsonData.set.id + \" | expected value: \" + globals.set_code_id] = jsonData.set.id == globals.set_code_id;",
+							"",
+							"//verify the set match set code in the global variable  = globals.set_code",
+							"tests[\"set code actual value: \" + jsonData.set.set_code + \" | expected value: \" + globals.set_code] = jsonData.set.set_code === globals.set_code;",
+							"",
+							"//verify the set is assigned to the annotator in the global variable =  globals.username",
+							"tests[\"username actual value: \" + jsonData.set.assigned_to.user + \" | expected value: \" + globals.username_actual] = jsonData.set.assigned_to.user === globals.username_actual;",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{url}}/api/set/{{set_code_id}}?token={{token}}",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "Get the id of the first set from login"
+			},
+			"response": []
+		},
+		{
+			"name": "Get the observation listing for the set",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"postman.setGlobalVariable(\"observation_comment\", \"api regression - annotator adding new observation for \" +  globals.set_code);",
+							"postman.setGlobalVariable(\"image_note\", \"api regression - image note for \" + globals.set_code); ",
+							"postman.setGlobalVariable(\"total_observations_before\", jsonData.observations.length);",
+							"",
+							"//verify response is 200",
+							"tests[\"Successful POST request\"] = responseCode.code === 200;",
+							"",
+							"//verify observations is in an array format",
+							"tests[\"Observations returned with total observations: \" + globals.total_observations_before] = Array.isArray(jsonData.observations);",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{url}}/api/set/{{set_code_id}}/obs?token={{token}}",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Animal listing copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"animal_id_value\", parseInt(jsonData.animals[0].id)); //set the variable for animal id as value to be pass on to create an observation",
+							"postman.setGlobalVariable(\"animal_id_edit_value\", parseInt(jsonData.animals[1].id));",
+							"",
+							"tests[\"Successful POST request\"] = responseCode.code === 200;",
+							"",
+							"tests[\"Animals listing returned\"] = Array.isArray(jsonData.animals);",
+							"",
+							"//array size should be bigger than 0 to make sure there is value in it",
+							"tests[\"Array size should be bigger than 0\"] = jsonData.animals.length > 2;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{url}}/api/set/{{set_code_id}}/animals?token={{token}}",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Attribute listing copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setGlobalVariable(\"attribute_id_value_1\", parseInt(jsonData.attributes[0].id));",
+							"postman.setGlobalVariable(\"attribute_id_value_2\", parseInt(jsonData.attributes[1].id));",
+							"",
+							"//verify response code is 200",
+							"tests[\"Successful POST request\"] = responseCode.code === 200;",
+							"",
+							"//verify attributes retuen in an array of objects",
+							"tests[\"Attributes returned\"] = Array.isArray(jsonData.attributes);",
+							"",
+							"//verify there are 2 attributes returned since this will be use as input to create a new observation ",
+							"tests[\"Attributes size should be bigger than 2 (to allow getting 2 attributes)\"] = parseInt(jsonData.attributes.length) > 2;",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{url}}/api/set/{{set_code_id}}/attributes?token={{token}}",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create new observation as annotator",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var total_observations_after = jsonData.observations.length;",
+							"var expected_total_observations_after = parseInt(globals.total_observations_before) + 1; //globals var can only be string hence need to convert it to int",
+							"var comment_found = false;",
+							"",
+							"//reserving this global incase i want to do event checking later",
+							"postman.setGlobalVariable(\"observation_id\", jsonData.observations[0].id);",
+							"postman.setGlobalVariable(\"total_events_before\", jsonData.observations[0].events.length);",
+							"",
+							"//verify response code is 200",
+							"tests[\"Successful POST request\"] = responseCode.code === 200;",
+							"",
+							"//verify the # of observation increase after creating a new observation",
+							"tests[\"observation total actual: \" + total_observations_after  + \" | expected value: \" + expected_total_observations_after] = total_observations_after == expected_total_observations_after; ",
+							"",
+							"//verify the observation comment match input/request since the last entry is added to the top of the array",
+							"tests[\"observation[0] comment-  actual: \" + jsonData.observations[0].comment + \" - observation_id: \" +  jsonData.observations[0].id + \" | expected: \" + globals.observation_comment] = jsonData.observations[0].comment === globals.observation_comment;",
+							"        ",
+							"//verify the animal id match the input/request since the last entry is added to the top of the array",
+							"tests[\"observation[0] animal id -  actual: \" + jsonData.observations[0].animal_id + \" - observation_id: \" +  jsonData.observations[0].id + \" | expected: \" + globals.animal_id_value] = parseInt(jsonData.observations[0].animal_id) == globals.animal_id_value;",
+							"//set global varioable to the length of the count of edit observation just to make it easier incase i change this test",
+							"postman.setGlobalVariable(\"expected_total_observations_after\", expected_total_observations_after);",
+							"",
+							"//loop through the observation array to look for the added observation",
+							"/*for (var i = 0; i < expected_total_observations_after; i++)",
+							"{",
+							"   ",
+							"    if(!comment_found) {",
+							"        //verify the comment is edited for the observation",
+							"        tests[\"observation[\" + i + \"] comment-  actual: \" + jsonData.observations[i].comment + \" - observation_id: \" +  jsonData.observations[i].id + \" | expected: \" + globals.observation_comment] = jsonData.observations[i].comment === globals.observation_comment;",
+							"        ",
+							"        //set global varioable for observation id  as input value for edit observation",
+							"        postman.setGlobalVariable(\"observation_id\", jsonData.observations[i].id);",
+							"        ",
+							"        //verify the animal id match the input/request",
+							"        tests[\"observation[\" + i + \"] animal id -  actual: \" + jsonData.observations[i].animal_id + \" - observation_id: \" +  jsonData.observations[i].id + \" | expected: \" + globals.animal_id_value] = parseInt(jsonData.observations[i].animal_id) == globals.animal_id_value;",
+							"        //set global varioable to the length of the count of edit observation just to make it easier incase i change this test",
+							"        postman.setGlobalVariable(\"expected_total_observations_after\", expected_total_observations_after);",
+							"        break;",
+							"    }",
+							"    ",
+							"}*/"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{url}}/api/set/{{set_code_id}}/obs",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "text",
+							"enabled": true,
+							"warning": ""
+						},
+						{
+							"key": "type_choice",
+							"value": "A",
+							"type": "text",
+							"enabled": true,
+							"warning": ""
+						},
+						{
+							"key": "animal_id",
+							"value": "{{animal_id_value}}",
+							"type": "text",
+							"enabled": true,
+							"warning": ""
+						},
+						{
+							"key": "sex_choice",
+							"value": "F",
+							"type": "text",
+							"enabled": true,
+							"warning": ""
+						},
+						{
+							"key": "stage_choice",
+							"value": "AD",
+							"type": "text",
+							"enabled": true,
+							"warning": ""
+						},
+						{
+							"key": "duration",
+							"value": "10",
+							"type": "text",
+							"enabled": true,
+							"warning": ""
+						},
+						{
+							"key": "length",
+							"value": "12",
+							"type": "text",
+							"enabled": true,
+							"warning": ""
+						},
+						{
+							"key": "comment",
+							"value": "{{observation_comment}}",
+							"type": "text",
+							"enabled": true,
+							"warning": ""
+						},
+						{
+							"key": "event_time",
+							"value": "60000",
+							"type": "text",
+							"enabled": true,
+							"warning": ""
+						},
+						{
+							"key": "extent",
+							"value": "POLYGON ((0.0075000000000000 0.3911100000000000, 0.5487500000000000 0.3911100000000000, 0.5487500000000000 0.8111100000000000, 0.0075000000000000 0.8111100000000000, 0.0075000000000000 0.3911100000000000))",
+							"type": "text",
+							"enabled": true,
+							"warning": ""
+						},
+						{
+							"key": "note",
+							"value": "{{image_note}}",
+							"type": "text",
+							"enabled": true,
+							"warning": ""
+						},
+						{
+							"key": "attribute",
+							"value": "{{attribute_id_value_1}}",
+							"type": "text",
+							"enabled": true,
+							"warning": ""
+						},
+						{
+							"key": "attribute",
+							"value": "{{attribute_id_value_2}}",
+							"type": "text",
+							"enabled": true,
+							"warning": ""
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create an event to and existing observation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var comment_found = false;",
+							"var expected_total_events_after = parseInt(globals.total_events_before) + 1;",
+							"",
+							"//verify response is 200",
+							"tests[\"Successful POST request\"] = responseCode.code === 200;",
+							"",
+							"//verify the # of observation stay the same as before",
+							"tests[\"observation total actual: \" + jsonData.observations.length  + \" | expected value: \" + globals.expected_total_observations_after] = jsonData.observations.length == globals.expected_total_observations_after; ",
+							"",
+							"//verify the # of events increase after new event is added",
+							"tests[\"event total actual: \" + jsonData.observations[0].events.length  + \" | expected value: \" + expected_total_events_after] = jsonData.observations[0].events.length == ",
+							"    expected_total_events_after; ",
+							"postman.setGlobalVariable(\"expected_total_events_after\", expected_total_events_after);",
+							"",
+							"for (var i = 0; i < jsonData.observations.length ; i++)",
+							"{",
+							"   ",
+							"    if(jsonData.observations[i].id == globals.observation_id) {",
+							"        for (var j = 0; j < jsonData.observations[i].events.length; j++) {",
+							"            //",
+							"            if (jsonData.observations[i].events[j].note != globals.image_note) {",
+							"                //verify the new event is added to the observation specify",
+							"                tests[\"events[\" + j + \"]-  actual: \" + jsonData.observations[i].events[j].note + \" - event_id: \" +  jsonData.observations[i].events[j].id] = ",
+							"                    jsonData.observations[i].events[j].note.has(\"Add new event to an existing observation\");",
+							"                //set the event id as global variable for edit event",
+							"                postman.setGlobalVariable(\"event_id\", jsonData.observations[i].events[j].id);",
+							"                break;",
+							"            }",
+							"        ",
+							"        }",
+							"        ",
+							"    }",
+							"}",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{url}}/api/set/{{set_code_id}}/obs/{{observation_id}}/event",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "event_time",
+							"value": "60427",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "note",
+							"value": "Add new event to an existing observation - {{observation_comment}}",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "extent",
+							"value": "POLYGON ((0.3562500000000000 0.4022200000000000, 0.9475000000000000 0.4022200000000000, 0.9475000000000000 0.9711100000000000, 0.3562500000000000 0.9711100000000000, 0.3562500000000000 0.4022200000000000))",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Edit observation comment and animal",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var comment_found = false;",
+							"",
+							"//verify response is 200",
+							"tests[\"Successful POST request\"] = responseCode.code === 200;",
+							"",
+							"//verify the # of observation stay the same as before",
+							"tests[\"observation total actual: \" + jsonData.observations.length  + \" | expected value: \" + globals.expected_total_observations_after] = jsonData.observations.length == globals.expected_total_observations_after; ",
+							"",
+							"for (var i = 0; i < jsonData.observations.length ; i++)",
+							"{",
+							"   ",
+							"    if(jsonData.observations[i].id == globals.observation_id) {",
+							"        //verify comment contain the word edit in it",
+							"        tests[\"observation[\" + i + \"]-  actual: \" + jsonData.observations[i].comment + \" - observation_id: \" +  jsonData.observations[i].id] = jsonData.observations[i].comment.has(\"edit\");",
+							"        ",
+							"        //verify the animal id returned is the edited value        ",
+							"        tests[\"observation[\" + i + \"] animal id -  actual: \" + jsonData.observations[i].animal_id + \" - observation_id: \" +  jsonData.observations[i].id + \" | expected: \" + globals.animal_id_edit_value] = parseInt(jsonData.observations[i].animal_id) == globals.animal_id_edit_value;",
+							"        ",
+							"        break;",
+							"    }",
+							"}",
+							"",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{url}}/api/set/{{set_code_id}}/obs/{{observation_id}}",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "text",
+							"enabled": true,
+							"warning": ""
+						},
+						{
+							"key": "comment",
+							"value": "edit - {{observation_comment}}",
+							"type": "text",
+							"enabled": true,
+							"warning": ""
+						},
+						{
+							"key": "animal_id",
+							"value": "{{animal_id_edit_value}}",
+							"type": "text",
+							"enabled": true,
+							"warning": ""
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Edit event notes and add attribute",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var comment_found = false;",
+							"",
+							"//verify response is 200",
+							"tests[\"Successful POST request\"] = responseCode.code === 200;",
+							"",
+							"//verify the # of observation stay the same as before",
+							"tests[\"observation total actual: \" + jsonData.observations.length  + \" | expected value: \" + globals.expected_total_observations_after] = jsonData.observations.length == globals.expected_total_observations_after; ",
+							"",
+							"//verify the # of events stay the same since it's editing an existing event",
+							"tests[\"event total actual: \" + jsonData.observations[0].events.length  + \" | expected value: \" + globals.expected_total_events_after] = jsonData.observations[0].events.length == ",
+							"    globals.expected_total_events_after; ",
+							"",
+							"for (var i = 0; i < jsonData.observations.length ; i++)",
+							"{",
+							"   ",
+							"    if(jsonData.observations[i].id == globals.observation_id) {",
+							"        for (var j = 0; j < jsonData.observations[i].events.length; j++) {",
+							"            //",
+							"            if (jsonData.observations[i].events[j].id == globals.event_id) {",
+							"                //verify the event is note is edited",
+							"                tests[\"events[\" + j + \"]-  actual: \" + jsonData.observations[i].events[j].note + \" - event_id: \" +  jsonData.observations[i].events[j].id] = ",
+							"                    jsonData.observations[i].events[j].note.has(\"Edit event note\");",
+							"                ",
+							"                //verify a new attribute is added",
+							"                tests[\"attribute id -  actual: \" + jsonData.observations[i].events[j].attribute[0].id + \" | expected: \" +  globals.attribute_id_value_2] = jsonData.observations[i].events[j].attribute[0].id == globals.attribute_id_value_2;               ",
+							"                ",
+							"                break;",
+							"            }",
+							"        ",
+							"        }",
+							"        ",
+							"    }",
+							"}",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{url}}/api/set/{{set_code_id}}/obs/{{observation_id}}/event/{{event_id}}",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "note",
+							"value": "Edit event note and attribute for event id -  {{event_id}}",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "attribute",
+							"value": "{{attribute_id_value_2}}",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delete event",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"//verify response code is 200",
+							"tests[\"Successful POST request\"] = responseCode.code === 200;",
+							"",
+							"//verify # of observation is - 1, back to the number before new observation was created",
+							"tests[\"Event count actual: \" + jsonData.observations[0].events.length + \" | expected: \" + globals.total_events_before] = jsonData.observations[0].events.length == parseInt(globals.total_events_before);",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{url}}/api/set/{{set_code_id}}/obs/{{observation_id}}/event?token={{token}}&evt_id={{event_id}}",
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delete observation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"//verify response code is 200",
+							"tests[\"Successful POST request\"] = responseCode.code === 200;",
+							"",
+							"//verify # of observation is - 1, back to the number before new observation was created",
+							"tests[\"Observations count actual: \" + jsonData.observations.length + \" | expected: \" + globals.total_observations_before] = jsonData.observations.length == parseInt(globals.total_observations_before);",
+							"",
+							"postman.clearGlobalVariables();"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{url}}/api/set/{{set_code_id}}/obs?token={{token}}&obs_id={{observation_id}}",
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

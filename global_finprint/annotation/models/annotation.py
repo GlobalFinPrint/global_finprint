@@ -4,7 +4,7 @@ from .project import Project
 
 
 class Attribute(MPTTModel):
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=50)
     description = models.TextField(null=True, blank=True)
     active = models.BooleanField(
         default=True,
@@ -21,6 +21,7 @@ class Attribute(MPTTModel):
 
     class Meta:
         verbose_name = 'Tag'
+        unique_together = (('name', 'project'),)
 
     def __str__(self):
         return u"{0}".format(self.name)

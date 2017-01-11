@@ -137,7 +137,8 @@ $(function() {
     var Observation = Backbone.Model.extend({
         defaults: {
             animal: 'None <i>(Of Interest)</i>',
-            selected: false
+            selected: false,
+            group: 'int'
         },
         constructor: function(attributes) {
             this.events = new Events;
@@ -303,6 +304,7 @@ $(function() {
         initialize: function(models, options) {
             this.view = options.view;
             this.url = '/assignment/master/' + options.id;
+            this.project = options.project;
         },
         addObservation: function(model) {
             var attributes = model.toJSON();
@@ -324,12 +326,13 @@ $(function() {
             this.loadingPromises = options.loadingPromises;
             this.collection = new MasterRecord([], {
                 id: this.$el.data('set-id'),
+                project: this.$el.data('project-id'),
                 view: this
             });
         },
         load: function(loadingPromises) {
             var self = this;
-            $.get(this.collection.url, function(res) {
+            $.get(this.collection.url + '?project=' + this.collection.project, function(res) {
                 $.when.apply($, loadingPromises).done(function() {
                     var ids = res.original_observation_ids;
                     _.each(assignmentViews, function(view) {
@@ -373,9 +376,14 @@ $(function() {
 
         var $this = $(this);
         var $feedback = $('span#save-feedback');
-        var ids = masterView.collection.pluck('id');
+        var data = {
+            observation_ids: masterView.collection.pluck('id'),
+            project: masterView.collection.project
+        };
+
         $this.attr('disabled', 'disabled');
-        $.post(masterView.collection.url, {observation_ids: ids}, function(res) {
+
+        $.post(masterView.collection.url, data, function(res) {
             $this.removeAttr('disabled');
             if (res.success === 'ok') {
                 $feedback
@@ -403,5 +411,22 @@ $(function() {
                 .delay(1000)
                 .fadeOut();
         });
+    });
+
+    $(function() {
+        var $style;
+        var colors = colorbrewer.Set1[9];
+        var intColor = colors.pop();
+        $('head').append('<style class="legend-style"></style>');
+        $style = $('style.legend-style');
+        $('.compare-actions .legend .legend-item').each(function(i, li) {
+            var style = '.group-' + $(li).data('group') + ' { background-color: ' + colors[i + 1] + ' !important; ';
+            if (i === 4) { // for bright colors that need black text color
+                style += 'color: black !important; ';
+            }
+            style += '}\n';
+            $style.append(style);
+        });
+        $style.append('.group-int { background-color: ' + intColor + ' !important; }\n')
     });
 });

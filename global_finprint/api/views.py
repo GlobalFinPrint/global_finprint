@@ -49,15 +49,18 @@ class Login(View):
         except FinprintUser.DoesNotExist:
             return HttpResponseForbidden()
 
-        assignments = Assignment.get_active().filter(assigned_by=annotator) if annotator.is_lead() \
-            else Assignment.get_active_for_annotator(annotator)
-
-        return JsonResponse({
+        response_json = {
             'user_id': annotator.id,
             'token': token,
             'role': 'lead' if annotator.is_lead() else 'annotator',
-            'sets': list(va.to_json() for va in assignments)
-        })
+        }
+
+        if not request.POST.get('skip_set_list', False):
+            assignments = Assignment.get_active().filter(assigned_by=annotator) if annotator.is_lead() \
+                else Assignment.get_active_for_annotator(annotator)
+            response_json['sets'] = list(va.to_json() for va in assignments)
+
+        return JsonResponse(response_json)
 
 
 class Logout(APIView):
@@ -113,7 +116,7 @@ class SetDetail(APIView):
     def get(self, request, set_id):
         return JsonResponse({'set': {'id': request.va.id,
                                      'set_code': str(request.va.set()),
-                                     'file': str(request.va.video.file),
+                                     'file': str(request.va.video.primary()),
                                      'assigned_to': {'id': request.va.annotator_id,
                                                      'user': str(request.va.annotator)},
                                      'progress': request.va.progress,
