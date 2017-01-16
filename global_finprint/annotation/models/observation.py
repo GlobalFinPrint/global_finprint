@@ -178,6 +178,9 @@ class Observation(AbstractObservation):
     def animal(self):
         return self.animalobservation.animal
 
+    def needs_review(self):
+        return any(e.needs_review() for e in self.event_set.all())
+
 
 class MasterObservation(AbstractObservation):
     master_record = models.ForeignKey(to=MasterRecord)
@@ -222,6 +225,9 @@ class MasterObservation(AbstractObservation):
     def event_set_for_table(self):
         initial_event = self.initial_event()
         return [initial_event] + list(self.masterevent_set.exclude(id=initial_event.id).order_by('-event_time'))
+
+    def needs_review(self):
+        return any(e.needs_review() for e in self.event_set())
 
 
 class AbstractAnimalObservation(AuditableModel):
@@ -299,6 +305,9 @@ class AbstractEvent(AuditableModel):
             return css
         except AttributeError:  # handle bad extents
             return None
+
+    def needs_review(self):
+        return any(a.needs_review for a in self.attribute.all())
 
 
 class Event(AbstractEvent):

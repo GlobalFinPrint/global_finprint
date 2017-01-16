@@ -114,6 +114,10 @@ a.manual-assign {
     color: $blue;
   }
 
+  &.master tr.needs-review {
+    background-color: transparentize(yellow, 0.75);
+  }
+
   tbody {
     tr.first-event {
       cursor: pointer;

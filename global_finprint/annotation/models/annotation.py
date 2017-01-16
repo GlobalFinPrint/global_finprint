@@ -12,6 +12,7 @@ class Attribute(MPTTModel):
     lead_only = models.BooleanField(
         default=False,
         help_text='overridden if parent is lead only')
+    needs_review = models.BooleanField(default=False)
 
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
     project = models.ForeignKey(Project, default=1)

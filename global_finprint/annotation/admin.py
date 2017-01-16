@@ -18,7 +18,7 @@ admin.site.register(video.AnnotationState)
 
 
 class TagAdmin(MPTTModelAdmin):
-    fields = ('parent', 'name', 'description', 'active', 'lead_only', 'project')
+    fields = ('parent', 'name', 'description', 'active', 'needs_review', 'lead_only', 'project')
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(TagAdmin, self).get_form(request, obj, **kwargs)

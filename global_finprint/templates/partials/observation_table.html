@@ -1,6 +1,6 @@
 {% load time_display %}
 <h3>Observations{{ for }}</h3>
-<table class="table table-bordered table-condensed assignment-observation-table" id="observation-table" cellspacing="0" width="100%">
+<table class="table table-bordered table-condensed assignment-observation-table {{ master|yesno:"master,," }}" id="observation-table" cellspacing="0" width="100%">
     <thead>
     <tr>
         <th>Annotator</th>
@@ -19,7 +19,7 @@
         {% with firstevent=o.initial_event rowspan=o.event_set.count %}
         {% for e in o.event_set_for_table %}
             {% if e.id == firstevent.id %}
-            <tr class="first-event accordion-toggle" data-target=".children-{{ o.id }}" data-rowspan="{{ rowspan }}">
+            <tr class="first-event accordion-toggle {{ o.needs_review|yesno:"needs-review,," }}" data-target=".children-{{ o.id }}" data-rowspan="{{ rowspan }}">
                 <td class="rowspan">{{ o.annotator }}</td>
                 {% if o.type == 'I' %}
                     <td class="rowspan"><i>N/A</i></td>
@@ -29,7 +29,7 @@
                 <td class="obs-note rowspan">{{ o.comment|default_if_none:"<i>None</i>" }}</td>
                 <td class="duration rowspan">{{ o.duration|default_if_none:"<i>None</i>" }}</td>
             {% else %}
-            <tr class="children-{{ o.id }} child-row">
+            <tr class="children-{{ o.id }} child-row {{ e.needs_review|yesno:"needs-review,," }}">
             {% endif %}
                 {% with imageurl=e.image_url %}
                 {% if imageurl %}
