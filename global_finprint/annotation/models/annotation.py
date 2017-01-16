@@ -13,6 +13,7 @@ class Attribute(MPTTModel):
         default=False,
         help_text='overridden if parent is lead only')
     needs_review = models.BooleanField(default=False)
+    not_selectable = models.BooleanField(default=False)
 
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
     project = models.ForeignKey(Project, default=1)
@@ -32,7 +33,8 @@ class Attribute(MPTTModel):
             'id': self.pk,
             'name': self.name,
             'description': self.description,
-            'level': self.get_level()
+            'level': self.get_level(),
+            'not_selectable': self.not_selectable
         }
         if children and not self.is_leaf_node():
             children = list(a for a in self.get_children() if a.active)

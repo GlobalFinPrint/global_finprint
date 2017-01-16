@@ -73,7 +73,7 @@ class MasterObservationEditData(UserAllowedMixin, View):
         event = get_object_or_404(MasterEvent, pk=evt_id)
         project = event.master_observation.master_record.project
         animals = Animal.objects.filter(project=project).select_related('group')
-        tags = project.attribute_set.all()
+        tags = project.tag_list()
         return JsonResponse({
             'animals': list({'id': a.id, 'name': str(a)} for a in animals),
             'tags': list({'id': t.id, 'name': str(t)} for t in tags),
@@ -130,7 +130,7 @@ class ObservationEditData(UserAllowedMixin, View):
         event = get_object_or_404(Event, pk=evt_id)
         project = event.observation.assignment.project
         animals = Animal.objects.filter(project=project).select_related('group')
-        tags = project.attribute_set.all()
+        tags = project.tag_list()
         return JsonResponse({
             'animals': list({'id': a.id, 'name': str(a)} for a in animals),
             'tags': list({'id': t.id, 'name': str(t)} for t in tags),
