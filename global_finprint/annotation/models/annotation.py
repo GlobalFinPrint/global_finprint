@@ -28,10 +28,14 @@ class Attribute(MPTTModel):
     def __str__(self):
         return u"{0}".format(self.name)
 
+    def verbose_name(self):
+        return '/'.join(list(map(str, self.get_ancestors(include_self=True))))
+
     def to_json(self, children=True, is_lead=True):
         json = {
             'id': self.pk,
             'name': self.name,
+            'verbose': self.verbose_name(),
             'description': self.description,
             'level': self.get_level(),
             'not_selectable': self.not_selectable
