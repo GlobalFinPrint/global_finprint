@@ -11,6 +11,9 @@
         <th>Time</th>
         <th>Image notes</th>
         <th>Tags</th>
+        {% if master %}
+            <th>Measurables</th>
+        {% endif %}
         <th>Actions</th>
     </tr>
     </thead>
@@ -45,6 +48,9 @@
                 <td>{{ e.event_time|time_display }}</td>
                 <td class="event-note">{{ e.note|default_if_none:"<i>None</i>" }}</td>
                 <td class="attributes">{{ e.attribute.all|join:', ' }}</td>
+                {% if master %}
+                    <td class="measurables">TODO</td>
+                {% endif %}
                 <td>
                     {% if master %}
                         {% with set=e.master_observation.set %}
@@ -61,7 +67,7 @@
         {% endwith %}
     {% empty %}
         <tr>
-            <td colspan="9" class="text-center">
+            <td colspan="{{ master|yesno:"10,9" }}" class="text-center">
                 <h4>{{ assignment.annotator }} has not yet submitted any observations for this video</h4>
             </td>
         </tr>

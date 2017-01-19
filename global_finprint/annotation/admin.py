@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from mptt.admin import MPTTModelAdmin
 
-from .models import animal, video, annotation, project
+from .models import animal, video, annotation, project, observation
 from ..core.models import FinprintUser
 
 
@@ -60,3 +60,4 @@ class ProjectAdmin(admin.ModelAdmin):
         return super(ProjectAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 admin.site.register(project.Project, ProjectAdmin)
+admin.site.register(observation.Measurable)
