@@ -49,7 +49,10 @@
                 <td class="event-note">{{ e.note|default_if_none:"<i>None</i>" }}</td>
                 <td class="attributes">{{ e.attribute.all|join:', ' }}</td>
                 {% if master %}
-                    <td class="measurables">{{ e.mastereventmeasurable_set.all|join:'<br />' }}</td>
+                    <td class="measurables">
+                        <a href="#" class="edit-measurables" data-event-id="{{ e.id }}">Edit</a><br />
+                        {{ e.mastereventmeasurable_set.all|join:'<br />' }}
+                    </td>
                 {% endif %}
                 <td>
                     {% if master %}
@@ -82,6 +85,15 @@
             <div class="event-image">
                 <div class="extent"></div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div id="edit-measurables-modal" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="close" data-dismiss="modal">&times;</div>
+            <div class="edit-measurables"></div>
         </div>
     </div>
 </div>

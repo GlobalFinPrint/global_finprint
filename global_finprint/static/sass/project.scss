@@ -493,7 +493,7 @@ h3.form-title {
   }
 }
 
-#full-image-modal {
+#edit-measurables-modal, #full-image-modal {
   .event-image {
     position: relative;
     cursor: pointer;
@@ -525,6 +525,10 @@ h3.form-title {
     font-size: 2.0em;
     padding-bottom: 3px;
     -webkit-user-select: none;
+  }
+
+  .edit-measurables {
+    height: 400px;
   }
 }
 

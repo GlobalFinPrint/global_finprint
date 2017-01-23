@@ -25,6 +25,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initExpandEventThumbnail();
         initInlineObsEdit();
         initVideoForm();
+        initEditMeasurables();
     });
 
     function getCSRF() {
@@ -914,6 +915,18 @@ var finprint = finprint || {};  //namespace if necessary...
                 .appendTo($primaryCol);
 
             $removeCol.find('.sub-control:first').clone().appendTo($removeCol);
+        });
+    }
+
+    function initEditMeasurables() {
+        var $modal = $('#edit-measurables-modal');
+
+        $('td.measurables').on('click', 'a.edit-measurables', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $modal.modal('show');
+            //TODO
+            return false;
         });
     }
 })(jQuery);

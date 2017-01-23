@@ -179,3 +179,11 @@ class ObservationSaveData(UserAllowedMixin, View):
             'event_note': event.note if event.note is not None else '<i>None</i>',
             'attributes': ', '.join(map(str, event.attribute.all())),
         })
+
+
+class EditMeasurablesInline(UserAllowedMixin, View):
+    def get(self, request, evt_id, **kwargs):
+        pass
+
+    def post(self, request, evt_id, **kwargs):
+        pass
