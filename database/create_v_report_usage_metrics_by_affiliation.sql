@@ -41,8 +41,7 @@ SELECT
 FROM annotation_assignment aa
   JOIN core_finprintuser cf ON (aa.annotator_id = cf.id)
   JOIN core_affiliation ca ON (cf.affiliation_id = ca.id)
-WHERE progress > 0 AND status_id > 0
-      AND video_id NOT IN (SELECT id FROM legacy_videos)
+WHERE progress > 0 AND video_id NOT IN (SELECT id FROM legacy_videos)
 GROUP BY ca.name
 UNION
 SELECT
@@ -56,8 +55,7 @@ FROM (
        FROM annotation_assignment aa
          JOIN core_finprintuser cf ON (aa.annotator_id = cf.id)
          JOIN core_affiliation ca ON (cf.affiliation_id = ca.id)
-       WHERE progress > 0 AND status_id > 0
-             AND video_id NOT IN (SELECT id FROM legacy_videos)
+       WHERE progress > 0 AND video_id NOT IN (SELECT id FROM legacy_videos)
      ) temp
 GROUP BY name
 UNION
@@ -69,8 +67,7 @@ FROM annotation_observation ao
   JOIN annotation_assignment aa ON (aa.id = ao.assignment_id)
   JOIN core_finprintuser cf ON (aa.annotator_id = cf.id)
   JOIN core_affiliation ca ON (cf.affiliation_id = ca.id)
-WHERE aa.progress > 0 AND aa.status_id > 0
-      AND aa.video_id NOT IN (SELECT id FROM legacy_videos)
+WHERE aa.progress > 0 AND aa.video_id NOT IN (SELECT id FROM legacy_videos)
 GROUP BY ca.name
 UNION
 SELECT
@@ -82,8 +79,7 @@ FROM annotation_event ae
   JOIN annotation_assignment aa ON (aa.id = ao.assignment_id)
   JOIN core_finprintuser cf ON (aa.annotator_id = cf.id)
   JOIN core_affiliation ca ON (cf.affiliation_id = ca.id)
-WHERE aa.progress > 0 AND aa.status_id > 0
-      AND aa.video_id NOT IN (SELECT id FROM legacy_videos)
+WHERE aa.progress > 0 AND aa.video_id NOT IN (SELECT id FROM legacy_videos)
 GROUP BY ca.name
 UNION
 SELECT
@@ -93,8 +89,7 @@ SELECT
 FROM annotation_assignment aa
   JOIN core_finprintuser cf ON (aa.annotator_id = cf.id)
   JOIN core_affiliation ca ON (cf.affiliation_id = ca.id)
-WHERE progress > 0 AND status_id = 1
-      AND video_id NOT IN (SELECT id FROM legacy_videos)
+WHERE progress > 0 AND status_id = 2 AND video_id NOT IN (SELECT id FROM legacy_videos)
 GROUP BY ca.name
 UNION
 SELECT
