@@ -925,8 +925,18 @@ var finprint = finprint || {};  //namespace if necessary...
             e.preventDefault();
             e.stopPropagation();
             $modal.modal('show');
+            $modal.find('.measurables').empty();
             //TODO
             return false;
+        });
+
+        $modal.find('button#add-measurable').click(function() {
+            //TODO
+        });
+
+        $modal.find('button#save').click(function() {
+            $modal.modal('hide');
+            //TODO
         });
     }
 })(jQuery);

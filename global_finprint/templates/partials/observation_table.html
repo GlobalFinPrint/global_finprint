@@ -50,8 +50,10 @@
                 <td class="attributes">{{ e.attribute.all|join:', ' }}</td>
                 {% if master %}
                     <td class="measurables">
-                        <a href="#" class="edit-measurables" data-event-id="{{ e.id }}">Edit</a><br />
-                        {{ e.mastereventmeasurable_set.all|join:'<br />' }}
+                        <a href="#" class="edit-measurables" data-event-id="{{ e.id }}">Edit</a>
+                        <div class="content">
+                            {{ e.mastereventmeasurable_set.all|join:'<br />' }}
+                        </div>
                     </td>
                 {% endif %}
                 <td>
@@ -90,10 +92,20 @@
 </div>
 
 <div id="edit-measurables-modal" class="modal fade">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="close" data-dismiss="modal">&times;</div>
-            <div class="edit-measurables"></div>
+
+            <div class="modal-body edit-measurables">
+                <h3>Edit measurables</h3>
+                <div class="measurables"></div>
+                <button id="add-measurable" class="btn btn-info">Add measurable</button>
+            </div>
+
+            <div class="modal-footer">
+                <button id="save" class="btn btn-primary">Save</button>
+                <button class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
         </div>
     </div>
 </div>
