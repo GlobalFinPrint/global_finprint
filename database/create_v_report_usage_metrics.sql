@@ -28,8 +28,8 @@ CREATE OR REPLACE VIEW public.v_report_usage_metrics AS
     'Total hours of video watched' AS metric,
     sum(progress) / 1000 / 60 / 60 AS value
   FROM annotation_assignment
-  WHERE progress > 0 AND status_id > 0 AND video_id NOT IN (SELECT id
-                                                            FROM legacy_videos)
+  WHERE progress > 0 AND video_id NOT IN (SELECT id
+                                          FROM legacy_videos)
   UNION
   SELECT
     'Unique users that have watched videos' AS metric,
@@ -37,8 +37,8 @@ CREATE OR REPLACE VIEW public.v_report_usage_metrics AS
   FROM (
          SELECT DISTINCT annotator_id
          FROM annotation_assignment
-         WHERE progress > 0 AND status_id > 0 AND video_id NOT IN (SELECT id
-                                                                   FROM legacy_videos)
+         WHERE progress > 0 AND video_id NOT IN (SELECT id
+                                                 FROM legacy_videos)
        ) temp
   UNION
   SELECT
@@ -46,8 +46,8 @@ CREATE OR REPLACE VIEW public.v_report_usage_metrics AS
     count(1)                      AS value
   FROM annotation_observation ao
     JOIN annotation_assignment aa ON (aa.id = ao.assignment_id)
-  WHERE aa.progress > 0 AND aa.status_id > 0 AND aa.video_id NOT IN (SELECT id
-                                                                     FROM legacy_videos)
+  WHERE aa.progress > 0 AND aa.video_id NOT IN (SELECT id
+                                                FROM legacy_videos)
   UNION
   SELECT
     'Total events recorded' AS metric,
@@ -55,14 +55,14 @@ CREATE OR REPLACE VIEW public.v_report_usage_metrics AS
   FROM annotation_event ae
     JOIN annotation_observation ao ON (ao.id = ae.observation_id)
     JOIN annotation_assignment aa ON (aa.id = ao.assignment_id)
-  WHERE aa.progress > 0 AND aa.status_id > 0 AND aa.video_id NOT IN (SELECT id
-                                                                     FROM legacy_videos)
+  WHERE aa.progress > 0 AND aa.video_id NOT IN (SELECT id
+                                                FROM legacy_videos)
   UNION
   SELECT
     'Number of videos started but not completed' AS metric,
     count(1)                                     AS value
   FROM annotation_assignment
-  WHERE progress > 0 AND status_id = 1 AND video_id NOT IN (SELECT id
+  WHERE progress > 0 AND status_id = 2 AND video_id NOT IN (SELECT id
                                                             FROM legacy_videos)
   UNION
   SELECT
