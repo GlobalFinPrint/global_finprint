@@ -49,7 +49,7 @@
                 <td class="event-note">{{ e.note|default_if_none:"<i>None</i>" }}</td>
                 <td class="attributes">{{ e.attribute.all|join:', ' }}</td>
                 {% if master %}
-                    <td class="measurables">TODO</td>
+                    <td class="measurables">{{ e.mastereventmeasurable_set.all|join:'<br />' }}</td>
                 {% endif %}
                 <td>
                     {% if master %}
