@@ -925,7 +925,8 @@ var finprint = finprint || {};  //namespace if necessary...
             e.preventDefault();
             e.stopPropagation();
 
-            var eventId = $(e.target).data('event-id');
+            var $originalTarget = $(e.target);
+            var eventId = $originalTarget.data('event-id');
 
             $.get('/assignment/master/edit_measurables/' + eventId, function(res) {
                 var dropdownHtml = '<select class="measurables form-control">';
@@ -935,7 +936,7 @@ var finprint = finprint || {};  //namespace if necessary...
                 });
                 dropdownHtml += '</select>';
 
-                $modal.find('button#add-measurable').click(function() {
+                $modal.find('button#add-measurable').unbind().click(function() {
                     var input = '<input class="form-control" type="text" value=""/>';
                     var remove = '<button class="btn btn-danger remove">Remove</button>';
                     $modal.find('div.measurables')
@@ -955,20 +956,24 @@ var finprint = finprint || {};  //namespace if necessary...
                         .append('<div class="measurable-row">' + thisDropDown + input + remove + '</div>');
                 });
             });
-            return false;
-        });
 
-        $modal.on('click', 'div.measurable-row button.remove', function(e) {
-            $(e.target).parent().remove();
-        });
-
-        $modal.find('button#save').click(function() {
-            var payload = [];
-            $modal.find('div.measurable-row').each(function() {
-                payload.push([$(this).find('select.measurables').val(), $(this).find('input[type="text"]').val()]);
+            $modal.on('click', 'div.measurable-row button.remove', function(e) {
+                $(e.target).parent().remove();
             });
-            console.log(payload);
-            // $modal.modal('hide');
+
+            $modal.find('button#save').unbind().click(function() {
+                var data = { measurables: [], values: [] };
+                $modal.find('div.measurable-row').each(function() {
+                    data.measurables.push($(this).find('select.measurables').val());
+                    data.values.push($(this).find('input[type="text"]').val());
+                });
+                $.post('/assignment/master/edit_measurables/' + eventId, data, function(res) {
+                    $originalTarget.siblings('.content').empty().html(res.measurables.join('<br />'));
+                    $modal.modal('hide');
+                });
+            });
+
+            return false;
         });
     }
 })(jQuery);

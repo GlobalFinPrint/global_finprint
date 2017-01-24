@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.db import transaction
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from global_finprint.annotation.models.observation import \
-    Observation, Event, Animal, Attribute, MasterEvent, Measurable
+    Observation, Event, Animal, Attribute, MasterEvent, Measurable, MasterEventMeasurable
 from global_finprint.bruv.models import Set, Trip
 from global_finprint.core.mixins import UserAllowedMixin
 
@@ -192,4 +192,14 @@ class EditMeasurablesInline(UserAllowedMixin, View):
         })
 
     def post(self, request, evt_id, **kwargs):
-        pass
+        event = MasterEvent.objects.get(id=evt_id)
+        event.measurables.clear()
+        measurables = request.POST.getlist('measurables[]', [])
+        values = request.POST.getlist('values[]', [])
+        print(list(zip(measurables, values)))
+        for m, v in zip(measurables, values):
+            MasterEventMeasurable(master_event_id=event.id, measurable_id=m, value=v).save()
+        event.refresh_from_db()
+        return JsonResponse({
+            'measurables': list(str(em) for em in event.mastereventmeasurable_set.all())
+        })
