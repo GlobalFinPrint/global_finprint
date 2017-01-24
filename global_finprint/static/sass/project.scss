@@ -530,6 +530,16 @@ h3.form-title {
   .edit-measurables {
     min-height: 200px;
     padding: 0 25px;
+
+    div.measurable-row {
+      margin-bottom: 15px;
+
+      select, input {
+      display: inline-block;
+      width: 40%;
+      margin-right: 15px;
+      }
+    }
   }
 }
 

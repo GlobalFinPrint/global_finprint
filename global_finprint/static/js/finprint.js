@@ -924,8 +924,23 @@ var finprint = finprint || {};  //namespace if necessary...
         $('td.measurables').on('click', 'a.edit-measurables', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            $modal.modal('show');
-            $modal.find('.measurables').empty();
+
+            var eventId = $(e.target).data('event-id');
+
+            $.get('/assignment/master/edit_measurables/' + eventId, function(res) {
+                var dropdownHtml = '<select class="measurables form-control">';
+                res.measurables.forEach(function(m) {
+                    dropdownHtml += '<option value="' + m.id + '">' + m.name + '</option>';
+                });
+                dropdownHtml += '</select>';
+                $modal.modal('show');
+                $modal.find('.measurables').empty();
+                res.event_measurables.forEach(function(em) {
+                    var thisDropDown = $(dropdownHtml).val(em.measurable)[0];
+                    var input = '<input class="form-control" type="text" value="' + em.value + '"/>';
+                    $modal.find('.measurables').append('<div class="measurable-row">' + dropdownHtml + input +'</div>');
+                });
+            });
             //TODO
             return false;
         });
