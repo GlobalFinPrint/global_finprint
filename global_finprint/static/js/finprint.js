@@ -936,9 +936,12 @@ var finprint = finprint || {};  //namespace if necessary...
                 $modal.modal('show');
                 $modal.find('.measurables').empty();
                 res.event_measurables.forEach(function(em) {
-                    var thisDropDown = $(dropdownHtml).val(em.measurable)[0];
+                    var thisDropDown = $(dropdownHtml)
+                        .find('option[value="' + em.measurable + '"]')
+                            .attr('selected', 'selected')
+                            .end()[0].outerHTML;
                     var input = '<input class="form-control" type="text" value="' + em.value + '"/>';
-                    $modal.find('.measurables').append('<div class="measurable-row">' + dropdownHtml + input +'</div>');
+                    $modal.find('.measurables').append('<div class="measurable-row">' + thisDropDown + input +'</div>');
                 });
             });
             //TODO
