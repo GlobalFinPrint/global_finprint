@@ -493,7 +493,7 @@ h3.form-title {
   }
 }
 
-#full-image-modal {
+#edit-measurables-modal, #full-image-modal {
   .event-image {
     position: relative;
     cursor: pointer;
@@ -525,6 +525,25 @@ h3.form-title {
     font-size: 2.0em;
     padding-bottom: 3px;
     -webkit-user-select: none;
+  }
+
+  .edit-measurables {
+    min-height: 200px;
+    padding: 0 25px;
+
+    div.measurable-row {
+      margin-bottom: 15px;
+
+      select, input {
+      display: inline-block;
+      width: 40%;
+      margin-right: 15px;
+      }
+    }
+
+    button#add-measurable {
+      margin-bottom: 25px;
+    }
   }
 }
 

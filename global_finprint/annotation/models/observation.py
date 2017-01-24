@@ -362,8 +362,18 @@ class Event(AbstractEvent):
                                                  self.id)
 
 
+class Measurable(models.Model):
+    name = models.TextField()
+    description = models.TextField(null=True, blank=True)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return u"{0}".format(self.name)
+
+
 class MasterEvent(AbstractEvent):
     master_observation = models.ForeignKey(to=MasterObservation)
+    measurables = models.ManyToManyField(Measurable, through='MasterEventMeasurable')
     original = models.ForeignKey(to=Event, null=True, blank=True, on_delete=models.SET_NULL)
 
     @classmethod
@@ -381,3 +391,12 @@ class MasterEvent(AbstractEvent):
 
     def filename(self):
         return self.original.filename()
+
+
+class MasterEventMeasurable(models.Model):
+    master_event = models.ForeignKey(MasterEvent)
+    measurable = models.ForeignKey(Measurable)
+    value = models.TextField()
+
+    def __str__(self):
+        return u"{}: {}".format(self.measurable, self.value)
