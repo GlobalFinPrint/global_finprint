@@ -71,6 +71,7 @@ class MeasurableAdminForm(forms.ModelForm):
 
 
 class MeasurableAdmin(admin.ModelAdmin):
+    list_display = ('name', 'active')
     form = MeasurableAdminForm
 
 admin.site.register(observation.Measurable, MeasurableAdmin)

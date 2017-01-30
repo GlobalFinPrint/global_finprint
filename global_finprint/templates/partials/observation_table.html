@@ -52,7 +52,7 @@
                     <td class="measurables">
                         <a href="#" class="edit-measurables" data-event-id="{{ e.id }}">Edit</a>
                         <div class="content">
-                            {{ e.mastereventmeasurable_set.all|join:'<br />' }}
+                            {{ e.active_measurables|join:'<br />' }}
                         </div>
                     </td>
                 {% endif %}

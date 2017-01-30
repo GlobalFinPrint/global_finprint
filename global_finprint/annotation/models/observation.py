@@ -392,6 +392,9 @@ class MasterEvent(AbstractEvent):
     def filename(self):
         return self.original.filename()
 
+    def active_measurables(self):
+        return self.mastereventmeasurable_set.filter(measurable__active=True)
+
 
 class MasterEventMeasurable(models.Model):
     master_event = models.ForeignKey(MasterEvent)

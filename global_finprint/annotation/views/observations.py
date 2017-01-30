@@ -186,9 +186,9 @@ class EditMeasurablesInline(UserAllowedMixin, View):
         event = MasterEvent.objects.get(id=evt_id)
         return JsonResponse({
             'measurables': list({'name': m.name, 'id': m.id}
-                                for m in Measurable.objects.all()),
+                                for m in Measurable.objects.filter(active=True)),
             'event_measurables': list({'measurable': m.measurable_id, 'value': m.value}
-                                      for m in event.mastereventmeasurable_set.all()),
+                                      for m in event.active_measurables()),
         })
 
     def post(self, request, evt_id, **kwargs):
@@ -201,5 +201,5 @@ class EditMeasurablesInline(UserAllowedMixin, View):
             MasterEventMeasurable(master_event_id=event.id, measurable_id=m, value=v).save()
         event.refresh_from_db()
         return JsonResponse({
-            'measurables': list(str(em) for em in event.mastereventmeasurable_set.all())
+            'measurables': list(str(em) for em in event.active_measurables())
         })
