@@ -32,7 +32,7 @@
                 <td class="obs-note rowspan">{{ o.comment|default_if_none:"<i>None</i>" }}</td>
                 <td class="duration rowspan">{{ o.duration|default_if_none:"<i>None</i>" }}</td>
             {% else %}
-            <tr class="children-{{ o.id }} child-row {{ e.needs_review|yesno:"needs-review,," }}">
+            <tr class="children-{{ o.id }} child-row {{ e.needs_review|yesno:"needs-review,," }}" data-is-child="children-{{ o.id }}">
             {% endif %}
                 {% with imageurl=e.image_url %}
                 {% if imageurl %}

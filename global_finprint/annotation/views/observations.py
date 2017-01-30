@@ -122,6 +122,8 @@ class MasterObservationSaveData(UserAllowedMixin, View):
             'duration': observation.duration if observation.duration is not None else '<i>None</i>',
             'event_note': event.note if event.note is not None else '<i>None</i>',
             'attributes': ', '.join(map(str, event.attribute.all())),
+            'obs_needs_review': observation.needs_review(),
+            'evt_needs_review': event.needs_review(),
         })
 
 

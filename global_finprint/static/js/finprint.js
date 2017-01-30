@@ -743,6 +743,9 @@ var finprint = finprint || {};  //namespace if necessary...
             var dataUrl = $this.data('event');
             var saveUrl = dataUrl.replace('edit_data', 'save_data');
             var $thisRow = $this.closest('tr');
+            var $parentRow = $thisRow.hasClass('first-event')
+                ? $thisRow
+                : $this.closest('tbody').find('tr[data-target=".' + $thisRow.data('is-child') + '"]');
             var $actionsCell = $this.closest('td');
             var $animalCell = $thisRow.find('td.animal');
             var $obsNoteCell = $thisRow.find('td.obs-note');
@@ -792,6 +795,16 @@ var finprint = finprint || {};  //namespace if necessary...
                             $durationCell.html(res.duration);
                             $eventNoteCell.html(res.event_note);
                             $attributesCell.html(res.attributes);
+                            if (res.evt_needs_review) {
+                                $thisRow.addClass('needs-review');
+                            } else {
+                                $thisRow.removeClass('needs-review');
+                            }
+                            if (res.obs_needs_review) {
+                                $parentRow.addClass('needs-review');
+                            } else {
+                                $parentRow.removeClass('needs-review');
+                            }
                         });
                     }).end()
                     .find('.edit-cancel').one('click', function(e) {
