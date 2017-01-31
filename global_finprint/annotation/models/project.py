@@ -1,6 +1,7 @@
 from django.db import models
 from global_finprint.core.models import AuditableModel
 from .animal import Animal, AnimalGroup
+from django.apps import apps
 
 
 class Project(AuditableModel):
@@ -14,3 +15,9 @@ class Project(AuditableModel):
     def animal_groups(self):
         group_ids = self.animals.all().distinct('group').values_list('group__id')
         return AnimalGroup.objects.filter(id__in=group_ids)
+
+    def tag_list(self):
+        inactive_ids = set()
+        for a in apps.get_model('annotation', 'Attribute').objects.filter(active=False):
+            inactive_ids = (inactive_ids | set(a.id for a in a.get_descendants(include_self=True)))
+        return self.attribute_set.filter(not_selectable=False).exclude(id__in=inactive_ids)

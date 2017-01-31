@@ -25,6 +25,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initExpandEventThumbnail();
         initInlineObsEdit();
         initVideoForm();
+        initEditMeasurables();
     });
 
     function getCSRF() {
@@ -742,6 +743,9 @@ var finprint = finprint || {};  //namespace if necessary...
             var dataUrl = $this.data('event');
             var saveUrl = dataUrl.replace('edit_data', 'save_data');
             var $thisRow = $this.closest('tr');
+            var $parentRow = $thisRow.hasClass('first-event')
+                ? $thisRow
+                : $this.closest('tbody').find('tr[data-target=".' + $thisRow.data('is-child') + '"]');
             var $actionsCell = $this.closest('td');
             var $animalCell = $thisRow.find('td.animal');
             var $obsNoteCell = $thisRow.find('td.obs-note');
@@ -791,6 +795,16 @@ var finprint = finprint || {};  //namespace if necessary...
                             $durationCell.html(res.duration);
                             $eventNoteCell.html(res.event_note);
                             $attributesCell.html(res.attributes);
+                            if (res.evt_needs_review) {
+                                $thisRow.addClass('needs-review');
+                            } else {
+                                $thisRow.removeClass('needs-review');
+                            }
+                            if (res.obs_needs_review) {
+                                $parentRow.addClass('needs-review');
+                            } else {
+                                $parentRow.removeClass('needs-review');
+                            }
                         });
                     }).end()
                     .find('.edit-cancel').one('click', function(e) {
@@ -914,6 +928,65 @@ var finprint = finprint || {};  //namespace if necessary...
                 .appendTo($primaryCol);
 
             $removeCol.find('.sub-control:first').clone().appendTo($removeCol);
+        });
+    }
+
+    function initEditMeasurables() {
+        var $modal = $('#edit-measurables-modal');
+
+        $('td.measurables').on('click', 'a.edit-measurables', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var $originalTarget = $(e.target);
+            var eventId = $originalTarget.data('event-id');
+
+            $.get('/assignment/master/edit_measurables/' + eventId, function(res) {
+                var dropdownHtml = '<select class="measurables form-control">';
+                dropdownHtml += '<option value="0">---</option>';
+                res.measurables.forEach(function(m) {
+                    dropdownHtml += '<option value="' + m.id + '">' + m.name + '</option>';
+                });
+                dropdownHtml += '</select>';
+
+                $modal.find('button#add-measurable').unbind().click(function() {
+                    var input = '<input class="form-control" type="text" value=""/>';
+                    var remove = '<button class="btn btn-danger remove">Remove</button>';
+                    $modal.find('div.measurables')
+                        .append('<div class="measurable-row">' + dropdownHtml + input + remove + '</div>');
+                });
+
+                $modal.modal('show');
+                $modal.find('.measurables').empty();
+                res.event_measurables.forEach(function(em) {
+                    var thisDropDown = $(dropdownHtml).clone()
+                        .find('option[value="' + em.measurable + '"]')
+                            .attr('selected', 'selected').end()[0].outerHTML;
+                    console.log(thisDropDown);
+                    var input = '<input class="form-control" type="text" value="' + em.value + '"/>';
+                    var remove = '<button class="btn btn-danger remove">Remove</button>';
+                    $modal.find('div.measurables')
+                        .append('<div class="measurable-row">' + thisDropDown + input + remove + '</div>');
+                });
+            });
+
+            $modal.on('click', 'div.measurable-row button.remove', function(e) {
+                $(e.target).parent().remove();
+            });
+
+            $modal.find('button#save').unbind().click(function() {
+                var data = { measurables: [], values: [] };
+                $modal.find('div.measurable-row').each(function() {
+                    data.measurables.push($(this).find('select.measurables').val());
+                    data.values.push($(this).find('input[type="text"]').val());
+                });
+                $.post('/assignment/master/edit_measurables/' + eventId, data, function(res) {
+                    $originalTarget.siblings('.content').empty().html(res.measurables.join('<br />'));
+                    $modal.modal('hide');
+                });
+            });
+
+            return false;
         });
     }
 })(jQuery);

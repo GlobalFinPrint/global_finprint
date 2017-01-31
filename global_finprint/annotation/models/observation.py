@@ -178,6 +178,9 @@ class Observation(AbstractObservation):
     def animal(self):
         return self.animalobservation.animal
 
+    def needs_review(self):
+        return any(e.needs_review() for e in self.event_set.all())
+
 
 class MasterObservation(AbstractObservation):
     master_record = models.ForeignKey(to=MasterRecord)
@@ -222,6 +225,9 @@ class MasterObservation(AbstractObservation):
     def event_set_for_table(self):
         initial_event = self.initial_event()
         return [initial_event] + list(self.masterevent_set.exclude(id=initial_event.id).order_by('-event_time'))
+
+    def needs_review(self):
+        return any(e.needs_review() for e in self.event_set())
 
 
 class AbstractAnimalObservation(AuditableModel):
@@ -300,6 +306,9 @@ class AbstractEvent(AuditableModel):
         except AttributeError:  # handle bad extents
             return None
 
+    def needs_review(self):
+        return any(a.needs_review for a in self.attribute.all())
+
 
 class Event(AbstractEvent):
     observation = models.ForeignKey(to=Observation)
@@ -353,8 +362,18 @@ class Event(AbstractEvent):
                                                  self.id)
 
 
+class Measurable(models.Model):
+    name = models.TextField()
+    description = models.TextField(null=True, blank=True)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return u"{0}".format(self.name)
+
+
 class MasterEvent(AbstractEvent):
     master_observation = models.ForeignKey(to=MasterObservation)
+    measurables = models.ManyToManyField(Measurable, through='MasterEventMeasurable')
     original = models.ForeignKey(to=Event, null=True, blank=True, on_delete=models.SET_NULL)
 
     @classmethod
@@ -372,3 +391,15 @@ class MasterEvent(AbstractEvent):
 
     def filename(self):
         return self.original.filename()
+
+    def active_measurables(self):
+        return self.mastereventmeasurable_set.filter(measurable__active=True)
+
+
+class MasterEventMeasurable(models.Model):
+    master_event = models.ForeignKey(MasterEvent)
+    measurable = models.ForeignKey(Measurable)
+    value = models.TextField()
+
+    def __str__(self):
+        return u"{}: {}".format(self.measurable, self.value)

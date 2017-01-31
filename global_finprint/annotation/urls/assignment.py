@@ -4,7 +4,8 @@ from global_finprint.annotation.views.assignment import VideoAutoAssignView, Ass
     AssignmentListView, AssignmentListTbodyView, AssignmentModalBodyView
 from global_finprint.annotation.views.compare import AssignmentCompareView, AssignmentDetailView, \
     GetMasterView, MasterReviewView, MasterSetCompleted, MasterSetDeprecated
-from global_finprint.annotation.views.observations import MasterObservationEditData, MasterObservationSaveData
+from global_finprint.annotation.views.observations import MasterObservationEditData, \
+    MasterObservationSaveData, EditMeasurablesInline
 
 urlpatterns = [
     url(r"^$", AssignmentListView.as_view(), name='assignment_list'),
@@ -24,4 +25,6 @@ urlpatterns = [
         name='master_set_completed'),
     url(r"^master/(?P<master_id>\d+)/deprecate$", csrf_exempt(MasterSetDeprecated.as_view()),
         name='master_set_deprecated'),
+    url(r"^master/edit_measurables/(?P<evt_id>\d+)$", csrf_exempt(EditMeasurablesInline.as_view()),
+        name='edit_measurables_inline')
 ]

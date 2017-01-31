@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.db import transaction
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from global_finprint.annotation.models.observation import \
-    Observation, Event, Animal, Attribute, MasterEvent
+    Observation, Event, Animal, Attribute, MasterEvent, Measurable, MasterEventMeasurable
 from global_finprint.bruv.models import Set, Trip
 from global_finprint.core.mixins import UserAllowedMixin
 
@@ -73,7 +73,7 @@ class MasterObservationEditData(UserAllowedMixin, View):
         event = get_object_or_404(MasterEvent, pk=evt_id)
         project = event.master_observation.master_record.project
         animals = Animal.objects.filter(project=project).select_related('group')
-        tags = project.attribute_set.all()
+        tags = project.tag_list()
         return JsonResponse({
             'animals': list({'id': a.id, 'name': str(a)} for a in animals),
             'tags': list({'id': t.id, 'name': str(t)} for t in tags),
@@ -122,6 +122,8 @@ class MasterObservationSaveData(UserAllowedMixin, View):
             'duration': observation.duration if observation.duration is not None else '<i>None</i>',
             'event_note': event.note if event.note is not None else '<i>None</i>',
             'attributes': ', '.join(map(str, event.attribute.all())),
+            'obs_needs_review': observation.needs_review(),
+            'evt_needs_review': event.needs_review(),
         })
 
 
@@ -130,7 +132,7 @@ class ObservationEditData(UserAllowedMixin, View):
         event = get_object_or_404(Event, pk=evt_id)
         project = event.observation.assignment.project
         animals = Animal.objects.filter(project=project).select_related('group')
-        tags = project.attribute_set.all()
+        tags = project.tag_list()
         return JsonResponse({
             'animals': list({'id': a.id, 'name': str(a)} for a in animals),
             'tags': list({'id': t.id, 'name': str(t)} for t in tags),
@@ -178,4 +180,28 @@ class ObservationSaveData(UserAllowedMixin, View):
             'duration': observation.duration if observation.duration is not None else '<i>None</i>',
             'event_note': event.note if event.note is not None else '<i>None</i>',
             'attributes': ', '.join(map(str, event.attribute.all())),
+        })
+
+
+class EditMeasurablesInline(UserAllowedMixin, View):
+    def get(self, request, evt_id, **kwargs):
+        event = MasterEvent.objects.get(id=evt_id)
+        return JsonResponse({
+            'measurables': list({'name': m.name, 'id': m.id}
+                                for m in Measurable.objects.filter(active=True)),
+            'event_measurables': list({'measurable': m.measurable_id, 'value': m.value}
+                                      for m in event.active_measurables()),
+        })
+
+    def post(self, request, evt_id, **kwargs):
+        event = MasterEvent.objects.get(id=evt_id)
+        event.measurables.clear()
+        measurables = request.POST.getlist('measurables[]', [])
+        values = request.POST.getlist('values[]', [])
+        print(list(zip(measurables, values)))
+        for m, v in zip(measurables, values):
+            MasterEventMeasurable(master_event_id=event.id, measurable_id=m, value=v).save()
+        event.refresh_from_db()
+        return JsonResponse({
+            'measurables': list(str(em) for em in event.active_measurables())
         })

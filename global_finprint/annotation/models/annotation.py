@@ -12,6 +12,8 @@ class Attribute(MPTTModel):
     lead_only = models.BooleanField(
         default=False,
         help_text='overridden if parent is lead only')
+    needs_review = models.BooleanField(default=False)
+    not_selectable = models.BooleanField(default=False)
 
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
     project = models.ForeignKey(Project, default=1)
@@ -26,12 +28,17 @@ class Attribute(MPTTModel):
     def __str__(self):
         return u"{0}".format(self.name)
 
+    def verbose_name(self):
+        return '/'.join(list(map(str, self.get_ancestors(include_self=True))))
+
     def to_json(self, children=True, is_lead=True):
         json = {
             'id': self.pk,
             'name': self.name,
+            'verbose': self.verbose_name(),
             'description': self.description,
-            'level': self.get_level()
+            'level': self.get_level(),
+            'not_selectable': self.not_selectable
         }
         if children and not self.is_leaf_node():
             children = list(a for a in self.get_children() if a.active)
