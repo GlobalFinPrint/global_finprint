@@ -211,7 +211,7 @@ class MasterObservation(AbstractObservation):
         return self.master_record.set
 
     def initial_event(self):
-        return self.masterevent_set.order_by('create_datetime').first()
+        return self.masterevent_set.order_by('original_id').first()
 
     def event_set(self):
         return self.masterevent_set.order_by('event_time')
