@@ -15,6 +15,9 @@ from ..core.mixins import UserAllowedMixin
 
 
 class TripListView(UserAllowedMixin, CreateView):
+    """
+    View for trip list found at /trips/
+    """
     model = Trip
     form_class = TripForm
     context_object_name = 'trip'
@@ -23,6 +26,11 @@ class TripListView(UserAllowedMixin, CreateView):
     success_url = reverse_lazy('trip_list')
 
     def get_form(self, **kwargs):
+        """
+        Return trip form based on url
+        :param kwargs:
+        :return:
+        """
         if 'trip_pk' in self.kwargs:
             edited_trip = get_object_or_404(Trip, pk=self.kwargs['trip_pk'])
             form = TripForm(self.request.POST or None, instance=edited_trip)
@@ -31,10 +39,20 @@ class TripListView(UserAllowedMixin, CreateView):
         return form
 
     def form_invalid(self, form):
+        """
+        Invalid form handler method
+        :param form:
+        :return:
+        """
         messages.error(self.request, 'Form errors found')
         return super().form_invalid(form)
 
     def form_valid(self, form):
+        """
+        Valid form handler method
+        :param form:
+        :return:
+        """
         if 'trip_pk' in self.kwargs:
             edited_trip = get_object_or_404(Trip, pk=self.kwargs['trip_pk'])
             for k, v in form.cleaned_data.items():
@@ -47,6 +65,10 @@ class TripListView(UserAllowedMixin, CreateView):
             return super().form_valid(form)
 
     def get_queryset(self):
+        """
+        Get queryset based on search form
+        :return:
+        """
         form = TripSearchForm(self.request.GET)
         if self.request.GET and form.is_valid():
             search_values = form.cleaned_data
@@ -71,6 +93,11 @@ class TripListView(UserAllowedMixin, CreateView):
             return Trip.objects.all().order_by('start_date').select_related('location')
 
     def get_context_data(self, **kwargs):
+        """
+        Get context data for template
+        :param kwargs:
+        :return:
+        """
         page = self.request.GET.get('page', 1)
         queryset = self.get_queryset()
         paginator = Paginator(queryset, 50)
@@ -105,6 +132,12 @@ def trip_detail(request, pk):
 
 @login_required
 def trip_sets_geojson(request, trip_id):
+    """
+    Get geoJSON per set for specified trip
+    :param request:
+    :param trip_id:
+    :return:
+    """
     feature = serialize('geojson',
                         Set.objects.filter(trip_id=trip_id),
                         fields='coordinates, drop_time'
