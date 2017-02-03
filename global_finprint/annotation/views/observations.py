@@ -28,11 +28,15 @@ def observation_detail(request, pk):
     return JsonResponse(data)
 
 
+# depracated:
 def observation_post(request):
     pass
 
 
 class ObservationListView(UserAllowedMixin, ListView):
+    """
+    View to list observations for a given set found at /trips/<trip_id>/sets/<set_id>/observations/
+    """
     model = Observation
     context_object_name = 'observations'
     template_name = 'pages/observations/observation_list.html'
@@ -69,6 +73,9 @@ class ObservationListView(UserAllowedMixin, ListView):
 
 # TODO DRY this up
 class MasterObservationEditData(UserAllowedMixin, View):
+    """
+    Endpoint to grab data for inline observation editing (master)
+    """
     def get(self, request, evt_id, **kwargs):
         event = get_object_or_404(MasterEvent, pk=evt_id)
         project = event.master_observation.master_record.project
@@ -87,6 +94,9 @@ class MasterObservationEditData(UserAllowedMixin, View):
 
 # TODO DRY this up
 class MasterObservationSaveData(UserAllowedMixin, View):
+    """
+    Endpoint to save inline observation editing (master)
+    """
     def post(self, request, evt_id, **kwargs):
         event = get_object_or_404(MasterEvent, pk=evt_id)
         observation = event.master_observation
@@ -128,6 +138,9 @@ class MasterObservationSaveData(UserAllowedMixin, View):
 
 
 class ObservationEditData(UserAllowedMixin, View):
+    """
+    Endpoint to grab data for inline observation editing (non-master)
+    """
     def get(self, request, evt_id, **kwargs):
         event = get_object_or_404(Event, pk=evt_id)
         project = event.observation.assignment.project
@@ -145,6 +158,9 @@ class ObservationEditData(UserAllowedMixin, View):
 
 
 class ObservationSaveData(UserAllowedMixin, View):
+    """
+    Endpoint to save inline observation editing (non-master)
+    """
     def post(self, request, evt_id, **kwargs):
         event = get_object_or_404(Event, pk=evt_id)
         observation = event.observation
@@ -184,6 +200,9 @@ class ObservationSaveData(UserAllowedMixin, View):
 
 
 class EditMeasurablesInline(UserAllowedMixin, View):
+    """
+    Endpoints to power measurables inline editing on master record review page
+    """
     def get(self, request, evt_id, **kwargs):
         event = MasterEvent.objects.get(id=evt_id)
         return JsonResponse({
