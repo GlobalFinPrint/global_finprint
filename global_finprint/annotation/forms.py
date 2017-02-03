@@ -11,6 +11,9 @@ import re
 
 
 class FlexibleChoiceField(forms.ChoiceField):
+    """
+    Helper field for video form file field
+    """
     def to_python(self, value):
         return value
 
@@ -19,11 +22,17 @@ class FlexibleChoiceField(forms.ChoiceField):
 
 
 class MultiRowCharField(forms.CharField):
+    """
+    Helper field for video form source and path fields
+    """
     def to_python(self, value):
         return value
 
 
 class SingleSelectizeWidget(forms.Select):
+    """
+    Helper widget for video form file field
+    """
     template = '<div class="sub-control">' \
                '<select class="selectize form-control" name="{}" {}>'
     templend = '</select>' \
@@ -49,6 +58,9 @@ class SingleSelectizeWidget(forms.Select):
 
 
 class MultiRowTextInput(forms.Widget):
+    """
+    Helper widget for video form source and path fields
+    """
     template = '<div class="sub-control">' \
                '<input class="form-control textInput" name="{}" type="text" value="{}" {} />' \
                '</div>'
@@ -64,6 +76,9 @@ class MultiRowTextInput(forms.Widget):
 
 
 class MultiRowRadioSelect(forms.Widget):
+    """
+    Helper widget for video form primary field
+    """
     template = '<div class="sub-control">' \
                '<input class="radio" name="{}" type="radio" value="{}" {} {} />' \
                '</div>'
@@ -81,6 +96,9 @@ class MultiRowRadioSelect(forms.Widget):
 
 
 class RemoveWidget(forms.Widget):
+    """
+    Helper widget for video form remove link
+    """
     template = '<div class="sub-control"><a href="#" class="remove">Remove</a></div>'
 
     def value_from_datadict(self, data, files, name):
@@ -94,6 +112,9 @@ class RemoveWidget(forms.Widget):
 
 
 class VideoForm(forms.Form):
+    """
+    Video form used as part of set form; supports multiple rows
+    """
     file = FlexibleChoiceField(required=False, label='File name', widget=SingleSelectizeWidget)
     source = MultiRowCharField(required=False, label='File system/source', max_length=100, widget=MultiRowTextInput)
     path = MultiRowCharField(required=False, label='Path', max_length=100, widget=MultiRowTextInput)

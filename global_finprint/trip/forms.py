@@ -14,6 +14,9 @@ datepicker_opts = {"format": "MMMM DD YYYY", "showClear": True, "extraFormats": 
 
 
 class TripForm(forms.ModelForm):
+    """
+    Main trip form
+    """
     start_date = forms.DateField(
         input_formats=['%B %d %Y'],
         widget=DateTimePicker(options=datepicker_opts)
@@ -55,6 +58,9 @@ class TripForm(forms.ModelForm):
 
 
 class TripSearchForm(forms.Form):
+    """
+    Trip search form
+    """
     search_start_date = forms.DateField(required=False,
                                         input_formats=['%B %d %Y'],
                                         widget=DateTimePicker(options=datepicker_opts))
