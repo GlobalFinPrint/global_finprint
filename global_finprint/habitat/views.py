@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from .models import Reef
 
 
+# depracated:
 @login_required
 def reef_detail_geojson(request, reef_id):
     feature = serialize('geojson',

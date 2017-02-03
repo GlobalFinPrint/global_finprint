@@ -12,6 +12,9 @@ from ..core.mixins import UserAllowedMixin
 
 
 class CustomReportListView(UserAllowedMixin, View):
+    """
+    List for custom reports found at /reports/
+    """
     template = 'pages/reports/custom_list.html'
 
     def get(self, request):
@@ -20,6 +23,9 @@ class CustomReportListView(UserAllowedMixin, View):
 
 
 class CustomReportView(UserAllowedMixin, View):
+    """
+    Individual report view found at /reports/custom/<report_name>
+    """
     template = 'pages/reports/custom_report.html'
 
     def get(self, request, report):
@@ -34,6 +40,9 @@ class CustomReportView(UserAllowedMixin, View):
 
 
 class CustomReportFileView(UserAllowedMixin, View):
+    """
+    Download report as CSV view
+    """
     # todo:  always csv right now ... handle other formats?
     def get(self, request, report, format):
         report = Report(report)
@@ -48,13 +57,22 @@ class CustomReportFileView(UserAllowedMixin, View):
 
 
 class StatusMapView(UserAllowedMixin, View):
+    """
+    Report for status map found at /reports/status/map/
+    """
     template = 'pages/reports/status_report_map.html'
 
     def get(self, request):
         return render_to_response(self.template)
 
+
 @login_required
 def planned_site_geojson(request):
+    """
+    return geojson for planned sites
+    :param request:
+    :return:
+    """
     feature = serialize('geojson',
                         Planned_Site_Status.objects.all(),
                         fields='eez_boundary, status'

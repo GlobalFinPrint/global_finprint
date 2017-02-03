@@ -5,7 +5,11 @@ from django.shortcuts import get_object_or_404
 
 from .models import FinprintUser
 
+
 class UrlRedirect(View):
+    """
+    Helper methods for redirection
+    """
     @staticmethod
     def get(request, *args, **kwargs):
         return redirect('home', permanent=True)
@@ -24,6 +28,9 @@ class UrlRedirect(View):
 
 
 class UserInfoView(View):
+    """
+    User info view to power popover
+    """
     def get(self, request, id):
         user = get_object_or_404(FinprintUser, pk=id)
         json = user.to_json()
