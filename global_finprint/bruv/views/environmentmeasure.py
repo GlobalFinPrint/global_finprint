@@ -7,6 +7,7 @@ from ..forms import EnvironmentMeasureForm
 from ...core.mixins import UserAllowedMixin
 
 
+# depracated: now integrated into main set form
 class EnvironmentMeasureCreateView(UserAllowedMixin, CreateView):
     success_msg = 'Environment measure created!'
     model = EnvironmentMeasure
@@ -35,6 +36,7 @@ class EnvironmentMeasureCreateView(UserAllowedMixin, CreateView):
         return context
 
 
+# depracated: now integrated into main set form
 class EnvironmentMeasureUpdateView(UserAllowedMixin, UpdateView):
     success_msg = 'Environment Measure Created!'
     model = EnvironmentMeasure

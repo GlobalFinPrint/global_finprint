@@ -38,9 +38,18 @@ def set_detail(request, pk):
 
 
 class SetListView(UserAllowedMixin, View):
+    """
+    Set list view found at /trips/<trip_id>/sets/
+    """
     template = 'pages/sets/set_list.html'
 
     def _common_context(self, request, parent_trip):
+        """
+        Helper method returns page context common to multiple requests
+        :param request:
+        :param parent_trip:
+        :return:
+        """
         page = request.GET.get('page', 1)
         paginator = Paginator(self._get_filtered_sets(parent_trip), 50)
         try:
@@ -58,6 +67,11 @@ class SetListView(UserAllowedMixin, View):
         })
 
     def _get_filtered_sets(self, parent_trip):
+        """
+        Helper method returns sets that match filter
+        :param parent_trip:
+        :return:
+        """
         result = Set.objects
         prefetch = [
             'trip',
@@ -89,6 +103,11 @@ class SetListView(UserAllowedMixin, View):
         return result
 
     def _get_set_form_defaults(self, parent_trip):
+        """
+        Helper method returns
+        :param parent_trip:
+        :return:
+        """
         set_form_defaults = {
             'trip': parent_trip,
             'set_date': parent_trip.start_date,
@@ -115,6 +134,12 @@ class SetListView(UserAllowedMixin, View):
         return set_form_defaults
 
     def _upload_image(self, file, filename):
+        """
+        Helper method uploads image to S3
+        :param file:
+        :param filename:
+        :return:
+        """
         try:
             conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
             bucket = conn.get_bucket(settings.HABITAT_IMAGE_BUCKET, validate=False)
@@ -128,6 +153,12 @@ class SetListView(UserAllowedMixin, View):
             return False, e
 
     def _process_habitat_images(self, set, request):
+        """
+        Helper method processes habitat images
+        :param set:
+        :param request:
+        :return:
+        """
         if request.FILES.get('bruv_image_file', False):
             filename = set.habitat_filename('bruv')
             success, error = self._upload_image(request.FILES['bruv_image_file'], filename)
@@ -147,6 +178,12 @@ class SetListView(UserAllowedMixin, View):
                 messages.warning(request, 'Error uploading Habitat image: {}'.format(str(error)))
 
     def _process_habitat_substrate(self, set, request):
+        """
+        Helper method saves habitat substrate data
+        :param set:
+        :param request:
+        :return:
+        """
         with transaction.atomic():
             set.benthic_category.clear()
             for (s_id, val) in zip(request.POST.getlist('benthic-category'), request.POST.getlist('percent')):
@@ -154,6 +191,12 @@ class SetListView(UserAllowedMixin, View):
                 bcv.save()
 
     def get(self, request, **kwargs):
+        """
+        Main method to return template
+        :param request:
+        :param kwargs:
+        :return:
+        """
         trip_pk, set_pk = kwargs.get('trip_pk', None), kwargs.get('set_pk', None)
         parent_trip = get_object_or_404(Trip, pk=trip_pk)
         context = self._common_context(request, parent_trip)
@@ -202,6 +245,12 @@ class SetListView(UserAllowedMixin, View):
         return render_to_response(self.template, context=context)
 
     def post(self, request, **kwargs):
+        """
+        Main method to process form submissions
+        :param request:
+        :param kwargs:
+        :return:
+        """
         trip_pk, set_pk = kwargs.get('trip_pk', None), kwargs.get('set_pk', None)
         parent_trip = get_object_or_404(Trip, pk=kwargs['trip_pk'])
         context = self._common_context(request, parent_trip)
