@@ -4,6 +4,7 @@ from django.forms.utils import flatatt
 from django.forms import ValidationError
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django.core.urlresolvers import reverse_lazy
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from crispy_forms.helper import FormHelper
 import crispy_forms.layout as cfl
@@ -378,3 +379,18 @@ class SetLevelCommentsForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_tag = False
+
+
+class SetBulkUploadForm(forms.Form):
+    set_file = forms.FileField()
+
+    def __init__(self, *args, **kwargs):
+        trip_id = kwargs.pop('trip_id')
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_action = reverse_lazy('set_bulk_upload', args=[trip_id])
+        self.helper.form_class = 'form-inline'
+        self.helper.layout = cfl.Layout(
+            cfl.Field('set_file', css_class='form-control'),
+        )
+        self.helper.add_input(cfl.Submit('upload', 'Upload', css_class='btn-fp'))

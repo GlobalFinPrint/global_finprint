@@ -162,7 +162,7 @@ form.trip {
   }
 }
 
-#set-search, #trip-search {
+#set-search, #trip-search, #bulk-upload {
   color: $blue;
   border: none;
   background: $form-background;
@@ -937,5 +937,29 @@ form #div_id_file .selectize-control {
         color: white;
       }
     }
+  }
+}
+
+#bulk-upload {
+  margin-top: 15px;
+
+  .bulk-upload {
+    form.form-inline .form-group {
+      vertical-align: middle;
+    }
+
+    .controls {
+      display: inline;
+    }
+  }
+}
+
+.row.well.bulk-upload-result {
+  p.error {
+    color: firebrick;
+  }
+
+  p.success {
+    color: darkgreen;
   }
 }

@@ -11,16 +11,20 @@ from django.db import transaction
 
 from global_finprint.trip.models import Trip
 from global_finprint.bruv.models import Equipment
-from ..models import Set, BenthicCategoryValue, EnvironmentMeasure
+from ..models import Set, BenthicCategoryValue, EnvironmentMeasure, Bait, Video
 from ..forms import SetForm, EnvironmentMeasureForm, \
-    SetSearchForm, SetLevelCommentsForm, SetLevelDataForm
+    SetSearchForm, SetLevelCommentsForm, SetLevelDataForm, SetBulkUploadForm
 from ...annotation.forms import VideoForm
-from ...habitat.models import ReefHabitat
+from ...annotation.models.video import VideoFile
+from ...habitat.models import ReefHabitat, Reef, ReefType
 from ...core.mixins import UserAllowedMixin
 
 from boto import exception as BotoException
 from boto.s3.connection import S3Connection
 from django.conf import settings
+from openpyxl import load_workbook
+from io import BytesIO
+from zipfile import BadZipFile
 
 
 # deprecated:
@@ -35,6 +39,145 @@ def set_detail(request, pk):
             'depth': s.depth,
             'reef_habitat': str(s.reef_habitat)}
     return JsonResponse(data)
+
+
+class BulkImportError(Exception):
+    pass
+
+
+class SetBulkUploadView(UserAllowedMixin, View):
+    template = 'pages/sets/bulk_upload.html'
+
+    def get(self, request, **kwargs):
+        return HttpResponseRedirect(reverse_lazy('trip_set_list', args=[kwargs.get('trip_pk', None)]))
+
+    def post(self, request, **kwargs):
+        trip_id = kwargs.get('trip_pk', None)
+        error_message = ''
+        form = SetBulkUploadForm(request.POST, request.FILES, trip_id=trip_id)
+        if not form.is_valid():
+            invalid_url = reverse_lazy('trip_set_list', args=[trip_id])
+            messages.error(request, 'Invalid bulk upload form')
+            return HttpResponseRedirect(invalid_url)
+        file = request.FILES['set_file']
+        try:
+            workbook = load_workbook(BytesIO(file.read()), read_only=True)
+            set_sheet = workbook.get_sheet_by_name('Set')
+            env_sheet = workbook.get_sheet_by_name('Environment')
+
+            with transaction.atomic():
+                trip_dict = dict(Trip.objects.values_list('code', 'id'))
+                bait_dict = dict((str(b), b.id) for b in Bait.objects.all())
+                equipment_dict = dict((str(e), e.id) for e in Equipment.objects.all())
+                reef_dict = dict((u'{}|{}'.format(r.site.name, r.name), r.id) for r in Reef.objects.all())
+                habitat_dict = dict((str(h), h.id) for h in ReefType.objects.all())
+                set_fields = [
+                    'trip_code', 'set_code', 'date',
+                    'latitude', 'longitude', 'depth',
+                    'drop_time', 'haul_time', 'site',
+                    'reef', 'habitat', 'equipment',
+                    'bait', 'visibility', 'video',
+                    'comment'
+                ]
+                set_fields_dict = dict((cell.value, n) for n, cell in enumerate(list(set_sheet.rows)[0])
+                                       if cell.value in set_fields)
+                env_fields = [
+                    'trip_code', 'set_code', 'date',
+                    'drop_haul', 'temp', 'salinity',
+                    'conductivity', 'dissolved_oxygen', 'current_flow',
+                    'current_direction', 'tide_state', 'wind_speed',
+                    'wind_direction', 'cloud_cover', 'surface_chop'
+                ]
+                env_fields_dict = dict((cell.value, n) for n, cell in enumerate(list(env_sheet.rows)[0])
+                                       if cell.value in env_fields)
+
+                for i, row in enumerate(list(set_sheet.rows)[1:]):
+                    new_video = Video()
+                    new_video.save()
+                    if row[set_fields_dict['video']].value is not None:
+                        new_video_file = VideoFile(name=row[set_fields_dict['trip_code']].value, video=new_video)
+                        new_video_file.save()
+
+                    new_drop = EnvironmentMeasure()
+                    new_drop.save()
+                    new_haul = EnvironmentMeasure()
+                    new_haul.save()
+
+                    new_set = Set(
+                        trip_id=trip_dict[row[set_fields_dict['trip_code']].value],
+                        code=row[set_fields_dict['set_code']].value,
+                        set_date=row[set_fields_dict['date']].value,
+                        latitude=row[set_fields_dict['latitude']].value,
+                        longitude=row[set_fields_dict['longitude']].value,
+                        depth=row[set_fields_dict['depth']].value,
+                        drop_time=row[set_fields_dict['drop_time']].value,
+                        haul_time=row[set_fields_dict['haul_time']].value,
+                        reef_habitat=ReefHabitat.get_or_create_by_id(
+                            reef_dict[u'{}|{}'.format(row[set_fields_dict['site']].value,
+                                                      row[set_fields_dict['reef']].value)],
+                            habitat_dict[row[set_fields_dict['habitat']].value]
+                        ),
+                        equipment_id=equipment_dict[row[set_fields_dict['equipment']].value],
+                        bait_id=bait_dict[row[set_fields_dict['bait']].value],
+                        visibility=row[set_fields_dict['visibility']].value,
+                        comments=('BULK UPLOAD' if row[set_fields_dict['comment']].value is None
+                                  else row[set_fields_dict['comment']].value + ' -- BULK UPLOAD'),
+                        video=new_video,
+                        drop_measure=new_drop,
+                        haul_measure=new_haul
+                    )
+                    new_set.save()
+
+                for i, row in enumerate(list(env_sheet.rows)[1:]):
+                    set = Set.objects.get(trip__code=row[env_fields_dict['trip_code']].value,
+                                          code=row[env_fields_dict['set_code']].value)
+                    if row[env_fields_dict['drop_haul']].value == 'drop':
+                        env = set.drop_measure
+                    elif row[env_fields_dict['drop_haul']].value == 'haul':
+                        env = set.haul_measure
+                    else:
+                        raise BulkImportError('drop_haul needs to be "drop" or "haul"')
+
+                    env.water_temperature = row[env_fields_dict['temp']].value
+                    env.salinity = row[env_fields_dict['salinity']].value
+                    env.conductivity = row[env_fields_dict['conductivity']].value
+                    env.dissolved_oxygen = row[env_fields_dict['dissolved_oxygen']].value
+                    env.current_flow = row[env_fields_dict['current_flow']].value
+                    env.current_direction = row[env_fields_dict['current_direction']].value  # TODO choice field
+                    env.tide_state = row[env_fields_dict['tide_state']].value  # TODO choice field
+                    env.wind_speed = row[env_fields_dict['wind_speed']].value
+                    env.wind_direction = row[env_fields_dict['wind_direction']].value  # TODO choice field
+                    env.cloud_cover = row[env_fields_dict['cloud_cover']].value
+                    env.surface_chop = row[env_fields_dict['surface_chop']].value  # TODO choice field
+                    env.save()
+
+        except BadZipFile:  # xlsx is a zip file (for reals)
+            error_message = 'Unexpected file format'
+        except Exception as e:
+            error_type = e.__class__.__name__
+            error_text = str(' '.join(e) if hasattr(e, '__iter__') else str(e))
+
+            if error_type == 'KeyError':
+                error_type = 'Value not found in lookup table'
+            elif error_type == 'ValidationError':
+                error_type = 'Invalid data formatting'
+            elif error_type == 'DataError':
+                error_type = 'Invalid data value'
+
+            try:
+                row = i + 1
+            except NameError:
+                error_message = '{}: {}'.format(error_type, error_text)
+            else:
+                error_message = '{} (row {}): {}'.format(error_type, row, error_text)
+
+        success_message = '' if error_message else 'Bulk upload successful!'
+
+        return render_to_response(self.template,
+                                  context=RequestContext(request, {'trip_pk': trip_id,
+                                                                   'file_name': file.name,
+                                                                   'error_message': error_message,
+                                                                   'success_message': success_message}))
 
 
 class SetListView(UserAllowedMixin, View):
@@ -63,7 +206,8 @@ class SetListView(UserAllowedMixin, View):
             'trip_pk': parent_trip.pk,
             'trip_name': str(parent_trip),
             'sets': sets,
-            'search_form': SetSearchForm(self.request.GET or None, trip_id=parent_trip.pk)
+            'search_form': SetSearchForm(self.request.GET or None, trip_id=parent_trip.pk),
+            'bulk_form': SetBulkUploadForm(trip_id=parent_trip.pk)
         })
 
     def _get_filtered_sets(self, parent_trip):

@@ -225,5 +225,14 @@ class ReefHabitat(models.Model):
             new_reef_habitat.save()
             return new_reef_habitat
 
+    @classmethod
+    def get_or_create_by_id(cls, reef_id, habitat_id):
+        try:
+            return cls.objects.get(reef_id=reef_id, habitat_id=habitat_id)
+        except cls.DoesNotExist:
+            new_reef_habitat = cls(reef_id=reef_id, habitat_id=habitat_id)
+            new_reef_habitat.save()
+            return new_reef_habitat
+
     def __str__(self):
         return u"{0} - {1} ({2})".format(self.reef.site, self.reef.name, self.habitat.type)
