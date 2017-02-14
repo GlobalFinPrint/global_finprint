@@ -95,7 +95,7 @@ class SetBulkUploadView(UserAllowedMixin, View):
                     new_video = Video()
                     new_video.save()
                     if row[set_fields_dict['video']].value is not None:
-                        new_video_file = VideoFile(name=row[set_fields_dict['trip_code']].value, video=new_video)
+                        new_video_file = VideoFile(file=row[set_fields_dict['trip_code']].value, video=new_video)
                         new_video_file.save()
 
                     new_drop = EnvironmentMeasure()
