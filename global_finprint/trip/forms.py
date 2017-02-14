@@ -26,7 +26,7 @@ class TripForm(forms.ModelForm):
         widget=DateTimePicker(options=datepicker_opts)
     )
     location = forms.ModelChoiceField(
-        queryset=Location.objects.annotate(Count('site__reef')).filter(site__reef__count__gt=0).all()
+        queryset=Location.objects.annotate(Count('site__reef')).filter(site__reef__count__gt=0).order_by('name')
     )
 
     class Meta:
