@@ -120,7 +120,8 @@ class SetBulkUploadView(UserAllowedMixin, View):
                         ),
                         equipment_id=equipment_dict[row[set_fields_dict['equipment']].value],
                         bait_id=bait_dict[row[set_fields_dict['bait']].value],
-                        visibility=row[set_fields_dict['visibility']].value,
+                        visibility=('' if row[set_fields_dict['visibility']].value is None
+                                    else row[set_fields_dict['visibility']].value),
                         comments=('BULK UPLOAD' if row[set_fields_dict['comment']].value is None
                                   else row[set_fields_dict['comment']].value + ' -- BULK UPLOAD'),
                         video=new_video,
