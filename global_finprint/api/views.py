@@ -279,8 +279,8 @@ class AttributeList(APIView):
     Attribute (tag) list view
     """
     def get(self, request, set_id):
-        # TODO only use project tags
-        return JsonResponse({'attributes': Attribute.tree_json(is_lead=request.annotator.is_lead())})
+        return JsonResponse({'attributes': Attribute.tree_json(is_lead=request.annotator.is_lead(),
+                                                               project=request.va.project)})
 
 
 class Events(APIView):
