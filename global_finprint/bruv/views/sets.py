@@ -93,6 +93,9 @@ class SetBulkUploadView(UserAllowedMixin, View):
                                        if cell.value in env_fields)
 
                 for i, row in enumerate(list(set_sheet.rows)[1:]):
+                    if row[0].value is None:
+                        break
+
                     new_video = Video()
                     new_video.save()
                     if row[set_fields_dict['video']].value is not None:
@@ -131,6 +134,9 @@ class SetBulkUploadView(UserAllowedMixin, View):
                     new_set.save()
 
                 for i, row in enumerate(list(env_sheet.rows)[1:]):
+                    if row[0].value is None:
+                        break
+
                     set = Set.objects.get(trip__code=row[env_fields_dict['trip_code']].value,
                                           code=row[env_fields_dict['set_code']].value)
                     if row[env_fields_dict['drop_haul']].value == 'drop':
@@ -168,7 +174,7 @@ class SetBulkUploadView(UserAllowedMixin, View):
                 error_type = 'Invalid data value'
 
             try:
-                row = i + 1
+                row = i + 2
             except NameError:
                 error_message = '{}: {}'.format(error_type, error_text)
             else:
