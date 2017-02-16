@@ -25,6 +25,7 @@ from django.conf import settings
 from openpyxl import load_workbook
 from io import BytesIO
 from zipfile import BadZipFile
+from datetime import datetime
 
 
 # deprecated:
@@ -106,7 +107,7 @@ class SetBulkUploadView(UserAllowedMixin, View):
                     new_set = Set(
                         trip_id=trip_dict[row[set_fields_dict['trip_code']].value],
                         code=row[set_fields_dict['set_code']].value,
-                        set_date=row[set_fields_dict['date']].value,
+                        set_date=datetime.strptime(row[set_fields_dict['date']].value, '%d/%m/%Y'),
                         latitude=row[set_fields_dict['latitude']].value,
                         longitude=row[set_fields_dict['longitude']].value,
                         depth=row[set_fields_dict['depth']].value,
@@ -159,8 +160,9 @@ class SetBulkUploadView(UserAllowedMixin, View):
 
             if error_type == 'KeyError':
                 error_type = 'Value not found in lookup table'
-            elif error_type == 'ValidationError':
+            elif error_type == 'ValidationError' or error_type == 'ValueError':
                 error_type = 'Invalid data formatting'
+                error_text = error_text.replace('%d/%m/%Y', 'DD/MM/YYYY')
             elif error_type == 'DataError':
                 error_type = 'Invalid data value'
 
