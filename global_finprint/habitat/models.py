@@ -46,6 +46,8 @@ class Location(models.Model):
     def __str__(self):
         return u"{0} ({1})".format(self.name, self.code)
 
+    class Meta:
+        ordering = ['name']
 
 SITE_TYPE_CHOICES = {
     ('C', 'Continental'),
