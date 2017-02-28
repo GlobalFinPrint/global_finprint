@@ -49,6 +49,7 @@ class Location(models.Model):
     class Meta:
         ordering = ['name']
 
+
 SITE_TYPE_CHOICES = {
     ('C', 'Continental'),
     ('I', 'Island'),

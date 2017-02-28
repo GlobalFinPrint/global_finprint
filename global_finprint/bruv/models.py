@@ -202,7 +202,8 @@ class Set(AuditableModel):
     haul_date = models.DateField(null=True, blank=True)
     haul_time = models.TimeField(null=True, blank=True)
     visibility = models.CharField(max_length=3, choices=VISIBILITY_CHOICES)
-    depth = models.DecimalField(null=True, help_text='m', decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0.01'))])
+    depth = models.DecimalField(help_text='m', decimal_places=2, max_digits=12,
+                                validators=[MinValueValidator(Decimal('0.01'))])
     comments = models.TextField(null=True, blank=True)
     message_to_annotators = models.TextField(null=True, blank=True)
     tags = models.ManyToManyField(to=SetTag)
