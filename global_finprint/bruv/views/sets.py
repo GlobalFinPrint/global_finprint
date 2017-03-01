@@ -94,7 +94,7 @@ class SetBulkUploadView(UserAllowedMixin, View):
 
                 for i, row in enumerate(list(set_sheet.rows)[1:]):
                     if row[0].value is None:
-                        break
+                        raise Exception('Bulk upload spreadsheet is empty.')
 
                     new_video = Video()
                     new_video.save()
