@@ -61,6 +61,7 @@ class SetBulkUploadView(UserAllowedMixin, View):
             messages.error(request, 'Invalid bulk upload form')
             return HttpResponseRedirect(invalid_url)
         file = request.FILES['set_file']
+        sheet_context = ''
         try:
             workbook = load_workbook(BytesIO(file.read()), read_only=True)
             set_sheet = workbook.get_sheet_by_name('Set')
@@ -77,7 +78,8 @@ class SetBulkUploadView(UserAllowedMixin, View):
                     'latitude', 'longitude', 'depth',
                     'drop_time', 'haul_time', 'site',
                     'reef', 'habitat', 'equipment',
-                    'bait', 'visibility', 'video',
+                    'bait', 'visibility',
+                    'video_file_name', 'video_source', 'video_path',
                     'comment'
                 ]
                 set_fields_dict = dict((cell.value, n) for n, cell in enumerate(list(set_sheet.rows)[0])
@@ -86,22 +88,33 @@ class SetBulkUploadView(UserAllowedMixin, View):
                     'trip_code', 'set_code', 'date',
                     'drop_haul', 'temp', 'salinity',
                     'conductivity', 'dissolved_oxygen', 'current_flow',
-                    'current_direction', 'tide_state', 'wind_speed',
+                    'current_direction', 'tide_state',
+                    'estimated_wind_speed', 'measured_wind_speed',
                     'wind_direction', 'cloud_cover', 'surface_chop'
                 ]
                 env_fields_dict = dict((cell.value, n) for n, cell in enumerate(list(env_sheet.rows)[0])
                                        if cell.value in env_fields)
 
+                sheet_context = 'set'
                 for i, row in enumerate(list(set_sheet.rows)[1:]):
                     if row[0].value is None:
-                        raise Exception('Bulk upload spreadsheet is empty.')
-
+                        if row == 2:
+                            raise BulkImportError('Bulk upload spreadsheet is empty.')
+                        else:
+                            break
                     new_video = Video()
                     new_video.save()
-                    if row[set_fields_dict['video']].value is not None:
-                        new_video_file = VideoFile(file=row[set_fields_dict['video']].value,
-                                                   video=new_video,
-                                                   primary=True)
+                    if row[set_fields_dict['video_file_name']].value is not None:
+                        new_video_file = VideoFile(
+                            file=row[set_fields_dict['video_file_name']].value,
+                            source=(
+                                row[set_fields_dict[
+                                    'video_source']].value if 'video_source' in set_fields_dict else 'S3'),
+                            path=(
+                                row[set_fields_dict[
+                                    'video_path']].value if 'video_path' in set_fields_dict else ''),
+                            video=new_video,
+                            primary=True)
                         new_video_file.save()
 
                     new_drop = EnvironmentMeasure()
@@ -135,6 +148,7 @@ class SetBulkUploadView(UserAllowedMixin, View):
                     )
                     new_set.save()
 
+                sheet_context = 'environment measure'
                 for i, row in enumerate(list(env_sheet.rows)[1:]):
                     if row[0].value is None:
                         break
@@ -155,7 +169,8 @@ class SetBulkUploadView(UserAllowedMixin, View):
                     env.current_flow = row[env_fields_dict['current_flow']].value
                     env.current_direction = row[env_fields_dict['current_direction']].value  # TODO choice field
                     env.tide_state = row[env_fields_dict['tide_state']].value  # TODO choice field
-                    env.wind_speed = row[env_fields_dict['wind_speed']].value
+                    env.estimated_wind_speed = row[env_fields_dict['estimated_wind_speed']].value
+                    env.measured_wind_speed = row[env_fields_dict['measured_wind_speed']].value
                     env.wind_direction = row[env_fields_dict['wind_direction']].value  # TODO choice field
                     env.cloud_cover = row[env_fields_dict['cloud_cover']].value
                     env.surface_chop = row[env_fields_dict['surface_chop']].value  # TODO choice field
@@ -168,6 +183,7 @@ class SetBulkUploadView(UserAllowedMixin, View):
             error_text = str(' '.join(e) if hasattr(e, '__iter__') else str(e))
 
             if error_type == 'KeyError':
+                # todo: KeyError is also raised when the worksheet does not exist.  Can we call that our specifically?
                 error_type = 'Value not found in lookup table'
             elif error_type == 'ValidationError' or error_type == 'ValueError':
                 error_type = 'Invalid data formatting'
@@ -180,7 +196,7 @@ class SetBulkUploadView(UserAllowedMixin, View):
             except NameError:
                 error_message = '{}: {}'.format(error_type, error_text)
             else:
-                error_message = '{} (row {}): {}'.format(error_type, row, error_text)
+                error_message = '{} (row {} of {} sheet): {}'.format(error_type, row, sheet_context, error_text)
 
         success_message = '' if error_message else 'Bulk upload successful!'
 
