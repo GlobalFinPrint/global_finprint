@@ -81,15 +81,16 @@ class SetBulkUploadView(UserAllowedMixin, View):
                     'drop_time', 'haul_time', 'site',
                     'reef', 'habitat', 'equipment',
                     'bait', 'visibility',
+                    'current_flow_estimated', 'current_flow_instrumented',
                     'video_file_name', 'video_source', 'video_path',
                     'comment'
                 ]
                 set_fields_dict = dict((cell.value, n) for n, cell in enumerate(list(set_sheet.rows)[0])
                                        if cell.value in set_fields)
                 env_fields = [
-                    'trip_code', 'set_code', 'date',
+                    'trip_code', 'set_code',
                     'drop_haul', 'temp', 'salinity',
-                    'conductivity', 'dissolved_oxygen', 'current_flow',
+                    'conductivity', 'dissolved_oxygen',
                     'current_direction', 'tide_state',
                     'estimated_wind_speed', 'measured_wind_speed',
                     'wind_direction', 'cloud_cover', 'surface_chop'
@@ -144,6 +145,8 @@ class SetBulkUploadView(UserAllowedMixin, View):
                         bait_id=bait_dict[row[set_fields_dict['bait']].value],
                         visibility=('' if row[set_fields_dict['visibility']].value is None
                                     else row[set_fields_dict['visibility']].value),
+                        current_flow_estimated = row[set_fields_dict['current_flow_estimated']].value,
+                        current_flow_instrumented = row[set_fields_dict['current_flow_instrumented']].value,
                         comments=('BULK UPLOAD' if row[set_fields_dict['comment']].value is None
                                   else row[set_fields_dict['comment']].value + ' -- BULK UPLOAD'),
                         video=new_video,
@@ -170,8 +173,6 @@ class SetBulkUploadView(UserAllowedMixin, View):
                     env.salinity = row[env_fields_dict['salinity']].value
                     env.conductivity = row[env_fields_dict['conductivity']].value
                     env.dissolved_oxygen = row[env_fields_dict['dissolved_oxygen']].value
-                    env.current_flow = row[env_fields_dict['current_flow']].value
-                    env.current_direction = row[env_fields_dict['current_direction']].value  # TODO choice field
                     env.tide_state = row[env_fields_dict['tide_state']].value  # TODO choice field
                     env.estimated_wind_speed = row[env_fields_dict['estimated_wind_speed']].value
                     env.measured_wind_speed = row[env_fields_dict['measured_wind_speed']].value
