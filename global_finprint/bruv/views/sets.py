@@ -66,6 +66,8 @@ class SetBulkUploadView(UserAllowedMixin, View):
             workbook = load_workbook(BytesIO(file.read()), read_only=True)
             set_sheet = workbook.get_sheet_by_name('Set')
             env_sheet = workbook.get_sheet_by_name('Environment')
+            if not list(set_sheet.rows)[1:]:
+                raise BulkImportError('Bulk upload spreadsheet is empty.')
 
             with transaction.atomic():
                 trip_dict = dict(Trip.objects.values_list('code', 'id'))
@@ -98,7 +100,9 @@ class SetBulkUploadView(UserAllowedMixin, View):
                 sheet_context = 'set'
                 for i, row in enumerate(list(set_sheet.rows)[1:]):
                     if row[0].value is None:
-                        if row == 2:
+                        if i == 0:
+                            # there are default values in row 2 or there's some data further
+                            # down in the sheet but row 2 is mysteriously empty ...
                             raise BulkImportError('Bulk upload spreadsheet is empty.')
                         else:
                             break
