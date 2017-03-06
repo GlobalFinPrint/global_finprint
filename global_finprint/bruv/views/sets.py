@@ -145,8 +145,9 @@ class SetBulkUploadView(UserAllowedMixin, View):
                         bait_id=bait_dict[row[set_fields_dict['bait']].value],
                         visibility=('' if row[set_fields_dict['visibility']].value is None
                                     else row[set_fields_dict['visibility']].value),
-                        current_flow_estimated = row[set_fields_dict['current_flow_estimated']].value.upper(),
-                        current_flow_instrumented = row[set_fields_dict['current_flow_instrumented']].value,
+                        current_flow_estimated=('' if row[set_fields_dict['current_flow_estimated']].value is None
+                                                else row[set_fields_dict['current_flow_estimated']].value.upper()),
+                        current_flow_instrumented=row[set_fields_dict['current_flow_instrumented']].value,
                         comments=('BULK UPLOAD' if row[set_fields_dict['comment']].value is None
                                   else row[set_fields_dict['comment']].value + ' -- BULK UPLOAD'),
                         video=new_video,
@@ -173,12 +174,16 @@ class SetBulkUploadView(UserAllowedMixin, View):
                     env.salinity = row[env_fields_dict['salinity']].value
                     env.conductivity = row[env_fields_dict['conductivity']].value
                     env.dissolved_oxygen = row[env_fields_dict['dissolved_oxygen']].value
-                    env.tide_state = row[env_fields_dict['tide_state']].value.upper()  # TODO choice field
+                    env.tide_state = ('' if row[env_fields_dict['tide_state']].value is None
+                                      else row[env_fields_dict['tide_state']].value.upper())  # TODO choice field
                     env.estimated_wind_speed = row[env_fields_dict['estimated_wind_speed']].value
                     env.measured_wind_speed = row[env_fields_dict['measured_wind_speed']].value
-                    env.wind_direction = row[env_fields_dict['wind_direction']].value.upper()  # TODO choice field
+                    env.wind_direction = ('' if row[env_fields_dict['wind_direction']].value is None
+                                          else row[
+                        env_fields_dict['wind_direction']].value.upper())  # TODO choice field
                     env.cloud_cover = row[env_fields_dict['cloud_cover']].value
-                    env.surface_chop = row[env_fields_dict['surface_chop']].value.upper()  # TODO choice field
+                    env.surface_chop = ('' if row[env_fields_dict['surface_chop']].value is None
+                                        else row[env_fields_dict['surface_chop']].value.upper())  # TODO choice field
                     env.save()
 
         except BadZipFile:  # xlsx is a zip file (for reals)
@@ -459,8 +464,8 @@ class SetListView(UserAllowedMixin, View):
             # note: "create new set" uses the .instance, "edit existing set" is using the .cleaned_data
             # perhaps do something cleaner?
             set_form.instance.reef_habitat = set_form.cleaned_data['reef_habitat'] = ReefHabitat.get_or_create(
-                    reef=set_form.cleaned_data['reef'],
-                    habitat=set_form.cleaned_data['habitat'])
+                reef=set_form.cleaned_data['reef'],
+                habitat=set_form.cleaned_data['habitat'])
 
             # create new set and env measures
             if set_pk is None:
