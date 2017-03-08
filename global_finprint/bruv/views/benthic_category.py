@@ -5,6 +5,9 @@ from global_finprint.bruv.models import BenthicCategory
 
 
 class BenthicCategoryView(UserAllowedMixin, View):
+    """
+    Endpoint to power benthic category widget
+    """
     def get(self, request):
         if 'parent_id' in request.GET:
             substrates = BenthicCategory.objects.filter(parent_id=request.GET.get('parent_id'))

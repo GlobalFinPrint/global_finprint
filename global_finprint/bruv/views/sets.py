@@ -11,16 +11,21 @@ from django.db import transaction
 
 from global_finprint.trip.models import Trip
 from global_finprint.bruv.models import Equipment
-from ..models import Set, BenthicCategoryValue, EnvironmentMeasure
+from ..models import Set, BenthicCategoryValue, EnvironmentMeasure, Bait, Video
 from ..forms import SetForm, EnvironmentMeasureForm, \
-    SetSearchForm, SetLevelCommentsForm, SetLevelDataForm
+    SetSearchForm, SetLevelCommentsForm, SetLevelDataForm, SetBulkUploadForm
 from ...annotation.forms import VideoForm
-from ...habitat.models import ReefHabitat
+from ...annotation.models.video import VideoFile
+from ...habitat.models import ReefHabitat, Reef, ReefType
 from ...core.mixins import UserAllowedMixin
 
 from boto import exception as BotoException
 from boto.s3.connection import S3Connection
 from django.conf import settings
+from openpyxl import load_workbook
+from io import BytesIO
+from zipfile import BadZipFile
+from datetime import datetime
 
 
 # deprecated:
@@ -37,10 +42,194 @@ def set_detail(request, pk):
     return JsonResponse(data)
 
 
+class BulkImportError(Exception):
+    pass
+
+
+class SetBulkUploadView(UserAllowedMixin, View):
+    template = 'pages/sets/bulk_upload.html'
+
+    def get(self, request, **kwargs):
+        return HttpResponseRedirect(reverse_lazy('trip_set_list', args=[kwargs.get('trip_pk', None)]))
+
+    def post(self, request, **kwargs):
+        trip_id = kwargs.get('trip_pk', None)
+        error_message = ''
+        form = SetBulkUploadForm(request.POST, request.FILES, trip_id=trip_id)
+        if not form.is_valid():
+            invalid_url = reverse_lazy('trip_set_list', args=[trip_id])
+            messages.error(request, 'Invalid bulk upload form')
+            return HttpResponseRedirect(invalid_url)
+        file = request.FILES['set_file']
+        sheet_context = ''
+        try:
+            workbook = load_workbook(BytesIO(file.read()), read_only=True)
+            set_sheet = workbook.get_sheet_by_name('Set')
+            env_sheet = workbook.get_sheet_by_name('Environment')
+            if not list(set_sheet.rows)[1:]:
+                raise BulkImportError('Bulk upload spreadsheet is empty.')
+
+            with transaction.atomic():
+                trip_dict = dict(Trip.objects.values_list('code', 'id'))
+                bait_dict = dict((str(b), b.id) for b in Bait.objects.all())
+                equipment_dict = dict((str(e), e.id) for e in Equipment.objects.all())
+                reef_dict = dict((u'{}|{}'.format(r.site.name, r.name), r.id) for r in Reef.objects.all())
+                habitat_dict = dict((str(h), h.id) for h in ReefType.objects.all())
+                set_fields = [
+                    'trip_code', 'set_code', 'date',
+                    'latitude', 'longitude', 'depth',
+                    'drop_time', 'haul_time', 'site',
+                    'reef', 'habitat', 'equipment',
+                    'bait', 'visibility',
+                    'current_flow_estimated', 'current_flow_instrumented',
+                    'video_file_name', 'video_source', 'video_path',
+                    'comment'
+                ]
+                set_fields_dict = dict((cell.value, n) for n, cell in enumerate(list(set_sheet.rows)[0])
+                                       if cell.value in set_fields)
+                env_fields = [
+                    'trip_code', 'set_code',
+                    'drop_haul', 'temp', 'salinity',
+                    'conductivity', 'dissolved_oxygen',
+                    'current_direction', 'tide_state',
+                    'estimated_wind_speed', 'measured_wind_speed',
+                    'wind_direction', 'cloud_cover', 'surface_chop'
+                ]
+                env_fields_dict = dict((cell.value, n) for n, cell in enumerate(list(env_sheet.rows)[0])
+                                       if cell.value in env_fields)
+
+                sheet_context = 'set'
+                for i, row in enumerate(list(set_sheet.rows)[1:]):
+                    if row[0].value is None:
+                        if i == 0:
+                            # there are default values in row 2 or there's some data further
+                            # down in the sheet but row 2 is mysteriously empty ...
+                            raise BulkImportError('Bulk upload spreadsheet is empty.')
+                        else:
+                            break
+                    new_video = Video()
+                    new_video.save()
+                    if row[set_fields_dict['video_file_name']].value is not None:
+                        new_video_file = VideoFile(
+                            file=row[set_fields_dict['video_file_name']].value,
+                            source=(
+                                row[set_fields_dict[
+                                    'video_source']].value if 'video_source' in set_fields_dict else 'S3'),
+                            path=(
+                                row[set_fields_dict[
+                                    'video_path']].value if 'video_path' in set_fields_dict else ''),
+                            video=new_video,
+                            primary=True)
+                        new_video_file.save()
+
+                    new_drop = EnvironmentMeasure()
+                    new_drop.save()
+                    new_haul = EnvironmentMeasure()
+                    new_haul.save()
+
+                    new_set = Set(
+                        trip_id=trip_dict[row[set_fields_dict['trip_code']].value],
+                        code=row[set_fields_dict['set_code']].value,
+                        set_date=datetime.strptime(row[set_fields_dict['date']].value, '%d/%m/%Y'),
+                        latitude=row[set_fields_dict['latitude']].value,
+                        longitude=row[set_fields_dict['longitude']].value,
+                        depth=row[set_fields_dict['depth']].value,
+                        drop_time=row[set_fields_dict['drop_time']].value,
+                        haul_time=row[set_fields_dict['haul_time']].value,
+                        reef_habitat=ReefHabitat.get_or_create_by_id(
+                            reef_dict[u'{}|{}'.format(row[set_fields_dict['site']].value,
+                                                      row[set_fields_dict['reef']].value)],
+                            habitat_dict[row[set_fields_dict['habitat']].value]
+                        ),
+                        equipment_id=equipment_dict[row[set_fields_dict['equipment']].value],
+                        bait_id=bait_dict[row[set_fields_dict['bait']].value],
+                        visibility=('' if row[set_fields_dict['visibility']].value is None
+                                    else row[set_fields_dict['visibility']].value),
+                        current_flow_estimated=('' if row[set_fields_dict['current_flow_estimated']].value is None
+                                                else row[set_fields_dict['current_flow_estimated']].value.upper()),
+                        current_flow_instrumented=row[set_fields_dict['current_flow_instrumented']].value,
+                        comments=('BULK UPLOAD' if row[set_fields_dict['comment']].value is None
+                                  else row[set_fields_dict['comment']].value + ' -- BULK UPLOAD'),
+                        video=new_video,
+                        drop_measure=new_drop,
+                        haul_measure=new_haul
+                    )
+                    new_set.save()
+
+                sheet_context = 'environment measure'
+                for i, row in enumerate(list(env_sheet.rows)[1:]):
+                    if row[0].value is None:
+                        break
+
+                    set = Set.objects.get(trip__code=row[env_fields_dict['trip_code']].value,
+                                          code=row[env_fields_dict['set_code']].value)
+                    if row[env_fields_dict['drop_haul']].value.lower() == 'drop':
+                        env = set.drop_measure
+                    elif row[env_fields_dict['drop_haul']].value.lower() == 'haul':
+                        env = set.haul_measure
+                    else:
+                        raise BulkImportError('drop_haul needs to be "drop" or "haul"')
+
+                    env.water_temperature = row[env_fields_dict['temp']].value
+                    env.salinity = row[env_fields_dict['salinity']].value
+                    env.conductivity = row[env_fields_dict['conductivity']].value
+                    env.dissolved_oxygen = row[env_fields_dict['dissolved_oxygen']].value
+                    env.tide_state = ('' if row[env_fields_dict['tide_state']].value is None
+                                      else row[env_fields_dict['tide_state']].value.upper())  # TODO choice field
+                    env.estimated_wind_speed = row[env_fields_dict['estimated_wind_speed']].value
+                    env.measured_wind_speed = row[env_fields_dict['measured_wind_speed']].value
+                    env.wind_direction = ('' if row[env_fields_dict['wind_direction']].value is None
+                                          else row[
+                        env_fields_dict['wind_direction']].value.upper())  # TODO choice field
+                    env.cloud_cover = row[env_fields_dict['cloud_cover']].value
+                    env.surface_chop = ('' if row[env_fields_dict['surface_chop']].value is None
+                                        else row[env_fields_dict['surface_chop']].value.upper())  # TODO choice field
+                    env.save()
+
+        except BadZipFile:  # xlsx is a zip file (for reals)
+            error_message = 'Unexpected file format'
+        except Exception as e:
+            error_type = e.__class__.__name__
+            error_text = str(' '.join(e) if hasattr(e, '__iter__') else str(e))
+
+            if error_type == 'KeyError':
+                # todo: KeyError is also raised when the worksheet does not exist.  Can we call that our specifically?
+                error_type = 'Value not found in lookup table'
+            elif error_type == 'ValidationError' or error_type == 'ValueError':
+                error_type = 'Invalid data formatting'
+                error_text = error_text.replace('%d/%m/%Y', 'DD/MM/YYYY')
+            elif error_type == 'DataError':
+                error_type = 'Invalid data value'
+
+            try:
+                row = i + 2
+            except NameError:
+                error_message = '{}: {}'.format(error_type, error_text)
+            else:
+                error_message = '{} (row {} of {} sheet): {}'.format(error_type, row, sheet_context, error_text)
+
+        success_message = '' if error_message else 'Bulk upload successful!'
+
+        return render_to_response(self.template,
+                                  context=RequestContext(request, {'trip_pk': trip_id,
+                                                                   'file_name': file.name,
+                                                                   'error_message': error_message,
+                                                                   'success_message': success_message}))
+
+
 class SetListView(UserAllowedMixin, View):
+    """
+    Set list view found at /trips/<trip_id>/sets/
+    """
     template = 'pages/sets/set_list.html'
 
     def _common_context(self, request, parent_trip):
+        """
+        Helper method returns page context common to multiple requests
+        :param request:
+        :param parent_trip:
+        :return:
+        """
         page = request.GET.get('page', 1)
         paginator = Paginator(self._get_filtered_sets(parent_trip), 50)
         try:
@@ -54,10 +243,16 @@ class SetListView(UserAllowedMixin, View):
             'trip_pk': parent_trip.pk,
             'trip_name': str(parent_trip),
             'sets': sets,
-            'search_form': SetSearchForm(self.request.GET or None, trip_id=parent_trip.pk)
+            'search_form': SetSearchForm(self.request.GET or None, trip_id=parent_trip.pk),
+            'bulk_form': SetBulkUploadForm(trip_id=parent_trip.pk)
         })
 
     def _get_filtered_sets(self, parent_trip):
+        """
+        Helper method returns sets that match filter
+        :param parent_trip:
+        :return:
+        """
         result = Set.objects
         prefetch = [
             'trip',
@@ -89,6 +284,11 @@ class SetListView(UserAllowedMixin, View):
         return result
 
     def _get_set_form_defaults(self, parent_trip):
+        """
+        Helper method returns
+        :param parent_trip:
+        :return:
+        """
         set_form_defaults = {
             'trip': parent_trip,
             'set_date': parent_trip.start_date,
@@ -115,6 +315,12 @@ class SetListView(UserAllowedMixin, View):
         return set_form_defaults
 
     def _upload_image(self, file, filename):
+        """
+        Helper method uploads image to S3
+        :param file:
+        :param filename:
+        :return:
+        """
         try:
             conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
             bucket = conn.get_bucket(settings.HABITAT_IMAGE_BUCKET, validate=False)
@@ -128,6 +334,12 @@ class SetListView(UserAllowedMixin, View):
             return False, e
 
     def _process_habitat_images(self, set, request):
+        """
+        Helper method processes habitat images
+        :param set:
+        :param request:
+        :return:
+        """
         if request.FILES.get('bruv_image_file', False):
             filename = set.habitat_filename('bruv')
             success, error = self._upload_image(request.FILES['bruv_image_file'], filename)
@@ -147,6 +359,12 @@ class SetListView(UserAllowedMixin, View):
                 messages.warning(request, 'Error uploading Habitat image: {}'.format(str(error)))
 
     def _process_habitat_substrate(self, set, request):
+        """
+        Helper method saves habitat substrate data
+        :param set:
+        :param request:
+        :return:
+        """
         with transaction.atomic():
             set.benthic_category.clear()
             for (s_id, val) in zip(request.POST.getlist('benthic-category'), request.POST.getlist('percent')):
@@ -154,6 +372,12 @@ class SetListView(UserAllowedMixin, View):
                 bcv.save()
 
     def get(self, request, **kwargs):
+        """
+        Main method to return template
+        :param request:
+        :param kwargs:
+        :return:
+        """
         trip_pk, set_pk = kwargs.get('trip_pk', None), kwargs.get('set_pk', None)
         parent_trip = get_object_or_404(Trip, pk=trip_pk)
         context = self._common_context(request, parent_trip)
@@ -202,6 +426,12 @@ class SetListView(UserAllowedMixin, View):
         return render_to_response(self.template, context=context)
 
     def post(self, request, **kwargs):
+        """
+        Main method to process form submissions
+        :param request:
+        :param kwargs:
+        :return:
+        """
         trip_pk, set_pk = kwargs.get('trip_pk', None), kwargs.get('set_pk', None)
         parent_trip = get_object_or_404(Trip, pk=kwargs['trip_pk'])
         context = self._common_context(request, parent_trip)
@@ -234,8 +464,8 @@ class SetListView(UserAllowedMixin, View):
             # note: "create new set" uses the .instance, "edit existing set" is using the .cleaned_data
             # perhaps do something cleaner?
             set_form.instance.reef_habitat = set_form.cleaned_data['reef_habitat'] = ReefHabitat.get_or_create(
-                    reef=set_form.cleaned_data['reef'],
-                    habitat=set_form.cleaned_data['habitat'])
+                reef=set_form.cleaned_data['reef'],
+                habitat=set_form.cleaned_data['habitat'])
 
             # create new set and env measures
             if set_pk is None:

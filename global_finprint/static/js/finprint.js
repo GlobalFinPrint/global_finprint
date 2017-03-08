@@ -87,13 +87,20 @@ var finprint = finprint || {};  //namespace if necessary...
         $form.find('button#search').click(function() {
             var $this = $(this);
             var oldText = $this.text();
-            $this.attr('disabled', 'disabled');
-            $this.text('Searching...');
-            $.post('/assignment/search', $form.serialize(), function(res) {
-                $target.html(res);
-                $this.removeAttr('disabled');
-                $this.text(oldText);
-            });
+            if ($form.serializeArray().some(function(field) {
+                return field.name !== 'csrfmiddlewaretoken' && field.value;
+            })) {
+                $this.attr('disabled', 'disabled');
+                $this.text('Searching...');
+                $.post('/assignment/search', $form.serialize(), function(res) {
+                    $target.html(res);
+                    $this.removeAttr('disabled');
+                    $this.text(oldText);
+                });
+            } else {
+                alert('You must choose at least 1 search filter');
+                return false;
+            }
         });
     }
 

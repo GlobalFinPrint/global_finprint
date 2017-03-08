@@ -48,8 +48,9 @@ class Attribute(MPTTModel):
         return json
 
     @staticmethod
-    def tree_json(is_lead=True):
-        root_nodes = list(a for a in Attribute.objects.root_nodes() if a.active)
+    def tree_json(is_lead=True, project=None):
+        root_nodes = list(a for a in Attribute.objects.root_nodes()
+                          if a.active and (a.project == project or project is None))
         if not is_lead:
             root_nodes = list(a for a in root_nodes if not a.lead_only)
         return list(a.to_json(children=True, is_lead=is_lead) for a in root_nodes)

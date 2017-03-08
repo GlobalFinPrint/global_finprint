@@ -46,6 +46,9 @@ class Location(models.Model):
     def __str__(self):
         return u"{0} ({1})".format(self.name, self.code)
 
+    class Meta:
+        ordering = ['name']
+
 
 SITE_TYPE_CHOICES = {
     ('C', 'Continental'),
@@ -222,6 +225,15 @@ class ReefHabitat(models.Model):
             return cls.objects.get(reef=reef, habitat=habitat)
         except cls.DoesNotExist:
             new_reef_habitat = cls(reef=reef, habitat=habitat)
+            new_reef_habitat.save()
+            return new_reef_habitat
+
+    @classmethod
+    def get_or_create_by_id(cls, reef_id, habitat_id):
+        try:
+            return cls.objects.get(reef_id=reef_id, habitat_id=habitat_id)
+        except cls.DoesNotExist:
+            new_reef_habitat = cls(reef_id=reef_id, habitat_id=habitat_id)
             new_reef_habitat.save()
             return new_reef_habitat
 

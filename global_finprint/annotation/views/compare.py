@@ -9,6 +9,9 @@ from global_finprint.annotation.models.observation import MasterRecord
 
 
 class AssignmentCompareView(UserAllowedMixin, View):
+    """
+    View for the assignment compare (timelines) screen found at /assignment/compare/<set_id>?project=<project_id>
+    """
     template_name = 'pages/annotation/assignment_compare.html'
 
     def get(self, request, set_id):
@@ -26,6 +29,9 @@ class AssignmentCompareView(UserAllowedMixin, View):
 
 
 class MasterReviewView(UserAllowedMixin, View):
+    """
+    View for master record review screen found at /assignment/review/<master_record_id>
+    """
     template_name = 'pages/annotation/master_review.html'
 
     def get(self, request, master_id):
@@ -41,6 +47,9 @@ class MasterReviewView(UserAllowedMixin, View):
 
 
 class AssignmentDetailView(UserAllowedMixin, View):
+    """
+    Endpoint for assignment detail for the compare screen
+    """
     def get(self, _, assignment_id):
         assignment = get_object_or_404(Assignment, pk=assignment_id)
         observations = assignment.observation_set.all() \
@@ -58,6 +67,9 @@ class AssignmentDetailView(UserAllowedMixin, View):
 
 
 class GetMasterView(UserAllowedMixin, View):
+    """
+    Endpoints to get/update a master record for a given set
+    """
     def get(self, request, set_id):
         project = get_object_or_404(Project, pk=request.GET.get('project', 1))
         master = get_object_or_404(MasterRecord, project=project, set=get_object_or_404(Set, pk=set_id))
@@ -81,6 +93,9 @@ class GetMasterView(UserAllowedMixin, View):
 
 
 class MasterSetCompleted(UserAllowedMixin, View):
+    """
+    Endpoint to mark a master record as 'completed'
+    """
     def get(self, request, master_id):
         master = get_object_or_404(MasterRecord, pk=master_id)
         master.completed = (request.GET.get('checked', 'false') == 'true')
@@ -89,6 +104,9 @@ class MasterSetCompleted(UserAllowedMixin, View):
 
 
 class MasterSetDeprecated(UserAllowedMixin, View):
+    """
+    Endpoint to mark a master record as 'depracated'
+    """
     def get(self, request, master_id):
         master = get_object_or_404(MasterRecord, pk=master_id)
         master.deprecated = (request.GET.get('checked', 'false') == 'true')

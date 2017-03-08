@@ -16,7 +16,18 @@ from ..models.project import Project
 
 
 class VideoAutoAssignView(UserAllowedMixin, View):
+    """
+    View to handle auto-assignment functionality found at /assignment/
+    """
     def assign_video(self, annotators, video, num, project):
+        """
+        Assign a video to a number of annotators
+        :param annotators: list of annotator objects
+        :param video: video object
+        :param num: integer denoting how many annotators should have this video assigned
+        :param project: project object
+        :return:
+        """
         avail = list(a for a in annotators if a not in video.annotators_assigned(project))
         assigned_by = FinprintUser.objects.get(user=self.request.user)
         assign_count = 0
@@ -28,6 +39,11 @@ class VideoAutoAssignView(UserAllowedMixin, View):
         return assign_count
 
     def post(self, request):
+        """
+        Endpoint used by automatic assignment modal
+        :param request:
+        :return:
+        """
         trip_id = request.POST.get('trip')
         aff_id = request.POST.get('affiliation')
         num = int(request.POST.get('num'))
@@ -60,6 +76,9 @@ class VideoAutoAssignView(UserAllowedMixin, View):
 
 
 class AssignmentListView(UserAllowedMixin, View):
+    """
+    View to handle the assignment screen found at /assignment/
+    """
     template_name = 'pages/annotation/assignment_list.html'
 
     def get(self, request):
@@ -74,6 +93,9 @@ class AssignmentListView(UserAllowedMixin, View):
 
 
 class AssignmentListTbodyView(UserAllowedMixin, View):
+    """
+    Endpoint used to provide table body to the assignment screen found at /assignment/
+    """
     template_name = 'pages/annotation/assignment_list_tbody.html'
 
     def post(self, request):
@@ -139,6 +161,9 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
 
 
 class AssignmentModalBodyView(UserAllowedMixin, View):
+    """
+    Endpoints used by the assignment modal found at /assignment/
+    """
     template_name = 'pages/annotation/assignment_modal_body.html'
 
     def get(self, request, set_id):
@@ -169,6 +194,9 @@ class AssignmentModalBodyView(UserAllowedMixin, View):
 
 
 class AssignmentManageView(UserAllowedMixin, View):
+    """
+    View to handle assignment management page found at /assignment/manage/<assignment_id>
+    """
     template_name = 'pages/annotation/assignment_manage.html'
 
     def get(self, request, assignment_id):
@@ -189,6 +217,12 @@ class AssignmentManageView(UserAllowedMixin, View):
         return render_to_response(self.template_name, context=context)
 
     def post(self, request, assignment_id):
+        """
+        Endpoint to handle state changes and/or deletion of assignment on assignment management screen
+        :param request:
+        :param assignment_id:
+        :return:
+        """
         action = request.POST.get('action')
         new_state = request.POST.get('new')
         assignment = get_object_or_404(Assignment, id=assignment_id)

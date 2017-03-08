@@ -7,7 +7,15 @@ SELECT
   aa.family              AS animal_family,
   aa.genus               AS animal_genus,
   aa.species             AS animal_species,
-  hr.name                AS region
+  hr.name                AS region,
+  lo.name                AS location_name,
+  st.name                AS site_name,
+  rf.name                AS reef_name,
+  rt.type                AS reef_habitat,
+  bs.latitude,
+  bs.longitude,
+  bs.depth,
+  bs.visibility
 FROM annotation_event ae
   JOIN annotation_observation ao ON (ao.id = ae.observation_id)
   JOIN annotation_assignment aas ON (aas.id = ao.assignment_id)
@@ -19,6 +27,11 @@ FROM annotation_event ae
   JOIN annotation_animalgroup aag ON (aag.id = aa.group_id)
   JOIN annotation_animal_regions aar ON (aa.id = aar.animal_id)
   JOIN habitat_region hr ON (hr.id = aar.region_id)
+  JOIN habitat_reefhabitat rh ON rh.id = bs.reef_habitat_id
+  JOIN habitat_reeftype rt ON rt.id = rh.habitat_id
+  JOIN habitat_reef rf ON rf.id = rh.reef_id
+  JOIN habitat_site st ON st.id = rf.site_id
+  JOIN habitat_location lo ON lo.id = st.location_id
 WHERE aas.status_id > 2
       AND ao.type = 'A'
       AND ae.extent IS NOT NULL

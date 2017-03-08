@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="col-md-12">
+        <div class="row">
+            <h3>Trips > Sets > Bulk upload</h3>
+        </div>
+        <div class="row well bulk-upload-result">
+            <p>File: {{ file_name }}</p>
+            <p class="error">{{ error_message }}</p>
+            <p class="success">{{ success_message }}</p>
+        </div>
+        <div class="row">
+            <a href="{% url 'trip_set_list' trip_pk %}">Back to set list</a>
+        </div>
+    </div>
+{% endblock %}

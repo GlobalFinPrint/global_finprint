@@ -14,6 +14,9 @@ datepicker_opts = {"format": "MMMM DD YYYY", "showClear": True, "extraFormats": 
 
 
 class TripForm(forms.ModelForm):
+    """
+    Main trip form
+    """
     start_date = forms.DateField(
         input_formats=['%B %d %Y'],
         widget=DateTimePicker(options=datepicker_opts)
@@ -23,7 +26,7 @@ class TripForm(forms.ModelForm):
         widget=DateTimePicker(options=datepicker_opts)
     )
     location = forms.ModelChoiceField(
-        queryset=Location.objects.annotate(Count('site__reef')).filter(site__reef__count__gt=0).all()
+        queryset=Location.objects.annotate(Count('site__reef')).filter(site__reef__count__gt=0).order_by('name')
     )
 
     class Meta:
@@ -55,6 +58,9 @@ class TripForm(forms.ModelForm):
 
 
 class TripSearchForm(forms.Form):
+    """
+    Trip search form
+    """
     search_start_date = forms.DateField(required=False,
                                         input_formats=['%B %d %Y'],
                                         widget=DateTimePicker(options=datepicker_opts))

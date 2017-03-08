@@ -4,6 +4,7 @@ from django.forms.utils import flatatt
 from django.forms import ValidationError
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django.core.urlresolvers import reverse_lazy
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from crispy_forms.helper import FormHelper
 import crispy_forms.layout as cfl
@@ -20,6 +21,9 @@ datepicker_opts = {"format": "MMMM DD YYYY", "showClear": True, "extraFormats": 
 
 
 class SetForm(forms.ModelForm):
+    """
+    Main set form
+    """
     set_date = forms.DateField(
         input_formats=['%B %d %Y'],
         widget=DateTimePicker(options=datepicker_opts)
@@ -77,6 +81,9 @@ class SetForm(forms.ModelForm):
 
 
 class SetSearchForm(forms.Form):
+    """
+    Set search form
+    """
     search_set_date = forms.DateField(required=False,
                                input_formats=['%B %d %Y'],
                                widget=DateTimePicker(options=datepicker_opts))
@@ -125,6 +132,9 @@ class SetSearchForm(forms.Form):
 
 
 class EnvironmentMeasureForm(forms.ModelForm):
+    """
+    Environmental measurement form used as part of set form; used twice in form for drop and haul
+    """
     dissolved_oxygen_measure = forms.ChoiceField(
         required=False,
         label='&nbsp;',
@@ -149,6 +159,9 @@ class EnvironmentMeasureForm(forms.ModelForm):
 
 
 class ImageSelectWidget(forms.FileInput):
+    """
+    Helper widget for image controls in set form
+    """
     def __init__(self, image_url=None, attrs={}):
         self.image_url = image_url
         super().__init__(attrs)
@@ -170,6 +183,9 @@ class ImageSelectWidget(forms.FileInput):
 
 
 class BenthicWidget(forms.Widget):
+    """
+    Helper widget for benthic category data in set form
+    """
     def render(self, name, value, attrs=None):
         try:
             total_percent = value.pop('total_percent', 0)
@@ -249,6 +265,9 @@ class BenthicWidget(forms.Widget):
 
 
 class BenthicField(forms.Field):
+    """
+    Helper field for benthic data in set form
+    """
     widget = BenthicWidget
 
     def to_python(self, value):
@@ -270,6 +289,9 @@ class BenthicField(forms.Field):
 
 
 class SetLevelDataForm(forms.ModelForm):
+    """
+    Form for set level data used in set form
+    """
     bruv_image_file = forms.FileField(required=False,
                                       widget=ImageSelectWidget,
                                       label='Habitat photo: BRUV')
@@ -324,6 +346,9 @@ class SetLevelDataForm(forms.ModelForm):
 
 
 class SelectizeWidget(forms.SelectMultiple):
+    """
+    Helper widget for selectize controls (autocomplete with multi-select)
+    """
     template = '<select class="selectize" multiple="multiple"{}>'
 
     def render(self, name, value, attrs=None, choices=()):
@@ -339,6 +364,9 @@ class SelectizeWidget(forms.SelectMultiple):
 
 
 class SetLevelCommentsForm(forms.ModelForm):
+    """
+    Form for set level comments used in set form
+    """
     comments = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=False)
     message_to_annotators = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=False)
     tags = forms.MultipleChoiceField(widget=SelectizeWidget, choices=SetTag.get_choices, required=False)
@@ -351,3 +379,18 @@ class SetLevelCommentsForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_tag = False
+
+
+class SetBulkUploadForm(forms.Form):
+    set_file = forms.FileField()
+
+    def __init__(self, *args, **kwargs):
+        trip_id = kwargs.pop('trip_id')
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_action = reverse_lazy('set_bulk_upload', args=[trip_id])
+        self.helper.form_class = 'form-inline'
+        self.helper.layout = cfl.Layout(
+            cfl.Field('set_file', css_class='form-control'),
+        )
+        self.helper.add_input(cfl.Submit('upload', 'Upload', css_class='btn-fp'))
