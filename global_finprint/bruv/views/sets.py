@@ -111,13 +111,13 @@ class SetBulkUploadView(UserAllowedMixin, View):
                     new_video.save()
                     if row[set_fields_dict['video_file_name']].value is not None:
                         new_video_file = VideoFile(
-                            file=row[set_fields_dict['video_file_name']].value,
+                            file=row[set_fields_dict['video_file_name']].value.strip(),
                             source=(
                                 row[set_fields_dict[
-                                    'video_source']].value if 'video_source' in set_fields_dict else 'S3'),
+                                    'video_source']].value.strip() if 'video_source' in set_fields_dict else 'S3'),
                             path=(
                                 row[set_fields_dict[
-                                    'video_path']].value if 'video_path' in set_fields_dict else ''),
+                                    'video_path']].value.strip() if 'video_path' in set_fields_dict else ''),
                             video=new_video,
                             primary=True)
                         new_video_file.save()
@@ -128,8 +128,8 @@ class SetBulkUploadView(UserAllowedMixin, View):
                     new_haul.save()
 
                     new_set = Set(
-                        trip_id=trip_dict[row[set_fields_dict['trip_code']].value],
-                        code=row[set_fields_dict['set_code']].value,
+                        trip_id=trip_dict[row[set_fields_dict['trip_code']].value.strip()],
+                        code=row[set_fields_dict['set_code']].value.strip(),
                         set_date=datetime.strptime(row[set_fields_dict['date']].value, '%d/%m/%Y'),
                         latitude=row[set_fields_dict['latitude']].value,
                         longitude=row[set_fields_dict['longitude']].value,
@@ -137,19 +137,19 @@ class SetBulkUploadView(UserAllowedMixin, View):
                         drop_time=row[set_fields_dict['drop_time']].value,
                         haul_time=row[set_fields_dict['haul_time']].value,
                         reef_habitat=ReefHabitat.get_or_create_by_id(
-                            reef_dict[u'{}|{}'.format(row[set_fields_dict['site']].value,
-                                                      row[set_fields_dict['reef']].value)],
-                            habitat_dict[row[set_fields_dict['habitat']].value]
+                            reef_dict[u'{}|{}'.format(row[set_fields_dict['site']].value.strip(),
+                                                      row[set_fields_dict['reef']].value.strip())],
+                            habitat_dict[row[set_fields_dict['habitat']].value.strip()]
                         ),
-                        equipment_id=equipment_dict[row[set_fields_dict['equipment']].value],
-                        bait_id=bait_dict[row[set_fields_dict['bait']].value],
+                        equipment_id=equipment_dict[row[set_fields_dict['equipment']].value.strip()],
+                        bait_id=bait_dict[row[set_fields_dict['bait']].value.strip()],
                         visibility=('' if row[set_fields_dict['visibility']].value is None
                                     else row[set_fields_dict['visibility']].value),
                         current_flow_estimated=('' if row[set_fields_dict['current_flow_estimated']].value is None
-                                                else row[set_fields_dict['current_flow_estimated']].value.upper()),
+                                                else row[set_fields_dict['current_flow_estimated']].value.strip().upper()),
                         current_flow_instrumented=row[set_fields_dict['current_flow_instrumented']].value,
-                        comments=('BULK UPLOAD' if row[set_fields_dict['comment']].value is None
-                                  else row[set_fields_dict['comment']].value + ' -- BULK UPLOAD'),
+                        comments=('BULK UPLOAD' if row[set_fields_dict['comment']].value.strip() is None
+                                  else row[set_fields_dict['comment']].value.strip() + ' -- BULK UPLOAD'),
                         video=new_video,
                         drop_measure=new_drop,
                         haul_measure=new_haul
@@ -161,11 +161,11 @@ class SetBulkUploadView(UserAllowedMixin, View):
                     if row[0].value is None:
                         break
 
-                    set = Set.objects.get(trip__code=row[env_fields_dict['trip_code']].value,
-                                          code=row[env_fields_dict['set_code']].value)
-                    if row[env_fields_dict['drop_haul']].value.lower() == 'drop':
+                    set = Set.objects.get(trip__code=row[env_fields_dict['trip_code']].value.strip(),
+                                          code=row[env_fields_dict['set_code']].value.strip())
+                    if row[env_fields_dict['drop_haul']].value.strip().lower() == 'drop':
                         env = set.drop_measure
-                    elif row[env_fields_dict['drop_haul']].value.lower() == 'haul':
+                    elif row[env_fields_dict['drop_haul']].value.strip().lower() == 'haul':
                         env = set.haul_measure
                     else:
                         raise BulkImportError('drop_haul needs to be "drop" or "haul"')
@@ -175,15 +175,15 @@ class SetBulkUploadView(UserAllowedMixin, View):
                     env.conductivity = row[env_fields_dict['conductivity']].value
                     env.dissolved_oxygen = row[env_fields_dict['dissolved_oxygen']].value
                     env.tide_state = ('' if row[env_fields_dict['tide_state']].value is None
-                                      else row[env_fields_dict['tide_state']].value.upper())  # TODO choice field
+                                      else row[env_fields_dict['tide_state']].value.strip().upper())  # TODO choice field
                     env.estimated_wind_speed = row[env_fields_dict['estimated_wind_speed']].value
                     env.measured_wind_speed = row[env_fields_dict['measured_wind_speed']].value
                     env.wind_direction = ('' if row[env_fields_dict['wind_direction']].value is None
                                           else row[
-                        env_fields_dict['wind_direction']].value.upper())  # TODO choice field
+                        env_fields_dict['wind_direction']].value.strip().upper())  # TODO choice field
                     env.cloud_cover = row[env_fields_dict['cloud_cover']].value
                     env.surface_chop = ('' if row[env_fields_dict['surface_chop']].value is None
-                                        else row[env_fields_dict['surface_chop']].value.upper())  # TODO choice field
+                                        else row[env_fields_dict['surface_chop']].value.strip().upper())  # TODO choice field
                     env.save()
 
         except BadZipFile:  # xlsx is a zip file (for reals)
