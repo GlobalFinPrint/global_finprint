@@ -19,3 +19,5 @@ DROP VIEW IF EXISTS public.v_report_usage_metrics;
 DROP VIEW IF EXISTS public.v_report_usage_metrics_by_affiliation;
 
 DROP VIEW IF EXISTS public.v_report_weekly_video_hours;
+
+Drop VIEW if exists public.v_report_assignment_status_by_file;

@@ -44,11 +44,12 @@ WITH not_started_assignments AS
       HAVING count(aa.id) > 0
   )
 SELECT
+   t.
   t.code || '_' || s.code           AS code,
   vf.file,
   coalesce(aa.assignment_count, 0)  AS not_started,
   coalesce(ipa.assignment_count, 0) AS in_progress,
-  coalesce(ra.assignment_count, 0)  AS read_for_review,
+  coalesce(ra.assignment_count, 0)  AS ready_for_review,
   coalesce(ca.assignment_count, 0)  AS complete
 FROM
   trip_trip t
