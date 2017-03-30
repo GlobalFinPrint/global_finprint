@@ -83,10 +83,10 @@ class SetList(APIView):
     Set list view
     """
     def get(self, request):
-        if request.annotator.is_lead() :
-            if 'filtered' in request.GET:
+        if request.annotator.is_lead() and 'filtered' in request.GET:
+            if 'assignment_flag' in request.GET:
                 assignments = Assignment.get_active().filter(assigned_by=request.annotator)
-            else :
+            else:
                 assignments = Assignment.get_active()
             if 'trip_id' in request.GET:
                 assignments = assignments.filter(video__set__trip__id=request.GET.get('trip_id'))
