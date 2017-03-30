@@ -79,6 +79,9 @@ class FinprintUser(models.Model):
                              for o in self.observations_created.all()]
         }
 
+    class Meta:
+        ordering = ['user__last_name', 'user__first_name']
+
 
 class Team(AuditableModel):
     sampler_collaborator = models.CharField(max_length=100)
