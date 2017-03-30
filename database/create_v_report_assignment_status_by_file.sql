@@ -44,7 +44,7 @@ WITH not_started_assignments AS
       HAVING count(aa.id) > 0
   )
 SELECT
-   t.
+  tm.sampler_collaborator as team,
   t.code || '_' || s.code           AS code,
   vf.file,
   coalesce(aa.assignment_count, 0)  AS not_started,
@@ -52,7 +52,8 @@ SELECT
   coalesce(ra.assignment_count, 0)  AS ready_for_review,
   coalesce(ca.assignment_count, 0)  AS complete
 FROM
-  trip_trip t
+  core_team tm
+  inner join trip_trip t on t.team_id = tm.id
   INNER JOIN bruv_set s ON s.trip_id = t.id
   INNER JOIN annotation_video v ON v.id = s.video_id
   INNER JOIN annotation_videofile vf ON (vf.video_id = v.id AND vf."primary" = TRUE)
