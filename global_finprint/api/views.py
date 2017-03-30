@@ -84,7 +84,7 @@ class SetList(APIView):
     """
     def get(self, request):
         if request.annotator.is_lead() and 'filtered' in request.GET:
-            if 'assignment_flag' in request.GET and request.GET.get('assignment_flag')== True:
+            if 'assigned_by_me' in request.GET and request.GET.get('assigned_by_me')== True:
                 assignments = Assignment.get_active().filter(assigned_by=request.annotator)
             else:
                 assignments = Assignment.get_active()
