@@ -201,7 +201,7 @@ class Set(AuditableModel):
     drop_time = models.TimeField()
     haul_date = models.DateField(null=True, blank=True)
     haul_time = models.TimeField(null=True, blank=True)
-    visibility = models.CharField(max_length=3, choices=VISIBILITY_CHOICES)
+    visibility = models.CharField(max_length=3, choices=VISIBILITY_CHOICES, help_text='m')
     depth = models.DecimalField(help_text='m', decimal_places=2, max_digits=12,
                                 validators=[MinValueValidator(Decimal('0.01'))])
     comments = models.TextField(null=True, blank=True)
