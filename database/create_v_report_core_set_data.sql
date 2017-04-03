@@ -1,48 +1,55 @@
 CREATE or replace VIEW public.v_report_core_set_data AS
 
   SELECT
-    tm.sampler_collaborator                                                     AS team,
-    t.code || '_' || s.code                                                     AS code,
-    coalesce(vf.source || ':  ', '') || coalesce(vf.path || '/', '') || vf.file AS primary_file,
+    tm.sampler_collaborator  AS team,
+    rg.name                  AS region,
+    l.name                   AS location_name,
 
-    rg.name                                                                     AS region,
-    l.name                                                                      AS location_name,
-    st.name                                                                     AS site_name,
-    r.name                                                                      AS reef_name,
-    rt.type                                                                     AS reef_habitat,
+    t.code                   AS trip_code,
+    s.code                   AS set_code,
 
     s.set_date,
-    s.drop_time,
-    s.haul_time,
 
-    st_asewkt(s.coordinates)                                                    AS wkt_coordinates,
-    st_y(s.coordinates)                                                         AS latitude,
-    st_x(s.coordinates)                                                         AS longitude,
+    st_asewkt(s.coordinates) AS wkt_coordinates,
+    st_y(s.coordinates)      AS latitude,
+    st_x(s.coordinates)      AS longitude,
 
     s.depth,
 
-    eqf.type                                                                    AS equipment_frame_type,
-    eq.camera                                                                   AS equipment_camera,
-    eq.stereo                                                                   AS equipment_stereo_camera,
-    eq.camera_height                                                            AS equipment_camera_height,
-    eq.arm_length                                                               AS equipment_arm_length,
-    bait.type                                                                   AS bait_preparation,
-    bait.description                                                            AS bait_type,
-    bait.oiled                                                                  AS bait_oiled,
+    s.drop_time,
+    s.haul_time,
+    st.name                  AS site,
+    r.name                   AS reef,
+    rt.type                  AS habitat,
+
+    eqf.type                 AS equipment_frame_type,
+    eq.camera                AS equipment_camera,
+    eq.stereo                AS equipment_stereo_camera,
+    eq.camera_height         AS equipment_camera_height,
+    eq.arm_length            AS equipment_arm_length,
+
+    bait.type                AS bait_preparation,
+    bait.description         AS bait_type,
+    bait.oiled               AS bait_oiled,
 
     s.visibility,
+
     s.current_flow_estimated,
     s.current_flow_instrumented,
 
-    sub.type                                                                    AS substrate_type,
-    subc.name                                                                   AS substrate_complexity_type,
+    vf.file                  AS video_file_name,
+    vf.source                AS video_source,
+    vf.path                  AS video_path,
+
+    sub.type                 AS substrate_type,
+    subc.name                AS substrate_complexity_type,
     CASE WHEN (SELECT id
                FROM bruv_benthiccategoryvalue bcv
                WHERE bcv.set_id = s.id
                LIMIT 1) IS NOT NULL
       THEN TRUE
     ELSE FALSE
-    END                                                                         AS has_bethic_categories,
+    END                      AS has_bethic_categories,
 
     s.comments,
     s.message_to_annotators,

@@ -1,7 +1,7 @@
--- noinspection SqlNoDataSourceInspectionForFile
-CREATE OR REPLACE VIEW public.v_report_annotation_status_by_team AS  SELECT aff.name AS affiliation,
+CREATE OR REPLACE VIEW public.v_report_annotation_status_by_team AS
+SELECT aff.name AS affiliation,
     ans.name AS status,
-    count(s.video_id) AS count
+    count(s.video_id) AS "count"
    FROM ((((((trip_trip t
      JOIN bruv_set s ON ((s.trip_id = t.id)))
      JOIN annotation_assignment a ON ((a.video_id = s.video_id)))
