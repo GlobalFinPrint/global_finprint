@@ -283,7 +283,7 @@ class AbstractEvent(AuditableModel):
 
         try:
             conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
-            bucket = conn.get_bucket(settings.FRAME_CAPTURE_BUCKET)
+            bucket = conn.get_bucket(settings.AWS_S3_FRAME_CAPTURE_BUCKET)
             key = bucket.get_key(self.filename())
             return key.generate_url(expires_in=300, query_auth=False) if key else None
         except S3ResponseError:
@@ -297,10 +297,10 @@ class AbstractEvent(AuditableModel):
             x = self.extent.boundary.x
             y = self.extent.boundary.y
             css = 'width: {0}%; height: {1}%; left: {2}%; top: {3}%;'.format(
-                int(abs(x[1] - x[0]) * 100),
-                int(abs(y[2] - y[1]) * 100),
-                int(x[0] * 100),
-                int(y[1] * 100)
+                int(abs(max(x) - min(x)) * 100),
+                int(abs(max(y) - min(y)) * 100),
+                int(min(x) * 100),
+                int(min(y) * 100)
             )
             return css
         except AttributeError:  # handle bad extents
