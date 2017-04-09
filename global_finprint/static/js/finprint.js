@@ -327,7 +327,7 @@ var finprint = finprint || {};  //namespace if necessary...
     function initCollapse() {
         var $parent = $('tbody#collapse-parent');
 
-        $parent.find('tr.first-event').on('click', function(e) {
+        $parent.find('tr.first-event, tr.single-event').on('click', function(e) {
             // don't collapse/expand when clicking on editing fields
             if ($(e.target).is('.obs-edit, .edit-save, .edit-cancel, input, textarea, ' +
                     'select, .selectize-input, .item, a.remove')) {
@@ -342,7 +342,7 @@ var finprint = finprint || {};  //namespace if necessary...
                 .find('tr.child-row')
                     .hide()
                     .end()
-                .find('tr.first-event')
+                .find('tr.first-event, tr.single-event')
                     .removeClass('selected')
                     .find('td.rowspan')
                         .removeAttr('rowspan');
