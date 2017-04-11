@@ -8,10 +8,15 @@ from django.db import migrations
 
 def create_default_project(apps, schema_editor):
     Project = apps.get_model('annotation', 'Project')
+    User = apps.get_model('auth', 'User')
     db_alias = schema_editor.connection.alias
-    Project.objects.using(db_alias).bulk_create([
-        Project(id=1, name='Global FinPrint Project', user_id=1),
-    ])
+    try:
+        User.objects.using(db_alias).get(pk=1)
+        Project.objects.using(db_alias).bulk_create([
+            Project(id=1, name='Global FinPrint Project', user_id=1),
+        ])
+    except:
+        pass
 
 
 class Migration(migrations.Migration):

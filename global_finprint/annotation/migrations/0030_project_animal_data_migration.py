@@ -10,9 +10,12 @@ def add_animals_to_default(apps, schema_editor):
     Project = apps.get_model('annotation', 'Project')
     Animal = apps.get_model('annotation', 'Animal')
     db_alias = schema_editor.connection.alias
-    fp_project = Project.objects.using(db_alias).get(pk=1)
-    fp_project.animals = Animal.objects.using(db_alias).all()
-    fp_project.save()
+    try:
+        fp_project = Project.objects.using(db_alias).get(pk=1)
+        fp_project.animals = Animal.objects.using(db_alias).all()
+        fp_project.save()
+    except:
+        pass
 
 
 class Migration(migrations.Migration):

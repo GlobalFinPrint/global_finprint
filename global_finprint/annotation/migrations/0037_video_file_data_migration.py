@@ -9,11 +9,16 @@ from django.db import migrations
 def create_default_project(apps, schema_editor):
     Video = apps.get_model('annotation', 'Video')
     VideoFile = apps.get_model('annotation', 'VideoFile')
+    User = apps.get_model('auth', 'User')
     db_alias = schema_editor.connection.alias
-    VideoFile.objects.using(db_alias).bulk_create(
-        list(VideoFile(file=v.file, rank=1, primary=True, video=v, user_id=1)
-             for v in Video.objects.all() if v.file != '')
-    )
+    try:
+        User.objects.using(db_alias).get(pk=1)
+        VideoFile.objects.using(db_alias).bulk_create(
+            list(VideoFile(file=v.file, rank=1, primary=True, video=v, user_id=1)
+                 for v in Video.objects.all() if v.file != '')
+        )
+    except:
+        pass
 
 
 class Migration(migrations.Migration):
