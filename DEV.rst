@@ -4,27 +4,21 @@ Dev setup and deployment notes.
 Settings
 ------------
 
-global_finprint relies extensively on environment settings which **will not work with Apache/mod_wsgi setups**. It has been deployed successfully with both Gunicorn/Nginx and even uWSGI/Nginx.
+global_finprint relies extensively on environment settings which **will not work with Apache/mod_wsgi setups**.
+It has been deployed successfully with both Gunicorn/Nginx and even uWSGI/Nginx.
 
 For configuration purposes, the following table maps the 'global_finprint' environment variables to their Django setting:
 
 ======================================= =========================== ============================================== ======================================================================
 Environment Variable                    Django Setting              Development Default                            Production Default
 ======================================= =========================== ============================================== ======================================================================
-DJANGO_CACHES                           CACHES (default)            locmem                                         redis
-DJANGO_DATABASES                        DATABASES (default)         See code                                       See code
+DJANGO_DATABASE_URL                     DATABASES (default)         postgres:///global_finprint                    n/a
+
 DJANGO_DEBUG                            DEBUG                       True                                           False
 DJANGO_SECRET_KEY                       SECRET_KEY                  CHANGEME!!!                                    raises error
-DJANGO_SECURE_BROWSER_XSS_FILTER        SECURE_BROWSER_XSS_FILTER   n/a                                            True
-DJANGO_SECURE_SSL_REDIRECT              SECURE_SSL_REDIRECT         n/a                                            True
-DJANGO_SECURE_CONTENT_TYPE_NOSNIFF      SECURE_CONTENT_TYPE_NOSNIFF n/a                                            True
-DJANGO_SECURE_FRAME_DENY                SECURE_FRAME_DENY           n/a                                            True
-DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS   HSTS_INCLUDE_SUBDOMAINS     n/a                                            True
-DJANGO_SESSION_COOKIE_HTTPONLY          SESSION_COOKIE_HTTPONLY     n/a                                            True
-DJANGO_SESSION_COOKIE_SECURE            SESSION_COOKIE_SECURE       n/a                                            False
-DJANGO_DEFAULT_FROM_EMAIL               DEFAULT_FROM_EMAIL          n/a                                            "global_finprint <noreply@globalfinprint.org>"
-DJANGO_SERVER_EMAIL                     SERVER_EMAIL                n/a                                            "global_finprint <noreply@globalfinprint.org>"
-DJANGO_EMAIL_SUBJECT_PREFIX             EMAIL_SUBJECT_PREFIX        n/a                                            "[global_finprint] "
+DJANGO_MEDIA_ROOT                       MEDIA_ROOT                  APPS_DIR('media')                              APPS_DIR('media')
+
+DJANGO_SERVER_ENV                       DJANGO_SERVER_ENV           local                                          prod
 ======================================= =========================== ============================================== ======================================================================
 
 The following table lists settings and their defaults for third-party applications:
@@ -35,8 +29,6 @@ Environment Variable                    Django Setting              Development 
 DJANGO_AWS_ACCESS_KEY_ID                AWS_ACCESS_KEY_ID           n/a                                            raises error
 DJANGO_AWS_SECRET_ACCESS_KEY            AWS_SECRET_ACCESS_KEY       n/a                                            raises error
 DJANGO_AWS_STORAGE_BUCKET_NAME          AWS_STORAGE_BUCKET_NAME     n/a                                            raises error
-DJANGO_MAILGUN_API_KEY                  MAILGUN_ACCESS_KEY          n/a                                            raises error
-DJANGO_MAILGUN_SERVER_NAME              MAILGUN_SERVER_NAME         n/a                                            raises error
 ======================================= =========================== ============================================== ======================================================================
 
 Getting up and running
@@ -50,12 +42,11 @@ The steps below will get you up and running with a local development environment
 * pip
 * virtualenv
 * PostgreSQL
+* PostGIS
 
-First make sure to create and activate a virtualenv_, then open a terminal at the project root and install the requirements for local development::
+First make sure to create and activate a Python venv, then open a terminal at the project root and install the requirements for local development::
 
     $ pip install -r requirements/local.txt
-
-.. _virtualenv: http://docs.python-guide.org/en/latest/dev/virtualenvs/
 
 Create a local PostgreSQL database::
 
@@ -64,6 +55,8 @@ Create a local PostgreSQL database::
 Run ``migrate`` on your new database::
 
     $ python manage.py migrate
+
+
 
 You can now run the ``runserver_plus`` command::
 
