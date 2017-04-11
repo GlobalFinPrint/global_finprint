@@ -284,6 +284,7 @@ LEAFLET_CONFIG = {
 DJANGO_SERVER_ENV = env('DJANGO_SERVER_ENV', default='local')
 FRAME_CAPTURE_BUCKET = 'finprint-annotator-screen-captures'
 HABITAT_IMAGE_BUCKET = 'finprint-habitat-images'
+AWS_S3_FRAME_CAPTURE_BUCKET = 'https://s3-us-west-2.amazonaws.com/{}'.format(FRAME_CAPTURE_BUCKET)
 
 # Custom auth backend
 AUTHENTICATION_BACKENDS = ['global_finprint.core.backends.FinprintAuth']
