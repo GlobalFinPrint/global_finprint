@@ -66,7 +66,9 @@ Apply the fixtures to add some dev data::
 
 (see /global_finprint/deploy/loaddata.txt and /global_finprint/deploy/loaddata_test.txt for full lists of fixtures)
 
-Copy /global_finprint/global_finprint/static/version.example.txt to /global_finprint/global_finprint/static/version.txt
+Copy /global_finprint/global_finprint/static/version.example.txt to /global_finprint/global_finprint/static/version.txt::
+
+    $ cp /global_finprint/global_finprint/static/version.example.txt /global_finprint/global_finprint/static/version.txt
 
 You can now run the ``runserver_plus`` command::
 
