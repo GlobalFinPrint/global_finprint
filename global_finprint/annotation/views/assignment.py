@@ -9,7 +9,7 @@ from django.template import RequestContext
 from ...core.mixins import UserAllowedMixin
 from ...trip.models import Trip
 from ...bruv.models import Set
-from ...habitat.models import Location
+from ...habitat.models import Location, Site
 from ...core.models import Affiliation, FinprintUser
 from ..models.video import Assignment, Video, AnnotationState
 from ..models.project import Project
@@ -85,6 +85,7 @@ class AssignmentListView(UserAllowedMixin, View):
         context = RequestContext(request, {
             'locations': Location.objects.order_by('name').all().prefetch_related('trip_set'),
             'trips': Trip.objects.order_by('start_date').all().prefetch_related('set_set'),
+            'sites': Site.objects.order_by('name').all().prefetch_related('reef_set'),
             'affils': Affiliation.objects.order_by('name').all().prefetch_related('finprintuser_set'),
             'statuses': AnnotationState.objects.all(),
             'projects': Project.objects.order_by('id').all()
@@ -100,7 +101,7 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
 
     def post(self, request):
         selected_related = [
-            'video', 'video__set', 'video__set__trip', 'annotator', 'annotator__user'
+            'video', 'video__set', 'video__set__trip', 'video__set__reef_habitat', 'annotator', 'annotator__user'
         ]
         query = Assignment.objects.all().select_related(*selected_related) \
             .prefetch_related('observation_set', 'video__files')
@@ -110,6 +111,7 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
 
         trips = request.POST.getlist('trip[]')
         sets = request.POST.getlist('set[]')
+        reefs = request.POST.getlist('reef[]')
         annos = request.POST.getlist('anno[]')
         status = request.POST.getlist('status[]')
         assigned = request.POST.get('assigned')
@@ -123,6 +125,10 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
         if sets:
             query = query.filter(video__set__id__in=(int(s) for s in sets))
             unassigned = unassigned.filter(id__in=(int(s) for s in sets))
+
+        if reefs:
+            query = query.filter(video__set__reef_habitat__reef_id__in=(int(s) for s in reefs))
+            unassigned = unassigned.filter(id__in=(int(s) for s in reefs))
 
         if annos:
             query = query.filter(annotator_id__in=(int(a) for a in annos))

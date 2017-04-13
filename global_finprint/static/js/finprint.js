@@ -76,6 +76,7 @@ var finprint = finprint || {};  //namespace if necessary...
         var fields = [
             '#select-trip',
             '#select-set',
+            '#select-reef',
             '#select-anno',
             '#select-status'
         ];
