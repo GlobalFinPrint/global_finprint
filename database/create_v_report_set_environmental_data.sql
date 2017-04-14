@@ -21,7 +21,8 @@ CREATE or replace VIEW public.v_report_set_environmental_data AS
       dem.measured_wind_speed,
       dem.wind_direction,
       dem.cloud_cover,
-      dem.surface_chop
+      dem.surface_chop,
+      dem.water_temperature
 
     FROM
       core_team tm
@@ -52,7 +53,8 @@ CREATE or replace VIEW public.v_report_set_environmental_data AS
       hem.measured_wind_speed,
       hem.wind_direction,
       hem.cloud_cover,
-      hem.surface_chop
+      hem.surface_chop,
+      hem.water_temperature
 
     FROM
       core_team tm
@@ -80,7 +82,8 @@ CREATE or replace VIEW public.v_report_set_environmental_data AS
     em.measured_wind_speed,
     em.wind_direction,
     em.cloud_cover,
-    em.surface_chop
+    em.surface_chop,
+    em.water_temperature
   FROM environmentmeasures em
   ORDER BY em.trip_code || '_' || em.set_code,
     em.drop_haul;

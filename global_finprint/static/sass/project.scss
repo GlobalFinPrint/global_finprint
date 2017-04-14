@@ -109,7 +109,7 @@ a.manual-assign {
 
   thead tr {
     background-color: $table-header;
-    font-weight:bold;
+    font-weight: bold;
     font-size: 16px;
     color: $blue;
   }
@@ -119,6 +119,14 @@ a.manual-assign {
   }
 
   tbody {
+    tr.single-event {
+      cursor: pointer;
+
+      &.selected {
+        background-color: $parent-row;
+      }
+    }
+
     tr.first-event {
       cursor: pointer;
 
