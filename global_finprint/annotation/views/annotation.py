@@ -8,7 +8,7 @@ from ..models.animal import Animal, AnimalGroup
 from ..models.video import Video, Assignment
 
 
-# depracated:
+# deprecated:
 def site_animal_list(request, site_id, *args, **kwargs):
     """
     :param request:
@@ -54,6 +54,6 @@ def site_animal_list(request, site_id, *args, **kwargs):
     return HttpResponse(json.dumps(animal_lists), content_type='application/json')
 
 
-# depracated:
+# deprecated:
 def annotator_video_list(request, annotator_id):
     videos = Video.objects.filter(pk=Assignment(annotator=annotator_id))
