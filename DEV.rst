@@ -42,6 +42,7 @@ The steps below will get you up and running with a local development environment
 * virtualenv
 * PostgreSQL
 * PostGIS
+* Bower
 
 First make sure to create and activate a Python venv, e.g.::
 
@@ -56,19 +57,28 @@ Create a local PostgreSQL database::
 
     $ createdb global_finprint
 
-Run ``migrate`` on your new database::
+Either
+  1)
+    Run ``migrate`` on your new database and apply the fixtures to add some dev data
+    (see /global_finprint/deploy/loaddata.txt and /global_finprint/deploy/loaddata_test.txt for full lists of fixtures)::
 
     $ python manage.py migrate
-
-Apply the fixtures to add some dev data::
-
     $ loaddata global_finprint/core/fixtures/core_groups
 
-(see /global_finprint/deploy/loaddata.txt and /global_finprint/deploy/loaddata_test.txt for full lists of fixtures)
+  or 2)
+    Add the postgis extensions to the database, restore a dump and catch up with any subsequent migrations::
+
+    $ psql -d global_finprint -c 'create extension postgis;'
+    $ pg_restore -d global_finprint /path/to/database.dump
+    $ python manage.py migrate
 
 Copy /global_finprint/global_finprint/static/version.example.txt to /global_finprint/global_finprint/static/version.txt::
 
     $ cp /global_finprint/global_finprint/static/version.example.txt /global_finprint/global_finprint/static/version.txt
+
+Navigate to the project directory and use Bower to install web componenets::
+
+    $ bower install
 
 You can now run the ``runserver_plus`` command::
 
