@@ -83,7 +83,7 @@ class MasterObservationEditData(UserAllowedMixin, View):
             'group__name', 'genus', 'species')
         tags = project.tag_list()
         return JsonResponse({
-            'animals': list({'id': a.id, 'name': str(a)} for a in animals),
+            'animals': list({'id': a.id, 'name': str(a), 'group_name': str(a.group.name)} for a in animals),
             'tags': list({'id': t.id, 'name': str(t)} for t in tags),
             'selected_animal': event.master_observation.animal().id if event.master_observation.type == 'A' else None,
             'obs_note': event.master_observation.comment,
@@ -149,7 +149,7 @@ class ObservationEditData(UserAllowedMixin, View):
             'group__name', 'genus', 'species')
         tags = project.tag_list()
         return JsonResponse({
-            'animals': list({'id': a.id, 'name': str(a)} for a in animals),
+            'animals': list({'id': a.id, 'name': str(a), 'group_name': str(a.group.name)} for a in animals),
             'tags': list({'id': t.id, 'name': str(t)} for t in tags),
             'selected_animal': event.observation.animal().id if event.observation.type == 'A' else None,
             'obs_note': event.observation.comment,

@@ -764,6 +764,7 @@ var finprint = finprint || {};  //namespace if necessary...
             $.get(dataUrl, function(resp) {
                 var oldActions, oldAnimal, oldObsNote, oldDuration, oldEventNote, oldAttributes;
                 var actionsHTML, animalHTML, obsNoteHTML, durationHTML, eventNoteHTML, attributesHTML;
+                var animalGroup;
                 var animals = resp.animals;
                 var duration = (resp.duration === null ? '' : resp.duration);
                 var obs_note = (resp.obs_note === null ? '' : resp.obs_note);
@@ -830,12 +831,19 @@ var finprint = finprint || {};  //namespace if necessary...
                 // animal dropdown
                 oldAnimal = $animalCell.html();
                 animalHTML = '<select class="edit-animal">';
-                animalHTML += animals.map(function(animal) {
-                    return '<option value="' + animal.id + '"' +
+
+                animals.forEach(function(animal){
+                    if (animal.group_name != animalGroup) {
+                        if (animalGroup) {
+                            animalHTML += '</optgroup>';
+                        }
+                        animalGroup = animal.group_name;
+                        animalHTML += '<optgroup label="' + animalGroup + '">';
+                    } else animalHTML += '<option value="' + animal.id + '"' +
                         (animal.id === selectedAnimalId ? ' selected="selected"' : '') +
                         '>' + animal.name + '</option>';
                 });
-                animalHTML += '</select>';
+                animalHTML += '</optgroup></select>';
                 $animalCell.html(animalHTML);
 
                 // observation note
