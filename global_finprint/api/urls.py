@@ -39,4 +39,5 @@ urlpatterns = [
     url(r"^set/(?P<set_id>\d+)/obs/(?P<obs_id>\d+)/event/(?P<evt_id>\d+)$",
         csrf_exempt(views.EventUpdate.as_view()), name='api_event_update'),
     url(r"^annotator", csrf_exempt(views.AnnotatorList.as_view()), name='api_annotator_list'),
+    url(r"^affiliations", csrf_exempt(views.AffiliationList.as_view()), name='api_affiliation_list'),
 ]

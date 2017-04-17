@@ -2,6 +2,7 @@
 -r base.txt
 coverage==3.7.1
 Sphinx
+sqlparse <0.2
 django-extensions==1.6.1
 Werkzeug==0.10.4
 django-test-plus==1.0.6
