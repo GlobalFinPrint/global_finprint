@@ -51,7 +51,7 @@ class UserAdmin(admin.UserAdmin):
     fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'password', 'first_name', 'last_name', 'email', 'groups')
+            'fields': ('username', 'password', 'first_name', 'last_name', 'email', 'is_active', 'groups')
         }),
     )
     inlines = (FinprintUserInline,)
@@ -69,6 +69,10 @@ class UserAdmin(admin.UserAdmin):
             if isinstance(inline, FinprintUserInline) and obj is None:
                 continue
             yield inline.get_formset(request, obj), inline
+
+    # disable the delete button and remove delete from actions
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 class FinprintUserAdmin(ModelAdmin):
