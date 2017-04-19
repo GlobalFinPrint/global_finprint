@@ -17,7 +17,7 @@
         <a href="{% url 'assignment_compare' a.video.set.id %}?project={{ a.project.pk }}" target="_blank">Review</a>
     </td>
     <td>
-        <a class="open-unassign-modal" data-id="{{ a.video.set.id }}" href="#">Unassign</a> |
+        <a class="open-unassign-modal{% if a.is_finished %} disabled{% endif %}" data-id="{{ a.video.set.id }}" href="#">Unassign</a> |
         <a href="{% url 'assignment_manage' a.id %}" target="_blank">Manage</a>
     </td>
 </tr>
