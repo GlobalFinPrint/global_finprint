@@ -13,7 +13,6 @@ class AnimalAdmin(admin.ModelAdmin):
 admin.site.register(animal.Animal, AnimalAdmin)
 
 admin.site.register(animal.AnimalGroup)
-admin.site.register(video.AnnotationState)
 
 
 class TagAdmin(MPTTModelAdmin):
