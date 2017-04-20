@@ -1,0 +1,31 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h4 class="modal-title">Unassign annotator {{ assignment.annotator }} from video "{{ assignment.video }}"?</h4>
+</div>
+
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-12">
+            {% if assignment.status.id == 1 %}
+                <p>Please confirm that you wish to remove this assignment.</p>
+            {% else %}
+                <p><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                Please note that removing this assignment will delete all the associated observations.</p>
+            {% endif %}
+        </div>
+        <form>
+            {% csrf_token %}
+        </form>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="save-changes" data-id="{{ assignment.id }}">
+                Unassign
+            </button>
+        </div>
+    </div>
+</div>

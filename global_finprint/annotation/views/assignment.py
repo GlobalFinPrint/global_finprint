@@ -199,6 +199,23 @@ class AssignmentModalBodyView(UserAllowedMixin, View):
         return JsonResponse({'status': 'ok'})
 
 
+class UnassignModalBodyView(UserAllowedMixin, View):
+    template_name = 'pages/annotation/unassign_modal_body.html'
+
+    def get(self, request, assignment_id):
+        assignment = get_object_or_404(Assignment, id=assignment_id)
+        context = RequestContext(request, {
+            'assignment': assignment
+        })
+        return render_to_response(self.template_name, context=context)
+
+    def post(self, request, assignment_id):
+        assignment = get_object_or_404(Assignment, id=assignment_id)
+        # assign.remove() clears unfinished annotations and then deletes self
+        assignment.remove()
+        return JsonResponse({'status': 'ok'})
+
+
 class AssignmentManageView(UserAllowedMixin, View):
     """
     View to handle assignment management page found at /assignment/manage/<assignment_id>

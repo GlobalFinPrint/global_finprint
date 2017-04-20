@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from django.views.decorators.csrf import csrf_exempt
 from global_finprint.annotation.views.assignment import VideoAutoAssignView, AssignmentManageView, \
-    AssignmentListView, AssignmentListTbodyView, AssignmentModalBodyView
+    AssignmentListView, AssignmentListTbodyView, AssignmentModalBodyView, UnassignModalBodyView
 from global_finprint.annotation.views.compare import AssignmentCompareView, AssignmentDetailView, \
     GetMasterView, MasterReviewView, MasterSetCompleted, MasterSetDeprecated
 from global_finprint.annotation.views.observations import MasterObservationEditData, \
@@ -12,6 +12,7 @@ urlpatterns = [
     url(r"^search$", AssignmentListTbodyView.as_view(), name='assignment_search'),
     url(r"^manage/(?P<assignment_id>\d+)$", AssignmentManageView.as_view(), name='assignment_manage'),
     url(r"^modal/(?P<set_id>\d+)$", AssignmentModalBodyView.as_view(), name='assignment_modal'),
+    url(r"^unassign_modal/(?P<assignment_id>\d+)$", UnassignModalBodyView.as_view(), name='unassign_modal'),
     url(r"^auto$", VideoAutoAssignView.as_view(), name='auto_assign'),
     url(r"^compare/(?P<set_id>\d+)$", AssignmentCompareView.as_view(), name='assignment_compare'),
     url(r"^review/(?P<master_id>\d+)$", MasterReviewView.as_view(), name='master_review'),
