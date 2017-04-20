@@ -50,13 +50,13 @@ class VideoAutoAssignView(UserAllowedMixin, View):
         include_leads = bool(request.POST.get('include_leads', False))
         project = get_object_or_404(Project, id=request.POST.get('project'))
 
-        annotators = FinprintUser.objects.filter(affiliation_id=aff_id).all()
+        annotators = FinprintUser.objects.filter(affiliation_id=aff_id, user__is_active=True).all()
         if not include_leads:
             annotators = list(a for a in annotators if not a.is_lead())
         video_count = 0
         assigned_count = 0
         new_count = 0
-        for video in Video.objects.filter(set__trip_id=trip_id).exclude(file__isnull=True).exclude(file='').all():
+        for video in Video.objects.filter(set__trip_id=trip_id).exclude(files__isnull=True).all():
             video_count += 1
             new_count += self.assign_video(annotators, video, num, project)
             assigned_count += len(video.annotators_assigned(project))
@@ -84,7 +84,7 @@ class AssignmentListView(UserAllowedMixin, View):
     def get(self, request):
         context = RequestContext(request, {
             'locations': Location.objects.order_by('name').all().prefetch_related('trip_set'),
-            'trips': Trip.objects.order_by('start_date').all().prefetch_related('set_set'),
+            'trips': Trip.objects.order_by('code').all().prefetch_related('set_set'),
             'sites': Site.objects.order_by('name').all().prefetch_related('reef_set'),
             'affils': Affiliation.objects.order_by('name').all().prefetch_related('finprintuser_set'),
             'statuses': AnnotationState.objects.all(),
