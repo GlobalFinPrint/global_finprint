@@ -128,7 +128,7 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
 
         if reefs:
             query = query.filter(video__set__reef_habitat__reef_id__in=(int(s) for s in reefs))
-            unassigned = unassigned.filter(id__in=(int(s) for s in reefs))
+            unassigned = unassigned.filter(video__set__reef_habitat__reef_id__in=(int(s) for s in reefs))
 
         if annos:
             query = query.filter(annotator_id__in=(int(a) for a in annos))
