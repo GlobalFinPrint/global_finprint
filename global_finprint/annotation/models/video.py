@@ -53,6 +53,14 @@ class AnnotationState(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
 
+    @property
+    def is_finished(self):
+        """
+        boolean for whether the assignment is in one of the states that is deemed 'finished' and thus cannot be deleted
+        finished is:  "ready for review" and "completed"
+        """
+        return True if self.id in [3, 4] else False
+
     def __str__(self):
         return u'{0}'.format(self.name)
 
@@ -67,11 +75,6 @@ class Assignment(AuditableModel):
     status = models.ForeignKey(to=AnnotationState, default=1)
     progress = models.IntegerField(default=0)
     project = models.ForeignKey(Project, default=1)
-
-    @property
-    def is_finished(self):
-        "boolean for whether the assignment is in one of the states that is deemed 'finished' and thus cannot be deleted"
-        return True if self.status.id in [3, 4, 6] else False
 
     _selected_related_list = ['annotator', 'annotator__affiliation', 'video',
                               'video__set', 'video__set__trip', 'status']
@@ -88,7 +91,6 @@ class Assignment(AuditableModel):
         return self.progress
 
     # a (hopefully) thoughtful delete method:
-
     def remove(self):
         pass
 
