@@ -13,12 +13,12 @@
     <td>{{ a.progress|time_display }}</td>
     <td>{{ a.observation_set.count }}</td>
     <td>
-        <a class="open-assign-modal" data-id="{{ a.video.set.id }}" href="#">Assign</a> /
+        <a class="open-assign-modal" data-id="{{ a.video.set.id }}" href="#">Assign</a> |
         <a href="{% url 'assignment_compare' a.video.set.id %}?project={{ a.project.pk }}" target="_blank">Review</a>
     </td>
     <td>
-        <a class="open-unassign-modal" data-id="{{ a.video.set.id }}" href="#">Unassign</a> /
-        <a href="{% url 'assignment_manage' a.id %}" target="_blank">Manage</a>
+        <a class="open-unassign-modal{% if a.status.is_finished %} disabled{% endif %}" data-id="{{ a.id }}" href="#">Unassign</a> |
+        <a {% if a.status.id == 1 %}class="disabled"{% endif %} href="{% url 'assignment_manage' a.id %}" target="_blank">Manage</a>
     </td>
 </tr>
 {% endfor %}

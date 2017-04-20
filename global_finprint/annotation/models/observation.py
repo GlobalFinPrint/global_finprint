@@ -127,6 +127,13 @@ class Observation(AbstractObservation):
     def get_for_api(cls, assignment):
         return list(ob.to_json() for ob in cls.objects.filter(assignment=assignment))
 
+    def remove_relations(self):
+        # remove events
+        self.event_set.all().delete()
+        # remove animal
+        if hasattr(self, 'animalobservation'):
+            self.animalobservation.delete()
+
     def set(self):
         return self.assignment.video.set
 

@@ -59,6 +59,11 @@ class FinprintUser(models.Model):
     def active_assignments(self):
         return apps.get_model('annotation', 'Assignment').objects.filter(annotator=self, status__in=[1, 2, 5]).all()
 
+    def clear_active_assignments(self):
+        active_assignments = self.active_assignments()
+        for assignment in active_assignments:
+            assignment.remove()
+
     def is_lead(self):
         return self.user.groups.filter(id=1).exists()
 

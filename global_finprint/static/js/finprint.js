@@ -10,6 +10,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initAssignButtons();
         initAssignmentSearch();
         initAssignmentModals();
+        initUnassignModal();
         initShowFormButtons();
         initManageStateButtons();
         initAutomaticAssignment();
@@ -137,6 +138,34 @@ var finprint = finprint || {};  //namespace if necessary...
 
         $modal.on('click', 'button#save-changes', function() {
             $.post('/assignment/modal/' + $(this).data('id'), $modal.find('form').serialize(), function() {
+                $modal.modal('hide');
+                $('form#assignment-search-form button#search').click();
+            });
+        });
+    }
+
+
+    function initUnassignModal() {
+        var $buttons = $('tbody#assignment-target');
+        var $modal = $('div#unassign-modal');
+
+        function loadModal(id, params) {
+            params = params || {};
+            $.get('/assignment/unassign_modal/' + id, params, function(html) {
+                $modal.find('div.modal-content').html(html);
+                $modal.data('id', id);
+                $modal.find('form').submit(false);
+            });
+        }
+
+        $buttons.on('click', 'a.open-unassign-modal', function(e) {
+            e.preventDefault();
+            loadModal($(this).data('id'));
+            $modal.modal('show');
+        });
+
+        $modal.on('click', 'button#save-changes', function() {
+            $.post('/assignment/unassign_modal/' + $(this).data('id'), $modal.find('form').serialize(), function() {
                 $modal.modal('hide');
                 $('form#assignment-search-form button#search').click();
             });

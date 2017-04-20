@@ -11,9 +11,7 @@ class AnimalAdmin(admin.ModelAdmin):
     search_fields = ['common_name', 'family', 'genus', 'species']
 
 admin.site.register(animal.Animal, AnimalAdmin)
-
 admin.site.register(animal.AnimalGroup)
-admin.site.register(video.AnnotationState)
 
 
 class TagAdmin(MPTTModelAdmin):

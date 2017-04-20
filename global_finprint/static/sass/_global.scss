@@ -199,6 +199,12 @@ h3.inline {
 
 a {
   color: $link;
+
+  &.disabled {
+    color: $disabled-link;
+    pointer-events: none;
+    cursor: default;
+  }
 }
 
 span.circle {

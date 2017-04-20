@@ -51,7 +51,7 @@ class UserAdmin(admin.UserAdmin):
     fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'password', 'first_name', 'last_name', 'email', 'groups')
+            'fields': ('username', 'password', 'first_name', 'last_name', 'email', 'is_active', 'groups')
         }),
     )
     inlines = (FinprintUserInline,)
@@ -69,6 +69,17 @@ class UserAdmin(admin.UserAdmin):
             if isinstance(inline, FinprintUserInline) and obj is None:
                 continue
             yield inline.get_formset(request, obj), inline
+
+    # disable the delete button and remove delete from actions
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def save_model(self, request, obj, form, change):
+        # if user is being set to "inactive", remove any assignments that are not complete
+        if 'is_active' in form.changed_data and not obj.is_active:
+            for assignment in obj.finprintuser.assignment_set.all():
+                assignment.remove(unfinished_only=True)
+        obj.save()
 
 
 class FinprintUserAdmin(ModelAdmin):
