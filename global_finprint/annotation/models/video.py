@@ -90,9 +90,13 @@ class Assignment(AuditableModel):
             self.save()
         return self.progress
 
-    # a (hopefully) thoughtful delete method:
-    def remove(self):
-        pass
+    # a (hopefully) thoughtful cleanup method:
+    def remove(self, unfinished_only=False):
+        if unfinished_only and self.status.is_finished:
+            return
+        # remove observations
+        self.observation_set.all().delete()
+        self.delete()
 
     @classmethod
     def get_all(cls):
