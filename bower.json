@@ -1,10 +1,10 @@
 {
   "name": "global_finprint",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "homepage": "https://github.com/GlobalFinPrint/global_finprint/",
   "authors": [],
   "description": "Shark and Ray Survey",
-  "license": "AGPL 3.0",
+  "license": "MIT",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -15,9 +15,9 @@
   "dependencies": {
     "bootstrap": "~3.3.5",
     "jquery": "~2.1.4",
-    "leaflet": "~0.7.5",
+    "leaflet": "~1.0.3",
     "moment": "~2.10.6",
-    "eonasdan-bootstrap-datetimepicker": "~4.17.37",
+    "eonasdan-bootstrap-datetimepicker": "~4.17.47",
     "bootstrap-multiselect": "~0.9.13",
     "selectize": "^0.12.1",
     "esri-leaflet": "1.0.4",
