@@ -49,6 +49,8 @@ urlpatterns = [
 
 # remove confusing 'Sites' from admin page:
 admin.site.unregister(Site)
+# Admin site title
+admin.site.site_header = 'Global FinPrint data administration'
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit
