@@ -281,6 +281,9 @@ LEAFLET_CONFIG = {
     'MAX_ZOOM': 13,
 }
 
+# indent of child items in the admin pages for the hierarchical lists
+MPTT_ADMIN_LEVEL_INDENT = 30
+
 DJANGO_SERVER_ENV = env('DJANGO_SERVER_ENV', default='local')
 FRAME_CAPTURE_BUCKET = 'finprint-annotator-screen-captures'
 HABITAT_IMAGE_BUCKET = 'finprint-habitat-images'
