@@ -4,7 +4,7 @@ django==1.9.13
 # Configuration
 django-environ==0.4.3
 django-secure==1.0.1
-whitenoise==2.0.4
+whitenoise==3.3.0
 
 # Forms
 django-braces==1.11.0
@@ -20,7 +20,7 @@ django-model-utils==2.3.1
 django-mptt==0.8.7
 
 # For the persistence stores
-psycopg2==2.6.1
+psycopg2==2.7.1
 
 # Unicode slugification
 unicode-slugify==0.1.3
