@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW public.v_report_observations_io AS
+CREATE OR REPLACE VIEW public.v_report_io_observations AS
 SELECT
   tr.code                                                   AS trip_code,
   s.code                                                    AS set_code,
