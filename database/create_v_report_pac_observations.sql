@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW public.v_report_observations_io AS
+CREATE OR REPLACE VIEW public.v_report_observations_pac AS
 SELECT
   tr.code                                                   AS trip_code,
   s.code                                                    AS set_code,
@@ -102,7 +102,7 @@ FROM
   LEFT JOIN annotation_animalobservation aobs ON aobs.observation_id = obs.id
   LEFT JOIN annotation_animal ani ON ani.id = aobs.animal_id
 
-WHERE hrg.name = 'Indian Ocean'
+WHERE hrg.name = 'Pacific'
 ORDER BY
   full_code,
   event_time,
