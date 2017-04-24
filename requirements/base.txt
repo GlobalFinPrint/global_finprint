@@ -1,41 +1,41 @@
 # Django
-django==1.9.1
+django==1.9.13
 
 # Configuration
-django-environ==0.4.0
+django-environ==0.4.3
 django-secure==1.0.1
-whitenoise==2.0.4
+whitenoise==3.3.0
 
 # Forms
-django-braces==1.8.1
-django-crispy-forms==1.5.2
+django-braces==1.11.0
+django-crispy-forms==1.6.1
 django-bootstrap3-datetimepicker-2==2.4.2
 
 # data presentation
-django-leaflet==0.17.1
-django-geojson==2.8.1
+django-leaflet==0.22.0
+django-geojson==2.10.0
 
 # Models
 django-model-utils==2.3.1
-django-mptt==0.8.4
+django-mptt==0.8.7
 
 # For the persistence stores
-psycopg2==2.6.1
+psycopg2==2.7.1
 
 # Unicode slugification
 unicode-slugify==0.1.3
 django-autoslug==1.9.3
 
 # Time zones support
-pytz==2015.7
+pytz==2017.2
 
 # AWS, S3
-boto==2.38.0
+boto==2.46.1
 
 gunicorn==19.3.0
 
 # Bulk data import
-openpyxl==2.3.5
+openpyxl==2.4.6
 
 # Click command line paramter support
 click==6.6
