@@ -30,12 +30,12 @@ django-autoslug==1.9.3
 pytz==2017.2
 
 # AWS, S3
-boto==2.46.1
+boto==2.38.0
 
 gunicorn==19.3.0
 
 # Bulk data import
-openpyxl==2.4.6
+openpyxl==2.3.5
 
 # Click command line paramter support
 click==6.6
