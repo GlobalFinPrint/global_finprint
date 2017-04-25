@@ -28,7 +28,7 @@ def observation_detail(request, pk):
     return JsonResponse(data)
 
 
-# depracated:
+# deprecated:
 def observation_post(request):
     pass
 
@@ -79,10 +79,11 @@ class MasterObservationEditData(UserAllowedMixin, View):
     def get(self, request, evt_id, **kwargs):
         event = get_object_or_404(MasterEvent, pk=evt_id)
         project = event.master_observation.master_record.project
-        animals = Animal.objects.filter(project=project).select_related('group')
+        animals = Animal.objects.filter(project=project).select_related('group').order_by(
+            'group__name', 'genus', 'species')
         tags = project.tag_list()
         return JsonResponse({
-            'animals': list({'id': a.id, 'name': str(a)} for a in animals),
+            'animals': list({'id': a.id, 'name': str(a), 'group_name': str(a.group.name)} for a in animals),
             'tags': list({'id': t.id, 'name': str(t)} for t in tags),
             'selected_animal': event.master_observation.animal().id if event.master_observation.type == 'A' else None,
             'obs_note': event.master_observation.comment,
@@ -144,10 +145,11 @@ class ObservationEditData(UserAllowedMixin, View):
     def get(self, request, evt_id, **kwargs):
         event = get_object_or_404(Event, pk=evt_id)
         project = event.observation.assignment.project
-        animals = Animal.objects.filter(project=project).select_related('group')
+        animals = Animal.objects.filter(project=project).select_related('group').order_by(
+            'group__name', 'genus', 'species')
         tags = project.tag_list()
         return JsonResponse({
-            'animals': list({'id': a.id, 'name': str(a)} for a in animals),
+            'animals': list({'id': a.id, 'name': str(a), 'group_name': str(a.group.name)} for a in animals),
             'tags': list({'id': t.id, 'name': str(t)} for t in tags),
             'selected_animal': event.observation.animal().id if event.observation.type == 'A' else None,
             'obs_note': event.observation.comment,

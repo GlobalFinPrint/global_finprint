@@ -1,0 +1,5 @@
+122
+v1.0.0-73-g49b8965
+49b8965d4ad4267792f34d950e52180121a3f63a
+2016-06-28 13:38:08 -0700
+delete obs if its last event is deleted

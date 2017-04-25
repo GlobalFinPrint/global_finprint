@@ -105,7 +105,7 @@ class MasterSetCompleted(UserAllowedMixin, View):
 
 class MasterSetDeprecated(UserAllowedMixin, View):
     """
-    Endpoint to mark a master record as 'depracated'
+    Endpoint to mark a master record as 'deprecated'
     """
     def get(self, request, master_id):
         master = get_object_or_404(MasterRecord, pk=master_id)

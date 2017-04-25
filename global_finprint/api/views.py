@@ -7,7 +7,7 @@ from ..annotation.models.animal import Animal
 from ..annotation.models.video import Assignment
 from ..annotation.models.observation import Observation, Attribute, Event
 from ..core.models import FinprintUser
-
+from ..core.models import Affiliation
 
 class APIView(View):
     """
@@ -88,6 +88,10 @@ class SetList(APIView):
                 assignments = Assignment.get_active().filter(assigned_by=request.annotator)
             else:
                 assignments = Assignment.get_active()
+            if 'affiliation_id' in request.GET:
+                affiliated_users_set = FinprintUser.objects.all().filter(
+                    affiliation_id=request.GET.get('affiliation_id'))
+                assignments = assignments.filter(annotator_id__in=affiliated_users_set)
             if 'trip_id' in request.GET:
                 assignments = assignments.filter(video__set__trip__id=request.GET.get('trip_id'))
             if 'set_id' in request.GET:
@@ -96,10 +100,9 @@ class SetList(APIView):
                 assignments = assignments.filter(annotator_id=request.GET.get('annotator_id'))
             if 'status_id' in request.GET:
                 assignments = assignments.filter(status_id=request.GET.get('status_id'))
-            if 'affiliation_id' in request.GET:
-                assignments = assignments.filter(affiliation_id=request.GET.get('affiliation_id'))
         else:
             assignments = Assignment.get_active_for_annotator(request.annotator)
+
         return JsonResponse({'sets': list(va.to_json() for va in assignments)})
 
 
@@ -328,3 +331,16 @@ class EventUpdate(APIView):
             evt.attribute.add(get_object_or_404(Attribute, pk=att_id))
         evt.save()
         return JsonResponse({'observations': Observation.get_for_api(request.va)})
+
+
+
+class AffiliationList(APIView):
+    """
+    Affiliation list 
+    """
+    def get(self,request):
+        affiliations = Affiliation.objects.all().values('id','name')
+        obj = {}
+        for dictObj in affiliations :
+            obj[dictObj['id']] = dictObj['name']
+        return JsonResponse(obj)

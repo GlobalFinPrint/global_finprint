@@ -22,7 +22,11 @@
         {% with firstevent=o.initial_event rowspan=o.event_set.count %}
         {% for e in o.event_set_for_table %}
             {% if e.id == firstevent.id %}
-            <tr class="first-event accordion-toggle {{ o.needs_review|yesno:"needs-review,," }}" data-target=".children-{{ o.id }}" data-rowspan="{{ rowspan }}">
+                {% if rowspan > 1 %}
+                    <tr class="first-event accordion-toggle {{ o.needs_review|yesno:"needs-review,," }}" data-target=".children-{{ o.id }}" data-rowspan="{{ rowspan }}">
+                {% else %}
+                    <tr class="single-event {{ o.needs_review|yesno:"needs-review,," }}" data-rowspan="{{ rowspan }}">
+                {% endif %}
                 <td class="rowspan">{{ o.annotator }}</td>
                 {% if o.type == 'I' %}
                     <td class="rowspan"><i>N/A</i></td>

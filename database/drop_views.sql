@@ -24,3 +24,7 @@ DROP VIEW IF EXISTS public.v_report_usage_metrics_by_affiliation;
 
 DROP VIEW IF EXISTS public.v_report_weekly_video_hours;
 
+DROP VIEW IF EXISTS public.v_report_observations_wa;
+DROP VIEW IF EXISTS public.v_report_observations_io;
+DROP VIEW IF EXISTS public.v_report_observations_pac;
+DROP VIEW IF EXISTS public.v_report_observations_coral;

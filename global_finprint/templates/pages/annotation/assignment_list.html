@@ -12,6 +12,16 @@
 
             <div class="row">
                 <div class="col-md-3">
+                    <label for="select-project">Project</label>
+                    <select id="select-project" name="project_id" class="form-control">
+                        <option value="" selected="selected">---</option>
+                        {% for p in projects %}
+                            <option value="{{ p.id }}">{{ p }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
                     <label for="select-trip">Trip(s)</label>
                     <select id="select-trip" name="trip[]" multiple="multiple" placeholder="Select one or more trips">
                         {% for l in locations %}
@@ -38,6 +48,21 @@
                 </div>
 
                 <div class="col-md-3">
+                    <label for="select-reef">Reef(s)</label>
+                    <select id="select-reef" name="reef[]" multiple="multiple" placeholder="Select one or more reefs">
+                        {% for s in sites %}
+                        <optgroup label="{{ s }}">
+                        {% for r in s.reef_set.all %}
+                            <option value="{{ r.id }}">{{ r.name }}</option>
+                        {% endfor %}
+                        </optgroup>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3">
                     <label for="select-anno">Annotator(s)</label>
                     <select id="select-anno" name="anno[]" multiple="multiple" placeholder="Select one or more annotators">
                         {% for a in affils %}
@@ -55,18 +80,6 @@
                     <select id="select-status" name="status[]" multiple="multiple" placeholder="Select one or more statuses">
                         {% for s in statuses %}
                             <option value="{{ s.id }}">{{ s }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-3">
-                    <label for="select-project">Project</label>
-                    <select id="select-project" name="project_id" class="form-control">
-                        <option value="" selected="selected">---</option>
-                        {% for p in projects %}
-                            <option value="{{ p.id }}">{{ p }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -105,17 +118,19 @@
                     <th>Video</th>
                     <th>Trip</th>
                     <th>Set</th>
+                    <th>Reef</th>
                     <th>Annotator</th>
                     <th>Project</th>
                     <th>Date assigned</th>
                     <th>Status</th>
                     <th>Progress</th>
                     <th># of Obs</th>
-                    <th>Actions</th>
+                    <th>Video Actions</th>
+                    <th>Assignment Actions</th>
                 </tr>
             </thead>
             <tbody id="assignment-target">
-                <tr><td colspan="10">
+                <tr><td colspan="12">
                     <h4 class="text-center">Use the form above to limit selection</h4>
                 </td></tr>
             </tbody>
@@ -123,6 +138,12 @@
     </div>
 
     <div class="modal fade" id="assign-modal">
+        <div class="modal-dialog">
+            <div class="modal-content"></div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="unassign-modal">
         <div class="modal-dialog">
             <div class="modal-content"></div>
         </div>

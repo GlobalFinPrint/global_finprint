@@ -13,7 +13,7 @@
                         <th>Annotator</th>
                         <th>Project</th>
                         <th>Status</th>
-                        <th>Other assignments</th>
+                        <th>Active assignments</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,12 +35,12 @@
             <form>
                 {% csrf_token %}
                 <div class="form-group">
-                    <label for="new-annotators">New annotator(s) <i>(other assignment count in parenthesis)</i></label>
+                    <label for="new-annotators">New annotator(s) <i>(active assignment count in parenthesis)</i></label>
                     <select id="new-annotators" name="anno[]" multiple="multiple" placeholder="Select one or more annotators">
                         {% for af in affiliations %}
                         <optgroup label="{{ af }}">
                             {% for a in af.annotators %}
-                            {% if a not in current_annos %}
+                            {% if a not in current_annos and a.user.is_active %}
                             <option value="{{ a.id }}">{{ a }} ({{ a.active_assignments.count }})</option>
                             {% endif %}
                             {% endfor %}

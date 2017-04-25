@@ -10,6 +10,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initAssignButtons();
         initAssignmentSearch();
         initAssignmentModals();
+        initUnassignModal();
         initShowFormButtons();
         initManageStateButtons();
         initAutomaticAssignment();
@@ -76,6 +77,7 @@ var finprint = finprint || {};  //namespace if necessary...
         var fields = [
             '#select-trip',
             '#select-set',
+            '#select-reef',
             '#select-anno',
             '#select-status'
         ];
@@ -136,6 +138,34 @@ var finprint = finprint || {};  //namespace if necessary...
 
         $modal.on('click', 'button#save-changes', function() {
             $.post('/assignment/modal/' + $(this).data('id'), $modal.find('form').serialize(), function() {
+                $modal.modal('hide');
+                $('form#assignment-search-form button#search').click();
+            });
+        });
+    }
+
+
+    function initUnassignModal() {
+        var $buttons = $('tbody#assignment-target');
+        var $modal = $('div#unassign-modal');
+
+        function loadModal(id, params) {
+            params = params || {};
+            $.get('/assignment/unassign_modal/' + id, params, function(html) {
+                $modal.find('div.modal-content').html(html);
+                $modal.data('id', id);
+                $modal.find('form').submit(false);
+            });
+        }
+
+        $buttons.on('click', 'a.open-unassign-modal', function(e) {
+            e.preventDefault();
+            loadModal($(this).data('id'));
+            $modal.modal('show');
+        });
+
+        $modal.on('click', 'button#save-changes', function() {
+            $.post('/assignment/unassign_modal/' + $(this).data('id'), $modal.find('form').serialize(), function() {
                 $modal.modal('hide');
                 $('form#assignment-search-form button#search').click();
             });
@@ -327,7 +357,7 @@ var finprint = finprint || {};  //namespace if necessary...
     function initCollapse() {
         var $parent = $('tbody#collapse-parent');
 
-        $parent.find('tr.first-event').on('click', function(e) {
+        $parent.find('tr.first-event, tr.single-event').on('click', function(e) {
             // don't collapse/expand when clicking on editing fields
             if ($(e.target).is('.obs-edit, .edit-save, .edit-cancel, input, textarea, ' +
                     'select, .selectize-input, .item, a.remove')) {
@@ -342,7 +372,7 @@ var finprint = finprint || {};  //namespace if necessary...
                 .find('tr.child-row')
                     .hide()
                     .end()
-                .find('tr.first-event')
+                .find('tr.first-event, tr.single-event')
                     .removeClass('selected')
                     .find('td.rowspan')
                         .removeAttr('rowspan');
@@ -763,6 +793,7 @@ var finprint = finprint || {};  //namespace if necessary...
             $.get(dataUrl, function(resp) {
                 var oldActions, oldAnimal, oldObsNote, oldDuration, oldEventNote, oldAttributes;
                 var actionsHTML, animalHTML, obsNoteHTML, durationHTML, eventNoteHTML, attributesHTML;
+                var animalGroup;
                 var animals = resp.animals;
                 var duration = (resp.duration === null ? '' : resp.duration);
                 var obs_note = (resp.obs_note === null ? '' : resp.obs_note);
@@ -829,12 +860,19 @@ var finprint = finprint || {};  //namespace if necessary...
                 // animal dropdown
                 oldAnimal = $animalCell.html();
                 animalHTML = '<select class="edit-animal">';
-                animalHTML += animals.map(function(animal) {
-                    return '<option value="' + animal.id + '"' +
+
+                animals.forEach(function(animal){
+                    if (animal.group_name != animalGroup) {
+                        if (animalGroup) {
+                            animalHTML += '</optgroup>';
+                        }
+                        animalGroup = animal.group_name;
+                        animalHTML += '<optgroup label="' + animalGroup + '">';
+                    } else animalHTML += '<option value="' + animal.id + '"' +
                         (animal.id === selectedAnimalId ? ' selected="selected"' : '') +
                         '>' + animal.name + '</option>';
                 });
-                animalHTML += '</select>';
+                animalHTML += '</optgroup></select>';
                 $animalCell.html(animalHTML);
 
                 // observation note
