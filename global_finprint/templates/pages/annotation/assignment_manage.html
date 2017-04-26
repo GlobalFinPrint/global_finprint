@@ -6,57 +6,45 @@
         <div class="row">
             <h3>Manage video assignment</h3>
             <div class="text-right manage-state-buttons" data-id="{{ assignment.id }}">
-                {% if assignment.status_id == 1 %}
-                    <form>
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="delete" />
-                        <button class="btn btn-danger">Delete*</button>
-                    </form>
-
-                    <br />
-                    <i>NOTE: * denotes a permanent status</i>
-
-                {% elif assignment.status_id == 2 %}
-                    <form>
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="update" />
-                        <input type="hidden" name="new" value="5" />
-                        <button class="btn btn-warning">Disable</button>
-                    </form>
-
-                {% elif assignment.status_id == 3 %}
-                    <form>
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="update" />
-                        <input type="hidden" name="new" value="4" />
-                        <button class="btn btn-success">Accept*</button>
-                    </form>
 
                     <form>
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="update" />
-                        <input type="hidden" name="new" value="6" />
-                        <button class="btn btn-warning">Reject*</button>
-                    </form>
 
-                    <form>
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="update" />
-                        <input type="hidden" name="new" value="2" />
-                        <button class="btn btn-info">Back to In Progress</button>
-                    </form>
 
-                    <br />
-                    <i>NOTE: * denotes a permanent status</i>
-
-                {% elif assignment.status_id == 5 %}
-                    <form>
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="update" />
-                        <input type="hidden" name="new" value="2" />
-                        <button class="btn btn-primary">Enable</button>
+                        <div class="btn-group" data-toggle="buttons">
+                          <label class="btn btn-primary active">
+                            <input type="radio" name="options" id="option1" autocomplete="off" checked> Radio 1 (preselected)
+                          </label>
+                          <label class="btn btn-primary">
+                            <input type="radio" name="options" id="option2" autocomplete="off"> Radio 2
+                          </label>
+                          <label class="btn btn-primary">
+                            <input type="radio" name="options" id="option3" autocomplete="off"> Radio 3
+                          </label>
+                        </div>
+{#                        <input type="hidden" name="action" value="delete" />#}
+{#                        <input type="hidden" name="new" value="1" />#}
+{#                        <button class="btn">Not started</button>#}
+{##}
+{#                        <input type="hidden" name="action" value="update" />#}
+{#                        <input type="hidden" name="new" value="2" />#}
+{#                        <button class="btn">In Progress</button>#}
+{##}
+{#                        <input type="hidden" name="action" value="update" />#}
+{#                        <input type="hidden" name="new" value="3" />#}
+{#                        <button class="btn">Ready for review</button>#}
+{##}
+{#                        <input type="hidden" name="action" value="update" />#}
+{#                        <input type="hidden" name="new" value="4" />#}
+{#                        <button class="btn">Accepted</button>#}
+{##}
+{#                        <input type="hidden" name="action" value="update" />#}
+{#                        <input type="hidden" name="new" value="5" />#}
+{#                        <button class="btn">Rejected</button>#}
+{##}
+{#                        <input type="hidden" name="action" value="update" />#}
+{#                        <input type="hidden" name="new" value="6" />#}
+{#                        <button class="btn">Disabled</button>#}
                     </form>
-                {% endif %}
             </div>
         </div>
 
