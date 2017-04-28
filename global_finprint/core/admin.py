@@ -45,6 +45,10 @@ class FinprintUserInline(StackedInline):
     model = FinprintUser
     fields = ('affiliation',)
 
+    # disable the delete button and remove delete from actions
+    def has_delete_permission(self, request, obj=None):
+        return False
+
 
 class UserAdmin(admin.UserAdmin):
     actions = None
@@ -86,6 +90,10 @@ class FinprintUserAdmin(ModelAdmin):
     actions = None
     fields = ('user', 'affiliation')
     ordering = ['affiliation__name', 'user__last_name', 'user__first_name']
+
+    # disable the delete button and remove delete from actions
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 site.unregister(models.User)
