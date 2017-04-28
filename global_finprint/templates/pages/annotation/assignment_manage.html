@@ -5,46 +5,48 @@
     <div class="manage-content">
         <div class="row">
             <h3>Manage video assignment</h3>
-            <div class="text-right manage-state-buttons" data-id="{{ assignment.id }}">
-
-                    <form>
-
-
-                        <div class="btn-group" data-toggle="buttons">
-                          <label class="btn btn-primary active">
-                            <input type="radio" name="options" id="option1" autocomplete="off" checked> Radio 1 (preselected)
-                          </label>
-                          <label class="btn btn-primary">
-                            <input type="radio" name="options" id="option2" autocomplete="off"> Radio 2
-                          </label>
-                          <label class="btn btn-primary">
-                            <input type="radio" name="options" id="option3" autocomplete="off"> Radio 3
-                          </label>
+            <div class="manage-state-buttons" data-id="{{ assignment.id }}">
+                <form>
+                    <div class="input-group text-right">
+                        <div id="radioBtn" class="btn-group">
+                            <a class="btn btn-primary btn-sm notActive disabled" data-toggle="assignment_state" data-value="1">Not started</a>
+                            <a class="btn btn-primary btn-sm notActive" data-toggle="assignment_state" data-value="2">In progress</a>
+                            <a class="btn btn-primary btn-sm active" data-toggle="assignment_state" data-value="3">Ready for review</a>
+                            <a class="btn btn-primary btn-sm notActive" data-toggle="assignment_state" data-value="4">Accepted</a>
+                            <a class="btn btn-primary btn-sm notActive" data-toggle="assignment_state" data-value="5">Rejected</a>
+                            <a class="btn btn-primary btn-sm notActive" data-toggle="assignment_state" data-value="6">Disabled</a>
                         </div>
-{#                        <input type="hidden" name="action" value="delete" />#}
-{#                        <input type="hidden" name="new" value="1" />#}
-{#                        <button class="btn">Not started</button>#}
+                        <input type="hidden" name="assignment_state" id="assignment_state">
+                        <input type="hidden" name="action" id="update">
+                        {% csrf_token %}
+                    </div>
+{#                    <div class="btn-group" data-toggle="buttons">#}
+{#                        <label class="btn btn-primary" disabled>#}
+{#                            <input type="radio" name="options" id="1" autocomplete="off">Not started#}
+{#                        </label>#}
 {##}
-{#                        <input type="hidden" name="action" value="update" />#}
-{#                        <input type="hidden" name="new" value="2" />#}
-{#                        <button class="btn">In Progress</button>#}
+{#                        <label class="btn btn-primary">#}
+{#                            <input type="radio" name="options" id="2" autocomplete="off">In progress#}
+{#                        </label>#}
 {##}
-{#                        <input type="hidden" name="action" value="update" />#}
-{#                        <input type="hidden" name="new" value="3" />#}
-{#                        <button class="btn">Ready for review</button>#}
+{#                        <label class="btn btn-primary active">#}
+{#                            <input type="radio" name="options" id="3" autocomplete="off" checked>Ready for review#}
+{#                        </label>#}
 {##}
-{#                        <input type="hidden" name="action" value="update" />#}
-{#                        <input type="hidden" name="new" value="4" />#}
-{#                        <button class="btn">Accepted</button>#}
+{#                        <label class="btn btn-primary">#}
+{#                            <input type="radio" name="options" id="4" autocomplete="off">Accepted#}
+{#                        </label>#}
 {##}
-{#                        <input type="hidden" name="action" value="update" />#}
-{#                        <input type="hidden" name="new" value="5" />#}
-{#                        <button class="btn">Rejected</button>#}
+{#                        <label class="btn btn-primary">#}
+{#                            <input type="radio" name="options" id="5" autocomplete="off">Rejected#}
+{#                        </label>#}
 {##}
-{#                        <input type="hidden" name="action" value="update" />#}
-{#                        <input type="hidden" name="new" value="6" />#}
-{#                        <button class="btn">Disabled</button>#}
-                    </form>
+{#                        <label class="btn btn-primary">#}
+{#                            <input type="radio" name="options" id="6" autocomplete="off">Disabled#}
+{#                        </label>#}
+{#                    </div>#}
+
+                </form>
             </div>
         </div>
 

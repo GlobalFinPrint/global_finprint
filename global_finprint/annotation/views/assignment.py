@@ -247,7 +247,7 @@ class AssignmentManageView(UserAllowedMixin, View):
         :return:
         """
         action = request.POST.get('action')
-        new_state = request.POST.get('new')
+        new_state = request.POST.get('new_state')
         assignment = get_object_or_404(Assignment, id=assignment_id)
 
         if action == 'delete' and assignment.status_id == 1:
