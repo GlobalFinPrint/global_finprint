@@ -10,6 +10,8 @@ APPS_DIR = ROOT_DIR.path('global_finprint')
 
 env = environ.Env()
 
+ALLOWED_HOSTS = [env("DJANGO_ALLOWED_HOSTS", default='*.globalfinprint.org')]
+
 # APP CONFIGURATION
 # ------------------------------------------------------------------------------
 DJANGO_APPS = (
@@ -84,13 +86,10 @@ FIXTURE_DIRS = (
 # MANAGER CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#admins
-ADMINS = (
-    ("""kirkl""", 'kirkl@vulcan.com'),
-    ("""stuartg""", 'stuartg@vulcan.com'),
-)
-
+ADMINS = []
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS
+
 
 # DATABASE CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -196,6 +195,8 @@ LOGIN_URL = 'finprint_login'
 
 # SLUGLIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
+
+
 
 LOG_DIR = '/var/log/global_finprint/gf_web.log'
 
