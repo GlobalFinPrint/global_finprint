@@ -207,11 +207,10 @@ var finprint = finprint || {};  //namespace if necessary...
 
         $radio.on('click', function () {
             var statusId = $(this).data('value');
-            var tog = $(this).data('toggle');
-            $('#' + tog).prop('value', statusId);
+            $('#assignment_state').prop('value', statusId);
 
-            $('a[data-toggle="' + tog + '"]').not('[data-value="' + statusId + '"]').removeClass('active').addClass('notActive');
-            $('a[data-toggle="' + tog + '"][data-value="' + statusId + '"]').removeClass('notActive').addClass('active');
+            $('a').not('[data-value="' + statusId + '"]').removeClass('active').addClass('notActive');
+            $('a[data-value="' + statusId + '"]').removeClass('notActive').addClass('active');
 
             $buttons.find('form').submit();
         });
@@ -220,9 +219,7 @@ var finprint = finprint || {};  //namespace if necessary...
             var action = 'update';
             var new_state = $('div#radioBtn a.active').data('value');
 
-            $.post('/assignment/manage/' + assignmentId, $(this).serialize(), function () {
-                    window.location.reload(true);
-                });
+            $.post('/assignment/manage/' + assignmentId, $(this).serialize());
 
             return false;
         });

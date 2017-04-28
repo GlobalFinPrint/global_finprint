@@ -247,13 +247,13 @@ class AssignmentManageView(UserAllowedMixin, View):
         :return:
         """
         action = request.POST.get('action')
-        new_state = request.POST.get('new_state')
+        assignment_state = request.POST.get('assignment_state')
         assignment = get_object_or_404(Assignment, id=assignment_id)
 
         if action == 'delete' and assignment.status_id == 1:
             assignment.delete()
-        elif action == 'update' and new_state is not None:
-            assignment.status_id = int(new_state)
+        elif action == 'update' and assignment_state is not None:
+            assignment.status_id = int(assignment_state)
             assignment.save()
 
         return JsonResponse({'status': 'ok'})
