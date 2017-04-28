@@ -225,6 +225,7 @@ class AssignmentManageView(UserAllowedMixin, View):
     def get(self, request, assignment_id):
         assignment = get_object_or_404(Assignment, id=assignment_id)
         context = RequestContext(request, {
+            'state_list': AnnotationState.objects.all(),
             'assignment': assignment,
             'trip': assignment.video.set.trip,
             'set': assignment.video.set,

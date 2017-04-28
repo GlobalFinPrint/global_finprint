@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load active_if_equal %}
 
 {% block content %}
     <div class="manage-content">
@@ -7,45 +8,22 @@
             <h3>Manage video assignment</h3>
             <div class="manage-state-buttons" data-id="{{ assignment.id }}">
                 <form>
-                    <div class="input-group text-right">
+                    <div class="input-group pull-right">
+
+                        <span id="save_message" style="display: none" class="inline .success">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>  Status change saved  </span>
                         <div id="radioBtn" class="btn-group">
-                            <a class="btn btn-primary btn-sm notActive disabled" data-toggle="assignment_state" data-value="1">Not started</a>
-                            <a class="btn btn-primary btn-sm notActive" data-toggle="assignment_state" data-value="2">In progress</a>
-                            <a class="btn btn-primary btn-sm active" data-toggle="assignment_state" data-value="3">Ready for review</a>
-                            <a class="btn btn-primary btn-sm notActive" data-toggle="assignment_state" data-value="4">Accepted</a>
-                            <a class="btn btn-primary btn-sm notActive" data-toggle="assignment_state" data-value="5">Rejected</a>
-                            <a class="btn btn-primary btn-sm notActive" data-toggle="assignment_state" data-value="6">Disabled</a>
+                            {% for assignment_state in state_list %}
+                                <a class="btn btn-default
+                                    {% active_if_equal assignment.status.id assignment_state.id %}
+                                    {% if assignment_state.id == 1 %}disabled{% endif %}"
+                                   data-toggle="assignment_state" data-value="{{ assignment_state.id }}">{{ assignment_state.name }}</a>
+                            {% endfor %}
                         </div>
                         <input type="hidden" name="assignment_state" id="assignment_state">
                         <input type="hidden" name="action" value="update">
                         {% csrf_token %}
                     </div>
-{#                    <div class="btn-group" data-toggle="buttons">#}
-{#                        <label class="btn btn-primary" disabled>#}
-{#                            <input type="radio" name="options" id="1" autocomplete="off">Not started#}
-{#                        </label>#}
-{##}
-{#                        <label class="btn btn-primary">#}
-{#                            <input type="radio" name="options" id="2" autocomplete="off">In progress#}
-{#                        </label>#}
-{##}
-{#                        <label class="btn btn-primary active">#}
-{#                            <input type="radio" name="options" id="3" autocomplete="off" checked>Ready for review#}
-{#                        </label>#}
-{##}
-{#                        <label class="btn btn-primary">#}
-{#                            <input type="radio" name="options" id="4" autocomplete="off">Accepted#}
-{#                        </label>#}
-{##}
-{#                        <label class="btn btn-primary">#}
-{#                            <input type="radio" name="options" id="5" autocomplete="off">Rejected#}
-{#                        </label>#}
-{##}
-{#                        <label class="btn btn-primary">#}
-{#                            <input type="radio" name="options" id="6" autocomplete="off">Disabled#}
-{#                        </label>#}
-{#                    </div>#}
-
                 </form>
             </div>
         </div>

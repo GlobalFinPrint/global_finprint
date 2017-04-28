@@ -207,6 +207,14 @@ a {
   }
 }
 
+a.btn {
+  &.disabled {
+    color: white;
+    pointer-events: none;
+    cursor: default;
+  }
+}
+
 span.circle {
   @include circle(25px);
   color: white;

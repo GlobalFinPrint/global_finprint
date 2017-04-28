@@ -14,7 +14,7 @@
     <td>{{ a.observation_set.count }}</td>
     <td>
         <a class="open-assign-modal" data-id="{{ a.video.set.id }}" href="#">Assign</a> |
-        <a href="{% url 'assignment_compare' a.video.set.id %}?project={{ a.project.pk }}">Review</a>
+        <a href="{% url 'assignment_compare' a.video.set.id %}?project={{ a.project.pk }}">Compare</a>
     </td>
     <td>
         <a class="open-unassign-modal{% if a.status.is_finished %} disabled{% endif %}" data-id="{{ a.id }}" href="#">Unassign</a> |
