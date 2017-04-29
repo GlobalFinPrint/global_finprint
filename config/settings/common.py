@@ -10,7 +10,7 @@ APPS_DIR = ROOT_DIR.path('global_finprint')
 
 env = environ.Env()
 
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=['.globalfinprint.org'])
+ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["*"])
 
 # APP CONFIGURATION
 # ------------------------------------------------------------------------------
