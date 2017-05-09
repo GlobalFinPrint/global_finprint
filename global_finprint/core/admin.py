@@ -81,6 +81,7 @@ class UserAdmin(admin.UserAdmin):
     def save_model(self, request, obj, form, change):
         # if user is being set to "inactive", remove any assignments that are not complete
         if 'is_active' in form.changed_data and not obj.is_active:
+
             for assignment in obj.finprintuser.assignment_set.all():
                 assignment.remove(unfinished_only=True)
         obj.save()
