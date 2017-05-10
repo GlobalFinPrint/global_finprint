@@ -299,7 +299,8 @@ class AbstractEvent(AuditableModel):
             bucket = conn.get_bucket(settings.FRAME_CAPTURE_BUCKET)
             key = bucket.get_key(self.filename())
             url = key.generate_url(expires_in=300, query_auth=False) if key else None
-            logger.debug('{0}{1}{2}{3}{4}{5}'.format('Building image url: ', bucket, ', ', key, ', image url: ', url))
+            logger.debug('{}{}{}{}{}{}{}{}'.format('Building image url for file ', self.filename(),
+                                                    ': ', bucket, ', ', key, ', image url: ', url))
             return url
         except S3ResponseError as e:
             logger.warning('{}{}'.format('Unable to build image url: ', e.message))
