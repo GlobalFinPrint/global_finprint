@@ -288,6 +288,7 @@ class AbstractEvent(AuditableModel):
     # TODO: do we need to check for every key? maybe just use filename and a base_url
     def image_url(self, verify=True):
         if self.extent is None:
+            logger.debug('{}'.format('No image extent: '))
             return None
 
         if verify is False:
@@ -298,6 +299,7 @@ class AbstractEvent(AuditableModel):
             bucket = conn.get_bucket(settings.FRAME_CAPTURE_BUCKET)
             key = bucket.get_key(self.filename())
             url = key.generate_url(expires_in=300, query_auth=False) if key else None
+            logger.debug('{}{}'.format('Image URL: ', url))
             return url
         except S3ResponseError as e:
             logger.warning('{}{}'.format('Unable to build image url: ', e.message))
@@ -305,6 +307,7 @@ class AbstractEvent(AuditableModel):
 
     def extent_to_css(self):
         if self.extent is None:
+            logger.debug('{}'.format('No image extent: '))
             return None
 
         try:
