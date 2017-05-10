@@ -16,6 +16,9 @@ from datetime import datetime
 from ...core.templatetags.time_display import time_display
 
 
+logger = logging.getLogger(__name__)
+
+
 OBSERVATION_TYPE_CHOICES = {
     ('I', 'Of interest'),
     ('A', 'Animal'),
@@ -294,9 +297,10 @@ class AbstractEvent(AuditableModel):
             conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
             bucket = conn.get_bucket(settings.FRAME_CAPTURE_BUCKET)
             key = bucket.get_key(self.filename())
-            return key.generate_url(expires_in=300, query_auth=False) if key else None
+            url = key.generate_url(expires_in=300, query_auth=False) if key else None
+            return url
         except S3ResponseError as e:
-            logging.warning('{}{}'.format('Unable to build image url: ', e.message))
+            logger.warning('{}{}'.format('Unable to build image url: ', e.message))
             return None
 
     def extent_to_css(self):
@@ -314,7 +318,7 @@ class AbstractEvent(AuditableModel):
             )
             return css
         except AttributeError as e:  # handle bad extents
-            logging.warning('{}{}'.format('Bad image extent: ', e.message))
+            logger.warning('{}{}'.format('Bad image extent: ', e.message))
             return None
 
     def needs_review(self):
