@@ -48,6 +48,10 @@ table.set-table {
   tbody tr td i {
     color: #999;
   }
+
+  tr.set-complete {
+    background-color: transparentize(green, 0.75);
+  }
 }
 
 ul.annotators {

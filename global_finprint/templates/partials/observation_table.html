@@ -1,5 +1,7 @@
 {% load time_display %}
-<h3>Observations{{ for }}</h3>
+{% if not master %}
+    <h3>Observations{{ for }}</h3>
+{% endif %}
 <table class="table table-bordered table-condensed assignment-observation-table {{ master|yesno:"master,," }}" id="observation-table" cellspacing="0" width="100%">
     <thead>
     <tr>
