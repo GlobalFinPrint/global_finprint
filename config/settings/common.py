@@ -10,6 +10,8 @@ APPS_DIR = ROOT_DIR.path('global_finprint')
 
 env = environ.Env()
 
+ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["*"])
+
 # APP CONFIGURATION
 # ------------------------------------------------------------------------------
 DJANGO_APPS = (
@@ -84,13 +86,10 @@ FIXTURE_DIRS = (
 # MANAGER CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#admins
-ADMINS = (
-    ("""kirkl""", 'kirkl@vulcan.com'),
-    ("""stuartg""", 'stuartg@vulcan.com'),
-)
-
+ADMINS = []
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS
+
 
 # DATABASE CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -197,6 +196,8 @@ LOGIN_URL = 'finprint_login'
 # SLUGLIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 
+
+
 LOG_DIR = '/var/log/global_finprint/gf_web.log'
 
 LOGGING = {
@@ -250,6 +251,10 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+        'global_finprint': {
+            'handlers': ['debug_log_file', 'stdout'],
+            'level': 'DEBUG',
+        },
         '':
         {
             'handlers': ['debug_log_file', 'log_file'],
@@ -280,6 +285,9 @@ LEAFLET_CONFIG = {
     'MIN_ZOOM': 2,
     'MAX_ZOOM': 13,
 }
+
+# indent of child items in the admin pages for the hierarchical lists
+MPTT_ADMIN_LEVEL_INDENT = 30
 
 DJANGO_SERVER_ENV = env('DJANGO_SERVER_ENV', default='local')
 FRAME_CAPTURE_BUCKET = 'finprint-annotator-screen-captures'

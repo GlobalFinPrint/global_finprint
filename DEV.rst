@@ -4,11 +4,7 @@ Dev setup notes.
 Settings
 ------------
 
-global_finprint relies extensively on environment settings which **will not work with Apache/mod_wsgi setups**.
-It has been deployed successfully with both Gunicorn/Nginx and even uWSGI/Nginx.
-
 For configuration purposes, the following table maps the 'global_finprint' environment variables to their Django setting:
-
 ======================================= =========================== ============================================== ======================================================================
 Environment Variable                    Django Setting              Development Default                            Production Default
 ======================================= =========================== ============================================== ======================================================================
@@ -19,6 +15,8 @@ DJANGO_SECRET_KEY                       SECRET_KEY                  CHANGEME!!! 
 DJANGO_MEDIA_ROOT                       MEDIA_ROOT                  APPS_DIR('media')                              APPS_DIR('media')
 
 DJANGO_SERVER_ENV                       DJANGO_SERVER_ENV           local                                          prod
+DJANGO_ALLOWED_HOSTS                    ALLOWED_HOSTS               none (you probably want to set to '127.0.0.1') .globalfinprint.org
+                                                                    note that this is a list.
 ======================================= =========================== ============================================== ======================================================================
 
 The following table lists settings and their defaults for third-party applications:
@@ -30,7 +28,7 @@ DJANGO_AWS_ACCESS_KEY_ID                AWS_ACCESS_KEY_ID           n/a         
 DJANGO_AWS_SECRET_ACCESS_KEY            AWS_SECRET_ACCESS_KEY       n/a                                            raises error
 DJANGO_AWS_STORAGE_BUCKET_NAME          AWS_STORAGE_BUCKET_NAME     n/a                                            raises error
 ======================================= =========================== ============================================== ======================================================================
-
+See https://django-environ.readthedocs.io/en/latest/ for more info on setting env variables.
 
 
 Basics

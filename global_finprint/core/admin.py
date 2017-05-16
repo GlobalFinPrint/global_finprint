@@ -45,6 +45,10 @@ class FinprintUserInline(StackedInline):
     model = FinprintUser
     fields = ('affiliation',)
 
+    # disable the delete button and remove delete from actions
+    def has_delete_permission(self, request, obj=None):
+        return False
+
 
 class UserAdmin(admin.UserAdmin):
     actions = None
@@ -77,6 +81,7 @@ class UserAdmin(admin.UserAdmin):
     def save_model(self, request, obj, form, change):
         # if user is being set to "inactive", remove any assignments that are not complete
         if 'is_active' in form.changed_data and not obj.is_active:
+
             for assignment in obj.finprintuser.assignment_set.all():
                 assignment.remove(unfinished_only=True)
         obj.save()
@@ -86,6 +91,10 @@ class FinprintUserAdmin(ModelAdmin):
     actions = None
     fields = ('user', 'affiliation')
     ordering = ['affiliation__name', 'user__last_name', 'user__first_name']
+
+    # disable the delete button and remove delete from actions
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 site.unregister(models.User)

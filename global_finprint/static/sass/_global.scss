@@ -199,9 +199,18 @@ h3.inline {
 
 a {
   color: $link;
+  display: inline-block;
 
   &.disabled {
     color: $disabled-link;
+    pointer-events: none;
+    cursor: default;
+  }
+}
+
+a.btn {
+  &.disabled {
+    color: white;
     pointer-events: none;
     cursor: default;
   }

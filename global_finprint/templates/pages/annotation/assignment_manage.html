@@ -1,62 +1,30 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load active_if_equal %}
 
 {% block content %}
     <div class="manage-content">
         <div class="row">
             <h3>Manage video assignment</h3>
-            <div class="text-right manage-state-buttons" data-id="{{ assignment.id }}">
-                {% if assignment.status_id == 1 %}
-                    <form>
+            <div class="manage-state-buttons" data-id="{{ assignment.id }}">
+                <form>
+                    <div class="input-group pull-right">
+
+                        <span id="save_message" style="display: none" class="inline .success">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>  Status change saved  </span>
+                        <div id="radioBtn" class="btn-group">
+                            {% for assignment_state in state_list %}
+                                <a class="btn btn-default
+                                    {% active_if_equal assignment.status.id assignment_state.id %}
+                                    {% if assignment_state.id == 1 %}disabled{% endif %}"
+                                   data-toggle="assignment_state" data-value="{{ assignment_state.id }}">{{ assignment_state.name }}</a>
+                            {% endfor %}
+                        </div>
+                        <input type="hidden" name="assignment_state" id="assignment_state">
+                        <input type="hidden" name="action" value="update">
                         {% csrf_token %}
-                        <input type="hidden" name="action" value="delete" />
-                        <button class="btn btn-danger">Delete*</button>
-                    </form>
-
-                    <br />
-                    <i>NOTE: * denotes a permanent status</i>
-
-                {% elif assignment.status_id == 2 %}
-                    <form>
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="update" />
-                        <input type="hidden" name="new" value="5" />
-                        <button class="btn btn-warning">Disable</button>
-                    </form>
-
-                {% elif assignment.status_id == 3 %}
-                    <form>
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="update" />
-                        <input type="hidden" name="new" value="4" />
-                        <button class="btn btn-success">Accept*</button>
-                    </form>
-
-                    <form>
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="update" />
-                        <input type="hidden" name="new" value="6" />
-                        <button class="btn btn-warning">Reject*</button>
-                    </form>
-
-                    <form>
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="update" />
-                        <input type="hidden" name="new" value="2" />
-                        <button class="btn btn-info">Back to In Progress</button>
-                    </form>
-
-                    <br />
-                    <i>NOTE: * denotes a permanent status</i>
-
-                {% elif assignment.status_id == 5 %}
-                    <form>
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="update" />
-                        <input type="hidden" name="new" value="2" />
-                        <button class="btn btn-primary">Enable</button>
-                    </form>
-                {% endif %}
+                    </div>
+                </form>
             </div>
         </div>
 

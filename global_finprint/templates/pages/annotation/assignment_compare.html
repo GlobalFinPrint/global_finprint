@@ -22,6 +22,7 @@
         <div class="pull-right">
             <span id="save-feedback"></span>
             <button id="save-master" class="btn btn-primary btn-fp" disabled="disabled">Save</button>
+            {# todo:  this should save before switching to the review page #}
             <a href="{% url 'master_review' master.id %}" id="review-master" class="btn btn-primary btn-fp" disabled="disabled">Review</a>
         </div>
     </div>

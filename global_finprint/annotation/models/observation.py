@@ -1,3 +1,5 @@
+import logging
+
 from django.db import models
 from django.contrib.gis.db import models as geomodels
 from django.contrib.postgres.fields import JSONField
@@ -12,6 +14,9 @@ from .annotation import Attribute, Project
 from ...core.version import VersionInfo
 from datetime import datetime
 from ...core.templatetags.time_display import time_display
+
+
+logger = logging.getLogger(__name__)
 
 
 OBSERVATION_TYPE_CHOICES = {
@@ -280,9 +285,10 @@ class AbstractEvent(AuditableModel):
     class Meta:
         abstract = True
 
-    # TODO do we need to check for every key? maybe just use filename and a base_url
+    # TODO: do we need to check for every key? maybe just use filename and a base_url
     def image_url(self, verify=True):
         if self.extent is None:
+            logger.debug('{}'.format('No image extent: '))
             return None
 
         if verify is False:
@@ -293,11 +299,13 @@ class AbstractEvent(AuditableModel):
             bucket = conn.get_bucket(settings.FRAME_CAPTURE_BUCKET)
             key = bucket.get_key(self.filename())
             return key.generate_url(expires_in=300, query_auth=False) if key else None
-        except S3ResponseError:
+        except S3ResponseError as e:
+            logger.warning('{}{}'.format('Unable to build image url: ', e.message))
             return None
 
     def extent_to_css(self):
         if self.extent is None:
+            logger.debug('{}'.format('No image extent: '))
             return None
 
         try:
@@ -310,7 +318,8 @@ class AbstractEvent(AuditableModel):
                 int(min(y) * 100)
             )
             return css
-        except AttributeError:  # handle bad extents
+        except AttributeError as e:  # handle bad extents
+            logger.warning('{}{}'.format('Bad image extent: ', e.message))
             return None
 
     def needs_review(self):
