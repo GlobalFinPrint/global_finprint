@@ -259,13 +259,13 @@
                             </a>
                         </td>
                         <td>
-{#                            {% if set.master %}#}
-                            <a href="{% url 'master_review' set.id  %}">
-                                Yes
+                            {% if set.master %}
+                            <a href="{% url 'master_review' set.master.id  %}">
+                                {{ set.master.completed }}
                             </a>
-{#                            {% else %}#}
-{#                            No#}
-{#                            {% endif %}#}
+                            {% else %}
+                                None
+                            {% endif %}
                         </td>
                         <td>
                             No

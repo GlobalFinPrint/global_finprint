@@ -277,9 +277,9 @@ class Set(AuditableModel):
                                              self.code,
                                              image_type)
 
-    def master(self):
+    def master(self, project=1):
         try:
-            return self.masterrecord
+            return MasterRecord.objects.get(set=self, project_id=project)
         except MasterRecord.DoesNotExist:
             return None
 
