@@ -9,6 +9,9 @@ class Video(AuditableModel):
     def annotators_assigned(self, project):
         return list(a.annotator for a in self.assignment_set.filter(project=project).all())
 
+    def annotators_assigned_count(self, ids):
+        return list(a.annotator for a in self.assignment_set.filter(pk__in =ids).all())
+
     def length(self):
         try:
             progress_list = self.assignment_set.exclude(status_id__in=[1, 2]).values_list('progress', flat=True)
@@ -104,6 +107,11 @@ class Assignment(AuditableModel):
         return cls.objects.all().select_related(*cls._selected_related_list)
 
     @classmethod
+    def get_all_assignments(cls, video_ids):
+        return cls.objects.filter(video_id__in=video_ids) \
+            .select_related(*cls._selected_related_list)
+
+    @classmethod
     def get_active(cls):
         return cls.objects.filter(status_id__in=[1, 2, 3]) \
             .select_related(*cls._selected_related_list)
@@ -132,3 +140,5 @@ class Assignment(AuditableModel):
             ))
         except ValueError:
             return None
+
+

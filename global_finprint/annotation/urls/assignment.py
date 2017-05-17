@@ -1,7 +1,9 @@
 from django.conf.urls import url, include
+from django.views.decorators.csrf import csrf_exempt
 
 from global_finprint.annotation.views.assignment import VideoAutoAssignView, AssignmentManageView, \
-    AssignmentListView, AssignmentListTbodyView, AssignmentModalBodyView, UnassignModalBodyView
+    AssignmentListView, AssignmentListTbodyView, AssignmentModalBodyView, UnassignModalBodyView, AssignMultipleVideosModel,\
+    AssignMultipleVideoToAnnotators
 from global_finprint.annotation.views.compare import AssignmentCompareView, AssignmentDetailView
 
 
@@ -19,4 +21,9 @@ urlpatterns = [
     url(r"^compare/(?P<set_id>\d+)$", AssignmentCompareView.as_view(), name='assignment_compare'),
 
     url(r"^master/", include('global_finprint.annotation.urls.master')),
+
+    url(r"^assign_selected_videos$",  csrf_exempt(AssignMultipleVideosModel.as_view()),
+        name='assign_selected_videos'),
+    url(r"^save_multi_video_assignment$", csrf_exempt(AssignMultipleVideoToAnnotators.as_view()),
+        name='multi_video_assignment')
 ]

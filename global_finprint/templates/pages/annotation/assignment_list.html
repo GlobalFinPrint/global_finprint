@@ -105,6 +105,7 @@
 
             <div class="row">
                 <div class="col-md-12 text-right">
+                    <button id="assignMultipleVideo" class="btn btn-primary">Assign Videos</button>
                     <button id="search" class="btn btn-primary">Search assignments</button>
                 </div>
             </div>
@@ -115,6 +116,7 @@
         <table class="table table-bordered table-condensed assignment-list-table" cellspacing="0" width="100%">
             <thead>
                 <tr class="success">
+                    <th style="border:1px solid #ddd !important"><input type="checkbox" name="selectAllAssignment" id="selectAllAssignmentsId"></th>
                     <th>Video</th>
                     <th>Trip</th>
                     <th>Set</th>
@@ -131,16 +133,21 @@
             </thead>
             <tbody id="assignment-target">
                     <tr id="spinId">
-                        <td colspan="12">
+                        <td colspan="13">
                             Loading...
                         </td>
                     </tr>
                     <tr id="limitSelectionId">
-                    <td colspan="12">
+                    <td colspan="13">
                     <h4 class="text-center" >Use the form above to limit selection</h4>
                 </td></tr>
             </tbody>
         </table>
+    </div>
+    <div class="modal fade" id="multi-assign-modal">
+        <div class="modal-dialog">
+            <div class="modal-content"></div>
+        </div>
     </div>
 
     <div class="modal fade" id="assign-modal">
