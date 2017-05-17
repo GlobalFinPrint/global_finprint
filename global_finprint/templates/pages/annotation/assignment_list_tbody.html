@@ -2,6 +2,7 @@
 {% load humanize %}
 {% for a in assignments %}
 <tr>
+    <td><input type="checkbox" name="select_check_box" value="{{ a.video.set.id }}" class="selectCheckBox"></td>
     <td>{{ a.video.primary|default:"<i>None</i>" }}</td>
     <td>{{ a.video.set.trip.code }}</td>
     <td>{{ a.video.set.code }}</td>
@@ -24,6 +25,7 @@
 {% endfor %}
 {% for u in unassigned %}
 <tr>
+    <td><input type="checkbox" name="select_check_box" value="{{ u.id }}" class="selectCheckBox"></td>
     <td>{{ u.video.primary|default:"<i>None</i>" }}</td>
     <td>{{ u.trip.code }}</td>
     <td>{{ u.code }}</td>

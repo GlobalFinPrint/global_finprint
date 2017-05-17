@@ -27,6 +27,8 @@ var finprint = finprint || {};  //namespace if necessary...
         initInlineObsEdit();
         initVideoForm();
         initEditMeasurables();
+        initMultipleAssignmentModals();
+        initCheckbutton();
     });
 
     function getCSRF() {
@@ -1056,4 +1058,81 @@ var finprint = finprint || {};  //namespace if necessary...
             return false;
         });
     }
+
+    function initMultipleAssignmentModals() {
+        var $form = $('form#assignment-search-form');
+        var $selectAllCheckBox = $('#selectAllAssignmentsId');
+        var $modal = $('div#multi-assign-modal')
+        var options = {allowEmptyOption: true, plugins: ['remove_button', 'restore_on_backspace']};
+
+
+        $form.find('button#assignMultipleVideo').click(function () {
+            var $this = $(this);
+            var oldText = $this.text();
+            var setIds = $("input[name='select_check_box']");
+            var ids= []
+            //adding all the checked ids for assigning
+            for (var i=0;i< setIds.length;i++) {
+              if (setIds[i].checked == true) {
+                ids.push(setIds[i].value)
+              }
+            }
+            if (ids.length == 0) {
+                   alert('You must choose at least 1 video file');
+                   $this.removeAttr('disabled');
+                   $this.text('Assign Videos');
+                   return false;
+                   }
+
+            if ($form.serializeArray().some(function (field) {
+                    return field.name !== 'csrfmiddlewaretoken' && field.value;
+                })) {
+                $this.attr('disabled', 'disabled');
+                $this.text('Assigning Selected videos...');
+                $.ajax({
+                  type:"POST",
+                  url:"/assignment/assign_selected_videos",
+                  data: {
+                        'set_ids': ids
+                        },
+                 success: function(res){
+                     $modal.find('div.modal-content').html(res);
+                     $modal.find('#new-annotators-list').selectize({plugins: ['remove_button', 'restore_on_backspace']});
+                     $this.removeAttr('disabled');
+                     $this.text('Assign Videos');
+                     $this.text(oldText);
+                     $modal.modal('show');
+                 },
+                 error : function(res) {
+                   alert('You must choose at least 1 video file');
+                   $this.removeAttr('disabled');
+                   $this.text('Assign Videos');
+                   return false;
+                 }
+              });
+
+             } else {
+                alert('You must choose at least 1 video file');
+                $this.removeAttr('disabled');
+                $this.text('Assign Videos');
+                return false;
+            }
+        });
+
+        $modal.on('click', 'button#multiAssignmentId', function () {
+            $.post('/assignment/save_multi_video_assignment' , $modal.find('form').serialize(), function () {
+                $modal.modal('hide');
+                $('form#assignment-search-form button#search').click();
+            });
+        });
+
+    }
+
+    function initCheckbutton(){
+       $("#selectAllAssignmentsId").click(function () {
+                $(".selectCheckBox").prop('checked', $(this).prop('checked'));
+        });
+
+     }
 })(jQuery);
+

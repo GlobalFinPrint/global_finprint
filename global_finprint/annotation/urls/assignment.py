@@ -1,7 +1,8 @@
 from django.conf.urls import url
 from django.views.decorators.csrf import csrf_exempt
 from global_finprint.annotation.views.assignment import VideoAutoAssignView, AssignmentManageView, \
-    AssignmentListView, AssignmentListTbodyView, AssignmentModalBodyView, UnassignModalBodyView
+    AssignmentListView, AssignmentListTbodyView, AssignmentModalBodyView, UnassignModalBodyView, AssignMultipleVideosModel,\
+    AssignMultipleVideoToAnnotators
 from global_finprint.annotation.views.compare import AssignmentCompareView, AssignmentDetailView, \
     GetMasterView, MasterReviewView, MasterSetCompleted, MasterSetDeprecated
 from global_finprint.annotation.views.observations import MasterObservationEditData, \
@@ -27,5 +28,9 @@ urlpatterns = [
     url(r"^master/(?P<master_id>\d+)/deprecate$", csrf_exempt(MasterSetDeprecated.as_view()),
         name='master_set_deprecated'),
     url(r"^master/edit_measurables/(?P<evt_id>\d+)$", csrf_exempt(EditMeasurablesInline.as_view()),
-        name='edit_measurables_inline')
+        name='edit_measurables_inline'),
+    url(r"^assign_selected_videos$",  csrf_exempt(AssignMultipleVideosModel.as_view()),
+        name='assign_selected_videos'),
+    url(r"^save_multi_video_assignment$", csrf_exempt(AssignMultipleVideoToAnnotators.as_view()),
+        name='multi_video_assignment')
 ]
