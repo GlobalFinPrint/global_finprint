@@ -278,6 +278,7 @@ class Set(AuditableModel):
                                              self.code,
                                              image_type)
 
+    # todo:  "property-ize" this?
     def master(self, project=1):
         try:
             return MasterRecord.objects.get(set=self, project_id=project)
@@ -292,13 +293,27 @@ class Set(AuditableModel):
             status_list['Total'] = sum(status_list.values())
         return status_list
 
+    def required_fields(self):
+        # need to make this data-driven, not hard-coded field choices
+        # currently required:
+        # 1) visibility
+        # 2) current flow (either)
+        # 3) substrate
+        # 3) substrate complexity
+        return bool(self.visibility
+                    and (self.current_flow_estimated or self.current_flow_instrumented)
+                    and self.substrate and self.substrate_complexity)
+
     def completed(self):
         # we consider the following for "completion":
-        # 1) complete annotations have been promted into a master
+        # 1) complete annotations have been promoted into a master
         # 2) a master annotation record has been completed
-        # 3) other 'required' fields have been completed (e.g., visibitlity, current flow, substrate)
+        # 3) other 'required' fields have been completed (see above)
         master = self.master()
-        return master and (master.completed or master.deprecated)
+        return master \
+               and (master.completed or master.deprecated) \
+               and self.required_fields()
+
 
     def __str__(self):
         return u"{0}_{1}".format(self.trip.code, self.code)
