@@ -238,7 +238,7 @@
                 </tr>
                 </thead>
                 {% for set in sets %}
-                    {% if set.code == 'ABS_102' %}
+                    {% if set.completed %}
                         <tr class="set-complete">
                     {% else %}
                         <tr>
@@ -287,7 +287,7 @@
                             {% endwith %}
                         </td>
                         <td>
-                            No
+                            {{ set.required_fields }}
                         </td>
                         <td>
                             <a href="{% url 'set_observation_list' set.trip.id set.id %}">
