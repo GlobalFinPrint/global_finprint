@@ -1,4 +1,5 @@
 from decimal import Decimal
+from collections import Counter
 
 from django.contrib.gis.db import models
 from django.core.validators import MinValueValidator
@@ -6,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.gis.geos import Point
 
 from global_finprint.annotation.models.observation import Observation, MasterRecord
-from global_finprint.annotation.models.video import Video
+from global_finprint.annotation.models.video import Video, Assignment
 from global_finprint.core.version import VersionInfo
 from global_finprint.core.models import AuditableModel
 from global_finprint.trip.models import Trip
@@ -283,7 +284,19 @@ class Set(AuditableModel):
         except MasterRecord.DoesNotExist:
             return None
 
+    def assignment_counts(self, project=1):
+        status_list = {'Total': 0}
+        if self.video:
+            status_list.update(Counter(Assignment.objects.filter(
+                video=self.video, project=project).values_list('status__name', flat=True)))
+            status_list['Total'] = sum(status_list.values())
+        return status_list
+
     def completed(self):
+        # we consider the following for "completion":
+        # 1) complete annotations have been promted into a master
+        # 2) a master annotation record has been completed
+        # 3) other 'required' fields have been completed (e.g., visibitlity, current flow, substrate)
         master = self.master()
         return master and (master.completed or master.deprecated)
 
