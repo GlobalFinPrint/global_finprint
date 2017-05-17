@@ -246,7 +246,7 @@
                         <td>{{ set }}</td>
                         <td>{{ set.set_date|date:"M d Y" }}</td>
                         <td colspan=2>{{ set.reef_habitat }}</td>
-                        <td>{{ set.latitude }}/&#10;{{ set.longitude }}</td>
+                        <td>{{ set.latitude|floatformat:"-3" }}/&#10;{{ set.longitude|floatformat:"-3" }}</td>
                         <td>{{ set.depth }}</td>
                         <td>{{ set.equipment }}</td>
                         <td>{{ set.bait }}</td>
