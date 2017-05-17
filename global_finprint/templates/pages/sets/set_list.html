@@ -229,16 +229,16 @@
                     <th id="equipment">Equipment</th>
                     <th id="bait">Bait</th>
                     <th class="video" colspan=2>Video</th>
-                    <th id="assignments">Assignments</th>
-                    <th id="master">Master</th>
-                    <th id="flow_substrate">Flow/substrate</th>
+                    <th id="assignments">Completed assignments</th>
+                    <th id="master">Master record</th>
+                    <th id="flow_substrate">All req. fields</th>
                     <th id="observations">Obs</th>
                     <th class="show_observations">Drop/haul</th>
                     <th id="edit">Edit</th>
                 </tr>
                 </thead>
                 {% for set in sets %}
-                    {% if set.code == 'LKHM_002' %}
+                    {% if set.code == 'ABS_102' %}
                         <tr class="set-complete">
                     {% else %}
                         <tr>
@@ -253,19 +253,38 @@
                         <td colspan=2>
                             {{ set.video.primary|default_if_none:"<i>None</i>" }}
                         </td>
+                        {# todo:  this section could use some optimization as it makes far too many sql calls #}
                         <td>
-                            <a href="{% url 'assignment_manage' set.id %}">
+                            {% with set_assignment_counts=set.assignment_counts %}
+                                {% if set_assignment_counts.Total > 0 %}
+                                    <a href="{% url 'assignment_manage' set.id %}">
+                                    {% if "Complete" in set_assignment_counts %}
+                                    {{ set_assignment_counts.Complete }}
+                                    {% else %}
+                                    0
+                                    {% endif %}
+                                    /
+                                    {{ set_assignment_counts.Total }}
+                                    </a>
+                                {% else %}
                                 0 / 0
-                            </a>
+                                {% endif %}
+                            {% endwith %}
                         </td>
                         <td>
-                            {% if set.master %}
-                            <a href="{% url 'master_review' set.master.id  %}">
-                                {{ set.master.completed }}
-                            </a>
-                            {% else %}
-                                None
-                            {% endif %}
+                            {% with master=set.master %}
+                                {% if master %}
+                                <a href="{% url 'master_review' set.master.id  %}">
+                                    {% if set.master.completed %}
+                                        Complete
+                                    {% else %}
+                                        Incomplete
+                                    {% endif %}
+                                </a>
+                                {% else %}
+                                    No master record
+                                {% endif %}
+                            {% endwith %}
                         </td>
                         <td>
                             No
