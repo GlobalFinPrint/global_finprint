@@ -299,7 +299,7 @@ class Set(AuditableModel):
         # 1) visibility
         # 2) current flow (either)
         # 3) substrate
-        # 3) substrate complexity
+        # 4) substrate complexity
         return bool(self.visibility
                     and (self.current_flow_estimated or self.current_flow_instrumented)
                     and self.substrate and self.substrate_complexity)
