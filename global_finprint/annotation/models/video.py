@@ -83,11 +83,12 @@ class Assignment(AuditableModel):
         return self.video.set
 
     def update_progress(self, seconds):
-        if seconds > self.progress:
-            self.progress = seconds
-            if self.status_id == 1:
-                self.status_id = 2
-            self.save()
+        #if seconds > self.progress:
+        self.progress = seconds
+        if self.status_id == 1:
+            self.status_id = 2
+        self.save()
+
         return self.progress
 
     # a (hopefully) thoughtful cleanup method:
