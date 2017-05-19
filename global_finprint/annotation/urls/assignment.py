@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from global_finprint.annotation.views.assignment import VideoAutoAssignView, AssignmentManageView, \
     AssignmentListView, AssignmentListTbodyView, AssignmentModalBodyView, UnassignModalBodyView
 from global_finprint.annotation.views.compare import AssignmentCompareView, AssignmentDetailView, \
-    GetMasterView, MasterReviewView, MasterSetCompleted, MasterSetDeprecated
+    GetMasterView, MasterReviewView, MasterSetCompleted, MasterSetDeprecated, MasterManageView
 from global_finprint.annotation.views.observations import MasterObservationEditData, \
     MasterObservationSaveData, EditMeasurablesInline
 
@@ -22,10 +22,14 @@ urlpatterns = [
         name='master_edit_obs'),
     url(r"^master/(?P<set_id>\d+)/save_data/(?P<evt_id>\d+)$", csrf_exempt(MasterObservationSaveData.as_view()),
         name='master_save_obs'),
+
     url(r"^master/(?P<master_id>\d+)/complete$", csrf_exempt(MasterSetCompleted.as_view()),
         name='master_set_completed'),
     url(r"^master/(?P<master_id>\d+)/deprecate$", csrf_exempt(MasterSetDeprecated.as_view()),
         name='master_set_deprecated'),
+    url(r"^master/manage/(?P<master_id>\d+)$", csrf_exempt(MasterManageView.as_view()),
+        name='master_set_deprecated'),
+
     url(r"^master/edit_measurables/(?P<evt_id>\d+)$", csrf_exempt(EditMeasurablesInline.as_view()),
         name='edit_measurables_inline')
 ]

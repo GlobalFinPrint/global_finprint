@@ -13,6 +13,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initUnassignModal();
         initShowFormButtons();
         initManageStateButtons();
+        initManageMasterStateButtons();
         initAutomaticAssignment();
         initAnnotatorPopover();
         initCollapse();
@@ -200,10 +201,11 @@ var finprint = finprint || {};  //namespace if necessary...
         $('#btn-show-trip-form').click(showTripForm);
     }
 
+    // todo:  DRY these next two functions
     function initManageStateButtons() {
         var $buttons = $('div.manage-state-buttons');
         var assignmentId = $buttons.data('id');
-        var $radio = $('div#radioBtn a');
+        var $radio = $('div#assignment-state-buttons a');
 
         $radio.on('click', function () {
             var statusId = $(this).data('value');
@@ -213,7 +215,7 @@ var finprint = finprint || {};  //namespace if necessary...
             $('a[data-value="' + statusId + '"]').removeClass('notActive').addClass('active');
 
             $buttons.find('form').submit();
-            $('span#save_message').show().delay(2000).fadeOut();
+            $('span#save_message').show().delay(1000).fadeOut();
         });
 
         $buttons.find('form').submit(function () {
@@ -221,6 +223,32 @@ var finprint = finprint || {};  //namespace if necessary...
             var new_state = $('div#radioBtn a.active').data('value');
 
             $.post('/assignment/manage/' + assignmentId, $(this).serialize());
+
+            return false;
+        });
+    }
+
+    function initManageMasterStateButtons() {
+        var $buttons = $('div.manage-master-state-buttons');
+        var masterId = $buttons.data('id');
+        var $radio = $('div#master-state-buttons a');
+
+        $radio.on('click', function () {
+            var statusId = $(this).data('value');
+            $('#master_state').prop('value', statusId);
+
+            $('a').not('[data-value="' + statusId + '"]').removeClass('active').addClass('notActive');
+            $('a[data-value="' + statusId + '"]').removeClass('notActive').addClass('active');
+
+            $buttons.find('form').submit();
+            $('span#save_message').show().delay(1000).fadeOut();
+        });
+
+        $buttons.find('form').submit(function () {
+            var action = 'update';
+            var new_state = $('div#radioBtn a.active').data('value');
+
+            $.post('/assignment/master/manage/' + masterId, $(this).serialize());
 
             return false;
         });

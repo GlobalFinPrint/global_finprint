@@ -5,11 +5,9 @@
         <div class="row">
             <div class="well trail">
                 <a href="/">Global FinPrint</a> |
-                <a href="{% url 'trip_list' %}">Trips</a> |
-                <a href="{% url 'trip_update' trip_pk %}">{{ trip_name }}</a> |
-                <a href="{% url 'trip_set_list' trip_pk %}">Sets</a> |
-                <a href="{% url 'set_update' trip_pk set_pk %}">{{ set_name }}</a> |
-                Observations
+                Trip: <a href="{% url 'trip_update' trip_pk %}">{{ trip_name }}</a> |
+                Set: <a href="{% url 'set_update' trip_pk set_pk %}">{{ set_name }}</a> |
+                Observations: <b>All</b>
             </div>
         </div>
 
