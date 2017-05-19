@@ -86,6 +86,15 @@ var finprint = finprint || {};  //namespace if necessary...
         fields.forEach(function (selector) {
             $form.find(selector).selectize(options);
         });
+        //intially search will be default clicked when page is loaded GLOB-604
+        if ($form.serializeArray().some(function (field) {
+                    return field.name !== 'csrfmiddlewaretoken' && field.value;
+                })) {
+                $.post('/assignment/search', $form.serialize(), function (res) {
+                    $target.html(res);
+                });
+              }
+
         $form.find('button#search').click(function () {
             var $this = $(this);
             var oldText = $this.text();
