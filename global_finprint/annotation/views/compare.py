@@ -3,7 +3,6 @@ from django.template import Context
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from global_finprint.core.mixins import UserAllowedMixin
-from global_finprint.trip.models import Trip
 from global_finprint.bruv.models import Set
 from global_finprint.annotation.models.video import Assignment, Project
 from global_finprint.annotation.models.observation import MasterRecord, MasterRecordState
@@ -26,27 +25,6 @@ class AssignmentCompareView(UserAllowedMixin, View):
             'master': master,
             'project': project,
             'assignment_set': set.video.assignment_set.filter(project=project)
-        })
-        return render(request, self.template_name, context=context)
-
-
-class MasterReviewView(UserAllowedMixin, View):
-    """
-    View for master record review screen found at /assignment/review/<master_record_id>
-    """
-    template_name = 'pages/annotation/master_review.html'
-
-    def get(self, request, master_id):
-        master_record = get_object_or_404(MasterRecord, pk=master_id)
-        context = Context({
-            'state_list': MasterRecordState.objects.all(),
-            'master': master_record,
-            'trip': master_record.set.trip,
-            'set': master_record.set,
-            'master_observations': sorted(master_record.masterobservation_set.all(),
-                                          key=lambda o: o.initial_observation_time(),
-                                          reverse=True),
-            'for': ' for {}'.format(master_record.set)
         })
         return render(request, self.template_name, context=context)
 
