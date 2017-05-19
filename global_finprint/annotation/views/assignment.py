@@ -236,7 +236,7 @@ class AssignmentManageView(UserAllowedMixin, View):
                                                    'assignment__video__set__trip',)
                                    .prefetch_related('event_set', 'event_set__attribute'),
                                    key=lambda o: o.initial_observation_time(), reverse=True),
-            'for': ' for {0} by {1}'.format(assignment.video.set, assignment.annotator)
+            'for': 'by {0}'.format(assignment.annotator)
         })
         return render_to_response(self.template_name, context=context)
 

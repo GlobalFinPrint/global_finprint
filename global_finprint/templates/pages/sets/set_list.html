@@ -275,11 +275,7 @@
                             {% with master=set.master %}
                                 {% if master %}
                                 <a href="{% url 'master_review' set.master.id  %}">
-                                    {% if set.master.completed %}
-                                        Complete
-                                    {% else %}
-                                        Incomplete
-                                    {% endif %}
+                                    {{ set.master.status.name }}
                                 </a>
                                 {% else %}
                                     No master record
