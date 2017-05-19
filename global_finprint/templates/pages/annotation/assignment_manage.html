@@ -3,37 +3,45 @@
 {% load active_if_equal %}
 
 {% block content %}
-    <div class="manage-content">
+    <div class="col-md-12 manage-content">
         <div class="row">
-            <h3>Manage video assignment</h3>
-            <div class="manage-state-buttons" data-id="{{ assignment.id }}">
-                <form>
-                    <div class="input-group pull-right">
+            <div class="well trail">
+                <a href="/">Global FinPrint</a> |
+                Trip: <a href="{% url 'trip_update' trip.id %}">{{ trip }}</a> |
+                Set: <a href="{% url 'set_update' trip.id set.id %}">{{ set }}</a> |
+                Observations: <b>{{ for }}</b>
+            </div>
+        </div>
 
-                        <span id="save_message" style="display: none" class="inline .success">
-                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>  Status change saved  </span>
-                        <div id="radioBtn" class="btn-group">
+        <div class="manage-state-buttons" data-id="{{ assignment.id }}">
+            <form>
+                <div class="input-group pull-right">
+
+                    <span id="save_message" style="display: none" class="inline .success">
+                        <span class="glyphicon glyphicon-ok"
+                              aria-hidden="true"></span>  Status change saved  </span>
+                    <div class="btn-toolbar">
+                        <div id="assignment-state-buttons" class="btn-group">
                             {% for assignment_state in state_list %}
                                 <a class="btn btn-default
                                     {% active_if_equal assignment.status.id assignment_state.id %}
                                     {% if assignment_state.id == 1 %}disabled{% endif %}"
-                                   data-toggle="assignment_state" data-value="{{ assignment_state.id }}">{{ assignment_state.name }}</a>
+                                   data-toggle="assignment_state"
+                                   data-value="{{ assignment_state.id }}">{{ assignment_state.name }}</a>
                             {% endfor %}
                         </div>
-                        <input type="hidden" name="assignment_state" id="assignment_state">
-                        <input type="hidden" name="action" value="update">
-                        {% csrf_token %}
                     </div>
-                </form>
-            </div>
+                    <input type="hidden" name="assignment_state" id="assignment_state">
+                    <input type="hidden" name="action" value="update">
+                    {% csrf_token %}
+                </div>
+            </form>
         </div>
 
-        <div class="row">
-            {% include 'partials/observation_table.html' with observations=observations %}
+        <div class="row color-rows" data-diff-cell="0">
+            {% include 'partials/paginator_controls.html' with page=observations thing_name='observations' %}
+            {% include 'partials/observation_table.html' with observations=observations for=for %}
         </div>
 
-        <div class="row">
-            <p><a href="{% url 'set_observation_list' trip.id set.id %}">See all observations for {{ set }}</a></p>
-        </div>
     </div>
 {% endblock %}

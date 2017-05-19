@@ -15,6 +15,7 @@ from global_finprint.habitat.models import ReefHabitat, Substrate, SubstrateComp
 
 from mptt.models import MPTTModel, TreeForeignKey
 
+# todo:  move some of these out ot the db?
 EQUIPMENT_BAIT_CONTAINER = {
     ('B', 'Bag'),
     ('C', 'Cage'),
@@ -311,9 +312,8 @@ class Set(AuditableModel):
         # 3) other 'required' fields have been completed (see above)
         master = self.master()
         return master \
-               and (master.completed or master.deprecated) \
+               and (master.status.is_finished) \
                and self.required_fields()
-
 
     def __str__(self):
         return u"{0}_{1}".format(self.trip.code, self.code)
