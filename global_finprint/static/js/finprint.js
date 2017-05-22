@@ -89,15 +89,23 @@ var finprint = finprint || {};  //namespace if necessary...
         //intially search will be default clicked when page is loaded GLOB-604
         if ($form.serializeArray().some(function (field) {
                     return field.name !== 'csrfmiddlewaretoken' && field.value;
-                })) {
+                }))
+        {
+                $('#limitSelectionId').hide();
+                $('#spinId').show();
                 $.post('/assignment/search', $form.serialize(), function (res) {
                     $target.html(res);
+                    $('#limitSelectionId').show();
+                    $('#spinId').hide();
                 });
-              }
-
+        }
         $form.find('button#search').click(function () {
             var $this = $(this);
             var oldText = $this.text();
+
+            $('#limitSelectionId').hide();
+            $('#spinId').show();
+
             if ($form.serializeArray().some(function (field) {
                     return field.name !== 'csrfmiddlewaretoken' && field.value;
                 })) {
