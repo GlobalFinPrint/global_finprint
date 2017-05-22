@@ -1,5 +1,4 @@
 {% load time_display %}
-<h3>Observations{{ for }}</h3>
 <table class="table table-bordered table-condensed assignment-observation-table {{ master|yesno:"master,," }}" id="observation-table" cellspacing="0" width="100%">
     <thead>
     <tr>
@@ -76,9 +75,15 @@
         {% endwith %}
     {% empty %}
         <tr>
-            <td colspan="{{ master|yesno:"10,9" }}" class="text-center">
+        {% if master %}
+            <td colspan=10 class="text-center">
+                <h4>No observations for this master record</h4>
+            </td>
+        {% else %}
+            <td colspan=9 class="text-center">
                 <h4>{{ assignment.annotator }} has not yet submitted any observations for this video</h4>
             </td>
+        {% endif %}
         </tr>
     {% endfor %}
     </tbody>

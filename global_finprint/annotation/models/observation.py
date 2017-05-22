@@ -25,11 +25,32 @@ OBSERVATION_TYPE_CHOICES = {
 }
 
 
+# 1 = In progress, 2 = Completed, 3 = Deprecated
+class MasterRecordState(models.Model):
+    name = models.TextField()
+    description = models.TextField()
+
+    @property
+    def is_finished(self):
+        """
+        boolean for whether the master record is in one of the states that is deemed 'finished'.
+        finished is either "completed" or "deprecated"
+        """
+        return True if self.id in [2, 3] else False
+
+    def __str__(self):
+        return u'{0}'.format(self.name)
+
+    class Meta:
+        ordering = ['id']
+
+
 class MasterRecord(AuditableModel):
     set = models.ForeignKey(to='bruv.Set')
     note = models.TextField()
-    completed = models.BooleanField(default=False)
-    deprecated = models.BooleanField(default=False)
+
+    status = models.ForeignKey(to=MasterRecordState, null=False)
+
     project = models.ForeignKey(Project, default=1)
 
     class Meta:

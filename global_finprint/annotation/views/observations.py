@@ -4,7 +4,8 @@ from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from global_finprint.annotation.models.observation import \
+
+from global_finprint.annotation.models.observation import MasterRecord, MasterRecordState, MasterObservation, \
     Observation, Event, Animal, Attribute, MasterEvent, Measurable, MasterEventMeasurable
 from global_finprint.bruv.models import Set, Trip
 from global_finprint.core.mixins import UserAllowedMixin
@@ -226,3 +227,53 @@ class EditMeasurablesInline(UserAllowedMixin, View):
         return JsonResponse({
             'measurables': list(str(em) for em in event.active_measurables())
         })
+
+
+class ManageMasterView(UserAllowedMixin, View):
+    def post(self, request, master_id):
+        """
+        Endpoint to handle state changes and/or deletion of master record 
+        :param request:
+        :param assignment_id:
+        :return:
+        """
+        action = request.POST.get('action')
+        master_state = request.POST.get('master_state')
+        master = get_object_or_404(MasterRecord, id=master_id)
+        master.status_id = int(master_state)
+        master.save()
+
+        return JsonResponse({'status': 'ok'})
+
+
+class MasterObservationListView(UserAllowedMixin, ListView):
+    """
+    View for master record review screen found at /assignment/review/<master_id>
+    """
+    template_name = 'pages/annotation/master_review.html'
+    model = MasterObservation
+    context_object_name = 'master_observations'
+
+    def get_queryset(self):
+        return sorted(get_object_or_404(MasterRecord, pk=self.kwargs['master_id']).masterobservation_set.all(),
+                                          key=lambda o: o.initial_observation_time(),
+                                          reverse=True)
+
+    def get_context_data(self, **kwargs):
+        context = super(MasterObservationListView, self).get_context_data(**kwargs)
+        page = self.request.GET.get('page', 1)
+        paginator = Paginator(context['master_observations'], 50)
+        try:
+            context['master_observations'] = paginator.page(page)
+        except PageNotAnInteger:
+            context['master_observations'] = paginator.page(1)
+        except EmptyPage:
+            context['master_observations'] = paginator.page(paginator.num_pages)
+
+        master_record = get_object_or_404(MasterRecord, pk=self.kwargs['master_id'])
+        context['state_list'] = MasterRecordState.objects.all()
+        context['master'] = master_record
+        context['trip'] = master_record.set.trip
+        context['set'] = master_record.set
+        context['for'] = ' for {}'.format(master_record.set)
+        return context

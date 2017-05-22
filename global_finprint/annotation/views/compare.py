@@ -1,11 +1,11 @@
 from django.views.generic import View
-from django.template import RequestContext
+from django.template import Context
 from django.http.response import JsonResponse
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404, render
 from global_finprint.core.mixins import UserAllowedMixin
 from global_finprint.bruv.models import Set
 from global_finprint.annotation.models.video import Assignment, Project
-from global_finprint.annotation.models.observation import MasterRecord
+from global_finprint.annotation.models.observation import MasterRecord, MasterRecordState
 
 
 class AssignmentCompareView(UserAllowedMixin, View):
@@ -17,33 +17,16 @@ class AssignmentCompareView(UserAllowedMixin, View):
     def get(self, request, set_id):
         set = get_object_or_404(Set, pk=set_id)
         project = get_object_or_404(Project, pk=request.GET.get('project', 1))
-        master, created = MasterRecord.objects.get_or_create(set=set, project=project)
-        context = RequestContext(request, {
+        master_status = get_object_or_404(MasterRecordState, pk=1)
+        master, created = MasterRecord.objects.get_or_create(set=set, project=project, status=master_status)
+        context = Context({
             'set': set,
             'video_length': set.video.length(),
             'master': master,
             'project': project,
             'assignment_set': set.video.assignment_set.filter(project=project)
         })
-        return render_to_response(self.template_name, context=context)
-
-
-class MasterReviewView(UserAllowedMixin, View):
-    """
-    View for master record review screen found at /assignment/review/<master_record_id>
-    """
-    template_name = 'pages/annotation/master_review.html'
-
-    def get(self, request, master_id):
-        master_record = get_object_or_404(MasterRecord, pk=master_id)
-        context = RequestContext(request, {
-            'master': master_record,
-            'master_observations': sorted(master_record.masterobservation_set.all(),
-                                          key=lambda o: o.initial_observation_time(),
-                                          reverse=True),
-            'for': ' for {}'.format(master_record.set)
-        })
-        return render_to_response(self.template_name, context=context)
+        return render(request, self.template_name, context=context)
 
 
 class AssignmentDetailView(UserAllowedMixin, View):
@@ -112,3 +95,12 @@ class MasterSetDeprecated(UserAllowedMixin, View):
         master.deprecated = (request.GET.get('checked', 'false') == 'true')
         master.save()
         return JsonResponse({'success': 'ok'})
+
+
+class MasterManageView(UserAllowedMixin, View):
+    """
+    Endpoint to update master record status
+    """
+    def post(self, request, master_id):
+        master = get_object_or_404(MasterRecord, pk=master_id)
+        return JsonResponse({'status': 'ok'})
