@@ -218,7 +218,7 @@
             <table class="table table-bordered table-condensed set-table" cellspacing="0" width="100%">
                 <thead>
                 <tr class="table-header-title">
-                    <th colspan=13><h4>Showing all sets</h4></th>
+                    <th colspan=16><h4>Showing all sets</h4></th>
                 </tr>
                 <tr class="table-header-labels well">
                     <th id="code">Trip & set code</th>
@@ -229,13 +229,20 @@
                     <th id="equipment">Equipment</th>
                     <th id="bait">Bait</th>
                     <th class="video" colspan=2>Video</th>
+                    <th id="assignments">Assignments</th>
+                    <th id="master">Master</th>
+                    <th id="flow_substrate">Flow/substrate</th>
                     <th id="observations">Obs</th>
                     <th class="show_observations">Drop/haul</th>
                     <th id="edit">Edit</th>
                 </tr>
                 </thead>
                 {% for set in sets %}
-                    <tr>
+                    {% if set.code == 'LKHM_002' %}
+                        <tr class="set-complete">
+                    {% else %}
+                        <tr>
+                    {% endif %}
                         <td>{{ set }}</td>
                         <td>{{ set.set_date|date:"M d Y" }}</td>
                         <td colspan=2>{{ set.reef_habitat }}</td>
@@ -245,6 +252,23 @@
                         <td>{{ set.bait }}</td>
                         <td colspan=2>
                             {{ set.video.primary|default_if_none:"<i>None</i>" }}
+                        </td>
+                        <td>
+                            <a href="{% url 'assignment_manage' set.id %}">
+                                0 / 0
+                            </a>
+                        </td>
+                        <td>
+{#                            {% if set.master %}#}
+                            <a href="{% url 'master_review' set.id  %}">
+                                Yes
+                            </a>
+{#                            {% else %}#}
+{#                            No#}
+{#                            {% endif %}#}
+                        </td>
+                        <td>
+                            No
                         </td>
                         <td>
                             <a href="{% url 'set_observation_list' set.trip.id set.id %}">
