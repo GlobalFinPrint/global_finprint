@@ -981,3 +981,21 @@ form #div_id_file .selectize-control {
     text-align:center;
     font-weight:bold;
 }
+
+.shadow {
+    -moz-box-shadow: 1px 3px 5px #888888;
+    -webkit-box-shadow: 1px 3px 5px #888888;
+     box-shadow: 1px 3px 5px #888888;
+   }
+
+.center-content {
+    width: 5%;
+    vertical-align: top !important;
+    text-align: center;
+}
+
+.bottom-content {
+    width: 5%;
+    vertical-align: bottom !important;
+    text-align: center;
+}
