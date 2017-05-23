@@ -270,27 +270,42 @@ class AssignMultipleVideosModel(UserAllowedMixin, View):
 
     def post(self, request):
         set_ids = np.asarray(dict(request.POST)['set_ids[]'])
+        video_list = np.asarray(dict(request.POST)['video_ids[]'])
 
-        assignment_list = Assignment.get_all_assignments(set_ids)
+        #only gives assigned list not the unassigned
+        assignment_list = Assignment.get_all_assignments(video_list)
         multiple_assignment_data_dic = {}
         project_list = []
-        video_list = []
+        assigned_video_list=[]
         multiple_assignment_data_set = []
-        #generate a dictionary to js wid Name_of_video ,Id hidden and number of repeatation
+
+        #creating a dictionary wid name_of_video ,video_id and number_of_user_assigned for model
         for assignment in assignment_list :
             project_list.append(assignment.project_id)
 
             if assignment.video_id not in multiple_assignment_data_dic  :
-                video_list.append(assignment.video_id)
+                assigned_video_list.append(assignment.video_id)
                 multiple_assignment_data_dic[assignment.video_id] = {"name": str(assignment.video), "count": 1, "video_id":assignment.video_id}
 
             else :
                 new_count = multiple_assignment_data_dic.get(assignment.video_id)["count"] +1
                 multiple_assignment_data_dic[assignment.video_id] = {"name": str(assignment.video), "count": new_count, "video_id":assignment.video_id}
 
-        set_ids_str = ','.join(str(x) for x in video_list)
+
+        unassigned_list = self.filter_unassigned_list(video_list,assigned_video_list)
+
+        unassigned_set = Set.objects.annotate(Count('video__assignment')) \
+                                .filter(video__assignment__count=0) \
+                                .filter(video_id__in = unassigned_list ) \
+                                .exclude(video__files=None)
+
+        # updating dictionary wid name_of_video ,video_id and number_of_user_assigned for model
+        for unassigned in unassigned_set:
+            multiple_assignment_data_dic[unassigned.video_id] = {"name": str(unassigned.video), "count": 0,
+                                                                 "video_id": unassigned.video_id}
+        set_ids_str = ','.join(str(x) for x in set_ids)
         for video_id in video_list :
-            _dic = multiple_assignment_data_dic[video_id]
+            _dic = multiple_assignment_data_dic[int(video_id)]
             multiple_assignment_data_set.append(MultiVideoAssignmentData(_dic["name"],_dic["count"],_dic["video_id"]))
 
         set = get_object_or_404(Set, id=set_ids[0])
@@ -309,21 +324,34 @@ class AssignMultipleVideosModel(UserAllowedMixin, View):
         return render_to_response(self.template_name, context=context)
 
 
+    def filter_unassigned_list(self, video_list, assigned_video_list):
+        unassigned_ids =[]
+        for video_id in video_list :
+            if video_id not in assigned_video_list :
+                unassigned_ids.append(video_id)
+
+        return unassigned_ids
+
+
 
 class AssignMultipleVideoToAnnotators(UserAllowedMixin, View):
+    """
+    Endpoints used by the assignment modal found at /assignment/ for saving 
+    multiple video assignment
+    """
     def post(self, request):
+        current_video_set = re.split(",", request.POST.get('set_ids_str'))
+        project = get_object_or_404(Project, id=request.POST.get('project'))
+        for set_id in current_video_set:
+            set = get_object_or_404(Set, id=set_id)
+            for anno_id in request.POST.getlist('anno[]'):
+                Assignment(
+                    annotator=FinprintUser.objects.get(id=anno_id),
+                    video=set.video,
+                    assigned_by=FinprintUser.objects.get(user_id=request.user),
+                    project=project
+                ).save()
 
-        if request.POST.get('set_ids_str') :
-            current_video_set = re.split(",",request.POST.get('set_ids_str'))
-            project = get_object_or_404(Project, id=request.POST.get('project'))
-            for set_id in current_video_set :
-                set = get_object_or_404(Set, id=set_id)
-                for anno_id in request.POST.getlist('anno[]'):
-                    Assignment(
-                        annotator=FinprintUser.objects.get(id=anno_id),
-                        video=set.video,
-                        assigned_by=FinprintUser.objects.get(user_id=request.user),
-                        project=project
-                    ).save()
+        return JsonResponse({'status': 'ok'})
 
-            return JsonResponse({'status': 'ok'})
+

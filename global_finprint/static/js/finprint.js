@@ -1116,10 +1116,12 @@ var finprint = finprint || {};  //namespace if necessary...
             var oldText = $this.text();
             var setIds = $("input[name='select_check_box']");
             var ids= []
+            var video_ids = []
             //adding all the checked ids for assigning
             for (var i=0;i< setIds.length;i++) {
               if (setIds[i].checked == true) {
                 ids.push(setIds[i].value)
+                video_ids.push(setIds[i].attributes.getNamedItem("data-id").value)
               }
             }
             if (ids.length == 0) {
@@ -1138,7 +1140,8 @@ var finprint = finprint || {};  //namespace if necessary...
                   type:"POST",
                   url:"/assignment/assign_selected_videos",
                   data: {
-                        'set_ids': ids
+                        'set_ids': ids,
+                        'video_ids': video_ids
                         },
                  success: function(res){
                      $modal.find('div.modal-content').html(res);
