@@ -18,8 +18,10 @@ class AssignmentCompareView(UserAllowedMixin, View):
         set = get_object_or_404(Set, pk=set_id)
         project = get_object_or_404(Project, pk=request.GET.get('project', 1))
         master_status = get_object_or_404(MasterRecordState, pk=1)
-        master, created = MasterRecord.objects.get_or_create(set=set, project=project, status=master_status)
+        master, created = MasterRecord.objects.get_or_create(
+            set=set, project=project, defaults={'status': master_status})
         context = Context({
+            'trip': set.trip,
             'set': set,
             'video_length': set.video.length(),
             'master': master,

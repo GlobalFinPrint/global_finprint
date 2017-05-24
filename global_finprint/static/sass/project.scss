@@ -559,19 +559,40 @@ h3.form-title {
   }
 }
 
-.row.assignment {
-  p.review-label {
-    margin-top: 20px;
-  }
-
-  button.select-all {
+.row.master {
+    button#save-master, a.master-manage {
     padding: 4px 10px;
-    margin-left: 10px;
 
     &:focus {
       outline: none;
     }
   }
+
+  button#save-master {
+    margin-left: 10px;
+  }
+}
+
+.row.assignment {
+  p.review-label {
+    margin-top: 20px;
+  }
+
+  button.select-all, button.not-available, a.assignment-manage, a.master-manage {
+    padding: 4px 10px;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  button.select-all, button.not-available {
+    margin-left: 10px;
+  }
+}
+
+.row.master:focus, .row.assignment:focus {
+  outline: none;
 }
 
 .busy-indicator {
@@ -625,10 +646,6 @@ h3.form-title {
       color: red;
     }
   }
-}
-
-.row.master:focus, .row.assignment:focus {
-  outline: none;
 }
 
 .timeline-holder {

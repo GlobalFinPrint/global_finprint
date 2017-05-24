@@ -2,11 +2,15 @@
 {% load staticfiles %}
 {% block content %}
     <div class="row">
-        <h3>Videos > Compare Assignments for {{ set }} ({{ project }})</h3>
+        <div class="well trail">
+            <a href="/">Global FinPrint</a> |
+            Trip: <a href="{% url 'trip_update' trip.id %}">{{ trip }}</a> |
+            Set: <a href="{% url 'set_update' trip.id set.id %}">{{ set }}</a> |
+            <b>Compare assignments</b>
+        </div>
     </div>
-
     <div class="row compare-actions clear">
-        <div class="pull-left legend">
+        <div class="well legend">
             <h4>Legend</h4>
             {% for group in project.animal_groups %}
                 <div class="legend-item" data-group="{{ group.id }}">
@@ -19,17 +23,20 @@
                 <span class="legend-label">Of interest</span>
             </div>
         </div>
-        <div class="pull-right">
-            <span id="save-feedback"></span>
-            <button id="save-master" class="btn btn-primary btn-fp" disabled="disabled">Save</button>
+{#        <div class="pull-right">#}
+{#            <span id="save-feedback"></span>#}
+{#            <button id="save-master" class="btn btn-primary btn-fp" disabled="disabled">Save</button>#}
             {# todo:  this should save before switching to the review page #}
-            <a href="{% url 'master_review' master.id %}" id="review-master" class="btn btn-primary btn-fp" disabled="disabled">Review</a>
-        </div>
+{#            <a href="{% url 'master_review' master.id %}" id="review-master" class="btn btn-primary btn-fp" disabled="disabled">Review</a>#}
+{#        </div>#}
     </div>
 
     <div class="row master" data-set-id="{{ set.id }}" data-project-id="{{ project.pk }}" data-length="{{ video_length }}" tabindex="0">
         <p class="review-label">
             <span class="circle">M</span> Master
+            | <b> Status:</b> {{ master.status|lower }}
+            <button id="save-master" class="btn btn-primary btn-fp" disabled="disabled">Save</button>
+            <a href="{% url 'master_review' master.id %}" class="master-manage btn btn-primary btn-fp">Manage</a>
         </p>
         <div class="timeline-holder">
             <div class="busy-indicator">Loading...</div>
@@ -41,7 +48,13 @@
         <div class="row assignment" data-assignment-id="{{ a.pk }}" data-project-id="{{ project.pk }}" data-length="{{ video_length }}" data-label="{{ forloop.counter }}" tabindex="0">
             <p class="review-label">
                 <span class="circle">{{ forloop.counter }}</span> {{ a.annotator }}
-                <button class="select-all btn btn-primary btn-fp" disabled="disabled">Select All</button>
+                | <b> Status:</b> {{ a.status|lower }}
+                {% if a.status.name == 'Complete' %}
+                    <button class="select-all btn btn-primary btn-fp" disabled="disabled">Select All</button>
+                {% else %}
+                    <button class="not-available btn btn-primary btn-fp" disabled="disabled">Not available</button>
+                {% endif %}
+                <a href="{% url 'assignment_manage' a.id %}" class="assignment-manage btn btn-primary btn-fp">Manage</a>
             </p>
             <div class="timeline-holder">
                 <div class="busy-indicator">Loading...</div>
