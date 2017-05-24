@@ -1,0 +1,8 @@
+<div class="row">
+    <div class="well trail">
+        <a href="/">Global FinPrint</a> |
+        Trip: <a href="{% url 'trip_update' trip.id %}">{{ trip }}</a> |
+        Set: <a href="{% url 'set_update' trip.id set.id %}">{{ set }}</a> |
+        {{ current_page_name }}
+    </div>
+</div>

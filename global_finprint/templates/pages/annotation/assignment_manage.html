@@ -4,14 +4,7 @@
 
 {% block content %}
     <div class="col-md-12 manage-content">
-        <div class="row">
-            <div class="well trail">
-                <a href="/">Global FinPrint</a> |
-                Trip: <a href="{% url 'trip_update' trip.id %}">{{ trip }}</a> |
-                Set: <a href="{% url 'set_update' trip.id set.id %}">{{ set }}</a> |
-                Observations: <b>{{ for }}</b>
-            </div>
-        </div>
+        {% include 'partials/breadcrumb.html' with trip=trip set=set current_page_name='Observations '|add:for %}
 
         <div class="manage-state-buttons" data-id="{{ assignment.id }}">
             <form>
