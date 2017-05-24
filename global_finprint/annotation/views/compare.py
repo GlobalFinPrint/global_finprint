@@ -26,7 +26,7 @@ class AssignmentCompareView(UserAllowedMixin, View):
             'video_length': set.video.length(),
             'master': master,
             'project': project,
-            'assignment_set': set.video.assignment_set.filter(project=project)
+            'assignment_set': set.video.assignment_set.exclude(status__in=[5, 6]).filter(project=project)
         })
         return render(request, self.template_name, context=context)
 
