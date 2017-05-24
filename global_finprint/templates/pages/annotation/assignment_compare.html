@@ -44,7 +44,7 @@
             <p class="review-label">
                 <span class="circle">{{ forloop.counter }}</span> {{ a.annotator }}
                 | <b> Status:</b> {{ a.status|lower }}
-                {% if a.status.name == 'Complete' %}
+                {% if a.status.id == 4 %}
                     <button class="select-all btn btn-primary btn-fp" disabled="disabled">Select All</button>
                 {% else %}
                     <button class="not-available btn btn-primary btn-fp" disabled="disabled">Not available</button>
