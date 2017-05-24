@@ -64,11 +64,9 @@ class ObservationListView(UserAllowedMixin, ListView):
             context['observations'] = paginator.page(1)
         except EmptyPage:
             context['observations'] = paginator.page(paginator.num_pages)
-        context['trip_pk'] = self.kwargs['trip_pk']
-        context['set_pk'] = self.kwargs['set_pk']
-        context['trip_name'] = str(Trip.objects.get(pk=self.kwargs['trip_pk']))
-        context['set_name'] = str(Set.objects.get(pk=self.kwargs['set_pk']))
-        context['for'] = ' for {0}'.format(context['set_name'])
+        context['trip'] = Trip.objects.get(pk=self.kwargs['trip_pk'])
+        context['set'] = Set.objects.get(pk=self.kwargs['set_pk'])
+        context['for'] = ' for {0}'.format(set)
         return context
 
 
