@@ -102,13 +102,14 @@ a.manual-assign {
   }
 }
 
-.manage-state-buttons {
+.manage-state-buttons, .manage-master-state-buttons {
   form {
     display: inline;
   }
 
   #save_message {
     display: none;
+    text-align: center;
     vertical-align: middle;
     color: $green;
   }

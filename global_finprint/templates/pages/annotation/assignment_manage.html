@@ -4,6 +4,7 @@
 
 {% block content %}
     <div class="col-md-12 manage-content">
+
         {% include 'partials/breadcrumb.html' with trip=trip set=set current_page_name='Observations '|add:for %}
 
         <div class="row manage-state-buttons" data-id="{{ assignment.id }}">

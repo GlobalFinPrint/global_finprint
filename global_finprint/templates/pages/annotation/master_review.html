@@ -6,14 +6,15 @@
     <div class="col-md-12 manage-content">
 
         {% include 'partials/breadcrumb.html' with trip=trip set=set current_page_name='Observations: <b>Master record</b>' %}
-        <div class="manage-master-state-buttons" data-id="{{ master.id }}">
+
+        <div class="row manage-master-state-buttons" data-id="{{ master.id }}">
             <form>
                 <div class="input-group pull-right">
-
-                        <span id="save_message" style="display: none" class="inline .success">
-                            <span class="glyphicon glyphicon-ok"
-                                  aria-hidden="true"></span>  Status change saved  </span>
                     <div class="btn-toolbar">
+                        <div class="input-group">
+                            <span id="save_message" class="inline .success">
+                                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>  Status change saved  </span>
+                        </div>
                         <div id="master-state-buttons" class="btn-group">
                             {% for master_state in state_list %}
                                 <a class="btn btn-default
@@ -30,8 +31,11 @@
             </form>
         </div>
 
-        <div class="row color-rows" data-diff-cell="0">
+        <div class="row">
             {% include 'partials/paginator_controls.html' with page=master_observations thing_name='observations' %}
+        </div>
+
+        <div class="row color-rows" data-diff-cell="0">
             {% include 'partials/observation_table.html' with observations=master_observations master=master for=for %}
         </div>
 
