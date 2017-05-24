@@ -237,7 +237,6 @@ class ManageMasterView(UserAllowedMixin, View):
         :param assignment_id:
         :return:
         """
-        action = request.POST.get('action')
         master_state = request.POST.get('master_state')
         master = get_object_or_404(MasterRecord, id=master_id)
         master.status_id = int(master_state)

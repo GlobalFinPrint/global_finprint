@@ -1,11 +1,12 @@
 from datetime import date, timedelta
 import numpy as np
 import re as re
-from django.views.generic import View
+from django.views.generic import View, ListView
 from django.shortcuts import get_object_or_404, render_to_response, get_list_or_404
 from django.db.models import Count
 from django.http.response import JsonResponse
 from django.template import RequestContext
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from ...core.mixins import UserAllowedMixin
 from ...trip.models import Trip
@@ -218,30 +219,7 @@ class UnassignModalBodyView(UserAllowedMixin, View):
         return JsonResponse({'status': 'ok'})
 
 
-class AssignmentManageView(UserAllowedMixin, View):
-    """
-    View to handle assignment management page found at /assignment/manage/<assignment_id>
-    """
-    template_name = 'pages/annotation/assignment_manage.html'
-
-    def get(self, request, assignment_id):
-        assignment = get_object_or_404(Assignment, id=assignment_id)
-        context = RequestContext(request, {
-            'state_list': AnnotationState.objects.all(),
-            'assignment': assignment,
-            'trip': assignment.video.set.trip,
-            'set': assignment.video.set,
-            'observations': sorted(assignment.observation_set.all()
-                                   .select_related('animalobservation__animal',
-                                                   'assignment__annotator__user',
-                                                   'assignment__annotator__affiliation',
-                                                   'assignment__video__set__trip',)
-                                   .prefetch_related('event_set', 'event_set__attribute'),
-                                   key=lambda o: o.initial_observation_time(), reverse=True),
-            'for': 'by {0}'.format(assignment.annotator)
-        })
-        return render_to_response(self.template_name, context=context)
-
+class ManageAssignmentView(UserAllowedMixin, View):
     def post(self, request, assignment_id):
         """
         Endpoint to handle state changes and/or deletion of assignment on assignment management screen
@@ -260,6 +238,39 @@ class AssignmentManageView(UserAllowedMixin, View):
             assignment.save()
 
         return JsonResponse({'status': 'ok'})
+
+
+class ObservationListView(UserAllowedMixin, ListView):
+    """
+    View for master record review screen found at /assignment/review/<master_id>
+    """
+    template_name = 'pages/annotation/assignment_manage.html'
+    model = Assignment
+    context_object_name = 'observations'
+
+    def get_queryset(self):
+        return sorted(get_object_or_404(Assignment, pk=self.kwargs['assignment_id']).observation_set.all(),
+                                        key=lambda o: o.initial_observation_time(),
+                                        reverse=True)
+
+    def get_context_data(self, **kwargs):
+        context = super(ObservationListView, self).get_context_data(**kwargs)
+        page = self.request.GET.get('page', 1)
+        paginator = Paginator(context['observations'], 50)
+        try:
+            context['observations'] = paginator.page(page)
+        except PageNotAnInteger:
+            context['observations'] = paginator.page(1)
+        except EmptyPage:
+            context['observations'] = paginator.page(paginator.num_pages)
+
+        assignment = get_object_or_404(Assignment, pk=self.kwargs['assignment_id'])
+        context['state_list'] = AnnotationState.objects.all()
+        context['assignment'] = assignment
+        context['trip'] = assignment.video.set.trip
+        context['set'] = assignment.video.set
+        context['for'] = ' for {}'.format(assignment.video.set)
+        return context
 
 
 class AssignMultipleVideosModel(UserAllowedMixin, View):
@@ -323,7 +334,6 @@ class AssignMultipleVideosModel(UserAllowedMixin, View):
 
         return render_to_response(self.template_name, context=context)
 
-
     def filter_unassigned_list(self, video_list, assigned_video_list):
         unassigned_ids =[]
         for video_id in video_list :
@@ -331,7 +341,6 @@ class AssignMultipleVideosModel(UserAllowedMixin, View):
                 unassigned_ids.append(video_id)
 
         return unassigned_ids
-
 
 
 class AssignMultipleVideoToAnnotators(UserAllowedMixin, View):

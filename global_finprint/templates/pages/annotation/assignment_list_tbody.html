@@ -19,7 +19,7 @@
     </td>
     <td>
         <a class="open-unassign-modal{% if a.status.is_finished %} disabled{% endif %}" data-id="{{ a.id }}" href="#">Unassign</a> |
-        <a {% if a.status.id == 1 %}class="disabled"{% endif %} href="{% url 'assignment_manage' a.id %}">Manage</a>
+        <a {% if a.status.id == 1 %}class="disabled"{% endif %} href="{% url 'assignment_review' a.id %}">Manage</a>
     </td>
 </tr>
 {% endfor %}

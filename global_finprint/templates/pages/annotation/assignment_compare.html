@@ -43,7 +43,7 @@
                     {% else %}
                         <button class="not-available btn btn-primary btn-fp" disabled="disabled">Not available</button>
                     {% endif %}
-                    <a href="{% url 'assignment_manage' a.id %}" class="assignment-manage btn btn-primary btn-fp">Manage</a>
+                    <a href="{% url 'assignment_review' a.id %}" class="assignment-manage btn btn-primary btn-fp">Manage</a>
                 </p>
                 <div class="timeline-holder">
                     <div class="busy-indicator">Loading...</div>
