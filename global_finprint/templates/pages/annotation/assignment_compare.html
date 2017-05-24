@@ -23,20 +23,15 @@
                 <span class="legend-label">Of interest</span>
             </div>
         </div>
-{#        <div class="pull-right">#}
-{#            <span id="save-feedback"></span>#}
-{#            <button id="save-master" class="btn btn-primary btn-fp" disabled="disabled">Save</button>#}
-            {# todo:  this should save before switching to the review page #}
-{#            <a href="{% url 'master_review' master.id %}" id="review-master" class="btn btn-primary btn-fp" disabled="disabled">Review</a>#}
-{#        </div>#}
     </div>
 
     <div class="row master" data-set-id="{{ set.id }}" data-project-id="{{ project.pk }}" data-length="{{ video_length }}" tabindex="0">
-        <p class="review-label">
+        <p class="review-label compare-actions">
             <span class="circle">M</span> Master
             | <b> Status:</b> {{ master.status|lower }}
             <button id="save-master" class="btn btn-primary btn-fp" disabled="disabled">Save</button>
             <a href="{% url 'master_review' master.id %}" class="master-manage btn btn-primary btn-fp">Manage</a>
+            <span id="save-feedback"></span>
         </p>
         <div class="timeline-holder">
             <div class="busy-indicator">Loading...</div>
