@@ -333,7 +333,8 @@ $(function () {
     // displays data for the master record timeline
     var MasterView = AssignmentView.extend({
         events: {
-            'click button#save-master': 'saveMaster'
+            'click button#save-master': 'saveMaster',
+            'click button#review-master': 'reviewMaster'
         },
         initialize: function (options) {
             this.loadingPromises = options.loadingPromises;
@@ -386,6 +387,11 @@ $(function () {
                     .fadeOut();
             });
         },
+        reviewMaster: function () {
+            this.saveMaster();
+            var review_url = $('button#review-master').attr('data-href-target');
+            window.location.href = review_url;
+        },
         load: function (loadingPromises) {
             var self = this;
             $.get(this.collection.url + '?project=' + this.collection.project, function (res) {
@@ -401,7 +407,7 @@ $(function () {
                     });
                     self.render();
                     self.$el.find('.busy-indicator').fadeOut();
-                    $('button.select-all, button#save-master, a#review-master').removeAttr('disabled');
+                    $('button.select-all, button#save-master, button#review-master').removeAttr('disabled');
                 });
             });
         }

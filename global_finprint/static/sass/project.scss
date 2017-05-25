@@ -567,7 +567,7 @@ h3.form-title {
 }
 
 .row.master {
-    button#save-master, a.master-manage {
+    button#save-master, button#review-master {
     padding: 4px 10px;
 
     &:focus {
@@ -585,7 +585,7 @@ h3.form-title {
     margin-top: 20px;
   }
 
-  button.select-all, button.not-available, a.assignment-manage, a.master-manage {
+  button.select-all, button.not-available, a.review-assignment, button#review-master {
     padding: 4px 10px;
 
     &:focus {
