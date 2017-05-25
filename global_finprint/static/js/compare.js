@@ -345,10 +345,6 @@ $(function () {
             });
         },
         saveMaster: function () {
-            if (!confirm('Are you sure you wish to save this record?')) {
-                return;
-            }
-
             var $this = $(this);
             var $feedback = $('span#save-feedback');
             var data = {
