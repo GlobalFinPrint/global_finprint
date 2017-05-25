@@ -34,42 +34,6 @@ def observation_post(request):
     pass
 
 
-class ObservationListView(UserAllowedMixin, ListView):
-    """
-    View to list observations for a given set found at /trips/<trip_id>/sets/<set_id>/observations/
-    """
-    model = Observation
-    context_object_name = 'observations'
-    template_name = 'pages/observations/observation_list.html'
-
-    def get_queryset(self):
-        selected_related = [
-            'animalobservation__animal',
-            'assignment__annotator__user',
-            'assignment__annotator__affiliation',
-            'assignment__video__set__trip',
-        ]
-        return sorted(get_object_or_404(Set, pk=self.kwargs['set_pk']).observations()
-                      .select_related(*selected_related)
-                      .prefetch_related('event_set', 'event_set__attribute'),
-                      key=lambda o: o.initial_observation_time(), reverse=True)
-
-    def get_context_data(self, **kwargs):
-        context = super(ObservationListView, self).get_context_data(**kwargs)
-        page = self.request.GET.get('page', 1)
-        paginator = Paginator(context['observations'], 50)
-        try:
-            context['observations'] = paginator.page(page)
-        except PageNotAnInteger:
-            context['observations'] = paginator.page(1)
-        except EmptyPage:
-            context['observations'] = paginator.page(paginator.num_pages)
-        context['trip'] = Trip.objects.get(pk=self.kwargs['trip_pk'])
-        context['set'] = Set.objects.get(pk=self.kwargs['set_pk'])
-        context['for'] = ' for {0}'.format(set)
-        return context
-
-
 # TODO DRY this up
 class MasterObservationEditData(UserAllowedMixin, View):
     """
@@ -230,7 +194,7 @@ class EditMeasurablesInline(UserAllowedMixin, View):
 class ManageMasterView(UserAllowedMixin, View):
     def post(self, request, master_id):
         """
-        Endpoint to handle state changes and/or deletion of master record 
+        Endpoint to handle state changes of master record 
         :param request:
         :param assignment_id:
         :return:
@@ -243,11 +207,48 @@ class ManageMasterView(UserAllowedMixin, View):
         return JsonResponse({'status': 'ok'})
 
 
+class ObservationListView(UserAllowedMixin, ListView):
+    """
+    View to list observations for a given set found at /trips/<trip_id>/sets/<set_id>/observations/
+    """
+    model = Observation
+    context_object_name = 'observations'
+    template_name = 'pages/observations/observation_list.html'
+
+    def get_queryset(self):
+        selected_related = [
+            'animalobservation__animal',
+            'assignment__annotator__user',
+            'assignment__annotator__affiliation',
+            'assignment__video__set__trip',
+        ]
+        return sorted(get_object_or_404(Set, pk=self.kwargs['set_pk']).observations()
+                      .select_related(*selected_related)
+                      .prefetch_related('event_set', 'event_set__attribute'),
+                      key=lambda o: o.initial_observation_time(), reverse=True)
+
+    def get_context_data(self, **kwargs):
+        context = super(ObservationListView, self).get_context_data(**kwargs)
+        page = self.request.GET.get('page', 1)
+        paginator = Paginator(context['observations'], 50)
+        try:
+            context['observations'] = paginator.page(page)
+        except PageNotAnInteger:
+            context['observations'] = paginator.page(1)
+        except EmptyPage:
+            context['observations'] = paginator.page(paginator.num_pages)
+        set = Set.objects.get(pk=self.kwargs['set_pk'])
+        context['trip'] = set.trip
+        context['set'] = set
+        context['for'] = ' for {0}'.format(set)
+        return context
+
+
 class MasterObservationListView(UserAllowedMixin, ListView):
     """
-    View for master record review screen found at /assignment/review/<master_id>
+    View for master record review screen found at /assignment/master/review/<master_id>
     """
-    template_name = 'pages/annotation/master_review.html'
+    template_name = 'pages/observations/master_review.html'
     model = MasterObservation
     context_object_name = 'master_observations'
 

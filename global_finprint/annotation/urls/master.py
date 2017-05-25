@@ -8,8 +8,9 @@ from global_finprint.annotation.views.observations import MasterObservationEditD
 
 urlpatterns = [
     url(r"^(?P<set_id>\d+)$", csrf_exempt(GetMasterView.as_view()), name='get_master'),
+
     url(r"^review/(?P<master_id>\d+)$", MasterObservationListView.as_view(), name='master_review'),
-    url(r"^manage/(?P<master_id>\d+)$", ManageMasterView.as_view(), name='manage_master'),
+    url(r"^manage/(?P<master_id>\d+)$", ManageMasterView.as_view(), name='master_manage'),
 
     url(r"^master/(?P<set_id>\d+)/edit_data/(?P<evt_id>\d+)$", csrf_exempt(MasterObservationEditData.as_view()),
         name='master_edit_obs'),

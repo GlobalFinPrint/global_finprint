@@ -26,7 +26,13 @@
                 {% else %}
                     <tr class="single-event {{ o.needs_review|yesno:"needs-review,," }}" data-rowspan="{{ rowspan }}">
                 {% endif %}
-                <td class="rowspan">{{ o.annotator }}</td>
+                <td class="rowspan">
+                    {% if not master %}
+                        <a href="{% url 'assignment_review' o.assignment.id %}">{{ o.annotator }}</a>
+                    {% else %}
+                        {{ o.annotator }}
+                    {% endif %}
+                </td>
                 {% if o.type == 'I' %}
                     <td class="rowspan"><i>N/A</i></td>
                 {% else %}

@@ -2,7 +2,7 @@
 {% load time_display %}
 {% block content %}
     <div class="col-md-12">
-        {% include 'partials/breadcrumb.html' with trip=trip set=set current_page_name='Observations: <b>All</b>' %}
+        {% include 'partials/breadcrumb.html' with trip=trip set=set current_page_name='All observations' %}
 
         <div class="row color-rows" data-diff-cell="0">
             {% include 'partials/paginator_controls.html' with page=observations thing_name='observations' %}

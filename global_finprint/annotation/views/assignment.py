@@ -242,9 +242,9 @@ class ManageAssignmentView(UserAllowedMixin, View):
 
 class ObservationListView(UserAllowedMixin, ListView):
     """
-    View for master record review screen found at /assignment/review/<master_id>
+    View for observation list by annotator found at /assignment/review/<assignment_id>
     """
-    template_name = 'pages/annotation/assignment_manage.html'
+    template_name = 'pages/observations/annotator_review.html'
     model = Assignment
     context_object_name = 'observations'
 
@@ -269,7 +269,7 @@ class ObservationListView(UserAllowedMixin, ListView):
         context['assignment'] = assignment
         context['trip'] = assignment.video.set.trip
         context['set'] = assignment.video.set
-        context['for'] = ' for {}'.format(assignment.video.set)
+        context['for'] = ' by {}'.format(assignment.annotator.user.get_full_name())
         return context
 
 
