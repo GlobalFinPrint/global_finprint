@@ -354,4 +354,40 @@ class AssignMultipleVideoToAnnotators(UserAllowedMixin, View):
 
         return JsonResponse({'status': 'ok'})
 
+class RestrictFilterDropDown(UserAllowedMixin, View) :
+    """
+    Endpoints used by the auto assignment modal found at /assignment/ for restricting
+    drop down of Reefs and Sets based on Trip selected
+    """
+
+    def post(self, request):
+
+        post_dic = dict(request.POST)
+        if 'trip' in post_dic :
+            trip_id = dict(request.POST)['trip'][0]
+        if 'reef[]' in post_dic:
+            reef_ids = dict(request.POST)['reef[]']
+
+        trip = Trip.objects.filter(id = trip_id).order_by('code').all().prefetch_related('set_set')
+        if len(trip) > 0 :
+            locations = Location.objects.filter(id = trip[0].location_id).order_by('name').all().prefetch_related('trip_set')
+            sites = Site.objects.filter(location_id=trip[0].location_id).order_by('name').all().prefetch_related('reef_set')
+        else :
+            Location.objects.order_by('name').all().prefetch_related('trip_set')
+            sites = Site.objects.order_by('name').all().prefetch_related('reef_set')
+
+        context = RequestContext(request, {
+            'trips': Trip.objects.order_by('code').all().prefetch_related('set_set'),
+            'locations': locations,
+            'sites': sites,
+            'affils': Affiliation.objects.order_by('name').all().prefetch_related('finprintuser_set'),
+            'statuses': AnnotationState.objects.all(),
+            'projects': Project.objects.order_by('id').all()
+        })
+
+        return JsonResponse({'sets': context})
+
+
+
+
 

@@ -179,7 +179,7 @@
                             available assignments.
                         </p>
                     </div>
-                    <form>
+                    <form id="auto-assignment-form" class="clearfix">
                         <div class="row">
                         {% csrf_token %}
                             <div class="col-md-4">
@@ -194,6 +194,32 @@
                                 </select>
                             </div>
 
+                            <div class="col-md-4">
+                                <label for="select-reef-auto-assign">Reef(s)</label>
+                                <select id="select-reef-auto-assign" class="form-control" name="reef[]" multiple="multiple" placeholder="Select one or more reefs">
+                                    {% for s in sites %}
+                                    <optgroup label="{{ s }}">
+                                    {% for r in s.reef_set.all %}
+                                        <option value="{{ r.id }}">{{ r.name }}</option>
+                                    {% endfor %}
+                                    </optgroup>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="select-set-auto-assign">Set(s)</label>
+                                <select id="select-set-auto-assign" class="form-control" name="set[]" multiple="multiple" placeholder="Select one or more sets">
+                                    {% for t in trips %}
+                                    <optgroup label="{{ t }}">
+                                    {% for s in t.set_set.all %}
+                                        <option value="{{ s.id }}">{{ s.code }}</option>
+                                    {% endfor %}
+                                    </optgroup>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-4">
                                 <label for="auto-affiliation">Affiliation</label>
                                 <select class="form-control" id="auto-affiliation" name="affiliation">
@@ -210,17 +236,16 @@
                                 <label for="auto-num">Annotators per video</label>
                                 <input type="number" class="form-control" id="auto-num" name="num" min="1" step="1" value="3" />
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-4">
                                 <label for="project">Project</label>
-                                <select id="project" name="project" class="form-control">
+                                <select id="project" class="form-control" name="project" class="form-control">
                                     {% for project in projects %}
                                         <option value="{{ project.id }}">{{ project.name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
-
+                        </div>
+                        <div class="row">
                             <div class="col-md-4">
                                 <div class="checkbox include-leads">
                                     <label for="include-leads">

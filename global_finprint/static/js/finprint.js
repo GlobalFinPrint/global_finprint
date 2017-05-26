@@ -89,7 +89,7 @@ var finprint = finprint || {};  //namespace if necessary...
         fields.forEach(function (selector) {
             $form.find(selector).selectize(options);
         });
-        //intially search will be default clicked when page is loaded GLOB-604
+
         if ($form.serializeArray().some(function (field) {
                     return field.name !== 'csrfmiddlewaretoken' && field.value;
                 }))
@@ -276,9 +276,42 @@ var finprint = finprint || {};  //namespace if necessary...
     function initAutomaticAssignment() {
         var $openLink = $('#open-auto-modal');
         var $modal = $('#automatic-modal');
-        var $modalForm = $modal.find('form');
+        var $modalForm = $modal.find('form#auto-assignment-form');
+
+        var options = {allowEmptyOption: true, plugins: ['remove_button', 'restore_on_backspace']};
+        var fields = [
+            '#select-set-auto-assign',
+            '#auto-affiliation',
+            '#project',
+            '#auto-num'
+        ];
+
 
         $modalForm.submit(false);
+        fields.forEach(function (selector) {
+            $modalForm.find(selector).selectize(options);
+        });
+         $modalForm.find('#auto-trip').selectize($.extend({}, options, {
+           onChange: function(value){
+               console.log('#auto-trip', value)
+               $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
+
+                });
+           }
+         }));
+
+             $modalForm.find('#select-reef-auto-assign').selectize($.extend({}, options, {
+           onChange: function(value){
+               console.log('#select-reef-auto-assign', value)
+               $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
+                  //  $target.html(res);
+                  //  $this.removeAttr('disabled');
+                 //   $this.text(oldText);
+                });
+           }
+         }));
+
+
 
         $openLink.click(function (e) {
             e.preventDefault();
