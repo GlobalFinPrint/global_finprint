@@ -1023,3 +1023,10 @@ form #div_id_file .selectize-control {
     vertical-align: bottom !important;
     text-align: center;
 }
+
+#table-scroll {
+  max-height:200px;
+  overflow:scroll;
+  margin-top:20px;
+}
+

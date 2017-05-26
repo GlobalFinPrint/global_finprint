@@ -1,4 +1,5 @@
-from datetime import date, timedelta
+from datetime import date, timedelta 
+from builtins import set as Set_util
 import numpy as np
 import re as re
 from django.views.generic import View, ListView
@@ -280,8 +281,8 @@ class AssignMultipleVideosModel(UserAllowedMixin, View):
     template_name = 'pages/annotation/multiple_assignment_list_modal.html'
 
     def post(self, request):
-        set_ids = np.asarray(dict(request.POST)['set_ids[]'])
-        video_list = np.asarray(dict(request.POST)['video_ids[]'])
+        set_ids = list(Set_util(np.asarray(dict(request.POST)['set_ids[]'])))
+        video_list = list(Set_util(np.asarray(dict(request.POST)['video_ids[]'])))
 
         #only gives assigned list not the unassigned
         assignment_list = Assignment.get_all_assignments(video_list)
@@ -289,11 +290,12 @@ class AssignMultipleVideosModel(UserAllowedMixin, View):
         project_list = []
         assigned_video_list=[]
         multiple_assignment_data_set = []
+        total_count = 0
 
         #creating a dictionary wid name_of_video ,video_id and number_of_user_assigned for model
         for assignment in assignment_list :
             project_list.append(assignment.project_id)
-
+            total_count = total_count +1
             if assignment.video_id not in multiple_assignment_data_dic  :
                 assigned_video_list.append(assignment.video_id)
                 multiple_assignment_data_dic[assignment.video_id] = {"name": str(assignment.video), "count": 1, "video_id":assignment.video_id}
@@ -330,6 +332,7 @@ class AssignMultipleVideosModel(UserAllowedMixin, View):
             'projects': Project.objects.order_by('id').all(),
             'current_project': project,
             'set_ids_str':set_ids_str,
+            'total_count':total_count,
         })
 
         return render_to_response(self.template_name, context=context)
