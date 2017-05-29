@@ -290,24 +290,25 @@ var finprint = finprint || {};  //namespace if necessary...
         $modalForm.submit(false);
         fields.forEach(function (selector) {
             $modalForm.find(selector).selectize(options);
+
         });
          $modalForm.find('#auto-trip').selectize($.extend({}, options, {
            onChange: function(value){
                console.log('#auto-trip', value)
-               $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
-
+            $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
+                   console.log('/assignment/filter_change', res)
                 });
+
            }
          }));
 
              $modalForm.find('#select-reef-auto-assign').selectize($.extend({}, options, {
            onChange: function(value){
                console.log('#select-reef-auto-assign', value)
-               $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
-                  //  $target.html(res);
-                  //  $this.removeAttr('disabled');
-                 //   $this.text(oldText);
-                });
+              $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
+               });
+
+
            }
          }));
 

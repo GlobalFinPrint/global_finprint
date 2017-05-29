@@ -1,10 +1,11 @@
 from datetime import date, timedelta
 import numpy as np
+import json
 import re as re
 from django.views.generic import View
 from django.shortcuts import get_object_or_404, render_to_response, get_list_or_404
 from django.db.models import Count
-from django.http.response import JsonResponse
+from django.http.response import JsonResponse, HttpResponse
 from django.template import RequestContext
 
 from ...core.mixins import UserAllowedMixin
@@ -367,25 +368,38 @@ class RestrictFilterDropDown(UserAllowedMixin, View) :
             trip_id = dict(request.POST)['trip'][0]
         if 'reef[]' in post_dic:
             reef_ids = dict(request.POST)['reef[]']
+           # reef_codes =""
 
         trip = Trip.objects.filter(id = trip_id).order_by('code').all().prefetch_related('set_set')
-        if len(trip) > 0 :
-            locations = Location.objects.filter(id = trip[0].location_id).order_by('name').all().prefetch_related('trip_set')
+        if len(trip) > 0 and str(reef_ids) is not None and len(reef_ids) > 0:
             sites = Site.objects.filter(location_id=trip[0].location_id).order_by('name').all().prefetch_related('reef_set')
-        else :
-            Location.objects.order_by('name').all().prefetch_related('trip_set')
-            sites = Site.objects.order_by('name').all().prefetch_related('reef_set')
 
-        context = RequestContext(request, {
-            'trips': Trip.objects.order_by('code').all().prefetch_related('set_set'),
-            'locations': locations,
-            'sites': sites,
-            'affils': Affiliation.objects.order_by('name').all().prefetch_related('finprintuser_set'),
-            'statuses': AnnotationState.objects.all(),
-            'projects': Project.objects.order_by('id').all()
-        })
+        #find the code of each reef and remove those sets
 
-        return JsonResponse({'sets': context})
+
+
+        set_data = list(set(trip))[0].set_set
+        print("reef_set_group_name {}", str(set_data.instance))
+        list_of_sets = []
+        for s in set_data.all():
+            list_of_sets.append({"id": s.id, "code": s.code})
+            print("set_id: {} set_name: {}", s.id, s.code)
+
+
+
+        print("reef_data_group_name {}", str(set_data.instance.location))
+        list_of_reefs=[]
+        for s in sites:
+           print("reef_set_group_name {}", str(s))
+           for r in s.reef_set.all() :
+             list_of_reefs.append({"reef_group": str(s), "id": r.id, "name": r.name})
+             print("reef_set_id: {} reef_set_name: {}",r.id, r.name)
+
+
+        return JsonResponse({'status': 'ok',"reefs":list_of_reefs,"sets":list_of_sets})
+
+
+
 
 
 
