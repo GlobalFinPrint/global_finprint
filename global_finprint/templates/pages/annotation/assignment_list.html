@@ -238,7 +238,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label for="project">Project</label>
-                                <select id="project" class="form-control" name="project" class="form-control">
+                                <select id="project" name="project" >
                                     {% for project in projects %}
                                         <option value="{{ project.id }}">{{ project.name }}</option>
                                     {% endfor %}

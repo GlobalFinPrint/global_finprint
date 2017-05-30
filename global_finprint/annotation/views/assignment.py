@@ -360,7 +360,6 @@ class RestrictFilterDropDown(UserAllowedMixin, View) :
     Endpoints used by the auto assignment modal found at /assignment/ for restricting
     drop down of Reefs and Sets based on Trip selected
     """
-
     def post(self, request):
 
         post_dic = dict(request.POST)
@@ -369,20 +368,25 @@ class RestrictFilterDropDown(UserAllowedMixin, View) :
         if 'reef[]' in post_dic:
             reef_ids = dict(request.POST)['reef[]']
            # reef_codes =""
-
-        trip = Trip.objects.filter(id = trip_id).order_by('code').all().prefetch_related('set_set')
-        if len(trip) > 0 and str(reef_ids) is not None and len(reef_ids) > 0:
+        if 'trip' in post_dic and trip_id !='' and 'reef[]' not in post_dic:
+            trip = Trip.objects.filter(id = trip_id).order_by('code').all().prefetch_related('set_set')
             sites = Site.objects.filter(location_id=trip[0].location_id).order_by('name').all().prefetch_related('reef_set')
+        elif 'reef[]' in post_dic and trip_id !='':
+            trip = Trip.objects.order_by('code').all().prefetch_related('set_set')
+            sites = Site.objects.order_by('name').all().prefetch_related('reef_set')
+        else :
+            trip = Trip.objects.order_by('code').all().prefetch_related('set_set')
+            sites = Site.objects.order_by('name').all().prefetch_related('reef_set')
 
         #find the code of each reef and remove those sets
 
 
-
+        
         set_data = list(set(trip))[0].set_set
-        print("reef_set_group_name {}", str(set_data.instance))
+        print("set_group_name {}", str(set_data.instance))
         list_of_sets = []
         for s in set_data.all():
-            list_of_sets.append({"id": s.id, "code": s.code})
+            list_of_sets.append({"id": s.id, "code": s.code, "group": str(set_data.instance)})
             print("set_id: {} set_name: {}", s.id, s.code)
 
 
@@ -395,13 +399,7 @@ class RestrictFilterDropDown(UserAllowedMixin, View) :
              list_of_reefs.append({"reef_group": str(s), "id": r.id, "name": r.name})
              print("reef_set_id: {} reef_set_name: {}",r.id, r.name)
 
-
-        return JsonResponse({'status': 'ok',"reefs":list_of_reefs,"sets":list_of_sets})
-
-
-
-
-
-
-
-
+        if len(reef_ids)== 0 :
+            return JsonResponse({'status': 'ok',"reefs":list_of_reefs, "sets":list_of_sets})
+        else :
+            return JsonResponse({'status': 'ok', "sets": list_of_sets})
