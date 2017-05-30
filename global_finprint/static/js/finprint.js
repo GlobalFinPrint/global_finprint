@@ -100,6 +100,7 @@ var finprint = finprint || {};  //namespace if necessary...
                     $target.html(res);
                     $('#limitSelectionId').show();
                     $('#spinId').hide();
+                    controlCheckBoxFunctionality();
                 });
         }
         $form.find('button#search').click(function () {
@@ -118,6 +119,7 @@ var finprint = finprint || {};  //namespace if necessary...
                     $target.html(res);
                     $this.removeAttr('disabled');
                     $this.text(oldText);
+                    controlCheckBoxFunctionality();
                 });
             } else {
                 alert('You must choose at least 1 search filter');
@@ -1182,5 +1184,26 @@ var finprint = finprint || {};  //namespace if necessary...
         });
 
      }
+
+     function initSingleCheckbutton(){
+       $(".selectCheckBox").click(function () {
+            var setIds = $("input[name='select_check_box']");
+            if (checkIfAllCheck(setIds) == false)  {
+                $("#selectAllAssignmentsId").prop('checked', $(this).prop('checked'));
+                }
+        });
+
+     }
+
+     function controlCheckBoxFunctionality() {
+        $('.selectCheckBox').click(function(){
+              if($(".selectCheckBox:checked").length < $(".selectCheckBox").length){
+                   $('#selectAllAssignmentsId').prop('checked', false)
+              } else {
+                   $('#selectAllAssignmentsId').prop('checked', true)
+              }
+            });
+       }
+
 })(jQuery);
 
