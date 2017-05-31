@@ -25,7 +25,6 @@
                 | <b> Status:</b> {{ master.status|lower }}
                 <button id="save-master" class="btn btn-primary btn-fp" disabled="disabled">Save</button>
                 <button id="review-master" class="btn btn-primary btn-fp" data-href-target="{% url 'master_review' master.id %}" disabled="disabled">Review</button>
-{#                <a href="{% url 'master_review' master.id %}" class="master-manage btn btn-primary btn-fp">Review</a>#}
                 <span id="save-feedback"></span>
             </p>
             <div class="timeline-holder">

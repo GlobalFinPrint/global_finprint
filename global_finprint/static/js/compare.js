@@ -57,7 +57,8 @@ $(function () {
                 left: timePercent + '%',
                 popoverPosition: popoverPosition,
                 leftRightAligned: timePercent > 50 ? 'right' : 'left',
-                label: this.getLabel()
+                label: this.getLabel(),
+                assignment: this.model.getAssignment()
             }, this.model.attributes);
             this.setElement(this.template(templateData));
             this.model.getAssignment().find('.timeline').append(this.el);
@@ -428,50 +429,6 @@ $(function () {
         return view.loadingPromise;
     }));
 
-    // // hook up save button
-    // $('#save-master').click(function () {
-    //     if (!confirm('Are you sure you wish to save this record?')) {
-    //         return;
-    //     }
-    //
-    //     var $this = $(this);
-    //     var $feedback = $('span#save-feedback');
-    //     var data = {
-    //         observation_ids: masterView.collection.pluck('id'),
-    //         project: masterView.collection.project
-    //     };
-    //
-    //     $this.attr('disabled', 'disabled');
-    //
-    //     $.post(masterView.collection.url, data, function (res) {
-    //         $this.removeAttr('disabled');
-    //         if (res.success === 'ok') {
-    //             $feedback
-    //                 .removeClass('failure')
-    //                 .addClass('success')
-    //                 .text('Changes saved!')
-    //                 .show()
-    //                 .delay(1000)
-    //                 .fadeOut();
-    //         } else if (res.success === 'no changes') {
-    //             $feedback
-    //                 .removeClass('success failure')
-    //                 .text('No changes to save...')
-    //                 .show()
-    //                 .delay(1000)
-    //                 .fadeOut();
-    //         }
-    //     }).error(function () {
-    //         $this.removeAttr('disabled');
-    //         $feedback
-    //             .removeClass('success')
-    //             .addClass('failure')
-    //             .text('Encountered an error saving changes; please try again later.')
-    //             .show()
-    //             .delay(1000)
-    //             .fadeOut();
-    //     });
-    // });
 
     $(function () {
         var $style;
