@@ -294,7 +294,7 @@ var finprint = finprint || {};  //namespace if necessary...
         });
 
         var $setSelect = $modalForm.find('#select-set-auto-assign').selectize($.extend({}, options, {
-            valueField: 'id',
+            valueField: 'code',
             labelField: 'code',
             searchField: 'code',
             optgroupField: 'group',

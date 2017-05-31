@@ -47,10 +47,11 @@ class VideoAutoAssignView(UserAllowedMixin, View):
         :param request:
         :return:
         """
+        post_dic = dict(request.POST)
+
         trip_id = request.POST.get('trip')
         aff_id = request.POST.get('affiliation')
         num = int(request.POST.get('num'))
-
         include_leads = bool(request.POST.get('include_leads', False))
         project = get_object_or_404(Project, id=request.POST.get('project'))
 
@@ -61,11 +62,24 @@ class VideoAutoAssignView(UserAllowedMixin, View):
 
         if not include_leads:
             annotators = list(a for a in annotators if not a.is_lead())
-            
+
         video_count = 0
         assigned_count = 0
         new_count = 0
-        for video in Video.objects.filter(set__trip_id=trip_id).exclude(files__isnull=True).all():
+
+        if 'auto-set[]' in post_dic :
+            set_ids = post_dic['auto-set[]']
+            if len(set_ids) > 0 :
+                videos =  Video.objects.filter(set__trip_id=trip_id).filter(set__code__in =set_ids).exclude(files__isnull=True).all()
+        else :
+            videos = Video.objects.filter(set__trip_id=trip_id).exclude(files__isnull=True).all()
+
+        if 'auto-reef[]' in post_dic:
+            reef_ids = post_dic['auto-reef[]']
+            if len(reef_ids) > 0 :
+              videos = videos.filter(set__reef_habitat_id__in=reef_ids)
+
+        for video in videos:
             video_count += 1
             new_count += self.assign_video(annotators, video, num, project)
             assigned_count += len(video.annotators_assigned(project))
@@ -373,6 +387,7 @@ class RestrictFilterDropDown(UserAllowedMixin, View) :
             trip_id = dict(request.POST)['trip'][0]
         if 'reef[]' in post_dic:
             reef_ids = dict(request.POST)['reef[]']
+
         #if trip change
         if 'trip' in post_dic and trip_id !='' and 'reef[]' not in post_dic:
             trip = Trip.objects.filter(id = trip_id).order_by('code').all().prefetch_related('set_set')

@@ -196,7 +196,7 @@
 
                             <div class="col-md-4">
                                 <label for="select-reef-auto-assign">Reef(s)</label>
-                                <select id="select-reef-auto-assign" class="form-control" name="reef[]" multiple="multiple" placeholder="Select one or more reefs">
+                                <select id="select-reef-auto-assign" class="form-control" name="auto-reef[]" multiple="multiple" placeholder="Select one or more reefs">
                                     {% for s in sites %}
                                     <optgroup label="{{ s }}">
                                     {% for r in s.reef_set.all %}
@@ -208,11 +208,11 @@
                             </div>
                             <div class="col-md-4">
                                 <label for="select-set-auto-assign">Set(s)</label>
-                                <select id="select-set-auto-assign" class="form-control" name="set[]" multiple="multiple" placeholder="Select one or more sets">
+                                <select id="select-set-auto-assign" class="form-control" name="auto-set[]" multiple="multiple" placeholder="Select one or more sets">
                                     {% for t in trips %}
                                     <optgroup label="{{ t }}">
                                     {% for s in t.set_set.all %}
-                                        <option value="{{ s.id }}">{{ s.code }}</option>
+                                        <option value="{{ s.code }}">{{ s.code }}</option>
                                     {% endfor %}
                                     </optgroup>
                                     {% endfor %}
