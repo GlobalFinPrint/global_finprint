@@ -1,4 +1,4 @@
-from datetime import date, timedelta 
+from datetime import date, timedelta
 from builtins import set as Set_util
 import numpy as np
 import re as re
@@ -295,8 +295,8 @@ class AssignMultipleVideosModel(UserAllowedMixin, View):
         #creating a dictionary wid name_of_video ,video_id and number_of_user_assigned for model
         for assignment in assignment_list :
             project_list.append(assignment.project_id)
-            total_count = total_count +1
             if assignment.video_id not in multiple_assignment_data_dic  :
+                total_count = total_count + 1
                 assigned_video_list.append(assignment.video_id)
                 multiple_assignment_data_dic[assignment.video_id] = {"name": str(assignment.video), "count": 1, "video_id":assignment.video_id}
 
@@ -314,6 +314,7 @@ class AssignMultipleVideosModel(UserAllowedMixin, View):
 
         # updating dictionary wid name_of_video ,video_id and number_of_user_assigned for model
         for unassigned in unassigned_set:
+            total_count = total_count + 1
             multiple_assignment_data_dic[unassigned.video_id] = {"name": str(unassigned.video), "count": 0,
                                                                  "video_id": unassigned.video_id}
         set_ids_str = ','.join(str(x) for x in set_ids)
