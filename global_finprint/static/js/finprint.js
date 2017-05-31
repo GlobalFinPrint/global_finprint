@@ -280,7 +280,7 @@ var finprint = finprint || {};  //namespace if necessary...
 
         var options = {allowEmptyOption: true, plugins: ['remove_button', 'restore_on_backspace']};
         var fields = [
-            '#select-set-auto-assign',
+           // '#select-set-auto-assign',
             '#auto-affiliation',
             '#project',
             '#auto-num'
@@ -292,28 +292,55 @@ var finprint = finprint || {};  //namespace if necessary...
             $modalForm.find(selector).selectize(options);
 
         });
-        $modalForm.find('#auto-trip').selectize($.extend({}, options, {
-           onChange: function(value){
-               console.log('#auto-trip', value)
-               $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
-                   console.log('/assignment/filter_change', res["sets"])
-                   console.log('/assignment/filter_change', res["reefs"])
-               });
 
-           }
+        var $setSelect = $modalForm.find('#select-set-auto-assign').selectize($.extend({}, options, {
+            valueField: 'id',
+            labelField: 'code',
+            searchField: 'code',
+            optgroupField: 'group',
+
          }));
-        $modalForm.find('#select-reef-auto-assign').selectize($.extend({}, options, {
-           onChange: function(value){
+
+        var $reefSelect = $modalForm.find('#select-reef-auto-assign').selectize($.extend({}, options, {
+            valueField: 'id',
+            labelField: 'name',
+            searchField: 'name',
+            optgroupField: 'reef_group',
+            onChange: function(value){
                console.log('#select-reef-auto-assign', value)
                $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
                    console.log('reefs selected are: ', res["sets"])
                });
-
-
            }
          }));
 
+          $modalForm.find('#auto-trip').selectize($.extend({}, options, {
+               onChange: function(value){
+                    console.log('#auto-trip', value)
+                    var reefSelect = $reefSelect[0].selectize ;
+                    reefSelect.disable();
+                    reefSelect.clearOptions();
 
+                    var setSelect = $setSelect[0].selectize ;
+                    setSelect.disable();
+                    setSelect.clearOptions();
+                    $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
+                       console.log('/assignment/filter_change', res["sets"])
+                       console.log('/assignment/filter_change', res["reefs"])
+                       var reefs = res["reefs"];
+                       var sets = res["sets"];
+                       reefSelect.load(function(callback){
+                           reefSelect.enable();
+                               callback(reefs);
+                           });
+
+                       setSelect.load(function(callback){
+                           setSelect.enable();
+                               callback(sets);
+                           });
+                   });
+              }
+         }));
 
         $openLink.click(function (e) {
             e.preventDefault();

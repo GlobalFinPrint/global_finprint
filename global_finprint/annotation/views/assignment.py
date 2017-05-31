@@ -50,12 +50,18 @@ class VideoAutoAssignView(UserAllowedMixin, View):
         trip_id = request.POST.get('trip')
         aff_id = request.POST.get('affiliation')
         num = int(request.POST.get('num'))
+
         include_leads = bool(request.POST.get('include_leads', False))
         project = get_object_or_404(Project, id=request.POST.get('project'))
 
-        annotators = FinprintUser.objects.filter(affiliation_id=aff_id, user__is_active=True).all()
+        if aff_id !='' :
+           annotators = FinprintUser.objects.filter(affiliation_id=aff_id, user__is_active=True).all()
+        else :
+           annotators = FinprintUser.objects.filter(user__is_active=True).all()
+
         if not include_leads:
             annotators = list(a for a in annotators if not a.is_lead())
+            
         video_count = 0
         assigned_count = 0
         new_count = 0
@@ -367,21 +373,20 @@ class RestrictFilterDropDown(UserAllowedMixin, View) :
             trip_id = dict(request.POST)['trip'][0]
         if 'reef[]' in post_dic:
             reef_ids = dict(request.POST)['reef[]']
-           # reef_codes =""
+        #if trip change
         if 'trip' in post_dic and trip_id !='' and 'reef[]' not in post_dic:
             trip = Trip.objects.filter(id = trip_id).order_by('code').all().prefetch_related('set_set')
             sites = Site.objects.filter(location_id=trip[0].location_id).order_by('name').all().prefetch_related('reef_set')
-        elif 'reef[]' in post_dic and trip_id !='':
+        # if reef change
+        elif 'reef[]' in post_dic and trip_id =='':
             trip = Trip.objects.order_by('code').all().prefetch_related('set_set')
             sites = Site.objects.order_by('name').all().prefetch_related('reef_set')
+        # if both trip and reef changes
         else :
             trip = Trip.objects.order_by('code').all().prefetch_related('set_set')
             sites = Site.objects.order_by('name').all().prefetch_related('reef_set')
 
         #find the code of each reef and remove those sets
-
-
-        
         set_data = list(set(trip))[0].set_set
         print("set_group_name {}", str(set_data.instance))
         list_of_sets = []
@@ -399,7 +404,7 @@ class RestrictFilterDropDown(UserAllowedMixin, View) :
              list_of_reefs.append({"reef_group": str(s), "id": r.id, "name": r.name})
              print("reef_set_id: {} reef_set_name: {}",r.id, r.name)
 
-        if len(reef_ids)== 0 :
+        if 'reef[]' not in post_dic :
             return JsonResponse({'status': 'ok',"reefs":list_of_reefs, "sets":list_of_sets})
         else :
             return JsonResponse({'status': 'ok', "sets": list_of_sets})
