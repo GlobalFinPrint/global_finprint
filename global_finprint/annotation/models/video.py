@@ -14,7 +14,7 @@ class Video(AuditableModel):
 
     def length(self):
         try:
-            progress_list = self.assignment_set.exclude(status_id__in=[1, 2]).values_list('progress', flat=True)
+            progress_list = self.assignment_set.exclude(status_id=1).values_list('progress', flat=True)
             return max(p for p in progress_list if p > 0)
         except ValueError:
             try:
