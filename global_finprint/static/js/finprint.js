@@ -90,6 +90,7 @@ var finprint = finprint || {};  //namespace if necessary...
             $form.find(selector).selectize(options);
         });
 
+        //intially search will be default clicked when page is loaded GLOB-604
         if ($form.serializeArray().some(function (field) {
                     return field.name !== 'csrfmiddlewaretoken' && field.value;
                 }))
