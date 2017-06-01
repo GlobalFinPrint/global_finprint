@@ -76,6 +76,7 @@ var finprint = finprint || {};  //namespace if necessary...
     function initAssignmentSearch() {
         var $form = $('form#assignment-search-form');
         var $target = $('tbody#assignment-target');
+        restorePreviousFilter();
         var options = {allowEmptyOption: true, plugins: ['remove_button', 'restore_on_backspace']};
         var fields = [
             '#select-trip',
@@ -89,6 +90,7 @@ var finprint = finprint || {};  //namespace if necessary...
         fields.forEach(function (selector) {
             $form.find(selector).selectize(options);
         });
+
         //intially search will be default clicked when page is loaded GLOB-604
         if ($form.serializeArray().some(function (field) {
                     return field.name !== 'csrfmiddlewaretoken' && field.value;
@@ -96,6 +98,7 @@ var finprint = finprint || {};  //namespace if necessary...
         {
                 $('#limitSelectionId').hide();
                 $('#spinId').show();
+                storePreviousSearchFilter()
                 $.post('/assignment/search', $form.serialize(), function (res) {
                     $target.html(res);
                     $('#limitSelectionId').show();
@@ -104,6 +107,7 @@ var finprint = finprint || {};  //namespace if necessary...
                 });
         }
         $form.find('button#search').click(function () {
+            storePreviousSearchFilter()
             var $this = $(this);
             var oldText = $this.text();
 
@@ -1204,6 +1208,30 @@ var finprint = finprint || {};  //namespace if necessary...
               }
             });
        }
+
+      // Store previous value in browser local storage
+     function storePreviousSearchFilter() {
+         localStorage.setItem("select-trip", $('#select-trip').val());
+         localStorage.setItem("select-set", $('#select-set').val());
+         localStorage.setItem("select-reef", $('#select-reef').val());
+         localStorage.setItem("select-anno", $('#select-anno').val());
+         localStorage.setItem("select-status", $('#select-status').val());
+         localStorage.setItem("select-project", $('#select-project').val());
+         localStorage.setItem("select-status", $('#select-status').val());
+         localStorage.setItem("select-assigned", $('#select-assigned').val());
+         localStorage.setItem("assigned-ago", $('#assigned-ago').val());
+          }
+
+     function restorePreviousFilter() {
+          $('#select-trip').val(localStorage.getItem("select-trip"));
+          $('#select-set').val(localStorage.getItem("select-set"));
+          $('#select-reef').val(localStorage.getItem("select-reef"));
+          $('#select-anno').val(localStorage.getItem("select-anno"));
+          $('#select-status').val(localStorage.getItem("select-status"));
+          $('#select-project').val(localStorage.getItem("select-project"));
+          $('#select-assigned').val(localStorage.getItem("select-assigned"));
+          $('#assigned-ago').val(localStorage.getItem("assigned-ago"));
+         }
 
 })(jQuery);
 
