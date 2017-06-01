@@ -35,7 +35,7 @@ def observation_post(request):
 
 
 # TODO DRY this up
-class MasterObservationEditData(UserAllowedMixin, View):
+class MasterObservationEditEvent(UserAllowedMixin, View):
     """
     Endpoint to grab data for inline observation editing (master)
     """
@@ -57,7 +57,7 @@ class MasterObservationEditData(UserAllowedMixin, View):
 
 
 # TODO DRY this up
-class MasterObservationSaveData(UserAllowedMixin, View):
+class MasterObservationSaveEvent(UserAllowedMixin, View):
     """
     Endpoint to save inline observation editing (master)
     """
@@ -99,6 +99,23 @@ class MasterObservationSaveData(UserAllowedMixin, View):
             'obs_needs_review': observation.needs_review(),
             'evt_needs_review': event.needs_review(),
         })
+
+
+class MasterObservationDeleteEvent(UserAllowedMixin, View):
+    """
+    Endpoint to delete inline observation editing (master)
+    """
+    def post(self, request, evt_id, **kwargs):
+        event = get_object_or_404(MasterEvent, pk=evt_id)
+        observation = event.master_observation
+
+        if len(observation.event_set()) > 1:
+            event.delete(keep_parents=True)
+        else:
+            observation.delete()
+
+        # todo:  other response on fail?!
+        return JsonResponse({'status': 'ok'})
 
 
 class ObservationEditData(UserAllowedMixin, View):
@@ -194,7 +211,7 @@ class EditMeasurablesInline(UserAllowedMixin, View):
 class ManageMasterView(UserAllowedMixin, View):
     def post(self, request, master_id):
         """
-        Endpoint to handle state changes of master record 
+        Endpoint to handle state changes of master record
         :param request:
         :param assignment_id:
         :return:

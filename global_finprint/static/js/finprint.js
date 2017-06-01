@@ -25,6 +25,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initColoredRows();
         initDisableOnSubmit();
         initExpandEventThumbnail();
+        initInlineObsDelete();
         initInlineObsEdit();
         initVideoForm();
         initEditMeasurables();
@@ -912,6 +913,20 @@ var finprint = finprint || {};  //namespace if necessary...
                 .attr('style', $target.find('.extent').attr('style'))
                 .end()
                 .modal('show');
+        });
+    }
+
+    function initInlineObsDelete() {
+        $('#observation-table').on('click', 'a.obs-delete', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var $this = $(e.target);
+            var dataUrl = $this.data('event');
+
+            $.post(dataUrl, function (resp) {
+
+            });
         });
     }
 
