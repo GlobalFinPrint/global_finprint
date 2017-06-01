@@ -259,7 +259,7 @@
                                 {% if set_assignment_counts.Total > 0 %}
                                     <a
                                             class="disabled"   {# todo:  disabled until the rest of the assignment url code is done ...  #}
-                                            href="{% url 'assignment_manage' set.id %}">
+                                            href="{% url 'assignment_review' set.id %}">
                                     {% if "Complete" in set_assignment_counts %}
                                     {{ set_assignment_counts.Complete }}
                                     {% else %}

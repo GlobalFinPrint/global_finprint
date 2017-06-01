@@ -1,16 +1,14 @@
-<div class="modal-header">
+<div class="modal-body">
     <button type="button" class="close" data-dismiss="modal">&times;</button>
     <h4 class="modal-title">Assign annotators to:</h4>
-</div>
-<div class="modal-body">
     <div class="row">
-        <div class="col-md-12">
-            <label>Current annotators</label>
-            <table class="table table-bordered table-condensed" cellspacing="0" width="100%">
+            <div class="col-md-12">
+            <div id="table-scroll">
+            <table class="table table-bordered table-condensed " cellspacing="0" width="100%">
                 <thead>
                     <tr class="success">
-                        <th>Video</th>
-                        <th>#Assigned annotators</th>
+                        <th >Video({{total_count}})</th>
+                        <th ># Assigned annotators</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -24,9 +22,10 @@
                         <td colspan="3" class="text-center"><i>No Video selected for assigning</i></td>
                     </tr>
                 {% endfor %}
+
                 </tbody>
             </table>
-
+        </div>
             <form>
                 {% csrf_token %}
                 <div class="form-group">

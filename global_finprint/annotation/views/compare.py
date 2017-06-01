@@ -17,14 +17,18 @@ class AssignmentCompareView(UserAllowedMixin, View):
     def get(self, request, set_id):
         set = get_object_or_404(Set, pk=set_id)
         project = get_object_or_404(Project, pk=request.GET.get('project', 1))
+        # default to master status 'in progress':
         master_status = get_object_or_404(MasterRecordState, pk=1)
-        master, created = MasterRecord.objects.get_or_create(set=set, project=project, status=master_status)
+        master, created = MasterRecord.objects.get_or_create(
+            set=set, project=project, defaults={'status': master_status})
         context = Context({
+            'trip': set.trip,
             'set': set,
             'video_length': set.video.length(),
             'master': master,
             'project': project,
-            'assignment_set': set.video.assignment_set.filter(project=project)
+            # exclude assignments that are 'rejected' or 'disabled':
+            'assignment_set': set.video.assignment_set.exclude(status__in=[5, 6]).filter(project=project)
         })
         return render(request, self.template_name, context=context)
 
