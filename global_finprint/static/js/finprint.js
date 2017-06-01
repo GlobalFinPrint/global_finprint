@@ -285,7 +285,6 @@ var finprint = finprint || {};  //namespace if necessary...
            // '#select-set-auto-assign',
             '#auto-affiliation',
             '#project',
-            '#auto-num'
         ];
 
 
