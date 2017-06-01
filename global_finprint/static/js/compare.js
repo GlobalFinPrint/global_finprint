@@ -197,6 +197,7 @@ $(function () {
             this.url = '/assignment/detail/' + options.id;
             this.master = options.master;
             this.label = options.label;
+            this.status_id = options.status_id;
         },
         parse: function (json) {
             return json.observations;
@@ -233,7 +234,8 @@ $(function () {
                 id: this.$el.data('assignment-id'),
                 view: this,
                 master: options.masterView.collection,
-                label: this.$el.data('label')
+                label: this.$el.data('label'),
+                status_id: this.$el.data('status-id')
             });
             this.collection.fetch().then(function () {
                 self.render();
@@ -248,8 +250,9 @@ $(function () {
             });
         },
         timelineHighlight: function (e) {
-            // don't do anything if we are already highlighted
-            if (this.$el.find('.timeline-holder').hasClass('highlighted')) {
+            // don't do anything if we are already highlighted or not "reviewed"
+            if (this.$el.find('.timeline-holder').hasClass('highlighted')
+                    || this.collection.status_id != 4) {
                 return;
             }
 

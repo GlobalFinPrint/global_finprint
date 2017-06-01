@@ -19,7 +19,11 @@
             </div>
         </div>
 
-        <div class="row master" data-set-id="{{ set.id }}" data-project-id="{{ project.pk }}" data-length="{{ video_length }}" tabindex="0">
+        <div class="row master"
+             data-set-id="{{ set.id }}"
+             data-project-id="{{ project.pk }}"
+             data-length="{{ video_length }}"
+             tabindex="0">
             <p class="review-label compare-actions">
                 <span class="circle">M</span> Master
                 | <b> Status:</b> {{ master.status|lower }}
@@ -34,7 +38,13 @@
         </div>
 
         {% for a in assignment_set %}
-            <div class="row assignment" data-assignment-id="{{ a.pk }}" data-project-id="{{ project.pk }}" data-length="{{ video_length }}" data-label="{{ forloop.counter }}" tabindex="0">
+            <div class="row assignment"
+                 data-assignment-id="{{ a.pk }}"
+                 data-project-id="{{ project.pk }}"
+                 data-length="{{ video_length }}"
+                 data-label="{{ forloop.counter }}"
+                 data-status-id="{{ a.status.id }}"
+                 tabindex="0">
                 <p class="review-label">
                     <span class="circle">{{ forloop.counter }}</span> {{ a.annotator }}
                     | <b> Status:</b> {{ a.status|lower }}
