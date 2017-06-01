@@ -1,18 +1,21 @@
 from datetime import date, timedelta
 from builtins import set as Set_util
 import numpy as np
+import json
 import re as re
+from builtins import set as set_utils
 from django.views.generic import View, ListView
+
 from django.shortcuts import get_object_or_404, render_to_response, get_list_or_404
 from django.db.models import Count
-from django.http.response import JsonResponse
+from django.http.response import JsonResponse, HttpResponse
 from django.template import RequestContext
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from ...core.mixins import UserAllowedMixin
 from ...trip.models import Trip
 from ...bruv.models import Set
-from ...habitat.models import Location, Site
+from ...habitat.models import Location, Site, Reef,ReefHabitat
 from ...core.models import Affiliation, FinprintUser
 from ..models.video import Assignment, Video, AnnotationState
 from ..models.project import Project
@@ -48,19 +51,39 @@ class VideoAutoAssignView(UserAllowedMixin, View):
         :param request:
         :return:
         """
+        post_dic = dict(request.POST)
+
         trip_id = request.POST.get('trip')
         aff_id = request.POST.get('affiliation')
         num = int(request.POST.get('num'))
         include_leads = bool(request.POST.get('include_leads', False))
         project = get_object_or_404(Project, id=request.POST.get('project'))
 
-        annotators = FinprintUser.objects.filter(affiliation_id=aff_id, user__is_active=True).all()
+        if aff_id !='' :
+           annotators = FinprintUser.objects.filter(affiliation_id=aff_id, user__is_active=True).all()
+        else :
+           annotators = FinprintUser.objects.filter(user__is_active=True).all()
+
         if not include_leads:
             annotators = list(a for a in annotators if not a.is_lead())
+
         video_count = 0
         assigned_count = 0
         new_count = 0
-        for video in Video.objects.filter(set__trip_id=trip_id).exclude(files__isnull=True).all():
+
+        if 'auto-set[]' in post_dic :
+            set_ids = post_dic['auto-set[]']
+            if len(set_ids) > 0 :
+                videos =  Video.objects.filter(set__trip_id=trip_id).filter(set__code__in =set_ids).exclude(files__isnull=True).all()
+        else :
+            videos = Video.objects.filter(set__trip_id=trip_id).exclude(files__isnull=True).all()
+
+        if 'auto-reef[]' in post_dic:
+            reef_ids = post_dic['auto-reef[]']
+            if len(reef_ids) > 0 :
+              videos = videos.filter(set__reef_habitat__reef_id__in=reef_ids)
+
+        for video in videos:
             video_count += 1
             new_count += self.assign_video(annotators, video, num, project)
             assigned_count += len(video.annotators_assigned(project))
@@ -367,4 +390,54 @@ class AssignMultipleVideoToAnnotators(UserAllowedMixin, View):
 
         return JsonResponse({'status': 'ok'})
 
+class RestrictFilterDropDown(UserAllowedMixin, View) :
+    """
+    Endpoints used by the auto assignment modal found at /assignment/ for restricting
+    drop down of Reefs and Sets based on Trip selected
+    """
+    def post(self, request):
+        post_dic = dict(request.POST)
+        list_of_sets = []
+        list_of_reefs = []
 
+        if 'trip' in post_dic :
+            trip_id = dict(request.POST)['trip'][0]
+        if 'auto-reef[]' in post_dic:
+            reef_ids = dict(request.POST)['auto-reef[]']
+
+        #if trip change
+        if 'trip' in post_dic and trip_id !='' and 'auto-reef[]' not in post_dic:
+            trip = Trip.objects.filter(id = trip_id).order_by('code').all().prefetch_related('set_set')
+            sites = Site.objects.filter(location_id=trip[0].location_id).order_by('name').all().prefetch_related('reef_set')
+            # find the code of each reef and remove those sets
+            set_data = list(set(trip))[0].set_set
+            for s in set_data.all():
+                list_of_sets.append({"id": s.id, "code": s.code, "group": str(set_data.instance)})
+
+            for s in sites:
+                for r in s.reef_set.all():
+                    list_of_reefs.append({"reef_group": str(s), "id": r.id, "name": r.name})
+        # if reef changes
+        elif 'auto-reef[]' in post_dic:
+            if 'trip' in post_dic and trip_id !='' :
+                sets = Set.objects.filter(trip_id=trip_id).filter(reef_habitat__reef_id__in=reef_ids)
+            else :
+                sets = Set.objects.filter(reef_habitat__reef_id__in=reef_ids)
+
+            for each_set in list(set_utils(sets)) :
+                list_of_sets.append({"id": each_set.id, "code": each_set.code, "group": str(each_set.trip)})
+        else :
+            trip = Trip.objects.order_by('code').all().prefetch_related('set_set')
+            sites = Site.objects.order_by('name').all().prefetch_related('reef_set')
+            set_data = list(set(trip))[0].set_set
+            for s in set_data.all():
+                list_of_sets.append({"id": s.id, "code": s.code, "group": str(set_data.instance)})
+
+            for s in sites:
+                for r in s.reef_set.all():
+                    list_of_reefs.append({"reef_group": str(s), "id": r.id, "name": r.name})
+
+        if 'auto-reef[]' not in post_dic :
+            return JsonResponse({'status': 'ok',"reefs":list_of_reefs, "sets":list_of_sets})
+        else :
+            return JsonResponse({'status': 'ok', "sets": list_of_sets})

@@ -30,7 +30,7 @@
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="new-annotators-list">New annotator(s) <i>(active assignment count in parenthesis)</i></label>
-                    <select id="new-annotators-list" name="anno[]" multiple="multiple" placeholder="Select one or more annotators" class="">
+                    <select id="new-annotators-list" name="anno[]" multiple="multiple" placeholder="Select one or more annotators">
                         {% for af in affiliations %}
                         <optgroup label="{{ af }}">
                             {% for a in af.annotators %}
