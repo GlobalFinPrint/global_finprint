@@ -404,7 +404,7 @@ class RestrictFilterDropDown(UserAllowedMixin, View) :
                 for r in s.reef_set.all():
                     list_of_reefs.append({"reef_group": str(s), "id": r.id, "name": r.name})
         # if reef changes
-        else :
+        elif 'auto-reef[]' in post_dic:
             if 'trip' in post_dic and trip_id !='' :
                 sets = Set.objects.filter(trip_id=trip_id).filter(reef_habitat__reef_id__in=reef_ids)
             else :
@@ -412,6 +412,16 @@ class RestrictFilterDropDown(UserAllowedMixin, View) :
 
             for each_set in list(set_utils(sets)) :
                 list_of_sets.append({"id": each_set.id, "code": each_set.code, "group": str(each_set.trip)})
+        else :
+            trip = Trip.objects.order_by('code').all().prefetch_related('set_set')
+            sites = Site.objects.order_by('name').all().prefetch_related('reef_set')
+            set_data = list(set(trip))[0].set_set
+            for s in set_data.all():
+                list_of_sets.append({"id": s.id, "code": s.code, "group": str(set_data.instance)})
+
+            for s in sites:
+                for r in s.reef_set.all():
+                    list_of_reefs.append({"reef_group": str(s), "id": r.id, "name": r.name})
 
         if 'auto-reef[]' not in post_dic :
             return JsonResponse({'status': 'ok',"reefs":list_of_reefs, "sets":list_of_sets})
