@@ -307,9 +307,17 @@ var finprint = finprint || {};  //namespace if necessary...
             searchField: 'name',
             optgroupField: 'reef_group',
             onChange: function(value){
+               var setSelect = $setSelect[0].selectize ;
+               setSelect.disable();
+               setSelect.clearOptions();
                console.log('#select-reef-auto-assign', value)
                $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
                    console.log('reefs selected are: ', res["sets"])
+                   var sets = res["sets"];
+                   setSelect.load(function(callback){
+                           setSelect.enable();
+                           callback(sets);
+                           });
                });
            }
          }));

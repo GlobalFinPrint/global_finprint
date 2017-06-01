@@ -2,6 +2,7 @@ from datetime import date, timedelta
 import numpy as np
 import json
 import re as re
+from builtins import set as set_utils
 from django.views.generic import View
 from django.shortcuts import get_object_or_404, render_to_response, get_list_or_404
 from django.db.models import Count
@@ -11,7 +12,7 @@ from django.template import RequestContext
 from ...core.mixins import UserAllowedMixin
 from ...trip.models import Trip
 from ...bruv.models import Set
-from ...habitat.models import Location, Site
+from ...habitat.models import Location, Site, Reef,ReefHabitat
 from ...core.models import Affiliation, FinprintUser
 from ..models.video import Assignment, Video, AnnotationState
 from ..models.project import Project
@@ -77,7 +78,7 @@ class VideoAutoAssignView(UserAllowedMixin, View):
         if 'auto-reef[]' in post_dic:
             reef_ids = post_dic['auto-reef[]']
             if len(reef_ids) > 0 :
-              videos = videos.filter(set__reef_habitat_id__in=reef_ids)
+              videos = videos.filter(set__reef_habitat__reef_id__in=reef_ids)
 
         for video in videos:
             video_count += 1
@@ -381,45 +382,38 @@ class RestrictFilterDropDown(UserAllowedMixin, View) :
     drop down of Reefs and Sets based on Trip selected
     """
     def post(self, request):
-
         post_dic = dict(request.POST)
+        list_of_sets = []
+        list_of_reefs = []
+
         if 'trip' in post_dic :
             trip_id = dict(request.POST)['trip'][0]
-        if 'reef[]' in post_dic:
-            reef_ids = dict(request.POST)['reef[]']
+        if 'auto-reef[]' in post_dic:
+            reef_ids = dict(request.POST)['auto-reef[]']
 
         #if trip change
-        if 'trip' in post_dic and trip_id !='' and 'reef[]' not in post_dic:
+        if 'trip' in post_dic and trip_id !='' and 'auto-reef[]' not in post_dic:
             trip = Trip.objects.filter(id = trip_id).order_by('code').all().prefetch_related('set_set')
             sites = Site.objects.filter(location_id=trip[0].location_id).order_by('name').all().prefetch_related('reef_set')
-        # if reef change
-        elif 'reef[]' in post_dic and trip_id =='':
-            trip = Trip.objects.order_by('code').all().prefetch_related('set_set')
-            sites = Site.objects.order_by('name').all().prefetch_related('reef_set')
-        # if both trip and reef changes
+            # find the code of each reef and remove those sets
+            set_data = list(set(trip))[0].set_set
+            for s in set_data.all():
+                list_of_sets.append({"id": s.id, "code": s.code, "group": str(set_data.instance)})
+
+            for s in sites:
+                for r in s.reef_set.all():
+                    list_of_reefs.append({"reef_group": str(s), "id": r.id, "name": r.name})
+        # if reef changes
         else :
-            trip = Trip.objects.order_by('code').all().prefetch_related('set_set')
-            sites = Site.objects.order_by('name').all().prefetch_related('reef_set')
+            if 'trip' in post_dic and trip_id !='' :
+                sets = Set.objects.filter(trip_id=trip_id).filter(reef_habitat__reef_id__in=reef_ids)
+            else :
+                sets = Set.objects.filter(reef_habitat__reef_id__in=reef_ids)
 
-        #find the code of each reef and remove those sets
-        set_data = list(set(trip))[0].set_set
-        print("set_group_name {}", str(set_data.instance))
-        list_of_sets = []
-        for s in set_data.all():
-            list_of_sets.append({"id": s.id, "code": s.code, "group": str(set_data.instance)})
-            print("set_id: {} set_name: {}", s.id, s.code)
+            for each_set in list(set_utils(sets)) :
+                list_of_sets.append({"id": each_set.id, "code": each_set.code, "group": str(each_set.trip)})
 
-
-
-        print("reef_data_group_name {}", str(set_data.instance.location))
-        list_of_reefs=[]
-        for s in sites:
-           print("reef_set_group_name {}", str(s))
-           for r in s.reef_set.all() :
-             list_of_reefs.append({"reef_group": str(s), "id": r.id, "name": r.name})
-             print("reef_set_id: {} reef_set_name: {}",r.id, r.name)
-
-        if 'reef[]' not in post_dic :
+        if 'auto-reef[]' not in post_dic :
             return JsonResponse({'status': 'ok',"reefs":list_of_reefs, "sets":list_of_sets})
         else :
             return JsonResponse({'status': 'ok', "sets": list_of_sets})
