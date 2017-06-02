@@ -108,13 +108,13 @@ class MasterObservationDeleteEvent(UserAllowedMixin, View):
     def post(self, request, evt_id, **kwargs):
         event = get_object_or_404(MasterEvent, pk=evt_id)
         observation = event.master_observation
-
-        if len(observation.event_set()) > 1:
-            event.delete(keep_parents=True)
-        else:
-            observation.delete()
-
-        # todo:  other response on fail?!
+        try:
+            if len(observation.event_set()) > 1:
+                event.delete(keep_parents=True)
+            else:
+                observation.delete()
+        except:
+            return JsonResponse({'status': 'fail',})
         return JsonResponse({'status': 'ok'})
 
 
