@@ -28,3 +28,11 @@ DROP VIEW IF EXISTS public.v_report_observations_wa;
 DROP VIEW IF EXISTS public.v_report_observations_io;
 DROP VIEW IF EXISTS public.v_report_observations_pac;
 DROP VIEW IF EXISTS public.v_report_observations_coral;
+
+DROP VIEW IF EXISTS public.v_report_observations_wa_summary;
+DROP VIEW IF EXISTS public.v_report_observations_io_summary;
+DROP VIEW IF EXISTS public.v_report_observations_pac_summary;
+DROP VIEW IF EXISTS public.v_report_observations_coral_summary;
+
+DROP VIEW IF EXISTS public.v_report_observations_master;
+
