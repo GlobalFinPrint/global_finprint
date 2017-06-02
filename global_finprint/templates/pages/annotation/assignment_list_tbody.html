@@ -43,7 +43,12 @@
 </tr>
 {% endfor %}
 {% if unassigned|length == 0 and assignments|length == 0 %}
-<tr>
-    <td colspan="12"><h4 class="text-center">No videos found with given parameters</h4></td>
+<tr id ="no_video_id">
+    <td colspan="13"><h4 class="text-center">No videos found with given parameters</h4></td>
+</tr>
+<tr id="spinId2">
+  <td colspan="13" class="text-center">
+      Loading...
+  </td>
 </tr>
 {% endif %}

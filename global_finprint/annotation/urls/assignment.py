@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from global_finprint.annotation.views.assignment import VideoAutoAssignView, ManageAssignmentView, ObservationListView, \
     AssignmentListView, AssignmentListTbodyView, AssignmentModalBodyView, UnassignModalBodyView, AssignMultipleVideosModel,\
-    AssignMultipleVideoToAnnotators, RestrictFilterDropDown
+    AssignMultipleVideoToAnnotators, RestrictFilterDropDown, AssignedAnnotatorPopup
 from global_finprint.annotation.views.compare import AssignmentCompareView, AssignmentDetailView
 
 
@@ -30,5 +30,9 @@ urlpatterns = [
         name='multi_video_assignment'),
 
     url(r"^filter_change$",csrf_exempt(RestrictFilterDropDown.as_view()),
-        name='restrict_reefs_sets_based_on_trip')
+        name='restrict_reefs_sets_based_on_trip'),
+
+    url(r"^assigned_annotator/(?P<set_id>\d+)$",csrf_exempt(AssignedAnnotatorPopup.as_view()),
+            name='assigned anotator details per video')
+
 ]

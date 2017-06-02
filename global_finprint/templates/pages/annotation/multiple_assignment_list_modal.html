@@ -15,7 +15,7 @@
                 {% for a in current_set%}
                     <tr>
                         <td>{{ a.name }}</td>
-                        <td>{{ a.count }}</td>
+                        <td><a class="open-assign-modal-popup" data-id="{{ a.set_id }}" href="#">{{ a.count }}</a></td>
                     </tr>
                 {% empty %}
                     <tr>

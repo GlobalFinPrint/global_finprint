@@ -98,12 +98,17 @@ var finprint = finprint || {};  //namespace if necessary...
                 }))
         {
                 $('#limitSelectionId').hide();
+                $('#no_video_id').hide();
                 $('#spinId').show();
+                $('#spinId2').show();
                 storePreviousSearchFilter()
                 $.post('/assignment/search', $form.serialize(), function (res) {
                     $target.html(res);
                     $('#limitSelectionId').show();
+                    $('#no_video_id').show();
                     $('#spinId').hide();
+                    $('#spinId2').hide();
+                    $('#selectAllAssignmentsId').prop('checked', false)
                     controlCheckBoxFunctionality();
                 });
         }
@@ -113,8 +118,9 @@ var finprint = finprint || {};  //namespace if necessary...
             var oldText = $this.text();
 
             $('#limitSelectionId').hide();
+            $('#no_video_id').hide();
             $('#spinId').show();
-
+            $('#spinId2').show();
             if ($form.serializeArray().some(function (field) {
                     return field.name !== 'csrfmiddlewaretoken' && field.value;
                 })) {
@@ -122,9 +128,13 @@ var finprint = finprint || {};  //namespace if necessary...
                 $this.text('Searching...');
                 $.post('/assignment/search', $form.serialize(), function (res) {
                     $target.html(res);
+                    $('#spinId2').hide();
+                    $('#no_video_id').show();
                     $this.removeAttr('disabled');
                     $this.text(oldText);
                     controlCheckBoxFunctionality();
+                    $('#selectAllAssignmentsId').prop('checked', false)
+
                 });
             } else {
                 alert('You must choose at least 1 search filter');
@@ -1205,6 +1215,7 @@ var finprint = finprint || {};  //namespace if necessary...
         var $form = $('form#assignment-search-form');
         var $selectAllCheckBox = $('#selectAllAssignmentsId');
         var $modal = $('div#multi-assign-modal')
+        var $sec_modal = $('#assign-annotator-modal')
         var options = {allowEmptyOption: true, plugins: ['remove_button', 'restore_on_backspace']};
 
 
@@ -1247,6 +1258,7 @@ var finprint = finprint || {};  //namespace if necessary...
                      $this.text('Assign Videos');
                      $this.text(oldText);
                      $modal.modal('show');
+                     $('#selectAllAssignmentsId').prop('checked', false)
                  },
                  error : function(res) {
                    alert('You must choose at least 1 video file');
@@ -1269,6 +1281,19 @@ var finprint = finprint || {};  //namespace if necessary...
                 $modal.modal('hide');
                 $('form#assignment-search-form button#search').click();
             });
+        });
+
+         function loadModal(id, params) {
+            params = params || {};
+            $.get('/assignment/assigned_annotator/' + id, params, function (html) {
+                $sec_modal.find('div.modal-content').html(html);
+            });
+        }
+
+        $modal.on('click', 'a.open-assign-modal-popup', function (e) {
+            e.preventDefault();
+            loadModal($(this).data('id'), {project_id: 1});
+            $sec_modal.modal('show');
         });
 
     }
@@ -1314,11 +1339,31 @@ var finprint = finprint || {};  //namespace if necessary...
           }
 
      function restorePreviousFilter() {
-          $('#select-trip').val(localStorage.getItem("select-trip"));
-          $('#select-set').val(localStorage.getItem("select-set"));
-          $('#select-reef').val(localStorage.getItem("select-reef"));
-          $('#select-anno').val(localStorage.getItem("select-anno"));
-          $('#select-status').val(localStorage.getItem("select-status"));
+          var values = localStorage.getItem("select-trip");
+          $.each(values.split(","), function(i,e){
+                $("#select-trip option[value='" + e + "']").prop("selected", true);
+             });
+
+          values = localStorage.getItem("select-set");
+          $.each(values.split(","), function(i,e){
+                $("#select-set option[value='" + e + "']").prop("selected", true);
+             });
+
+          values = localStorage.getItem("select-reef");
+          $.each(values.split(","), function(i,e){
+                $("#select-reef option[value='" + e + "']").prop("selected", true);
+             });
+
+          values = localStorage.getItem("select-anno");
+          $.each(values.split(","), function(i,e){
+                $("#select-anno option[value='" + e + "']").prop("selected", true);
+             });
+
+          values = localStorage.getItem("select-status");
+          $.each(values.split(","), function(i,e){
+                $("#select-status option[value='" + e + "']").prop("selected", true);
+             });
+
           $('#select-project').val(localStorage.getItem("select-project"));
           $('#select-assigned').val(localStorage.getItem("select-assigned"));
           $('#assigned-ago').val(localStorage.getItem("assigned-ago"));
