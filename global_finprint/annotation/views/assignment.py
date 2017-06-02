@@ -321,11 +321,11 @@ class AssignMultipleVideosModel(UserAllowedMixin, View):
             if assignment.video_id not in multiple_assignment_data_dic  :
                 total_count = total_count + 1
                 assigned_video_list.append(assignment.video_id)
-                multiple_assignment_data_dic[assignment.video_id] = {"name": str(assignment.video), "count": 1, "video_id":assignment.video_id}
+                multiple_assignment_data_dic[assignment.video_id] = {"name": str(assignment.video), "count": 1, "video_id":assignment.video_id, "set_id":assignment.video.set.id}
 
             else :
                 new_count = multiple_assignment_data_dic.get(assignment.video_id)["count"] +1
-                multiple_assignment_data_dic[assignment.video_id] = {"name": str(assignment.video), "count": new_count, "video_id":assignment.video_id}
+                multiple_assignment_data_dic[assignment.video_id] = {"name": str(assignment.video), "count": new_count, "video_id":assignment.video_id, "set_id":assignment.video.set.id}
 
 
         unassigned_list = self.filter_unassigned_list(video_list,assigned_video_list)
@@ -339,11 +339,11 @@ class AssignMultipleVideosModel(UserAllowedMixin, View):
         for unassigned in unassigned_set:
             total_count = total_count + 1
             multiple_assignment_data_dic[unassigned.video_id] = {"name": str(unassigned.video), "count": 0,
-                                                                 "video_id": unassigned.video_id}
+                                                                 "video_id": unassigned.video_id, "set_id":unassigned.video.set.id}
         set_ids_str = ','.join(str(x) for x in set_ids)
         for video_id in video_list :
             _dic = multiple_assignment_data_dic[int(video_id)]
-            multiple_assignment_data_set.append(MultiVideoAssignmentData(_dic["name"],_dic["count"],_dic["video_id"]))
+            multiple_assignment_data_set.append(MultiVideoAssignmentData(_dic["name"],_dic["count"],_dic["video_id"], _dic["set_id"]))
 
         set = get_object_or_404(Set, id=set_ids[0])
         project = get_object_or_404(Project, id=1)
@@ -441,3 +441,19 @@ class RestrictFilterDropDown(UserAllowedMixin, View) :
             return JsonResponse({'status': 'ok',"reefs":list_of_reefs, "sets":list_of_sets})
         else :
             return JsonResponse({'status': 'ok', "sets": list_of_sets})
+
+class AssignedAnnotatorPopup(UserAllowedMixin, View):
+    """
+    Endpoints used by the multiple assignment modal found at /assignment/
+    """
+    template_name = 'pages/annotation/assignment_annotator_popup.html'
+
+    def get(self, request, set_id):
+        set = get_object_or_404(Set, id=set_id)
+        project = get_object_or_404(Project, id=request.GET.get('project_id', 1))
+        current_assignments = set.video.assignment_set.filter(project=project).all()
+        context = RequestContext(request, {
+            'set': set,
+            'current': current_assignments,
+        })
+        return render_to_response(self.template_name, context=context)
