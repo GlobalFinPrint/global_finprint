@@ -3,7 +3,11 @@
 {% block content %}
     <div class="col-md-12">
         {% include 'partials/breadcrumb.html' with trip=trip set=set current_page_name='All observations' %}
-
+        <div class="row manage-master-state-buttons" data-id="{{ master.id }}">
+            <div class="pull-left">
+                <a class="btn btn-default" href="{% url 'assignment_compare' set.id %}?project=1">Compare assignments</a>
+            </div>
+        </div>
         <div class="row color-rows" data-diff-cell="0">
             {% include 'partials/paginator_controls.html' with page=observations thing_name='observations' %}
             {% include 'partials/observation_table.html' with observations=observations for=for %}
