@@ -14,7 +14,7 @@ var Templates = {
                         '<div class="event-thumbnail empty"></div>' +
                     '<% } %>' +
 
-                    '<% if (assignment.status == 4) { %>' +
+                    '<% if (status_id == 4 || !status_id) { %>' +
                     '<div class="selector<%= selected ? " selected" : "" %>">' +
                         '<span class="checkmark glyphicon glyphicon-ok"></span>' +
                         '<div class="empty-selection">&nbsp;</div>' +
