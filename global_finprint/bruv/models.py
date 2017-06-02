@@ -290,7 +290,7 @@ class Set(AuditableModel):
         status_list = {'Total': 0}
         if self.video:
             status_list.update(Counter(Assignment.objects.filter(
-                video=self.video, project=project).values_list('status__name', flat=True)))
+                video=self.video, project=project).values_list('status__id', flat=True)))
             status_list['Total'] = sum(status_list.values())
         return status_list
 

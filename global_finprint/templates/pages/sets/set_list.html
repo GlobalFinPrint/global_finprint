@@ -229,7 +229,7 @@
                     <th id="equipment">Equipment</th>
                     <th id="bait">Bait</th>
                     <th class="video" colspan=2>Video</th>
-                    <th id="assignments">Completed assignments</th>
+                    <th id="assignments">Reviewed assignments</th>
                     <th id="master">Master record</th>
                     <th id="flow_substrate">All req. fields</th>
                     <th id="observations">Obs</th>
@@ -260,8 +260,8 @@
                                     <a
                                             class="disabled"   {# todo:  disabled until the rest of the assignment url code is done ...  #}
                                             href="{% url 'assignment_review' set.id %}">
-                                    {% if "Complete" in set_assignment_counts %}
-                                    {{ set_assignment_counts.Complete }}
+                                    {% if 4 in set_assignment_counts %}
+                                    {{ set_assignment_counts.4 }}
                                     {% else %}
                                     0
                                     {% endif %}
