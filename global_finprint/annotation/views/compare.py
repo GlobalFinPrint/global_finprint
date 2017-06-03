@@ -79,32 +79,34 @@ class GetMasterView(UserAllowedMixin, View):
         return response
 
 
-class MasterSetCompleted(UserAllowedMixin, View):
-    """
-    Endpoint to mark a master record as 'completed'
-    """
-    def get(self, request, master_id):
-        master = get_object_or_404(MasterRecord, pk=master_id)
-        master.completed = (request.GET.get('checked', 'false') == 'true')
-        master.save()
-        return JsonResponse({'success': 'ok'})
-
-
-class MasterSetDeprecated(UserAllowedMixin, View):
-    """
-    Endpoint to mark a master record as 'deprecated'
-    """
-    def get(self, request, master_id):
-        master = get_object_or_404(MasterRecord, pk=master_id)
-        master.deprecated = (request.GET.get('checked', 'false') == 'true')
-        master.save()
-        return JsonResponse({'success': 'ok'})
-
-
-class MasterManageView(UserAllowedMixin, View):
-    """
-    Endpoint to update master record status
-    """
-    def post(self, request, master_id):
-        master = get_object_or_404(MasterRecord, pk=master_id)
-        return JsonResponse({'status': 'ok'})
+# deprecated
+#
+# class MasterSetCompleted(UserAllowedMixin, View):
+#     """
+#     Endpoint to mark a master record as 'completed'
+#     """
+#     def get(self, request, master_id):
+#         master = get_object_or_404(MasterRecord, pk=master_id)
+#         master.completed = (request.GET.get('checked', 'false') == 'true')
+#         master.save()
+#         return JsonResponse({'success': 'ok'})
+#
+#
+# class MasterSetDeprecated(UserAllowedMixin, View):
+#     """
+#     Endpoint to mark a master record as 'deprecated'
+#     """
+#     def get(self, request, master_id):
+#         master = get_object_or_404(MasterRecord, pk=master_id)
+#         master.deprecated = (request.GET.get('checked', 'false') == 'true')
+#         master.save()
+#         return JsonResponse({'success': 'ok'})
+#
+#
+# class MasterManageView(UserAllowedMixin, View):
+#     """
+#     Endpoint to update master record status
+#     """
+#     def post(self, request, master_id):
+#         master = get_object_or_404(MasterRecord, pk=master_id)
+#         return JsonResponse({'status': 'ok'})

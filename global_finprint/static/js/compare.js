@@ -379,6 +379,7 @@ $(function () {
                         .delay(1000)
                         .fadeOut();
                 }
+
             }).error(function () {
                 $this.removeAttr('disabled');
                 $feedback
@@ -391,9 +392,37 @@ $(function () {
             });
         },
         reviewMaster: function () {
-            this.saveMaster();
-            var review_url = $('button#review-master').attr('data-href-target');
-            window.location.href = review_url;
+            var $this = $(this);
+            var $feedback = $('span#save-feedback');
+            var data = {
+                observation_ids: this.collection.pluck('id'),
+                project: this.collection.project
+            };
+
+            $this.attr('disabled', 'disabled');
+
+            $.post(this.collection.url, data, function (res) {
+                $this.removeAttr('disabled');
+                if (res.success === 'ok') {
+                    $feedback
+                        .removeClass('failure')
+                        .addClass('success')
+                        .text('Changes saved!')
+                        .show()
+                        .delay(1000)
+                        .fadeOut();
+                }
+                window.location.href = $('button#review-master').attr('data-href-target');
+            }).error(function () {
+                $this.removeAttr('disabled');
+                $feedback
+                    .removeClass('success')
+                    .addClass('failure')
+                    .text('Encountered an error saving changes; please try again later.')
+                    .show()
+                    .delay(1000)
+                    .fadeOut();
+            });
         },
         load: function (loadingPromises) {
             var self = this;
