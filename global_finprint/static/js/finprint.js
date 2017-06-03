@@ -932,11 +932,18 @@ var finprint = finprint || {};  //namespace if necessary...
             e.stopPropagation();
 
             var $this = $(e.target);
+            var $thisRow = $this.closest('tr');
+            var $parentRow = $thisRow.hasClass('first-event')
+                ? $thisRow
+                : $this.closest('tbody').find('tr[data-target=".' + $thisRow.data('is-child') + '"]');
             var dataUrl = $this.data('event');
 
             $.post(dataUrl, function (resp) {
-
+                $parentRow.find('.td[rowspan]')
+                    .attr('rowspan', function(i, rs) { return rs - 1; });
+                $thisRow.remove();
             });
+
         });
     }
 
@@ -985,8 +992,8 @@ var finprint = finprint || {};  //namespace if necessary...
 
                 // actions
                 oldActions = $actionsCell.html();
-                actionsHTML = '<a href="#" class="edit-save" data-save="' + saveUrl + '">Save</a>' +
-                    '<br /><a href="#" class="edit-cancel">Cancel</a>';
+                actionsHTML = '<a href="#" class="edit-save" data-save="' + saveUrl + '">Save</a>';
+                actionsHTML += '<br /><a href="#" class="edit-cancel">Cancel</a>';
                 $actionsCell.html(actionsHTML);
 
                 // wire links in actions

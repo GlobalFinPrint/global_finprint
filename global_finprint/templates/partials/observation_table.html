@@ -68,12 +68,12 @@
                 <td>
                     {% if master %}
                         {% with set=e.master_observation.set %}
-                            <a href="#" class="obs-edit" data-event="{% url 'master_edit_obs' set.pk e.pk %}">Edit</a>
+                            <a href="#" class="obs-edit" data-obs-type="master" data-event="{% url 'master_edit_obs' set.pk e.pk %}">Edit</a>
                             <a href="#" class="obs-delete" data-event="{% url 'master_delete_obs' set.pk e.pk %}">Delete</a>
                         {% endwith %}
                     {% else %}
                         {% with set=e.observation.set %}
-                        <a href="#" class="obs-edit" data-event="{% url 'observation_edit_data' set.trip.pk set.pk e.pk %}">Edit</a>
+                        <a href="#" class="obs-edit" data-obs-type="regular" data-event="{% url 'observation_edit_data' set.trip.pk set.pk e.pk %}">Edit</a>
                         {% endwith %}
                     {% endif %}
                 </td>

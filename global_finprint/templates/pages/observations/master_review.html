@@ -5,7 +5,7 @@
 {% block content %}
     <div class="col-md-12 manage-content">
 
-        {% include 'partials/breadcrumb.html' with trip=trip set=set current_page_name='Master record observations' include_all=True%}
+        {% include 'partials/breadcrumb.html' with trip=trip set=set current_page_name='Master record observations' %}
 
         <div class="row manage-master-state-buttons" data-id="{{ master.id }}">
             <form>
@@ -29,6 +29,10 @@
                     {% csrf_token %}
                 </div>
             </form>
+            <div class="pull-left">
+                <a class="btn btn-default" href="{% url 'assignment_compare' set.id %}?project=1">Compare assignments</a>
+                <a class="btn btn-default" href="{% url 'set_observation_list' trip.id set.id %}">All observations</a>
+            </div>
         </div>
 
         <div class="row">

@@ -58,7 +58,7 @@ $(function () {
                 popoverPosition: popoverPosition,
                 leftRightAligned: timePercent > 50 ? 'right' : 'left',
                 label: this.getLabel(),
-                assignment: this.model.getAssignment()
+                status_id: this.model.getAssignmentStatus()
             }, this.model.attributes);
             this.setElement(this.template(templateData));
             this.model.getAssignment().find('.timeline').append(this.el);
@@ -163,6 +163,9 @@ $(function () {
         getMaster: function () {
             return this.collection.master;
         },
+        getAssignmentStatus: function () {
+            return this.collection.status_id;
+        },
         nextModel: function () {
             return this.collection.nextModel(this);
         },
@@ -252,7 +255,7 @@ $(function () {
         timelineHighlight: function (e) {
             // don't do anything if we are already highlighted or not "reviewed"
             if (this.$el.find('.timeline-holder').hasClass('highlighted')
-                    || this.collection.status_id != 4) {
+                    || this.collection.status_id !== 4) {
                 return;
             }
 
