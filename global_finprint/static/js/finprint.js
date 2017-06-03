@@ -1333,29 +1333,36 @@ var finprint = finprint || {};  //namespace if necessary...
 
      function restorePreviousFilter() {
           var values = localStorage.getItem("select-trip");
-          $.each(values.split(","), function(i,e){
-                $("#select-trip option[value='" + e + "']").prop("selected", true);
-             });
+          if (values!= null) {
+              $.each(values.split(","), function(i,e){
+                    $("#select-trip option[value='" + e + "']").prop("selected", true);
+                 }); }
 
           values = localStorage.getItem("select-set");
-          $.each(values.split(","), function(i,e){
-                $("#select-set option[value='" + e + "']").prop("selected", true);
-             });
+          if (values != null) {
+              $.each(values.split(","), function(i,e){
+                    $("#select-set option[value='" + e + "']").prop("selected", true);
+                 });}
 
           values = localStorage.getItem("select-reef");
-          $.each(values.split(","), function(i,e){
-                $("#select-reef option[value='" + e + "']").prop("selected", true);
-             });
+
+          if (values!=null) {
+              $.each(values.split(","), function(i,e){
+                    $("#select-reef option[value='" + e + "']").prop("selected", true);
+                 });}
 
           values = localStorage.getItem("select-anno");
-          $.each(values.split(","), function(i,e){
-                $("#select-anno option[value='" + e + "']").prop("selected", true);
-             });
+
+          if (values!= null) {
+              $.each(values.split(","), function(i,e){
+                    $("#select-anno option[value='" + e + "']").prop("selected", true);
+                 });}
 
           values = localStorage.getItem("select-status");
-          $.each(values.split(","), function(i,e){
-                $("#select-status option[value='" + e + "']").prop("selected", true);
-             });
+          if (values!=null ){
+              $.each(values.split(","), function(i,e){
+                    $("#select-status option[value='" + e + "']").prop("selected", true);
+                 });}
 
           $('#select-project').val(localStorage.getItem("select-project"));
           $('#select-assigned').val(localStorage.getItem("select-assigned"));
