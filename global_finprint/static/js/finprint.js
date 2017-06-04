@@ -933,14 +933,45 @@ var finprint = finprint || {};  //namespace if necessary...
 
             var $this = $(e.target);
             var $thisRow = $this.closest('tr');
-            var $parentRow = $thisRow.hasClass('first-event')
-                ? $thisRow
-                : $this.closest('tbody').find('tr[data-target=".' + $thisRow.data('is-child') + '"]');
             var dataUrl = $this.data('event');
 
             $.post(dataUrl, function (resp) {
-                $parentRow.find('.td[rowspan]')
-                    .attr('rowspan', function(i, rs) { return rs - 1; });
+                // if this is not part of a multi-event obs, we can simply delete it.
+                // if it is
+                //     decrease rowspan data attr and of tds by 1
+                //     then we need to determine if it is a parent or child
+                //          if child just delete
+                //          if parent, promote the first child to parent
+                //     if rowspan has reached 1 then demote to single-event
+                if (!$thisRow.hasClass('single-event')) {
+                    var $parentRow = $thisRow.hasClass('first-event')
+                        ? $thisRow
+                        : $this.closest('tbody').find('tr[data-target=".' + $thisRow.data('is-child') + '"]');
+                    var $rowspanTds = $parentRow.children('.rowspan');
+                    var newRowspan = $parentRow.data('rowspan') - 1;
+
+                    $parentRow.data('rowspan', newRowspan);
+                    $rowspanTds.attr('rowspan', newRowspan);
+
+                    if ($thisRow.hasClass('first-event')) {
+                        $parentRow = $parentRow.next()
+                            .prepend($rowspanTds);
+                    }
+                    if (newRowspan === 1) {
+                        $parentRow.removeClass('first-event accordion-toggle child-row')
+                            .addClass('single-event')
+                            .removeAttr('data-is-child')
+                            .attr('data-rowspan', 1)
+                            .css('display', '');
+                    } else {
+                        $parentRow.removeClass('child-row')
+                            .addClass('first-event accordion-toggle')
+                            .attr('data-target', '.' + $parentRow.data('isChild'))
+                            .removeAttr('data-is-child')
+                            .attr('data-rowspan', newRowspan)
+                            .css('display', '');
+                    }
+                }
                 $thisRow.remove();
             });
 
