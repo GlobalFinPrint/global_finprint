@@ -33,6 +33,7 @@ THIRD_PARTY_APPS = (
     'braces',
     'leaflet',
     'mptt',
+    'report_builder',
 )
 
 # Apps specific for this project go here.

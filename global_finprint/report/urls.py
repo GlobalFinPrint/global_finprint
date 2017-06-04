@@ -1,8 +1,10 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from .views import CustomReportListView, CustomReportView, CustomReportFileView, StatusMapView
 
 
 urlpatterns = [
+    url(r'^builder/', include('report_builder.urls')),
+
     url(r"status/map/$", StatusMapView.as_view(), name="status_map"),
 
     url(r"custom/(?P<report>\w+)$", CustomReportView.as_view(), name="report_custom"),

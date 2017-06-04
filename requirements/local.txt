@@ -7,7 +7,7 @@ django-extensions==1.6.1
 Werkzeug==0.10.4
 django-test-plus==1.0.6
 
-# django-debug-toolbar that works with Django 1.5+
+# django-debug-toolbar and depends
 sqlparse <0.2
 django-debug-toolbar==1.4.0
 
