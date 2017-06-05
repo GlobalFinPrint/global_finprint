@@ -994,7 +994,7 @@ var finprint = finprint || {};  //namespace if necessary...
 
             var $this = $(e.target);
             var dataUrl = $this.data('event');
-            var saveUrl = dataUrl.replace('edit_data', 'save_data');
+            var saveUrl = dataUrl.replace('edit', 'save');
             var $thisRow = $this.closest('tr');
             var $parentRow = $thisRow.hasClass('first-event')
                 ? $thisRow
