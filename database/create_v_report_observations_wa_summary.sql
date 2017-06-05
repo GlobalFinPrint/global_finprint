@@ -31,9 +31,11 @@ FROM
   INNER JOIN core_finprintuser fu ON fu.id = evtsum.annotator_id
   INNER JOIN auth_user u ON u.id = fu.user_id
 
-  INNER JOIN annotation_animalobservation aobs ON aobs.observation_id = evtsum.animal_id
+  INNER JOIN annotation_animalobservation aobs ON aobs.observation_id = evtsum.observation_id
   INNER JOIN annotation_animal ani ON ani.id = aobs.animal_id
 WHERE hab.region = 'Western Atlantic'
+    and evtsum.numeric_value_from_event_note is not null
+    and evtsum.max_n_tagged = 1
 GROUP BY
   trip_code,
   set_code,
