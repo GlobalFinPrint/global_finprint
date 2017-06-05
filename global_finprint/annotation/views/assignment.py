@@ -297,6 +297,7 @@ class ObservationListView(UserAllowedMixin, ListView):
         return context
 
 
+# todo:  rename this as "Modal" from "Model"  and re-format to minimal pep-8 standard.
 class AssignMultipleVideosModel(UserAllowedMixin, View):
     """
     Endpoints used by the assignment modal found at /assignment/
@@ -372,7 +373,7 @@ class AssignMultipleVideosModel(UserAllowedMixin, View):
 
 class AssignMultipleVideoToAnnotators(UserAllowedMixin, View):
     """
-    Endpoints used by the assignment modal found at /assignment/ for saving 
+    Endpoints used by the assignment modal found at /assignment/ for saving
     multiple video assignment
     """
     def post(self, request):
