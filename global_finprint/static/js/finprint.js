@@ -959,12 +959,21 @@ var finprint = finprint || {};  //namespace if necessary...
                     }
                     if (newRowspan === 1) {
                         $parentRow.removeClass('first-event accordion-toggle child-row')
+                            .attr('class',
+                               function(i, c){
+                                  return c.replace(/(^|\s)children-\S+/g, '');
+                               })
                             .addClass('single-event')
                             .removeAttr('data-is-child')
                             .attr('data-rowspan', 1)
                             .css('display', '');
-                    } else {
+                        $parentRow.find('td.action a.obs-delete').css('display', '');
+                    } else if ($parentRow.hasClass('child-row')) {
                         $parentRow.removeClass('child-row')
+                            .attr('class',
+                               function(i, c){
+                                  return c.replace(/(^|\s)children-\S+/g, '');
+                               })
                             .addClass('first-event accordion-toggle')
                             .attr('data-target', '.' + $parentRow.data('isChild'))
                             .removeAttr('data-is-child')

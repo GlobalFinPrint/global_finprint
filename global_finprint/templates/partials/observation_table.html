@@ -27,7 +27,7 @@
                     <tr class="single-event {{ o.needs_review|yesno:"needs-review,," }}" data-rowspan="{{ rowspan }}">
                 {% endif %}
                 <td class="rowspan">
-                    {% if not master %}
+                    {% if not master %}  {# todo:  do this for "all obs" as well. #}
                         <a href="{% url 'assignment_review' o.assignment.id %}">{{ o.annotator }}</a>
                     {% else %}
                         {{ o.annotator }}
@@ -65,11 +65,15 @@
                         </div>
                     </td>
                 {% endif %}
-                <td>
+                <td class="action">
                     {% if master %}
                         {% with set=e.master_observation.set %}
                             <a href="#" class="obs-edit" data-obs-type="master" data-event="{% url 'master_edit_obs' set.pk e.pk %}">Edit</a>
-                            <a href="#" class="obs-delete" data-event="{% url 'master_delete_obs' set.pk e.pk %}">Delete</a>
+                            {% if e.id != firstevent.id or rowspan == 1 %}
+                                <a href="#" class="obs-delete" data-event="{% url 'master_delete_obs' set.pk e.pk %}">Delete</a>
+                            {% else %}
+                                <a href="#" class="obs-delete" style='display: none' data-event="{% url 'master_delete_obs' set.pk e.pk %}">Delete</a>
+                            {% endif %}
                         {% endwith %}
                     {% else %}
                         {% with set=e.observation.set %}
