@@ -40,7 +40,7 @@ CREATE VIEW public.v_report_maxn_issues_report AS
     || ':' || lpad(((evt.event_time % 1000) :: TEXT), 3, '0')                         AS event_time_minutes,
 
     evt.assignment_id,
-    'https://data.globalfinprint.org/assignment/manage/' || evt.assignment_id :: TEXT AS assignment_management_url,
+    'https://data.globalfinprint.org/assignment/review/' || evt.assignment_id :: TEXT AS assignment_management_url,
 
 
     evt.max_n_tagged,

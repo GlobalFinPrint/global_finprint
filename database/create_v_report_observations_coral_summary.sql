@@ -22,7 +22,7 @@ SELECT
   evtsum.set_id,
   evtsum.video_id,
   evtsum.assignment_id,
-  'https://data.globalfinprint.org/assignment/manage/' || evtsum.assignment_id :: TEXT AS assignment_management_url
+  'https://data.globalfinprint.org/assignment/review/' || evtsum.assignment_id :: TEXT AS assignment_management_url
 FROM
   event_attribute_summary evtsum
 
