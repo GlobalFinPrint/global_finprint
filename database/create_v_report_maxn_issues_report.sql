@@ -1,4 +1,4 @@
-CREATE VIEW public.v_maxn_issues_report AS
+CREATE VIEW public.v_report_maxn_issues_report AS
   SELECT
     CASE
     WHEN evt.max_n_tagged = 1

@@ -43,4 +43,4 @@ DROP VIEW IF EXISTS public.v_report_observations_coral_summary;
 
 DROP VIEW IF EXISTS public.v_report_observations_master;
 
-DROP VIEW IF EXISTS public.v_maxn_issues_report;
+DROP VIEW IF EXISTS public.v_report_maxn_issues_report;
