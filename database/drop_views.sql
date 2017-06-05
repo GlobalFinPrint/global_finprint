@@ -1,9 +1,4 @@
 
--- supporting views
-DROP VIEW IF EXISTS public.event_attribute_summary;
-DROP VIEW IF EXISTS public.habitat_summary;
-
-
 -- report views
 DROP VIEW IF EXISTS public.v_report_annotation_status_by_annotator;
 DROP VIEW IF EXISTS public.v_report_annotation_status_by_team;
@@ -44,3 +39,8 @@ DROP VIEW IF EXISTS public.v_report_observations_coral_summary;
 DROP VIEW IF EXISTS public.v_report_observations_master;
 
 DROP VIEW IF EXISTS public.v_report_maxn_issues_report;
+
+
+-- supporting views
+DROP VIEW IF EXISTS public.event_attribute_summary;
+DROP VIEW IF EXISTS public.habitat_summary;
