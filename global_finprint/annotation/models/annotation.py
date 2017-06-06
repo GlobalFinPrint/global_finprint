@@ -3,6 +3,21 @@ from mptt.models import MPTTModel, TreeForeignKey
 from .project import Project
 
 
+class GlobalAttribute(MPTTModel):
+    name = models.CharField(max_length=50)
+    description = models.TextField(null=True, blank=True)
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
+
+    class Meta:
+        verbose_name = 'GlobalTag'
+
+    def __str__(self):
+        return u"{0}".format(self.name)
+
+
 class Attribute(MPTTModel):
     name = models.CharField(max_length=50)
     description = models.TextField(null=True, blank=True)
@@ -14,6 +29,7 @@ class Attribute(MPTTModel):
         help_text='overridden if parent is lead only')
     needs_review = models.BooleanField(default=False)
     not_selectable = models.BooleanField(default=False)
+    global_parent = models.ForeignKey(to=GlobalAttribute, null=True)
 
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
     project = models.ForeignKey(Project, default=1)
