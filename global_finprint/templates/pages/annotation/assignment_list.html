@@ -105,6 +105,7 @@
 
             <div class="row">
                 <div class="col-md-12 text-right">
+                    <button id="assignMultipleVideo" class="btn btn-primary">Assign Videos</button>
                     <button id="search" class="btn btn-primary">Search assignments</button>
                 </div>
             </div>
@@ -115,6 +116,7 @@
         <table class="table table-bordered table-condensed assignment-list-table" cellspacing="0" width="100%">
             <thead>
                 <tr class="success">
+                    <th style="border:1px solid #ddd !important" class="bottom-content"><input type="checkbox" name="selectAllAssignment" id="selectAllAssignmentsId" style="height:1.5em; width:1.5em"  class="shadow"></th>
                     <th>Video</th>
                     <th>Trip</th>
                     <th>Set</th>
@@ -130,14 +132,31 @@
                 </tr>
             </thead>
             <tbody id="assignment-target">
-                <tr><td colspan="12">
-                    <h4 class="text-center">Use the form above to limit selection</h4>
+                    <tr id="spinId">
+                        <td colspan="13">
+                            Loading...
+                        </td>
+                    </tr>
+                    <tr id="limitSelectionId">
+                    <td colspan="13">
+                    <h4 class="text-center" >Use the form above to limit selection</h4>
                 </td></tr>
             </tbody>
         </table>
     </div>
+    <div class="modal fade" id="multi-assign-modal">
+        <div class="modal-dialog">
+            <div class="modal-content"></div>
+        </div>
+    </div>
 
     <div class="modal fade" id="assign-modal">
+        <div class="modal-dialog">
+            <div class="modal-content"></div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="assign-annotator-modal">
         <div class="modal-dialog">
             <div class="modal-content"></div>
         </div>
@@ -150,8 +169,8 @@
     </div>
 
     <div class="modal fade" id="automatic-modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
+        <div class="modal-dialog" style="width:800px">
+            <div class="modal-content" >
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">Automatic video assignment</h4>
@@ -166,7 +185,7 @@
                             available assignments.
                         </p>
                     </div>
-                    <form>
+                    <form id="auto-assignment-form" class="clearfix">
                         <div class="row">
                         {% csrf_token %}
                             <div class="col-md-4">
@@ -181,6 +200,43 @@
                                 </select>
                             </div>
 
+                            <div class="col-md-4">
+                                <label for="select-reef-auto-assign">Reef(s)</label>
+                                <select id="select-reef-auto-assign" class="form-control" name="auto-reef[]" multiple="multiple" placeholder="Select one or more reefs">
+                                    {% for s in sites %}
+                                    <optgroup label="{{ s }}">
+                                    {% for r in s.reef_set.all %}
+                                        <option value="{{ r.id }}">{{ r.name }}</option>
+                                    {% endfor %}
+                                    </optgroup>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="select-set-auto-assign">Set(s)</label>
+                                <select id="select-set-auto-assign" class="form-control" name="auto-set[]" multiple="multiple" placeholder="Select one or more sets">
+                                    {% for t in trips %}
+                                    <optgroup label="{{ t }}">
+                                    {% for s in t.set_set.all %}
+                                        <option value="{{ s.code }}">{{ s.code }}</option>
+                                    {% endfor %}
+                                    </optgroup>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="checkbox include-leads">
+                                    <label for="include-leads">
+                                        <input type="checkbox" id="include-leads" name="include_leads" />
+                                        Include leads?
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
                             <div class="col-md-4">
                                 <label for="auto-affiliation">Affiliation</label>
                                 <select class="form-control" id="auto-affiliation" name="affiliation">
@@ -197,24 +253,13 @@
                                 <label for="auto-num">Annotators per video</label>
                                 <input type="number" class="form-control" id="auto-num" name="num" min="1" step="1" value="3" />
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-4">
                                 <label for="project">Project</label>
-                                <select id="project" name="project" class="form-control">
+                                <select id="project" name="project" >
                                     {% for project in projects %}
                                         <option value="{{ project.id }}">{{ project.name }}</option>
                                     {% endfor %}
                                 </select>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div class="checkbox include-leads">
-                                    <label for="include-leads">
-                                        <input type="checkbox" id="include-leads" name="include_leads" />
-                                        Include leads?
-                                    </label>
-                                </div>
                             </div>
                         </div>
                     </form>

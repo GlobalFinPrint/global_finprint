@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load active_if_equal %}
+
+{% block content %}
+    <div class="col-md-12 manage-content">
+
+        {% include 'partials/breadcrumb.html' with trip=trip set=set current_page_name='Master record observations' %}
+
+        <div class="row manage-master-state-buttons" data-id="{{ master.id }}">
+            <form>
+                <div class="input-group pull-right">
+                    <div class="btn-toolbar">
+                        <div class="input-group">
+                            <span id="save_message" class="inline .success">
+                                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>  Status change saved  </span>
+                        </div>
+                        <div id="master-state-buttons" class="btn-group">
+                            {% for master_state in state_list %}
+                                <a class="btn btn-default
+                                        {% active_if_equal master.status.id master_state.id %}"
+                                   data-toggle="assignment_state"
+                                   data-value="{{ master_state.id }}">{{ master_state.name }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <input type="hidden" name="master_state" id="master_state">
+                    <input type="hidden" name="action" value="update">
+                    {% csrf_token %}
+                </div>
+            </form>
+            <div class="pull-left">
+                <a class="btn btn-default" href="{% url 'assignment_compare' set.id %}?project=1">Compare assignments</a>
+                <a class="btn btn-default" href="{% url 'set_observation_list' trip.id set.id %}">All observations</a>
+            </div>
+        </div>
+
+        <div class="row">
+            {% include 'partials/paginator_controls.html' with page=master_observations thing_name='observations' %}
+        </div>
+
+        <div class="row color-rows" data-diff-cell="0">
+            {% include 'partials/observation_table.html' with observations=master_observations master=master for=for %}
+        </div>
+
+    </div>
+{% endblock %}

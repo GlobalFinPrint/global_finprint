@@ -1,3 +1,6 @@
+DROP VIEW IF EXISTS machine_learning_corpus;
+
+CREATE VIEW machine_learning_corpus as
 SELECT
   'https://s3-us-west-2.amazonaws.com/finprint-annotator-screen-captures/prod/' ||
   tt.code || '/' || bs.code || '/' || ao.id ||

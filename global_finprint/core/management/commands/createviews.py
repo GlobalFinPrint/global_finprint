@@ -9,6 +9,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         with connection.cursor() as cursor:
             views = glob('database/create_v_*.sql')
-            for view in views:
+            for view in sorted(views):
+                print('creating view {}'.format(view))
                 cursor.execute(open(view, 'r').read())
             print('{0} views created successfully'.format(len(views)))

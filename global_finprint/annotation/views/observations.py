@@ -4,7 +4,8 @@ from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from global_finprint.annotation.models.observation import \
+
+from global_finprint.annotation.models.observation import MasterRecord, MasterRecordState, MasterObservation, \
     Observation, Event, Animal, Attribute, MasterEvent, Measurable, MasterEventMeasurable
 from global_finprint.bruv.models import Set, Trip
 from global_finprint.core.mixins import UserAllowedMixin
@@ -33,46 +34,8 @@ def observation_post(request):
     pass
 
 
-class ObservationListView(UserAllowedMixin, ListView):
-    """
-    View to list observations for a given set found at /trips/<trip_id>/sets/<set_id>/observations/
-    """
-    model = Observation
-    context_object_name = 'observations'
-    template_name = 'pages/observations/observation_list.html'
-
-    def get_queryset(self):
-        selected_related = [
-            'animalobservation__animal',
-            'assignment__annotator__user',
-            'assignment__annotator__affiliation',
-            'assignment__video__set__trip',
-        ]
-        return sorted(get_object_or_404(Set, pk=self.kwargs['set_pk']).observations()
-                      .select_related(*selected_related)
-                      .prefetch_related('event_set', 'event_set__attribute'),
-                      key=lambda o: o.initial_observation_time(), reverse=True)
-
-    def get_context_data(self, **kwargs):
-        context = super(ObservationListView, self).get_context_data(**kwargs)
-        page = self.request.GET.get('page', 1)
-        paginator = Paginator(context['observations'], 50)
-        try:
-            context['observations'] = paginator.page(page)
-        except PageNotAnInteger:
-            context['observations'] = paginator.page(1)
-        except EmptyPage:
-            context['observations'] = paginator.page(paginator.num_pages)
-        context['trip_pk'] = self.kwargs['trip_pk']
-        context['set_pk'] = self.kwargs['set_pk']
-        context['trip_name'] = str(Trip.objects.get(pk=self.kwargs['trip_pk']))
-        context['set_name'] = str(Set.objects.get(pk=self.kwargs['set_pk']))
-        context['for'] = ' for {0}'.format(context['set_name'])
-        return context
-
-
 # TODO DRY this up
-class MasterObservationEditData(UserAllowedMixin, View):
+class MasterObservationEditEvent(UserAllowedMixin, View):
     """
     Endpoint to grab data for inline observation editing (master)
     """
@@ -94,7 +57,7 @@ class MasterObservationEditData(UserAllowedMixin, View):
 
 
 # TODO DRY this up
-class MasterObservationSaveData(UserAllowedMixin, View):
+class MasterObservationSaveEvent(UserAllowedMixin, View):
     """
     Endpoint to save inline observation editing (master)
     """
@@ -136,6 +99,23 @@ class MasterObservationSaveData(UserAllowedMixin, View):
             'obs_needs_review': observation.needs_review(),
             'evt_needs_review': event.needs_review(),
         })
+
+
+class MasterObservationDeleteEvent(UserAllowedMixin, View):
+    """
+    Endpoint to delete inline observation editing (master)
+    """
+    def post(self, request, evt_id, **kwargs):
+        event = get_object_or_404(MasterEvent, pk=evt_id)
+        observation = event.master_observation
+        try:
+            if len(observation.event_set()) > 1:
+                event.delete(keep_parents=True)
+            else:
+                observation.delete()
+        except:
+            return JsonResponse({'status': 'fail',})
+        return JsonResponse({'status': 'ok'})
 
 
 class ObservationEditData(UserAllowedMixin, View):
@@ -226,3 +206,89 @@ class EditMeasurablesInline(UserAllowedMixin, View):
         return JsonResponse({
             'measurables': list(str(em) for em in event.active_measurables())
         })
+
+
+class ManageMasterView(UserAllowedMixin, View):
+    def post(self, request, master_id):
+        """
+        Endpoint to handle state changes of master record
+        :param request:
+        :param assignment_id:
+        :return:
+        """
+        master_state = request.POST.get('master_state')
+        master = get_object_or_404(MasterRecord, id=master_id)
+        master.status_id = int(master_state)
+        master.save()
+
+        return JsonResponse({'status': 'ok'})
+
+
+class ObservationListView(UserAllowedMixin, ListView):
+    """
+    View to list observations for a given set found at /trips/<trip_id>/sets/<set_id>/observations/
+    """
+    model = Observation
+    context_object_name = 'observations'
+    template_name = 'pages/observations/observation_list.html'
+
+    def get_queryset(self):
+        selected_related = [
+            'animalobservation__animal',
+            'assignment__annotator__user',
+            'assignment__annotator__affiliation',
+            'assignment__video__set__trip',
+        ]
+        return sorted(get_object_or_404(Set, pk=self.kwargs['set_pk']).observations()
+                      .select_related(*selected_related)
+                      .prefetch_related('event_set', 'event_set__attribute'),
+                      key=lambda o: o.initial_observation_time(), reverse=True)
+
+    def get_context_data(self, **kwargs):
+        context = super(ObservationListView, self).get_context_data(**kwargs)
+        page = self.request.GET.get('page', 1)
+        paginator = Paginator(context['observations'], 50)
+        try:
+            context['observations'] = paginator.page(page)
+        except PageNotAnInteger:
+            context['observations'] = paginator.page(1)
+        except EmptyPage:
+            context['observations'] = paginator.page(paginator.num_pages)
+        set = Set.objects.get(pk=self.kwargs['set_pk'])
+        context['trip'] = set.trip
+        context['set'] = set
+        context['for'] = ' for {0}'.format(set)
+        return context
+
+
+class MasterObservationListView(UserAllowedMixin, ListView):
+    """
+    View for master record review screen found at /assignment/master/review/<master_id>
+    """
+    template_name = 'pages/observations/master_review.html'
+    model = MasterObservation
+    context_object_name = 'master_observations'
+
+    def get_queryset(self):
+        return sorted(get_object_or_404(MasterRecord, pk=self.kwargs['master_id']).masterobservation_set.all(),
+                                          key=lambda o: o.initial_observation_time(),
+                                          reverse=True)
+
+    def get_context_data(self, **kwargs):
+        context = super(MasterObservationListView, self).get_context_data(**kwargs)
+        page = self.request.GET.get('page', 1)
+        paginator = Paginator(context['master_observations'], 50)
+        try:
+            context['master_observations'] = paginator.page(page)
+        except PageNotAnInteger:
+            context['master_observations'] = paginator.page(1)
+        except EmptyPage:
+            context['master_observations'] = paginator.page(paginator.num_pages)
+
+        master_record = get_object_or_404(MasterRecord, pk=self.kwargs['master_id'])
+        context['state_list'] = MasterRecordState.objects.all()
+        context['master'] = master_record
+        context['trip'] = master_record.set.trip
+        context['set'] = master_record.set
+        context['for'] = ' for {}'.format(master_record.set)
+        return context

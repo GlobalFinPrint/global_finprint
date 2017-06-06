@@ -218,7 +218,7 @@
             <table class="table table-bordered table-condensed set-table" cellspacing="0" width="100%">
                 <thead>
                 <tr class="table-header-title">
-                    <th colspan=13><h4>Showing all sets</h4></th>
+                    <th colspan=16><h4>Showing all sets</h4></th>
                 </tr>
                 <tr class="table-header-labels well">
                     <th id="code">Trip & set code</th>
@@ -229,22 +229,63 @@
                     <th id="equipment">Equipment</th>
                     <th id="bait">Bait</th>
                     <th class="video" colspan=2>Video</th>
+                    <th id="assignments">Reviewed assignments</th>
+                    <th id="master">Master record</th>
+                    <th id="flow_substrate">All req. fields</th>
                     <th id="observations">Obs</th>
                     <th class="show_observations">Drop/haul</th>
                     <th id="edit">Edit</th>
                 </tr>
                 </thead>
                 {% for set in sets %}
-                    <tr>
+                    {% if set.completed %}
+                        <tr class="set-complete">
+                    {% else %}
+                        <tr>
+                    {% endif %}
                         <td>{{ set }}</td>
                         <td>{{ set.set_date|date:"M d Y" }}</td>
                         <td colspan=2>{{ set.reef_habitat }}</td>
-                        <td>{{ set.latitude }}/&#10;{{ set.longitude }}</td>
+                        <td>{{ set.latitude|floatformat:"-3" }}/&#10;{{ set.longitude|floatformat:"-3" }}</td>
                         <td>{{ set.depth }}</td>
                         <td>{{ set.equipment }}</td>
                         <td>{{ set.bait }}</td>
                         <td colspan=2>
                             {{ set.video.primary|default_if_none:"<i>None</i>" }}
+                        </td>
+                        {# todo:  this section could use some optimization as it makes far too many sql calls #}
+                        <td>
+                            {% with set_assignment_counts=set.assignment_counts %}
+                                {% if set_assignment_counts.Total > 0 %}
+                                    <a
+                                            class="disabled"   {# todo:  disabled until the rest of the assignment url code is done ...  #}
+                                            href="{% url 'assignment_review' set.id %}">
+                                    {% if 4 in set_assignment_counts %}
+                                    {{ set_assignment_counts.4 }}
+                                    {% else %}
+                                    0
+                                    {% endif %}
+                                    /
+                                    {{ set_assignment_counts.Total }}
+                                    </a>
+                                {% else %}
+                                0 / 0
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                        <td>
+                            {% with master=set.master %}
+                                {% if master %}
+                                <a href="{% url 'master_review' set.master.id  %}">
+                                    {{ set.master.status.name }}
+                                </a>
+                                {% else %}
+                                    No master record
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                        <td>
+                            {{ set.required_fields }}
                         </td>
                         <td>
                             <a href="{% url 'set_observation_list' set.trip.id set.id %}">

@@ -1,18 +1,25 @@
 from datetime import date, timedelta
+from builtins import set as Set_util
+import numpy as np
+import json
+import re as re
+from builtins import set as set_utils
+from django.views.generic import View, ListView
 
-from django.views.generic import View
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404, render_to_response, get_list_or_404
 from django.db.models import Count
-from django.http.response import JsonResponse
+from django.http.response import JsonResponse, HttpResponse
 from django.template import RequestContext
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from ...core.mixins import UserAllowedMixin
 from ...trip.models import Trip
 from ...bruv.models import Set
-from ...habitat.models import Location, Site
+from ...habitat.models import Location, Site, Reef,ReefHabitat
 from ...core.models import Affiliation, FinprintUser
 from ..models.video import Assignment, Video, AnnotationState
 from ..models.project import Project
+from ..models.custommodels import MultiVideoAssignmentData
 
 
 class VideoAutoAssignView(UserAllowedMixin, View):
@@ -44,19 +51,39 @@ class VideoAutoAssignView(UserAllowedMixin, View):
         :param request:
         :return:
         """
+        post_dic = dict(request.POST)
+
         trip_id = request.POST.get('trip')
         aff_id = request.POST.get('affiliation')
         num = int(request.POST.get('num'))
         include_leads = bool(request.POST.get('include_leads', False))
         project = get_object_or_404(Project, id=request.POST.get('project'))
 
-        annotators = FinprintUser.objects.filter(affiliation_id=aff_id, user__is_active=True).all()
+        if aff_id !='' :
+           annotators = FinprintUser.objects.filter(affiliation_id=aff_id, user__is_active=True).all()
+        else :
+           annotators = FinprintUser.objects.filter(user__is_active=True).all()
+
         if not include_leads:
             annotators = list(a for a in annotators if not a.is_lead())
+
         video_count = 0
         assigned_count = 0
         new_count = 0
-        for video in Video.objects.filter(set__trip_id=trip_id).exclude(files__isnull=True).all():
+
+        if 'auto-set[]' in post_dic :
+            set_ids = post_dic['auto-set[]']
+            if len(set_ids) > 0 :
+                videos =  Video.objects.filter(set__trip_id=trip_id).filter(set__code__in =set_ids).exclude(files__isnull=True).all()
+        else :
+            videos = Video.objects.filter(set__trip_id=trip_id).exclude(files__isnull=True).all()
+
+        if 'auto-reef[]' in post_dic:
+            reef_ids = post_dic['auto-reef[]']
+            if len(reef_ids) > 0 :
+              videos = videos.filter(set__reef_habitat__reef_id__in=reef_ids)
+
+        for video in videos:
             video_count += 1
             new_count += self.assign_video(annotators, video, num, project)
             assigned_count += len(video.annotators_assigned(project))
@@ -216,30 +243,7 @@ class UnassignModalBodyView(UserAllowedMixin, View):
         return JsonResponse({'status': 'ok'})
 
 
-class AssignmentManageView(UserAllowedMixin, View):
-    """
-    View to handle assignment management page found at /assignment/manage/<assignment_id>
-    """
-    template_name = 'pages/annotation/assignment_manage.html'
-
-    def get(self, request, assignment_id):
-        assignment = get_object_or_404(Assignment, id=assignment_id)
-        context = RequestContext(request, {
-            'state_list': AnnotationState.objects.all(),
-            'assignment': assignment,
-            'trip': assignment.video.set.trip,
-            'set': assignment.video.set,
-            'observations': sorted(assignment.observation_set.all()
-                                   .select_related('animalobservation__animal',
-                                                   'assignment__annotator__user',
-                                                   'assignment__annotator__affiliation',
-                                                   'assignment__video__set__trip',)
-                                   .prefetch_related('event_set', 'event_set__attribute'),
-                                   key=lambda o: o.initial_observation_time(), reverse=True),
-            'for': ' for {0} by {1}'.format(assignment.video.set, assignment.annotator)
-        })
-        return render_to_response(self.template_name, context=context)
-
+class ManageAssignmentView(UserAllowedMixin, View):
     def post(self, request, assignment_id):
         """
         Endpoint to handle state changes and/or deletion of assignment on assignment management screen
@@ -258,3 +262,199 @@ class AssignmentManageView(UserAllowedMixin, View):
             assignment.save()
 
         return JsonResponse({'status': 'ok'})
+
+
+class ObservationListView(UserAllowedMixin, ListView):
+    """
+    View for observation list by annotator found at /assignment/review/<assignment_id>
+    """
+    template_name = 'pages/observations/annotator_review.html'
+    model = Assignment
+    context_object_name = 'observations'
+
+    def get_queryset(self):
+        return sorted(get_object_or_404(Assignment, pk=self.kwargs['assignment_id']).observation_set.all(),
+                                        key=lambda o: o.initial_observation_time(),
+                                        reverse=True)
+
+    def get_context_data(self, **kwargs):
+        context = super(ObservationListView, self).get_context_data(**kwargs)
+        page = self.request.GET.get('page', 1)
+        paginator = Paginator(context['observations'], 50)
+        try:
+            context['observations'] = paginator.page(page)
+        except PageNotAnInteger:
+            context['observations'] = paginator.page(1)
+        except EmptyPage:
+            context['observations'] = paginator.page(paginator.num_pages)
+
+        assignment = get_object_or_404(Assignment, pk=self.kwargs['assignment_id'])
+        context['state_list'] = AnnotationState.objects.all()
+        context['assignment'] = assignment
+        context['trip'] = assignment.video.set.trip
+        context['set'] = assignment.video.set
+        context['for'] = ' by {}'.format(assignment.annotator.user.get_full_name())
+        return context
+
+
+# todo:  rename this as "Modal" from "Model"  and re-format to minimal pep-8 standard.
+class AssignMultipleVideosModel(UserAllowedMixin, View):
+    """
+    Endpoints used by the assignment modal found at /assignment/
+    """
+    template_name = 'pages/annotation/multiple_assignment_list_modal.html'
+
+    def post(self, request):
+        set_ids = list(Set_util(np.asarray(dict(request.POST)['set_ids[]'])))
+        video_list = list(Set_util(np.asarray(dict(request.POST)['video_ids[]'])))
+
+        #only gives assigned list not the unassigned
+        assignment_list = Assignment.get_all_assignments(video_list)
+        multiple_assignment_data_dic = {}
+        project_list = []
+        assigned_video_list=[]
+        multiple_assignment_data_set = []
+        total_count = 0
+
+        #creating a dictionary wid name_of_video ,video_id and number_of_user_assigned for model
+        for assignment in assignment_list :
+            project_list.append(assignment.project_id)
+            if assignment.video_id not in multiple_assignment_data_dic  :
+                total_count = total_count + 1
+                assigned_video_list.append(assignment.video_id)
+                multiple_assignment_data_dic[assignment.video_id] = {"name": str(assignment.video), "count": 1, "video_id":assignment.video_id, "set_id":assignment.video.set.id}
+
+            else :
+                new_count = multiple_assignment_data_dic.get(assignment.video_id)["count"] +1
+                multiple_assignment_data_dic[assignment.video_id] = {"name": str(assignment.video), "count": new_count, "video_id":assignment.video_id, "set_id":assignment.video.set.id}
+
+
+        unassigned_list = self.filter_unassigned_list(video_list,assigned_video_list)
+
+        unassigned_set = Set.objects.annotate(Count('video__assignment')) \
+                                .filter(video__assignment__count=0) \
+                                .filter(video_id__in = unassigned_list ) \
+                                .exclude(video__files=None)
+
+        # updating dictionary wid name_of_video ,video_id and number_of_user_assigned for model
+        for unassigned in unassigned_set:
+            total_count = total_count + 1
+            multiple_assignment_data_dic[unassigned.video_id] = {"name": str(unassigned.video), "count": 0,
+                                                                 "video_id": unassigned.video_id, "set_id":unassigned.video.set.id}
+        set_ids_str = ','.join(str(x) for x in set_ids)
+        for video_id in video_list :
+            _dic = multiple_assignment_data_dic[int(video_id)]
+            multiple_assignment_data_set.append(MultiVideoAssignmentData(_dic["name"],_dic["count"],_dic["video_id"], _dic["set_id"]))
+
+        set = get_object_or_404(Set, id=set_ids[0])
+        project = get_object_or_404(Project, id=1)
+        current_assignments = set.video.assignment_set.filter(project=project).all()
+        context = RequestContext(request, {
+            'current_set':multiple_assignment_data_set,
+            'current': current_assignments,
+            'current_annos': [a.annotator for a in current_assignments],
+            'affiliations': Affiliation.objects.order_by('name').all(),
+            'projects': Project.objects.order_by('id').all(),
+            'current_project': project,
+            'set_ids_str':set_ids_str,
+            'total_count':total_count,
+        })
+
+        return render_to_response(self.template_name, context=context)
+
+    def filter_unassigned_list(self, video_list, assigned_video_list):
+        unassigned_ids =[]
+        for video_id in video_list :
+            if video_id not in assigned_video_list :
+                unassigned_ids.append(video_id)
+
+        return unassigned_ids
+
+
+class AssignMultipleVideoToAnnotators(UserAllowedMixin, View):
+    """
+    Endpoints used by the assignment modal found at /assignment/ for saving
+    multiple video assignment
+    """
+    def post(self, request):
+        current_video_set = re.split(",", request.POST.get('set_ids_str'))
+        project = get_object_or_404(Project, id=request.POST.get('project'))
+        for set_id in current_video_set:
+            set = get_object_or_404(Set, id=set_id)
+            for anno_id in request.POST.getlist('anno[]'):
+                Assignment(
+                    annotator=FinprintUser.objects.get(id=anno_id),
+                    video=set.video,
+                    assigned_by=FinprintUser.objects.get(user_id=request.user),
+                    project=project
+                ).save()
+
+        return JsonResponse({'status': 'ok'})
+
+class RestrictFilterDropDown(UserAllowedMixin, View) :
+    """
+    Endpoints used by the auto assignment modal found at /assignment/ for restricting
+    drop down of Reefs and Sets based on Trip selected
+    """
+    def post(self, request):
+        post_dic = dict(request.POST)
+        list_of_sets = []
+        list_of_reefs = []
+
+        if 'trip' in post_dic :
+            trip_id = dict(request.POST)['trip'][0]
+        if 'auto-reef[]' in post_dic:
+            reef_ids = dict(request.POST)['auto-reef[]']
+
+        #if trip change
+        if 'trip' in post_dic and trip_id !='' and 'auto-reef[]' not in post_dic:
+            trip = Trip.objects.filter(id = trip_id).order_by('code').all().prefetch_related('set_set')
+            sites = Site.objects.filter(location_id=trip[0].location_id).order_by('name').all().prefetch_related('reef_set')
+            # find the code of each reef and remove those sets
+            set_data = list(set(trip))[0].set_set
+            for s in set_data.all():
+                list_of_sets.append({"id": s.id, "code": s.code, "group": str(set_data.instance)})
+
+            for s in sites:
+                for r in s.reef_set.all():
+                    list_of_reefs.append({"reef_group": str(s), "id": r.id, "name": r.name})
+        # if reef changes
+        elif 'auto-reef[]' in post_dic:
+            if 'trip' in post_dic and trip_id !='' :
+                sets = Set.objects.filter(trip_id=trip_id).filter(reef_habitat__reef_id__in=reef_ids)
+            else :
+                sets = Set.objects.filter(reef_habitat__reef_id__in=reef_ids)
+
+            for each_set in list(set_utils(sets)) :
+                list_of_sets.append({"id": each_set.id, "code": each_set.code, "group": str(each_set.trip)})
+        else :
+            trip = Trip.objects.order_by('code').all().prefetch_related('set_set')
+            sites = Site.objects.order_by('name').all().prefetch_related('reef_set')
+            set_data = list(set(trip))[0].set_set
+            for s in set_data.all():
+                list_of_sets.append({"id": s.id, "code": s.code, "group": str(set_data.instance)})
+
+            for s in sites:
+                for r in s.reef_set.all():
+                    list_of_reefs.append({"reef_group": str(s), "id": r.id, "name": r.name})
+
+        if 'auto-reef[]' not in post_dic :
+            return JsonResponse({'status': 'ok',"reefs":list_of_reefs, "sets":list_of_sets})
+        else :
+            return JsonResponse({'status': 'ok', "sets": list_of_sets})
+
+class AssignedAnnotatorPopup(UserAllowedMixin, View):
+    """
+    Endpoints used by the multiple assignment modal found at /assignment/
+    """
+    template_name = 'pages/annotation/assignment_annotator_popup.html'
+
+    def get(self, request, set_id):
+        set = get_object_or_404(Set, id=set_id)
+        project = get_object_or_404(Project, id=request.GET.get('project_id', 1))
+        current_assignments = set.video.assignment_set.filter(project=project).all()
+        context = RequestContext(request, {
+            'set': set,
+            'current': current_assignments,
+        })
+        return render_to_response(self.template_name, context=context)

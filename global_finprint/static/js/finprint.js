@@ -13,6 +13,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initUnassignModal();
         initShowFormButtons();
         initManageStateButtons();
+        initManageMasterStateButtons();
         initAutomaticAssignment();
         initAnnotatorPopover();
         initCollapse();
@@ -24,9 +25,12 @@ var finprint = finprint || {};  //namespace if necessary...
         initColoredRows();
         initDisableOnSubmit();
         initExpandEventThumbnail();
+        initInlineObsDelete();
         initInlineObsEdit();
         initVideoForm();
         initEditMeasurables();
+        initMultipleAssignmentModals();
+        initCheckbutton();
     });
 
     function getCSRF() {
@@ -73,6 +77,7 @@ var finprint = finprint || {};  //namespace if necessary...
     function initAssignmentSearch() {
         var $form = $('form#assignment-search-form');
         var $target = $('tbody#assignment-target');
+        restorePreviousFilter();
         var options = {allowEmptyOption: true, plugins: ['remove_button', 'restore_on_backspace']};
         var fields = [
             '#select-trip',
@@ -86,9 +91,36 @@ var finprint = finprint || {};  //namespace if necessary...
         fields.forEach(function (selector) {
             $form.find(selector).selectize(options);
         });
+
+        //intially search will be default clicked when page is loaded GLOB-604
+        if ($form.serializeArray().some(function (field) {
+                    return field.name !== 'csrfmiddlewaretoken' && field.value;
+                }))
+        {
+                $('#limitSelectionId').hide();
+                $('#no_video_id').hide();
+                $('#spinId').show();
+                $('#spinId2').show();
+                storePreviousSearchFilter()
+                $.post('/assignment/search', $form.serialize(), function (res) {
+                    $target.html(res);
+                    $('#limitSelectionId').show();
+                    $('#no_video_id').show();
+                    $('#spinId').hide();
+                    $('#spinId2').hide();
+                    $('#selectAllAssignmentsId').prop('checked', false)
+                    controlCheckBoxFunctionality();
+                });
+        }
         $form.find('button#search').click(function () {
+            storePreviousSearchFilter()
             var $this = $(this);
             var oldText = $this.text();
+
+            $('#limitSelectionId').hide();
+            $('#no_video_id').hide();
+            $('#spinId').show();
+            $('#spinId2').show();
             if ($form.serializeArray().some(function (field) {
                     return field.name !== 'csrfmiddlewaretoken' && field.value;
                 })) {
@@ -96,8 +128,13 @@ var finprint = finprint || {};  //namespace if necessary...
                 $this.text('Searching...');
                 $.post('/assignment/search', $form.serialize(), function (res) {
                     $target.html(res);
+                    $('#spinId2').hide();
+                    $('#no_video_id').show();
                     $this.removeAttr('disabled');
                     $this.text(oldText);
+                    controlCheckBoxFunctionality();
+                    $('#selectAllAssignmentsId').prop('checked', false)
+
                 });
             } else {
                 alert('You must choose at least 1 search filter');
@@ -200,10 +237,11 @@ var finprint = finprint || {};  //namespace if necessary...
         $('#btn-show-trip-form').click(showTripForm);
     }
 
+    // todo:  DRY these next two functions
     function initManageStateButtons() {
         var $buttons = $('div.manage-state-buttons');
         var assignmentId = $buttons.data('id');
-        var $radio = $('div#radioBtn a');
+        var $radio = $('div#assignment-state-buttons a');
 
         $radio.on('click', function () {
             var statusId = $(this).data('value');
@@ -213,7 +251,7 @@ var finprint = finprint || {};  //namespace if necessary...
             $('a[data-value="' + statusId + '"]').removeClass('notActive').addClass('active');
 
             $buttons.find('form').submit();
-            $('span#save_message').show().delay(2000).fadeOut();
+            $('span#save_message').show().delay(1000).fadeOut();
         });
 
         $buttons.find('form').submit(function () {
@@ -226,12 +264,107 @@ var finprint = finprint || {};  //namespace if necessary...
         });
     }
 
+    function initManageMasterStateButtons() {
+        var $buttons = $('div.manage-master-state-buttons');
+        var masterId = $buttons.data('id');
+        var $radio = $('div#master-state-buttons a');
+
+        $radio.on('click', function () {
+            var statusId = $(this).data('value');
+            $('#master_state').prop('value', statusId);
+
+            $('a').not('[data-value="' + statusId + '"]').removeClass('active').addClass('notActive');
+            $('a[data-value="' + statusId + '"]').removeClass('notActive').addClass('active');
+
+            $buttons.find('form').submit();
+            $('span#save_message').show().delay(1000).fadeOut();
+        });
+
+        $buttons.find('form').submit(function () {
+            var action = 'update';
+            var new_state = $('div#radioBtn a.active').data('value');
+
+            $.post('/assignment/master/manage/' + masterId, $(this).serialize());
+
+            return false;
+        });
+    }
+
     function initAutomaticAssignment() {
         var $openLink = $('#open-auto-modal');
         var $modal = $('#automatic-modal');
-        var $modalForm = $modal.find('form');
+        var $modalForm = $modal.find('form#auto-assignment-form');
+
+        var options = {allowEmptyOption: true, plugins: ['remove_button', 'restore_on_backspace']};
+        var fields = [
+           // '#select-set-auto-assign',
+            '#auto-affiliation',
+            '#project',
+        ];
+
 
         $modalForm.submit(false);
+        fields.forEach(function (selector) {
+            $modalForm.find(selector).selectize(options);
+
+        });
+
+        var $setSelect = $modalForm.find('#select-set-auto-assign').selectize($.extend({}, options, {
+            valueField: 'code',
+            labelField: 'code',
+            searchField: 'code',
+            optgroupField: 'group',
+
+         }));
+
+        var $reefSelect = $modalForm.find('#select-reef-auto-assign').selectize($.extend({}, options, {
+            valueField: 'id',
+            labelField: 'name',
+            searchField: 'name',
+            optgroupField: 'reef_group',
+            onChange: function(value){
+               var setSelect = $setSelect[0].selectize ;
+               setSelect.disable();
+               setSelect.clearOptions();
+               console.log('#select-reef-auto-assign', value)
+               $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
+                   console.log('reefs selected are: ', res["sets"])
+                   var sets = res["sets"];
+                   setSelect.load(function(callback){
+                           setSelect.enable();
+                           callback(sets);
+                           });
+               });
+           }
+         }));
+
+          $modalForm.find('#auto-trip').selectize($.extend({}, options, {
+               onChange: function(value){
+                    console.log('#auto-trip', value)
+                    var reefSelect = $reefSelect[0].selectize ;
+                    reefSelect.disable();
+                    reefSelect.clearOptions();
+
+                    var setSelect = $setSelect[0].selectize ;
+                    setSelect.disable();
+                    setSelect.clearOptions();
+                    $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
+                       console.log('/assignment/filter_change', res["sets"])
+                       console.log('/assignment/filter_change', res["reefs"])
+                       var reefs = res["reefs"];
+                       var sets = res["sets"];
+                       reefSelect.load(function(callback){
+                           reefSelect.enable();
+                               callback(reefs);
+                           });
+
+                       setSelect.load(function(callback){
+                           setSelect.enable();
+                               callback(sets);
+                           });
+                   });
+              }
+         }));
 
         $openLink.click(function (e) {
             e.preventDefault();
@@ -753,10 +886,11 @@ var finprint = finprint || {};  //namespace if necessary...
             var cell = $(row).find('td')[diffCell];
             var diffKey = cell.innerText;
             if (diffDict[diffKey] === undefined) {
-                document.styleSheets[0].addRule(
-                    '.color-rows table tbody tr td[data-pall-index="' + pallIndex + '"]:before',
-                    css + 'border-color: ' + palette[pallIndex] + ';'
-                );
+                // todo:  track down the usage and effects of this!
+                // document.styleSheets[0].insertRule(
+                //     '.color-rows table tbody tr td[data-pall-index="' + pallIndex + '"]:before',
+                //     css + 'border-color: ' + palette[pallIndex] + ';'
+                // );
                 diffDict[diffKey] = pallIndex;
                 pallIndex += 1;
             }
@@ -793,6 +927,67 @@ var finprint = finprint || {};  //namespace if necessary...
         });
     }
 
+    function initInlineObsDelete() {
+        $('#observation-table').on('click', 'a.obs-delete', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var $this = $(e.target);
+            var $thisRow = $this.closest('tr');
+            var dataUrl = $this.data('event');
+
+            $.post(dataUrl, function (resp) {
+                // if this is not part of a multi-event obs, we can simply delete it.
+                // if it is
+                //     decrease rowspan data attr and of tds by 1
+                //     then we need to determine if it is a parent or child
+                //          if child just delete
+                //          if parent, promote the first child to parent
+                //     if rowspan has reached 1 then demote to single-event
+                if (!$thisRow.hasClass('single-event')) {
+                    var $parentRow = $thisRow.hasClass('first-event')
+                        ? $thisRow
+                        : $this.closest('tbody').find('tr[data-target=".' + $thisRow.data('is-child') + '"]');
+                    var $rowspanTds = $parentRow.children('.rowspan');
+                    var newRowspan = $parentRow.data('rowspan') - 1;
+
+                    $parentRow.data('rowspan', newRowspan);
+                    $rowspanTds.attr('rowspan', newRowspan);
+
+                    if ($thisRow.hasClass('first-event')) {
+                        $parentRow = $parentRow.next()
+                            .prepend($rowspanTds);
+                    }
+                    if (newRowspan === 1) {
+                        $parentRow.removeClass('first-event accordion-toggle child-row')
+                            .attr('class',
+                               function(i, c){
+                                  return c.replace(/(^|\s)children-\S+/g, '');
+                               })
+                            .addClass('single-event')
+                            .removeAttr('data-is-child')
+                            .attr('data-rowspan', 1)
+                            .css('display', '');
+                        $parentRow.find('td.action a.obs-delete').css('display', '');
+                    } else if ($parentRow.hasClass('child-row')) {
+                        $parentRow.removeClass('child-row')
+                            .attr('class',
+                               function(i, c){
+                                  return c.replace(/(^|\s)children-\S+/g, '');
+                               })
+                            .addClass('first-event accordion-toggle')
+                            .attr('data-target', '.' + $parentRow.data('isChild'))
+                            .removeAttr('data-is-child')
+                            .attr('data-rowspan', newRowspan)
+                            .css('display', '');
+                    }
+                }
+                $thisRow.remove();
+            });
+
+        });
+    }
+
     function initInlineObsEdit() {
         $('#observation-table').on('click', 'a.obs-edit', function (e) {
             e.preventDefault();
@@ -800,7 +995,7 @@ var finprint = finprint || {};  //namespace if necessary...
 
             var $this = $(e.target);
             var dataUrl = $this.data('event');
-            var saveUrl = dataUrl.replace('edit_data', 'save_data');
+            var saveUrl = dataUrl.replace('edit', 'save');
             var $thisRow = $this.closest('tr');
             var $parentRow = $thisRow.hasClass('first-event')
                 ? $thisRow
@@ -838,8 +1033,8 @@ var finprint = finprint || {};  //namespace if necessary...
 
                 // actions
                 oldActions = $actionsCell.html();
-                actionsHTML = '<a href="#" class="edit-save" data-save="' + saveUrl + '">Save</a>' +
-                    '<br /><a href="#" class="edit-cancel">Cancel</a>';
+                actionsHTML = '<a href="#" class="edit-save" data-save="' + saveUrl + '">Save</a>';
+                actionsHTML += '<br /><a href="#" class="edit-cancel">Cancel</a>';
                 $actionsCell.html(actionsHTML);
 
                 // wire links in actions
@@ -1056,4 +1251,171 @@ var finprint = finprint || {};  //namespace if necessary...
             return false;
         });
     }
+
+    function initMultipleAssignmentModals() {
+        var $form = $('form#assignment-search-form');
+        var $selectAllCheckBox = $('#selectAllAssignmentsId');
+        var $modal = $('div#multi-assign-modal')
+        var $sec_modal = $('#assign-annotator-modal')
+        var options = {allowEmptyOption: true, plugins: ['remove_button', 'restore_on_backspace']};
+
+
+        $form.find('button#assignMultipleVideo').click(function () {
+            var $this = $(this);
+            var oldText = $this.text();
+            var setIds = $("input[name='select_check_box']");
+            var ids= []
+            var video_ids = []
+            //adding all the checked ids for assigning
+            for (var i=0;i< setIds.length;i++) {
+              if (setIds[i].checked == true) {
+                ids.push(setIds[i].value)
+                video_ids.push(setIds[i].attributes.getNamedItem("data-id").value)
+              }
+            }
+            if (ids.length == 0) {
+                   alert('You must choose at least 1 video file');
+                   $this.removeAttr('disabled');
+                   $this.text('Assign Videos');
+                   return false;
+                   }
+
+            if ($form.serializeArray().some(function (field) {
+                    return field.name !== 'csrfmiddlewaretoken' && field.value;
+                })) {
+                $this.attr('disabled', 'disabled');
+                $this.text('Assigning Selected videos...');
+                $.ajax({
+                  type:"POST",
+                  url:"/assignment/assign_selected_videos",
+                  data: {
+                        'set_ids': ids,
+                        'video_ids': video_ids
+                        },
+                 success: function(res){
+                     $modal.find('div.modal-content').html(res);
+                     $modal.find('#new-annotators-list').selectize({plugins: ['remove_button', 'restore_on_backspace']});
+                     $this.removeAttr('disabled');
+                     $this.text('Assign Videos');
+                     $this.text(oldText);
+                     $modal.modal('show');
+                     $('#selectAllAssignmentsId').prop('checked', false)
+                 },
+                 error : function(res) {
+                   alert('You must choose at least 1 video file');
+                   $this.removeAttr('disabled');
+                   $this.text('Assign Videos');
+                   return false;
+                 }
+              });
+
+             } else {
+                alert('You must choose at least 1 video file');
+                $this.removeAttr('disabled');
+                $this.text('Assign Videos');
+                return false;
+            }
+        });
+
+        $modal.on('click', 'button#multiAssignmentId', function () {
+            $.post('/assignment/save_multi_video_assignment' , $modal.find('form').serialize(), function () {
+                $modal.modal('hide');
+                $('form#assignment-search-form button#search').click();
+            });
+        });
+
+         function loadModal(id, params) {
+            params = params || {};
+            $.get('/assignment/assigned_annotator/' + id, params, function (html) {
+                $sec_modal.find('div.modal-content').html(html);
+            });
+        }
+
+        $modal.on('click', 'a.open-assign-modal-popup', function (e) {
+            e.preventDefault();
+            loadModal($(this).data('id'), {project_id: 1});
+            $sec_modal.modal('show');
+        });
+
+    }
+
+    function initCheckbutton(){
+       $("#selectAllAssignmentsId").click(function () {
+                $(".selectCheckBox").prop('checked', $(this).prop('checked'));
+        });
+
+     }
+
+     function initSingleCheckbutton(){
+       $(".selectCheckBox").click(function () {
+            var setIds = $("input[name='select_check_box']");
+            if (checkIfAllCheck(setIds) == false)  {
+                $("#selectAllAssignmentsId").prop('checked', $(this).prop('checked'));
+                }
+        });
+
+     }
+
+     function controlCheckBoxFunctionality() {
+        $('.selectCheckBox').click(function(){
+              if($(".selectCheckBox:checked").length < $(".selectCheckBox").length){
+                   $('#selectAllAssignmentsId').prop('checked', false)
+              } else {
+                   $('#selectAllAssignmentsId').prop('checked', true)
+              }
+            });
+       }
+
+      // Store previous value in browser local storage
+     function storePreviousSearchFilter() {
+         localStorage.setItem("select-trip", $('#select-trip').val());
+         localStorage.setItem("select-set", $('#select-set').val());
+         localStorage.setItem("select-reef", $('#select-reef').val());
+         localStorage.setItem("select-anno", $('#select-anno').val());
+         localStorage.setItem("select-status", $('#select-status').val());
+         localStorage.setItem("select-project", $('#select-project').val());
+         localStorage.setItem("select-status", $('#select-status').val());
+         localStorage.setItem("select-assigned", $('#select-assigned').val());
+         localStorage.setItem("assigned-ago", $('#assigned-ago').val());
+          }
+
+     function restorePreviousFilter() {
+          var values = localStorage.getItem("select-trip");
+          if (values!= null) {
+              $.each(values.split(","), function(i,e){
+                    $("#select-trip option[value='" + e + "']").prop("selected", true);
+                 }); }
+
+          values = localStorage.getItem("select-set");
+          if (values != null) {
+              $.each(values.split(","), function(i,e){
+                    $("#select-set option[value='" + e + "']").prop("selected", true);
+                 });}
+
+          values = localStorage.getItem("select-reef");
+
+          if (values!=null) {
+              $.each(values.split(","), function(i,e){
+                    $("#select-reef option[value='" + e + "']").prop("selected", true);
+                 });}
+
+          values = localStorage.getItem("select-anno");
+
+          if (values!= null) {
+              $.each(values.split(","), function(i,e){
+                    $("#select-anno option[value='" + e + "']").prop("selected", true);
+                 });}
+
+          values = localStorage.getItem("select-status");
+          if (values!=null ){
+              $.each(values.split(","), function(i,e){
+                    $("#select-status option[value='" + e + "']").prop("selected", true);
+                 });}
+
+          $('#select-project').val(localStorage.getItem("select-project"));
+          $('#select-assigned').val(localStorage.getItem("select-assigned"));
+          $('#assigned-ago').val(localStorage.getItem("assigned-ago"));
+         }
+
 })(jQuery);
+

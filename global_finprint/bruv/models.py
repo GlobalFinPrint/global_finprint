@@ -1,4 +1,5 @@
 from decimal import Decimal
+from collections import Counter
 
 from django.contrib.gis.db import models
 from django.core.validators import MinValueValidator
@@ -6,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.gis.geos import Point
 
 from global_finprint.annotation.models.observation import Observation, MasterRecord
-from global_finprint.annotation.models.video import Video
+from global_finprint.annotation.models.video import Video, Assignment
 from global_finprint.core.version import VersionInfo
 from global_finprint.core.models import AuditableModel
 from global_finprint.trip.models import Trip
@@ -14,6 +15,7 @@ from global_finprint.habitat.models import ReefHabitat, Substrate, SubstrateComp
 
 from mptt.models import MPTTModel, TreeForeignKey
 
+# todo:  move some of these out ot the db?
 EQUIPMENT_BAIT_CONTAINER = {
     ('B', 'Bag'),
     ('C', 'Cage'),
@@ -277,15 +279,41 @@ class Set(AuditableModel):
                                              self.code,
                                              image_type)
 
-    def master(self):
+    # todo:  "property-ize" this?
+    def master(self, project=1):
         try:
-            return self.masterrecord
+            return MasterRecord.objects.get(set=self, project_id=project)
         except MasterRecord.DoesNotExist:
             return None
 
+    def assignment_counts(self, project=1):
+        status_list = {'Total': 0}
+        if self.video:
+            status_list.update(Counter(Assignment.objects.filter(
+                video=self.video, project=project).values_list('status__id', flat=True)))
+            status_list['Total'] = sum(status_list.values())
+        return status_list
+
+    def required_fields(self):
+        # need to make this data-driven, not hard-coded field choices
+        # currently required:
+        # 1) visibility
+        # 2) current flow (either)
+        # 3) substrate
+        # 4) substrate complexity
+        return bool(self.visibility
+                    and (self.current_flow_estimated or self.current_flow_instrumented)
+                    and self.substrate and self.substrate_complexity)
+
     def completed(self):
+        # we consider the following for "completion":
+        # 1) complete annotations have been promoted into a master
+        # 2) a master annotation record has been completed
+        # 3) other 'required' fields have been completed (see above)
         master = self.master()
-        return master and (master.completed or master.deprecated)
+        return master \
+               and (master.status.is_finished) \
+               and self.required_fields()
 
     def __str__(self):
         return u"{0}_{1}".format(self.trip.code, self.code)

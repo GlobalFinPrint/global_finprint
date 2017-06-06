@@ -8,7 +8,7 @@ SELECT
   hlc.name                                                  AS location,
   hst.name                                                  AS site,
   hrf.name                                                  AS reef,
-  hrt.description                                           AS reeef_habitat,
+  hrt.description                                           AS reef_habitat,
 
   u.first_name || ' ' || u.last_name                        AS annotator,
 

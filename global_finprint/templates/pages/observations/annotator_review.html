@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load active_if_equal %}
+
+{% block content %}
+    <div class="col-md-12 manage-content">
+
+        {% include 'partials/breadcrumb.html' with trip=trip set=set current_page_name='Observations '|add:for %}
+
+        <div class="row manage-state-buttons" data-id="{{ assignment.id }}">
+            <form>
+                <div class="input-group pull-right">
+                    <div class="btn-toolbar">
+                        <div class="input-group">
+                            <span id="save_message" class="inline .success">
+                                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>  Status change saved  </span>
+                        </div>
+                        <div id="assignment-state-buttons" class="btn-group">
+                            {% for assignment_state in state_list %}
+                                <a class="btn btn-default
+                                    {% active_if_equal assignment.status.id assignment_state.id %}
+                                    {% if assignment_state.id == 1 %}disabled{% endif %}"
+                                   data-toggle="assignment_state"
+                                   data-value="{{ assignment_state.id }}">{{ assignment_state.name }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <input type="hidden" name="assignment_state" id="assignment_state">
+                    <input type="hidden" name="action" value="update">
+                    {% csrf_token %}
+                </div>
+            </form>
+            <div class="pull-left">
+                <a class="btn btn-default" href="{% url 'assignment_compare' set.id %}?project=1">Compare assignments</a>
+                <a class="btn btn-default" href="{% url 'set_observation_list' trip.id set.id %}">All observations</a>
+            </div>
+        </div>
+
+        <div class="row">
+            {% include 'partials/paginator_controls.html' with page=observations thing_name='observations' %}
+        </div>
+
+        <div class="row color-rows" data-diff-cell="0">
+            {% include 'partials/observation_table.html' with observations=observations for=for %}
+        </div>
+    </div>
+{% endblock %}

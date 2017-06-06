@@ -1,5 +1,4 @@
 {% load time_display %}
-<h3>Observations{{ for }}</h3>
 <table class="table table-bordered table-condensed assignment-observation-table {{ master|yesno:"master,," }}" id="observation-table" cellspacing="0" width="100%">
     <thead>
     <tr>
@@ -27,7 +26,13 @@
                 {% else %}
                     <tr class="single-event {{ o.needs_review|yesno:"needs-review,," }}" data-rowspan="{{ rowspan }}">
                 {% endif %}
-                <td class="rowspan">{{ o.annotator }}</td>
+                <td class="rowspan">
+                    {% if not master %}  {# todo:  do this for "all obs" as well. #}
+                        <a href="{% url 'assignment_review' o.assignment.id %}">{{ o.annotator }}</a>
+                    {% else %}
+                        {{ o.annotator }}
+                    {% endif %}
+                </td>
                 {% if o.type == 'I' %}
                     <td class="rowspan"><i>N/A</i></td>
                 {% else %}
@@ -54,20 +59,25 @@
                 <td class="attributes">{{ e.attribute.all|join:', ' }}</td>
                 {% if master %}
                     <td class="measurables">
-                        <a href="#" class="edit-measurables" data-event-id="{{ e.id }}">Edit</a>
+                        <a href="#" class="edit-measurables" data-event-id="{{ e.id }}">Add</a>
                         <div class="content">
                             {{ e.active_measurables|join:'<br />' }}
                         </div>
                     </td>
                 {% endif %}
-                <td>
+                <td class="action">
                     {% if master %}
                         {% with set=e.master_observation.set %}
-                        <a href="#" class="obs-edit" data-event="{% url 'master_edit_obs' set.pk e.pk %}">Edit</a>
+                            <a href="#" class="obs-edit" data-obs-type="master" data-event="{% url 'master_edit_obs' set.pk e.pk %}">Edit</a>
+                            {% if e.id != firstevent.id or rowspan == 1 %}
+                                <a href="#" class="obs-delete" data-event="{% url 'master_delete_obs' set.pk e.pk %}">Delete</a>
+                            {% else %}
+                                <a href="#" class="obs-delete" style='display: none' data-event="{% url 'master_delete_obs' set.pk e.pk %}">Delete</a>
+                            {% endif %}
                         {% endwith %}
                     {% else %}
                         {% with set=e.observation.set %}
-                        <a href="#" class="obs-edit" data-event="{% url 'observation_edit_data' set.trip.pk set.pk e.pk %}">Edit</a>
+                        <a href="#" class="obs-edit" data-obs-type="regular" data-event="{% url 'observation_edit_data' set.trip.pk set.pk e.pk %}">Edit</a>
                         {% endwith %}
                     {% endif %}
                 </td>
@@ -76,9 +86,15 @@
         {% endwith %}
     {% empty %}
         <tr>
-            <td colspan="{{ master|yesno:"10,9" }}" class="text-center">
+        {% if master %}
+            <td colspan=10 class="text-center">
+                <h4>No observations for this master record</h4>
+            </td>
+        {% else %}
+            <td colspan=9 class="text-center">
                 <h4>{{ assignment.annotator }} has not yet submitted any observations for this video</h4>
             </td>
+        {% endif %}
         </tr>
     {% endfor %}
     </tbody>

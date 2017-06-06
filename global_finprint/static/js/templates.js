@@ -5,6 +5,7 @@ var Templates = {
             '<div class="observation-popover clear <%= leftRightAligned %>-aligned" style="<%= popoverPosition %>">' +
                 '<div class="left">' +
                     '<div><%= pretty_time %></div>' +
+
                     '<% if (initial_event.image_url) { %>' +
                         '<div class="event-thumbnail" style="background-image:url(<%= initial_event.image_url %>)">' +
                             '<div class="extent" style="<%= initial_event.extent_css %>">&nbsp;</div>' +
@@ -12,10 +13,14 @@ var Templates = {
                     '<% } else { %>' +
                         '<div class="event-thumbnail empty"></div>' +
                     '<% } %>' +
+
+                    '<% if (status_id == 4 || !status_id) { %>' +
                     '<div class="selector<%= selected ? " selected" : "" %>">' +
                         '<span class="checkmark glyphicon glyphicon-ok"></span>' +
                         '<div class="empty-selection">&nbsp;</div>' +
                     '</div>' +
+                    '<% } %>' +
+
                 '</div>' +
                 '<div class="right">' +
                     '<table><tbody>' +

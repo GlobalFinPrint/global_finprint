@@ -2,17 +2,12 @@
 {% load time_display %}
 {% block content %}
     <div class="col-md-12">
-        <div class="row">
-            <div class="well trail">
-                <a href="/">Global FinPrint</a> |
-                <a href="{% url 'trip_list' %}">Trips</a> |
-                <a href="{% url 'trip_update' trip_pk %}">{{ trip_name }}</a> |
-                <a href="{% url 'trip_set_list' trip_pk %}">Sets</a> |
-                <a href="{% url 'set_update' trip_pk set_pk %}">{{ set_name }}</a> |
-                Observations
+        {% include 'partials/breadcrumb.html' with trip=trip set=set current_page_name='All observations' %}
+        <div class="row manage-master-state-buttons" data-id="{{ master.id }}">
+            <div class="pull-left">
+                <a class="btn btn-default" href="{% url 'assignment_compare' set.id %}?project=1">Compare assignments</a>
             </div>
         </div>
-
         <div class="row color-rows" data-diff-cell="0">
             {% include 'partials/paginator_controls.html' with page=observations thing_name='observations' %}
             {% include 'partials/observation_table.html' with observations=observations for=for %}

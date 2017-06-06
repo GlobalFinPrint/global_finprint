@@ -1,0 +1,15 @@
+<div class="row">
+    {# todo:  needs extension:  only works for observations at this point ... #}
+    <div class="well trail">
+        {# todo:  this should be the project: #}
+        <a href="/">Global FinPrint</a> |
+        Trip: <a href="{% url 'trip_update' trip.id %}">{{ trip }}</a> |
+        Set: <a href="{% url 'set_update' trip.id set.id %}">{{ set }}</a> |
+        {{ current_page_name }}
+        {% if include_all %}
+            <span class="pull-right">
+            <a href="{% url 'set_observation_list' trip.id set.id %}">All observations</a>
+            </span>
+        {% endif %}
+    </div>
+</div>
