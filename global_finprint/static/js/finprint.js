@@ -886,10 +886,11 @@ var finprint = finprint || {};  //namespace if necessary...
             var cell = $(row).find('td')[diffCell];
             var diffKey = cell.innerText;
             if (diffDict[diffKey] === undefined) {
-                document.styleSheets[0].addRule(
-                    '.color-rows table tbody tr td[data-pall-index="' + pallIndex + '"]:before',
-                    css + 'border-color: ' + palette[pallIndex] + ';'
-                );
+                // todo:  track down the usage and effects of this!
+                // document.styleSheets[0].insertRule(
+                //     '.color-rows table tbody tr td[data-pall-index="' + pallIndex + '"]:before',
+                //     css + 'border-color: ' + palette[pallIndex] + ';'
+                // );
                 diffDict[diffKey] = pallIndex;
                 pallIndex += 1;
             }
