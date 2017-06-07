@@ -78,7 +78,9 @@ SELECT
   tr.id                                                     AS trip_id,
   s.id                                                      AS set_id,
   v.id                                                      AS video_id,
-  a.id                                                      AS assignment_id
+  a.id                                                      AS assignment_id,
+  ast.id                                                    AS assignment_state_id,
+  ast.name                                                  AS assignment_state
 FROM
   trip_trip tr
   INNER JOIN bruv_set s ON s.trip_id = tr.id
@@ -92,6 +94,7 @@ FROM
 
   INNER JOIN annotation_video v ON v.id = s.video_id
   INNER JOIN annotation_assignment a ON a.video_id = v.id
+  INNER JOIN annotation_annotationstate ast ON ast.id = a.status_id
 
   INNER JOIN core_finprintuser fu ON fu.id = a.annotator_id
   INNER JOIN auth_user u ON u.id = fu.user_id

@@ -2,27 +2,29 @@ CREATE OR REPLACE VIEW public.v_report_observations_coral_summary AS
 SELECT
   evtsum.trip_code,
   evtsum.set_code,
-  evtsum.trip_code || '_' || evtsum.set_code                   AS full_code,
+  evtsum.trip_code || '_' || evtsum.set_code                                           AS full_code,
 
-  hab.region                                                   AS region,
-  hab.location                                                 AS location,
-  hab.site                                                     AS site,
-  hab.reef                                                     AS reef,
-  hab.reef_habitat                                             AS reef_habitat,
+  hab.region                                                                           AS region,
+  hab.location                                                                         AS location,
+  hab.site                                                                             AS site,
+  hab.reef                                                                             AS reef,
+  hab.reef_habitat                                                                     AS reef_habitat,
 
-  u.first_name || ' ' || u.last_name                           AS annotator,
+  u.first_name || ' ' || u.last_name                                                   AS annotator,
 
   ani.family,
   ani.genus,
   ani.species,
 
-  max(evtsum.numeric_value_from_event_note)                    AS maxn,
+  max(evtsum.numeric_value_from_event_note)                                            AS maxn,
 
   evtsum.trip_id,
   evtsum.set_id,
   evtsum.video_id,
   evtsum.assignment_id,
-  'https://data.globalfinprint.org/assignment/review/' || evtsum.assignment_id :: TEXT AS assignment_management_url
+  evtsum.assignment_state_id,
+  ast.name                                                                             AS assignemnt_state,
+  'https://data.globalfinprint.org/assignment/review/' || evtsum.assignment_id :: TEXT AS assignment_review_url
 FROM
   event_attribute_summary evtsum
 
@@ -31,11 +33,13 @@ FROM
   INNER JOIN core_finprintuser fu ON fu.id = evtsum.annotator_id
   INNER JOIN auth_user u ON u.id = fu.user_id
 
+  INNER JOIN annotation_annotationstate ast ON ast.id = evtsum.assignment_state_id
+
   INNER JOIN annotation_animalobservation aobs ON aobs.observation_id = evtsum.observation_id
   INNER JOIN annotation_animal ani ON ani.id = aobs.animal_id
 WHERE hab.region = 'Coral Triangle'
-    and evtsum.numeric_value_from_event_note is not null
-    and evtsum.max_n_tagged = 1
+      AND evtsum.numeric_value_from_event_note IS NOT NULL
+      AND evtsum.max_n_tagged = 1
 GROUP BY
   trip_code,
   set_code,

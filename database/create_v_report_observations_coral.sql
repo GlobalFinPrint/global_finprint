@@ -15,8 +15,8 @@ SELECT
   evt.event_time,
   -- format event time to xx:xx:xxx
   lpad((((evt.event_time / 1000) / 60) :: TEXT), 3, '0')
-    || ':' || lpad(((evt.event_time / 1000) % 60) :: TEXT, 2, '0')
-    || ':' || lpad(((evt.event_time % 1000) :: TEXT), 3, '0') AS event_time_minutes,
+  || ':' || lpad(((evt.event_time / 1000) % 60) :: TEXT, 2, '0')
+  || ':' || lpad(((evt.event_time % 1000) :: TEXT), 3, '0') AS event_time_minutes,
 
   obs.comment,
   evt.note,
@@ -78,7 +78,9 @@ SELECT
   tr.id                                                     AS trip_id,
   s.id                                                      AS set_id,
   v.id                                                      AS video_id,
-  a.id                                                      AS assignment_id
+  a.id                                                      AS assignment_id,
+  ast.id                                                    AS assignment_state_id,
+  ast.name                                                  AS assignment_state
 FROM
   trip_trip tr
   INNER JOIN bruv_set s ON s.trip_id = tr.id
@@ -92,6 +94,7 @@ FROM
 
   INNER JOIN annotation_video v ON v.id = s.video_id
   INNER JOIN annotation_assignment a ON a.video_id = v.id
+  INNER JOIN annotation_annotationstate ast ON ast.id = a.status_id
 
   INNER JOIN core_finprintuser fu ON fu.id = a.annotator_id
   INNER JOIN auth_user u ON u.id = fu.user_id
