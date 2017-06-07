@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django import forms
 from mptt.admin import MPTTModelAdmin
-from .models import animal, video, annotation, project, observation
+from .models import animal, annotation, project, observation
 from ..core.models import FinprintUser
 
 
@@ -10,18 +10,34 @@ class AnimalAdmin(admin.ModelAdmin):
     ordering = ['family', 'genus', 'species']
     search_fields = ['common_name', 'family', 'genus', 'species']
 
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(AnimalAdmin, self).get_form(request, obj, **kwargs)
+        form.base_fields['projects'].widget.can_add_related = False
+        form.base_fields['projects'].widget.can_change_related = False
+        return form
+
 admin.site.register(animal.Animal, AnimalAdmin)
 admin.site.register(animal.AnimalGroup)
 
 
+class GlobalTagAdmin(admin.ModelAdmin):
+    list_display = ('parent', 'name', 'description')
+
+admin.site.register(annotation.GlobalAttribute, GlobalTagAdmin)
+
+
 class TagAdmin(MPTTModelAdmin):
-    list_display = ('name', 'active', 'needs_review', 'not_selectable', 'lead_only', 'project')
-    fields = ('parent', 'name', 'description', 'active', 'needs_review', 'not_selectable', 'lead_only', 'project')
+    list_display = ('name', 'active', 'needs_review', 'not_selectable', 'lead_only', 'global_parent', 'project')
+    fields = ('parent', 'name', 'description', 'global_parent', 'active', 'needs_review', 'not_selectable', 'lead_only', 'project')
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(TagAdmin, self).get_form(request, obj, **kwargs)
         form.base_fields['parent'].widget.can_add_related = False
         form.base_fields['parent'].widget.can_change_related = False
+        form.base_fields['global_parent'].widget.can_add_related = False
+        form.base_fields['global_parent'].widget.can_change_related = False
+        form.base_fields['project'].widget.can_add_related = False
+        form.base_fields['project'].widget.can_change_related = False
         return form
 
 admin.site.register(annotation.Attribute, TagAdmin)
@@ -46,7 +62,6 @@ class ProjectAdmin(admin.ModelAdmin):
         form = super(ProjectAdmin, self).get_form(request, obj, **kwargs)
         form.base_fields['user'].widget.can_add_related = False
         form.base_fields['user'].widget.can_change_related = False
-        form.base_fields['animals'].widget.can_add_related = False
         return form
 
     def has_delete_permission(self, request, obj=None):
@@ -74,3 +89,4 @@ class MeasurableAdmin(admin.ModelAdmin):
     form = MeasurableAdminForm
 
 admin.site.register(observation.Measurable, MeasurableAdmin)
+
