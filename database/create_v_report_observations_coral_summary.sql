@@ -22,7 +22,7 @@ SELECT
   evtsum.set_id,
   evtsum.video_id,
   evtsum.assignment_id,
-  evtsum.assignemnt_status_id,
+  evtsum.assignment_status_id,
   ast.name                                                                             AS assignemnt_state,
   'https://data.globalfinprint.org/assignment/review/' || evtsum.assignment_id :: TEXT AS assignment_review_url
 FROM
@@ -33,7 +33,7 @@ FROM
   INNER JOIN core_finprintuser fu ON fu.id = evtsum.annotator_id
   INNER JOIN auth_user u ON u.id = fu.user_id
 
-  INNER JOIN annotation_annotationstate ast ON ast.id = evtsum.assignment_state_id
+  INNER JOIN annotation_annotationstate ast ON ast.id = evtsum.assignment_status_id
 
   INNER JOIN annotation_animalobservation aobs ON aobs.observation_id = evtsum.observation_id
   INNER JOIN annotation_animal ani ON ani.id = aobs.animal_id

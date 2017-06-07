@@ -8,7 +8,7 @@ SELECT
   vid.id                                     AS video_id,
   assig.id                                   AS assignment_id,
   assig.annotator_id,
-  assig.status_id                            AS assignemnt_status_id,
+  assig.status_id                            AS assignment_status_id,
   obs.id                                     AS observation_id,
   evt.id                                     AS event_id,
   animal.id                                  AS animal_id,
