@@ -7,7 +7,7 @@ from django.views.generic import View
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from .models import Report, Planned_Site_Status
+from .models import Report, PlannedSiteStatus
 from ..core.mixins import UserAllowedMixin
 
 
@@ -56,6 +56,8 @@ class CustomReportFileView(UserAllowedMixin, View):
         return response
 
 
+# todo: not currently used ... intended for status mapping.
+
 class StatusMapView(UserAllowedMixin, View):
     """
     Report for status map found at /reports/status/map/
@@ -74,7 +76,7 @@ def planned_site_geojson(request):
     :return:
     """
     feature = serialize('geojson',
-                        Planned_Site_Status.objects.all(),
+                        PlannedSiteStatus.objects.all(),
                         fields='eez_boundary, status'
                         )
     return HttpResponse(feature, content_type='application/json')
