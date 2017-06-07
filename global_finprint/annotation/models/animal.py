@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MaxValueValidator
 
 from global_finprint.habitat.models import Region
+from .project import Project
 
 
 ANIMAL_SEX_CHOICES = {
@@ -46,6 +47,8 @@ class Animal(models.Model):
                                             null=True,
                                             blank=True,
                                             help_text='Enter CAAB code without spaces')
+
+    projects = models.ManyToManyField(Project, related_name="animals")
 
     class Meta:
         unique_together = ('family', 'genus', 'species')
