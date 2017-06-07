@@ -20,8 +20,9 @@ admin.site.register(animal.Animal, AnimalAdmin)
 admin.site.register(animal.AnimalGroup)
 
 
-class GlobalTagAdmin(admin.ModelAdmin):
-    list_display = ('parent', 'name', 'description')
+class GlobalTagAdmin(MPTTModelAdmin):
+    list_display = ('name', 'description')
+    fields = ('parent', 'name', 'description')
 
 admin.site.register(annotation.GlobalAttribute, GlobalTagAdmin)
 
