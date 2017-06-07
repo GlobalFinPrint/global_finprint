@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW public.v_event_attribute_summary AS
+CREATE OR REPLACE VIEW public.event_attribute_summary AS
 SELECT
   trip.code                                  AS trip_code,
   s.code                                     AS set_code,
