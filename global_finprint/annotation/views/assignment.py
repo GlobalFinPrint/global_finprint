@@ -430,9 +430,10 @@ class RestrictFilterDropDown(UserAllowedMixin, View) :
         else :
             trip = Trip.objects.order_by('code').all().prefetch_related('set_set')
             sites = Site.objects.order_by('name').all().prefetch_related('reef_set')
-            set_data = list(set(trip))[0].set_set
-            for s in set_data.all():
-                list_of_sets.append({"id": s.id, "code": s.code, "group": str(set_data.instance)})
+            for trip_data in list(set(trip)) :
+                set_data = trip_data.set_set
+                for s in set_data.all():
+                    list_of_sets.append({"id": s.id, "code": s.code, "group": str(set_data.instance)})
 
             for s in sites:
                 for r in s.reef_set.all():
@@ -457,4 +458,5 @@ class AssignedAnnotatorPopup(UserAllowedMixin, View):
             'set': set,
             'current': current_assignments,
         })
+
         return render_to_response(self.template_name, context=context)
