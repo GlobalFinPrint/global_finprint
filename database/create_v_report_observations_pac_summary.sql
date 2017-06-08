@@ -56,7 +56,9 @@ GROUP BY
   evtsum.trip_id,
   evtsum.set_id,
   evtsum.video_id,
-  evtsum.assignment_id
+  evtsum.assignment_id,
+  evtsum.assignment_status_id,
+  ast.name
 ORDER BY
   full_code,
   annotator;
