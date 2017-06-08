@@ -43,5 +43,5 @@ DROP VIEW IF EXISTS public.v_report_maxn_issues_report;
 
 -- supporting views
 DROP VIEW IF EXISTS public.event_attribute_summary;
-DROP VIEW public.master_attribute_summary;
+DROP VIEW IF EXISTS public.master_attribute_summary;
 DROP VIEW IF EXISTS public.habitat_summary;
