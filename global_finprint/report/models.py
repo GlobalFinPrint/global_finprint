@@ -5,7 +5,7 @@ from ..annotation.models.video import Video, Assignment
 from ..annotation.models.animal import Animal
 from ..annotation.models.observation import Observation, Event
 from ..core.models import Team, FinprintUser
-from ..habitat.models import Location, Site, Reef, ReefHabitat
+from ..habitat.models import Region, Location, Site, Reef, ReefHabitat
 from ..trip.models import Trip
 from ..bruv.models import Set
 
@@ -69,11 +69,16 @@ class EventAttributeSummary(models.Model):
 
 # a sql view that can be used for the geo hierarchy
 class HabitatSummary(models.Model):
-    region = models.CharField(max_length=100)
-    location = models.CharField(max_length=100)
-    site = models.CharField(max_length=100)
-    reef = models.CharField(max_length=100)
+    region_name = models.CharField(max_length=100)
+    location_name = models.CharField(max_length=100)
+    site_name = models.CharField(max_length=100)
+    reef_name = models.CharField(max_length=100)
     reef_habitat_name = models.CharField(max_length=100)
+
+    region = models.ForeignKey(Region, on_delete=models.DO_NOTHING)
+    location = models.ForeignKey(Location, on_delete=models.DO_NOTHING)
+    site = models.ForeignKey(Site, on_delete=models.DO_NOTHING)
+    reef = models.ForeignKey(Reef, on_delete=models.DO_NOTHING)
     reef_habitat = models.ForeignKey(ReefHabitat, on_delete=models.DO_NOTHING)
 
     class Meta:

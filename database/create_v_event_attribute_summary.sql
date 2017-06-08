@@ -13,6 +13,10 @@ SELECT
   evt.id                                     AS event_id,
   animal.id                                  AS animal_id,
   evt.event_time,
+  -- format event time to xx:xx:xxx
+  lpad((((evt.event_time / 1000) / 60) :: TEXT), 3, '0')
+  || ':' || lpad(((evt.event_time / 1000) % 60) :: TEXT, 2, '0')
+  || ':' || lpad(((evt.event_time % 1000) :: TEXT), 3, '0') AS event_time_minutes,
   CASE
   WHEN (evt.note = 'Time on seabed' :: TEXT)
     THEN 1
@@ -59,7 +63,9 @@ SELECT
   ELSE 0
   END                                        AS max_n_tagged,
   "substring"(evt.note, '[0-9]+' :: TEXT)    AS numeric_value_from_event_note,
-  "substring"(obs.comment, '[0-9]+' :: TEXT) AS numeric_value_from_obs_comment
+  "substring"(obs.comment, '[0-9]+' :: TEXT) AS numeric_value_from_obs_comment,
+  evt.note as event_note,
+  obs.comment as observation_comment
 FROM (((((((trip_trip trip
   INNER JOIN bruv_set s ON ((s.trip_id = trip.id)))
   INNER JOIN annotation_video vid ON ((vid.id = s.video_id)))
