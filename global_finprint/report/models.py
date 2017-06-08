@@ -67,6 +67,7 @@ class EventAttributeSummary(models.Model):
         db_table = 'event_attribute_summary'
 
 
+# a sql view that can be used for the geo hierarchy
 class HabitatSummary(models.Model):
     region = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
