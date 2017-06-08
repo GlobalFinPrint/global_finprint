@@ -1299,7 +1299,6 @@ var finprint = finprint || {};  //namespace if necessary...
                      $this.text('Assign Videos');
                      $this.text(oldText);
                      $modal.modal('show');
-                     $('#selectAllAssignmentsId').prop('checked', false)
                  },
                  error : function(res) {
                    alert('You must choose at least 1 video file');
