@@ -45,3 +45,6 @@ DROP VIEW IF EXISTS public.v_report_maxn_issues_report;
 DROP VIEW IF EXISTS public.event_attribute_summary;
 DROP VIEW IF EXISTS public.master_attribute_summary;
 DROP VIEW IF EXISTS public.habitat_summary;
+DROP VIEW IF EXISTS public.overall_leaderboard;
+DROP VIEW IF EXISTS public.monthly_leaderboard;
+
