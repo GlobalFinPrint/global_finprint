@@ -3,7 +3,8 @@ from .views import CustomReportListView, CustomReportView, CustomReportFileView,
 
 
 urlpatterns = [
-    url(r'^builder/', include('report_builder.urls')),
+    url(r'builder/', include('report_builder.urls'), name="report_builder"),
+    url(r"leaderboard/$", CustomReportListView.as_view(), name="report_leaderboard"),
 
     url(r"status/map/$", StatusMapView.as_view(), name="status_map"),
 
