@@ -23,7 +23,7 @@ SELECT
   evtsum.video_id,
   evtsum.assignment_id,
   evtsum.assignment_status_id,
-  ast.name                                                                             AS assignemnt_state,
+  ast.name                                                                             AS assignment_state,
   'https://data.globalfinprint.org/assignment/review/' || evtsum.assignment_id :: TEXT AS assignment_review_url
 FROM
   event_attribute_summary evtsum
