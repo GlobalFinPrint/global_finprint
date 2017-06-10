@@ -4,10 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.core.serializers import serialize
 from django.http import HttpResponse
 from django.views.generic import View
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.template import RequestContext
+from django.db.models import Count
 
 from .models import Report, PlannedSiteStatus
+from ..annotation.models.video import Assignment
 from ..core.mixins import UserAllowedMixin
 
 
@@ -56,8 +58,24 @@ class CustomReportFileView(UserAllowedMixin, View):
         return response
 
 
-# todo: not currently used ... intended for status mapping.
+class LeaderboardView(View):
+    """
+    Top annotators
+    """
+    template = 'pages/reports/leaderboard.html'
 
+    def get(self, request):
+        overall_leaders = Assignment.objects.values(
+            'annotator__user__last_name', 'annotator__user__first_name', 'annotator__affiliation__name').exclude(
+            annotator__affiliation_id__in=(0, 1, 7)).filter(status_id__in=(3, 4)).annotate(
+            num_assignments=Count('id')).order_by('-num_assignments')[:25]
+        context = {
+            'overall_leaders': overall_leaders
+        }
+        return render(request, self.template, context=context)
+
+
+# todo: not currently used ... intended for status mapping.
 class StatusMapView(UserAllowedMixin, View):
     """
     Report for status map found at /reports/status/map/
