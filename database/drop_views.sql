@@ -26,6 +26,7 @@ DROP VIEW IF EXISTS public.v_report_usage_metrics_by_affiliation;
 
 DROP VIEW IF EXISTS public.v_report_weekly_video_hours;
 
+-- observation summaries:
 DROP VIEW IF EXISTS public.v_report_observations_wa;
 DROP VIEW IF EXISTS public.v_report_observations_io;
 DROP VIEW IF EXISTS public.v_report_observations_pac;
@@ -38,8 +39,11 @@ DROP VIEW IF EXISTS public.v_report_observations_coral_summary;
 
 DROP VIEW IF EXISTS public.v_report_observations_master;
 
+-- data QC:
 DROP VIEW IF EXISTS public.v_report_maxn_issues_report;
 
+-- other useful stuff:
+DROP VIEW IF EXISTS public.v_report_machine_learning_corpus;
 
 -- supporting views
 DROP VIEW IF EXISTS public.event_attribute_summary;
