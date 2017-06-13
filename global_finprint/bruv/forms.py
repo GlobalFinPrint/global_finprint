@@ -356,7 +356,7 @@ class SelectizeWidget(forms.SelectMultiple):
             value = []
         final_attrs = self.build_attrs(attrs, name=name)
         output = [format_html(self.template, flatatt(final_attrs))]
-        options = self.render_options(choices, value)
+        options = self.render_options(choices)
         if options:
             output.append(options)
         output.append('</select>')

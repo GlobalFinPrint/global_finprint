@@ -6,7 +6,7 @@ import re as re
 from builtins import set as set_utils
 from django.views.generic import View, ListView
 
-from django.shortcuts import get_object_or_404, render_to_response, get_list_or_404
+from django.shortcuts import get_object_or_404, render
 from django.db.models import Count
 from django.http.response import JsonResponse, HttpResponse
 from django.template import RequestContext
@@ -109,15 +109,15 @@ class AssignmentListView(UserAllowedMixin, View):
     template_name = 'pages/annotation/assignment_list.html'
 
     def get(self, request):
-        context = RequestContext(request, {
+        context = {
             'locations': Location.objects.order_by('name').all().prefetch_related('trip_set'),
             'trips': Trip.objects.order_by('code').all().prefetch_related('set_set'),
             'sites': Site.objects.order_by('name').all().prefetch_related('reef_set'),
             'affils': Affiliation.objects.order_by('name').all().prefetch_related('finprintuser_set'),
             'statuses': AnnotationState.objects.all(),
             'projects': Project.objects.order_by('id').all()
-        })
-        return render_to_response(self.template_name, context=context)
+        }
+        return render(request, self.template_name, context=context)
 
 
 class AssignmentListTbodyView(UserAllowedMixin, View):
@@ -187,10 +187,9 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
             query = query.filter(project_id=project_id)
             unassigned = unassigned.none()
 
-        context = RequestContext(request, {'assignments': sorted(query, key=lambda a: str(a.set())),
-                                           'unassigned': sorted(unassigned, key=lambda s: str(s))
-                                           })
-        return render_to_response(self.template_name, context=context)
+        context = {'assignments': sorted(query, key=lambda a: str(a.set())),
+                                           'unassigned': sorted(unassigned, key=lambda s: str(s))}
+        return render(request, self.template_name, context=context)
 
 
 class AssignmentModalBodyView(UserAllowedMixin, View):
@@ -203,15 +202,15 @@ class AssignmentModalBodyView(UserAllowedMixin, View):
         set = get_object_or_404(Set, id=set_id)
         project = get_object_or_404(Project, id=request.GET.get('project_id', 1))
         current_assignments = set.video.assignment_set.filter(project=project).all()
-        context = RequestContext(request, {
+        context = {
             'set': set,
             'current': current_assignments,
             'current_annos': [a.annotator for a in current_assignments],
             'affiliations': Affiliation.objects.order_by('name').all(),
             'projects': Project.objects.order_by('id').all(),
             'current_project': project,
-        })
-        return render_to_response(self.template_name, context=context)
+        }
+        return render(request, self.template_name, context=context)
 
     def post(self, request, set_id):
         set = get_object_or_404(Set, id=set_id)
@@ -231,10 +230,10 @@ class UnassignModalBodyView(UserAllowedMixin, View):
 
     def get(self, request, assignment_id):
         assignment = get_object_or_404(Assignment, id=assignment_id)
-        context = RequestContext(request, {
+        context = {
             'assignment': assignment
-        })
-        return render_to_response(self.template_name, context=context)
+        }
+        return render(request, self.template_name, context=context)
 
     def post(self, request, assignment_id):
         assignment = get_object_or_404(Assignment, id=assignment_id)
@@ -349,7 +348,7 @@ class AssignMultipleVideosModel(UserAllowedMixin, View):
         set = get_object_or_404(Set, id=set_ids[0])
         project = get_object_or_404(Project, id=1)
         current_assignments = set.video.assignment_set.filter(project=project).all()
-        context = RequestContext(request, {
+        context = {
             'current_set':multiple_assignment_data_set,
             'current': current_assignments,
             'current_annos': [a.annotator for a in current_assignments],
@@ -358,9 +357,9 @@ class AssignMultipleVideosModel(UserAllowedMixin, View):
             'current_project': project,
             'set_ids_str':set_ids_str,
             'total_count':total_count,
-        })
+        }
 
-        return render_to_response(self.template_name, context=context)
+        return render(request, self.template_name, context=context)
 
     def filter_unassigned_list(self, video_list, assigned_video_list):
         unassigned_ids =[]
@@ -454,9 +453,9 @@ class AssignedAnnotatorPopup(UserAllowedMixin, View):
         set = get_object_or_404(Set, id=set_id)
         project = get_object_or_404(Project, id=request.GET.get('project_id', 1))
         current_assignments = set.video.assignment_set.filter(project=project).all()
-        context = RequestContext(request, {
+        context = {
             'set': set,
             'current': current_assignments,
-        })
+        }
 
-        return render_to_response(self.template_name, context=context)
+        return render(request, self.template_name, context=context)
