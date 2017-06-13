@@ -10,7 +10,7 @@ FROM annotation_assignment a
   INNER JOIN auth_user u ON u.id = an.user_id
   INNER JOIN core_affiliation aff ON aff.id = an.affiliation_id
 WHERE a.status_id in (3, 4) -- on 'ready ..' and 'reviewed'
-  and aff.id not in (0, 1, 7) -- not 'noo affiliation', 'test' or 'global finprint'
+  and aff.id not in (0, 1, 7) -- not 'no affiliation', 'test' or 'global finprint'
 GROUP BY
   to_char(a.last_modified_datetime, 'YYYY-MM'),
   aff.name,
