@@ -20,6 +20,8 @@ urlpatterns = [
     url(r"^(?P<set_id>\d+)/observation/delete/(?P<evt_id>\d+)$", csrf_exempt(MasterObservationDeleteEvent.as_view()),
         name='master_delete_obs'),
 
-    url(r"^edit_measurables/(?P<evt_id>\d+)$", csrf_exempt(EditMeasurablesInline.as_view()),
-        name='edit_measurables_inline')
+    url(r"^maxn/edit/(?P<evt_id>\d+)$", csrf_exempt(EditMeasurablesInline.as_view()),
+        name='edit_maxn_inline'),
+    url(r"^measurables/edit/(?P<evt_id>\d+)$", csrf_exempt(EditMeasurablesInline.as_view()),
+        name='edit_measurables_inline'),
 ]

@@ -1196,14 +1196,14 @@ var finprint = finprint || {};  //namespace if necessary...
     function initEditMeasurables() {
         var $modal = $('#edit-measurables-modal');
 
-        $('td.measurables').on('click', 'a.edit-measurables', function (e) {
+        $('td.measurables').on('click', 'a.edit-master-measurables', function (e) {
             e.preventDefault();
             e.stopPropagation();
 
             var $originalTarget = $(e.target);
             var eventId = $originalTarget.data('event-id');
 
-            $.get('/assignment/master/edit_measurables/' + eventId, function (res) {
+            $.get('/assignment/master/measurables/edit/' + eventId, function (res) {
                 var dropdownHtml = '<select class="measurables form-control">';
                 dropdownHtml += '<option value="0">---</option>';
                 res.measurables.forEach(function (m) {
@@ -1242,7 +1242,7 @@ var finprint = finprint || {};  //namespace if necessary...
                     data.measurables.push($(this).find('select.measurables').val());
                     data.values.push($(this).find('input[type="text"]').val());
                 });
-                $.post('/assignment/master/edit_measurables/' + eventId, data, function (res) {
+                $.post('/assignment/master/measurables/edit/' + eventId, data, function (res) {
                     $originalTarget.siblings('.content').empty().html(res.measurables.join('<br />'));
                     $modal.modal('hide');
                 });
