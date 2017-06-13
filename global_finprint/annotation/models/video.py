@@ -79,6 +79,13 @@ class Assignment(AuditableModel):
     progress = models.IntegerField(default=0)
     project = models.ForeignKey(Project, default=1)
 
+    @property
+    def last_modified_year_month(self):
+        """
+        :return: a tuple of (year, month) from the last_modified_datetime
+        """
+        return self.last_modified_datetime.year, self.last_modified_datetime.month
+
     _selected_related_list = ['annotator', 'annotator__affiliation', 'video',
                               'video__set', 'video__set__trip', 'status']
 

@@ -125,7 +125,7 @@ class ObservationEditData(UserAllowedMixin, View):
     def get(self, request, evt_id, **kwargs):
         event = get_object_or_404(Event, pk=evt_id)
         project = event.observation.assignment.project
-        animals = Animal.objects.filter(project=project).select_related('group').order_by(
+        animals = Animal.objects.filter(projects=project).select_related('group').order_by(
             'group__name', 'genus', 'species')
         tags = project.tag_list()
         return JsonResponse({
