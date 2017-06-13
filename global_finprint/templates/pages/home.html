@@ -3,7 +3,7 @@
 {% block content %}
     <div class="row main-splash">
         {% if request.user.is_authenticated %}
-        <div class="col-md-4 col-md-offset-1">
+        <div class="col-md-6 col-md-offset-1">
             <div class="row splash-header">
                 <h4>Welcome to Global FinPrint's server tools</h4>
             </div>
@@ -16,7 +16,6 @@
                     <li><a href="{% url 'assignment_list' %}">Assign videos to annotators and review annotator progress</a></li>
                     <li><a href="{% url 'trip_list' %}">Add new trip and sets</a></li>
                     <li><a href="/admin">Administer data options and users</a></li>
-                    <!--li><a>Review all how-to documentation on GitHub</a></li-->
                 </ul>
             </div>
         </div>
