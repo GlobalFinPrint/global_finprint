@@ -16,7 +16,10 @@ SELECT
   bs.latitude,
   bs.longitude,
   bs.depth,
-  bs.visibility
+  bs.visibility,
+  av.id                  AS video_id,
+  ao.id                  AS observation_id,
+  ae.id                  AS event_id
 FROM annotation_event ae
   JOIN annotation_observation ao ON (ao.id = ae.observation_id)
   JOIN annotation_assignment aas ON (aas.id = ao.assignment_id)
