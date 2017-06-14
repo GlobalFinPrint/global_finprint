@@ -29,7 +29,7 @@ admin.site.register(annotation.GlobalAttribute, GlobalTagAdmin)
 
 
 class TagAdmin(MPTTModelAdmin):
-    list_display = ('name', 'active', 'needs_review', 'not_selectable', 'lead_only', 'global_parent', 'project')
+    list_display = ('name', 'project', 'global_parent', 'active', 'needs_review', 'not_selectable', 'lead_only')
     fields = ('parent', 'name', 'description', 'global_parent', 'active', 'needs_review', 'not_selectable', 'lead_only', 'project')
 
     def get_form(self, request, obj=None, **kwargs):
@@ -53,6 +53,8 @@ class TagInline(admin.StackedInline):
         formset = super(TagInline, self).get_formset(request, obj, **kwargs)
         formset.form.base_fields['parent'].widget.can_add_related = False
         formset.form.base_fields['parent'].widget.can_change_related = False
+        formset.form.base_fields['global_parent'].widget.can_add_related = False
+        formset.form.base_fields['global_parent'].widget.can_change_related = False
         return formset
 
 

@@ -29,7 +29,7 @@ class Attribute(MPTTModel):
         help_text='overridden if parent is lead only')
     needs_review = models.BooleanField(default=False)
     not_selectable = models.BooleanField(default=False)
-    global_parent = models.ForeignKey(to=GlobalAttribute, null=True)
+    global_parent = models.ForeignKey(to=GlobalAttribute, null=True, blank=True)
 
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
     project = models.ForeignKey(Project, default=1)
