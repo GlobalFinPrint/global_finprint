@@ -1,7 +1,15 @@
-{% extends "base.html" %}
 
-{% block body %}
+{% load static from staticfiles %}
+
+<!DOCTYPE html>
+<html>
+<head>
     {% block report_header %}
     {% endblock %}
-{% endblock %}
+</head>
 
+<body>
+{% block content %}
+{% endblock %}
+</body>
+</html>
