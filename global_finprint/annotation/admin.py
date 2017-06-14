@@ -6,6 +6,7 @@ from ..core.models import FinprintUser
 
 
 class AnimalAdmin(admin.ModelAdmin):
+    list_display = ('common_name', 'family', 'genus', 'species', 'group')
     list_filter = ['family', 'genus']
     ordering = ['family', 'genus', 'species']
     search_fields = ['common_name', 'family', 'genus', 'species']
