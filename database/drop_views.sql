@@ -39,6 +39,9 @@ DROP VIEW IF EXISTS public.v_report_observations_coral_summary;
 
 DROP VIEW IF EXISTS public.v_report_observations_master;
 
+-- reef completion:
+DROP VIEW IF EXISTS public.v_report_reef_summary;
+
 -- data QC:
 DROP VIEW IF EXISTS public.v_report_maxn_issues_report;
 

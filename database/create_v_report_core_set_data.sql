@@ -1,5 +1,5 @@
 CREATE or replace VIEW public.v_report_core_set_data AS
-WITH assignemnt_status_summary AS
+WITH assignment_status_summary AS
 (
     SELECT
       assig.video_id,
@@ -16,7 +16,7 @@ total_assignments as
   (
     select video_id,
       sum(status_count) as total
-    from assignemnt_status_summary
+    from assignment_status_summary
     group by video_id
   )
 SELECT
@@ -102,7 +102,7 @@ FROM
   LEFT JOIN annotation_masterrecord mas ON mas.set_id = s.id
   LEFT JOIN annotation_masterrecordstate ms ON ms.id = mas.status_id
 
-  LEFT JOIN assignemnt_status_summary assstat ON (assstat.video_id = v.id
+  LEFT JOIN assignment_status_summary assstat ON (assstat.video_id = v.id
     and assstat.assignment_status_id = 4)
   left join total_assignments totassig on totassig.video_id = v.id
 ORDER BY t.code || '_' || s.code;
