@@ -47,7 +47,7 @@ admin.site.register(annotation.Attribute, TagAdmin)
 
 class TagInline(admin.StackedInline):
     model = annotation.Attribute
-    fields = ('parent', 'name', 'description', 'active', 'lead_only', 'project')
+    fields = ('parent', 'name', 'global_parent', 'description', 'active', 'lead_only', 'project')
 
     def get_formset(self, request, obj=None, **kwargs):
         formset = super(TagInline, self).get_formset(request, obj, **kwargs)
