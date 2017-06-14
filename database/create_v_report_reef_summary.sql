@@ -15,6 +15,7 @@ WITH assignment_status_summary AS
     set_summary AS
   (
       SELECT
+        s.trip_id,
         s.id,
         s.reef_habitat_id,
         CASE
@@ -33,11 +34,12 @@ WITH assignment_status_summary AS
           AND (s.current_flow_estimated IS NOT NULL
                OR s.current_flow_instrumented IS NOT NULL)
           AND sub.type IS NOT NULL
-          AND subc.name IS NULL
+          AND subc.name IS NOT NULL
           THEN 1
         ELSE 0
         END AS has_all_fields
-      FROM bruv_set s
+      FROM trip_trip t
+        INNER JOIN bruv_set s ON s.trip_id = t.id
         LEFT JOIN habitat_substrate sub ON sub.id = s.substrate_id
         LEFT JOIN habitat_substratecomplexity subc ON subc.id = s.substrate_complexity_id
         LEFT JOIN annotation_video v ON v.id = s.video_id
@@ -48,24 +50,27 @@ WITH assignment_status_summary AS
                                                         AND assstat.assignment_status_id = 4)
   )
 SELECT
+  extract(YEAR FROM t.start_date) AS trip_year,
   hab.region,
   hab.location,
   hab.site,
   hab.reef,
 
-  count(s.id)                AS count_of_sets,
-  sum(s.has_two_annotations) AS have_two_complete_annotations,
-  sum(s.has_complete_master) AS have_complete_master,
-  sum(s.has_all_fields)      AS have_all_fields,
+  count(s.id)                     AS count_of_sets,
+  sum(s.has_two_annotations)      AS have_two_complete_annotations,
+  sum(s.has_complete_master)      AS have_complete_master,
+  sum(s.has_all_fields)           AS have_all_fields,
 
   hab.region_id,
   hab.location_id,
   hab.site_id,
   hab.reef_id
 FROM
-  set_summary s
+  trip_trip t
+  INNER JOIN set_summary s ON s.trip_id = t.id
   INNER JOIN habitat_summary hab ON hab.reef_habitat_id = s.reef_habitat_id
 GROUP BY
+  trip_year,
   hab.region,
   hab.location,
   hab.site,
@@ -78,4 +83,6 @@ ORDER BY
   hab.region,
   hab.location,
   hab.site,
-  hab.reef;
+  hab.reef,
+  trip_year;
+
