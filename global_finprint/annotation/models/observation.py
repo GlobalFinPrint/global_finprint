@@ -15,9 +15,7 @@ from ...core.version import VersionInfo
 from datetime import datetime
 from ...core.templatetags.time_display import time_display
 
-
 logger = logging.getLogger(__name__)
-
 
 OBSERVATION_TYPE_CHOICES = {
     ('I', 'Of interest'),

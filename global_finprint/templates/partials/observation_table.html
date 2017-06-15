@@ -59,11 +59,10 @@
                 <td class="attributes">{{ e.attribute.all|join:', ' }}</td>
                 {% if master %}
                     <td class="measurables">
-                        <a href="#" class="edit-master-maxn" data-event-id="{{ e.id }}">Add MaxN</a>
-                        <a href="#" class="edit-master-measurables" data-event-id="{{ e.id }}">Add other</a>
                         <div class="content">
-                            {{ e.active_measurables|join:'<br />' }}
+                            {{ e.active_measurables|join:' stuff <br />' }}
                         </div>
+                        <a href="#" class="edit-master-measurables" data-event-id="{{ e.id }}">Add</a>
                     </td>
                 {% endif %}
                 <td class="action">

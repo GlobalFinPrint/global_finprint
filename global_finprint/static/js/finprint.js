@@ -94,23 +94,22 @@ var finprint = finprint || {};  //namespace if necessary...
 
         //intially search will be default clicked when page is loaded GLOB-604
         if ($form.serializeArray().some(function (field) {
-                    return field.name !== 'csrfmiddlewaretoken' && field.value;
-                }))
-        {
-                $('#limitSelectionId').hide();
-                $('#no_video_id').hide();
-                $('#spinId').show();
-                $('#spinId2').show();
-                storePreviousSearchFilter()
-                $.post('/assignment/search', $form.serialize(), function (res) {
-                    $target.html(res);
-                    $('#limitSelectionId').show();
-                    $('#no_video_id').show();
-                    $('#spinId').hide();
-                    $('#spinId2').hide();
-                    $('#selectAllAssignmentsId').prop('checked', false)
-                    controlCheckBoxFunctionality();
-                });
+                return field.name !== 'csrfmiddlewaretoken' && field.value;
+            })) {
+            $('#limitSelectionId').hide();
+            $('#no_video_id').hide();
+            $('#spinId').show();
+            $('#spinId2').show();
+            storePreviousSearchFilter()
+            $.post('/assignment/search', $form.serialize(), function (res) {
+                $target.html(res);
+                $('#limitSelectionId').show();
+                $('#no_video_id').show();
+                $('#spinId').hide();
+                $('#spinId2').hide();
+                $('#selectAllAssignmentsId').prop('checked', false)
+                controlCheckBoxFunctionality();
+            });
         }
         $form.find('button#search').click(function () {
             storePreviousSearchFilter()
@@ -297,7 +296,7 @@ var finprint = finprint || {};  //namespace if necessary...
 
         var options = {allowEmptyOption: true, plugins: ['remove_button', 'restore_on_backspace']};
         var fields = [
-           // '#select-set-auto-assign',
+            // '#select-set-auto-assign',
             '#auto-affiliation',
             '#project',
         ];
@@ -315,56 +314,56 @@ var finprint = finprint || {};  //namespace if necessary...
             searchField: 'code',
             optgroupField: 'group',
 
-         }));
+        }));
 
         var $reefSelect = $modalForm.find('#select-reef-auto-assign').selectize($.extend({}, options, {
             valueField: 'id',
             labelField: 'name',
             searchField: 'name',
             optgroupField: 'reef_group',
-            onChange: function(value){
-               var setSelect = $setSelect[0].selectize ;
-               setSelect.disable();
-               setSelect.clearOptions();
-               console.log('#select-reef-auto-assign', value)
-               $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
-                   console.log('reefs selected are: ', res["sets"])
-                   var sets = res["sets"];
-                   setSelect.load(function(callback){
-                           setSelect.enable();
-                           callback(sets);
-                           });
-               });
-           }
-         }));
+            onChange: function (value) {
+                var setSelect = $setSelect[0].selectize;
+                setSelect.disable();
+                setSelect.clearOptions();
+                console.log('#select-reef-auto-assign', value)
+                $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
+                    console.log('reefs selected are: ', res["sets"])
+                    var sets = res["sets"];
+                    setSelect.load(function (callback) {
+                        setSelect.enable();
+                        callback(sets);
+                    });
+                });
+            }
+        }));
 
-          $modalForm.find('#auto-trip').selectize($.extend({}, options, {
-               onChange: function(value){
-                    console.log('#auto-trip', value)
-                    var reefSelect = $reefSelect[0].selectize ;
-                    reefSelect.disable();
-                    reefSelect.clearOptions();
+        $modalForm.find('#auto-trip').selectize($.extend({}, options, {
+            onChange: function (value) {
+                console.log('#auto-trip', value)
+                var reefSelect = $reefSelect[0].selectize;
+                reefSelect.disable();
+                reefSelect.clearOptions();
 
-                    var setSelect = $setSelect[0].selectize ;
-                    setSelect.disable();
-                    setSelect.clearOptions();
-                    $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
-                       console.log('/assignment/filter_change', res["sets"])
-                       console.log('/assignment/filter_change', res["reefs"])
-                       var reefs = res["reefs"];
-                       var sets = res["sets"];
-                       reefSelect.load(function(callback){
-                           reefSelect.enable();
-                               callback(reefs);
-                           });
+                var setSelect = $setSelect[0].selectize;
+                setSelect.disable();
+                setSelect.clearOptions();
+                $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
+                    console.log('/assignment/filter_change', res["sets"])
+                    console.log('/assignment/filter_change', res["reefs"])
+                    var reefs = res["reefs"];
+                    var sets = res["sets"];
+                    reefSelect.load(function (callback) {
+                        reefSelect.enable();
+                        callback(reefs);
+                    });
 
-                       setSelect.load(function(callback){
-                           setSelect.enable();
-                               callback(sets);
-                           });
-                   });
-              }
-         }));
+                    setSelect.load(function (callback) {
+                        setSelect.enable();
+                        callback(sets);
+                    });
+                });
+            }
+        }));
 
         $openLink.click(function (e) {
             e.preventDefault();
@@ -961,9 +960,9 @@ var finprint = finprint || {};  //namespace if necessary...
                     if (newRowspan === 1) {
                         $parentRow.removeClass('first-event accordion-toggle child-row')
                             .attr('class',
-                               function(i, c){
-                                  return c.replace(/(^|\s)children-\S+/g, '');
-                               })
+                                function (i, c) {
+                                    return c.replace(/(^|\s)children-\S+/g, '');
+                                })
                             .addClass('single-event')
                             .removeAttr('data-is-child')
                             .attr('data-rowspan', 1)
@@ -972,9 +971,9 @@ var finprint = finprint || {};  //namespace if necessary...
                     } else if ($parentRow.hasClass('child-row')) {
                         $parentRow.removeClass('child-row')
                             .attr('class',
-                               function(i, c){
-                                  return c.replace(/(^|\s)children-\S+/g, '');
-                               })
+                                function (i, c) {
+                                    return c.replace(/(^|\s)children-\S+/g, '');
+                                })
                             .addClass('first-event accordion-toggle')
                             .attr('data-target', '.' + $parentRow.data('isChild'))
                             .removeAttr('data-is-child')
@@ -1211,7 +1210,7 @@ var finprint = finprint || {};  //namespace if necessary...
                 });
                 dropdownHtml += '</select>';
 
-                $modal.find('button#add-measurable').unbind().click(function () {
+                $modal.find('button#add-measurable').off().click(function () {
                     var input = '<input class="form-control" type="text" value=""/>';
                     var remove = '<button class="btn btn-danger remove">Remove</button>';
                     $modal.find('div.measurables')
@@ -1221,26 +1220,39 @@ var finprint = finprint || {};  //namespace if necessary...
                 $modal.modal('show');
                 $modal.find('.measurables').empty();
                 res.event_measurables.forEach(function (em) {
-                    var thisDropDown = $(dropdownHtml).clone()
+                    var thisDropDown = $(dropdownHtml)
+                        .attr('id', 'option-' + em.id)
+                        .clone()
                         .find('option[value="' + em.measurable + '"]')
-                        .attr('selected', 'selected').end()[0].outerHTML;
-                    console.log(thisDropDown);
-                    var input = '<input class="form-control" type="text" value="' + em.value + '"/>';
+                        .attr('selected', 'selected')
+                        .end()[0].outerHTML;
+                    // console.log(thisDropDown);
+                    var input = '<input class="form-control" id="input-' + em.id + '" type="text" value="' + em.value + '"/>';
                     var remove = '<button class="btn btn-danger remove">Remove</button>';
                     $modal.find('div.measurables')
                         .append('<div class="measurable-row">' + thisDropDown + input + remove + '</div>');
                 });
+
+                // add default to a "MaxN" input for the latest control:
+                $modal.find('button#add-measurable').click();
+
+                $modal.find('select.measurables.form-control:not([id])').val(2).attr("selected", "selected");
+                $modal.find('input.form-control:not([id])').focus();
+
             });
 
             $modal.on('click', 'div.measurable-row button.remove', function (e) {
                 $(e.target).parent().remove();
             });
 
-            $modal.find('button#save').unbind().click(function () {
+            $modal.find('button#save').off().click(function () {
                 var data = {measurables: [], values: []};
                 $modal.find('div.measurable-row').each(function () {
-                    data.measurables.push($(this).find('select.measurables').val());
-                    data.values.push($(this).find('input[type="text"]').val());
+                    // don't save empty vals!
+                    if ($(this).find('input[type="text"]').val() !== '') {
+                        data.measurables.push($(this).find('select.measurables').val());
+                        data.values.push($(this).find('input[type="text"]').val());
+                    }
                 });
                 $.post('/assignment/master/measurables/edit/' + eventId, data, function (res) {
                     $originalTarget.siblings('.content').empty().html(res.measurables.join('<br />'));
@@ -1264,21 +1276,21 @@ var finprint = finprint || {};  //namespace if necessary...
             var $this = $(this);
             var oldText = $this.text();
             var setIds = $("input[name='select_check_box']");
-            var ids= []
+            var ids = []
             var video_ids = []
             //adding all the checked ids for assigning
-            for (var i=0;i< setIds.length;i++) {
-              if (setIds[i].checked == true) {
-                ids.push(setIds[i].value)
-                video_ids.push(setIds[i].attributes.getNamedItem("data-id").value)
-              }
+            for (var i = 0; i < setIds.length; i++) {
+                if (setIds[i].checked == true) {
+                    ids.push(setIds[i].value)
+                    video_ids.push(setIds[i].attributes.getNamedItem("data-id").value)
+                }
             }
             if (ids.length == 0) {
-                   alert('You must choose at least 1 video file');
-                   $this.removeAttr('disabled');
-                   $this.text('Assign Videos');
-                   return false;
-                   }
+                alert('You must choose at least 1 video file');
+                $this.removeAttr('disabled');
+                $this.text('Assign Videos');
+                return false;
+            }
 
             if ($form.serializeArray().some(function (field) {
                     return field.name !== 'csrfmiddlewaretoken' && field.value;
@@ -1286,29 +1298,29 @@ var finprint = finprint || {};  //namespace if necessary...
                 $this.attr('disabled', 'disabled');
                 $this.text('Assigning Selected videos...');
                 $.ajax({
-                  type:"POST",
-                  url:"/assignment/assign_selected_videos",
-                  data: {
+                    type: "POST",
+                    url: "/assignment/assign_selected_videos",
+                    data: {
                         'set_ids': ids,
                         'video_ids': video_ids
-                        },
-                 success: function(res){
-                     $modal.find('div.modal-content').html(res);
-                     $modal.find('#new-annotators-list').selectize({plugins: ['remove_button', 'restore_on_backspace']});
-                     $this.removeAttr('disabled');
-                     $this.text('Assign Videos');
-                     $this.text(oldText);
-                     $modal.modal('show');
-                 },
-                 error : function(res) {
-                   alert('You must choose at least 1 video file');
-                   $this.removeAttr('disabled');
-                   $this.text('Assign Videos');
-                   return false;
-                 }
-              });
+                    },
+                    success: function (res) {
+                        $modal.find('div.modal-content').html(res);
+                        $modal.find('#new-annotators-list').selectize({plugins: ['remove_button', 'restore_on_backspace']});
+                        $this.removeAttr('disabled');
+                        $this.text('Assign Videos');
+                        $this.text(oldText);
+                        $modal.modal('show');
+                    },
+                    error: function (res) {
+                        alert('You must choose at least 1 video file');
+                        $this.removeAttr('disabled');
+                        $this.text('Assign Videos');
+                        return false;
+                    }
+                });
 
-             } else {
+            } else {
                 alert('You must choose at least 1 video file');
                 $this.removeAttr('disabled');
                 $this.text('Assign Videos');
@@ -1317,13 +1329,13 @@ var finprint = finprint || {};  //namespace if necessary...
         });
 
         $modal.on('click', 'button#multiAssignmentId', function () {
-            $.post('/assignment/save_multi_video_assignment' , $modal.find('form').serialize(), function () {
+            $.post('/assignment/save_multi_video_assignment', $modal.find('form').serialize(), function () {
                 $modal.modal('hide');
                 $('form#assignment-search-form button#search').click();
             });
         });
 
-         function loadModal(id, params) {
+        function loadModal(id, params) {
             params = params || {};
             $.get('/assignment/assigned_annotator/' + id, params, function (html) {
                 $sec_modal.find('div.modal-content').html(html);
@@ -1338,83 +1350,88 @@ var finprint = finprint || {};  //namespace if necessary...
 
     }
 
-    function initCheckbutton(){
-       $("#selectAllAssignmentsId").click(function () {
-                $(".selectCheckBox").prop('checked', $(this).prop('checked'));
+    function initCheckbutton() {
+        $("#selectAllAssignmentsId").click(function () {
+            $(".selectCheckBox").prop('checked', $(this).prop('checked'));
         });
 
-     }
+    }
 
-     function initSingleCheckbutton(){
-       $(".selectCheckBox").click(function () {
+    function initSingleCheckbutton() {
+        $(".selectCheckBox").click(function () {
             var setIds = $("input[name='select_check_box']");
-            if (checkIfAllCheck(setIds) == false)  {
+            if (checkIfAllCheck(setIds) == false) {
                 $("#selectAllAssignmentsId").prop('checked', $(this).prop('checked'));
-                }
+            }
         });
 
-     }
+    }
 
-     function controlCheckBoxFunctionality() {
-        $('.selectCheckBox').click(function(){
-              if($(".selectCheckBox:checked").length < $(".selectCheckBox").length){
-                   $('#selectAllAssignmentsId').prop('checked', false)
-              } else {
-                   $('#selectAllAssignmentsId').prop('checked', true)
-              }
+    function controlCheckBoxFunctionality() {
+        $('.selectCheckBox').click(function () {
+            if ($(".selectCheckBox:checked").length < $(".selectCheckBox").length) {
+                $('#selectAllAssignmentsId').prop('checked', false)
+            } else {
+                $('#selectAllAssignmentsId').prop('checked', true)
+            }
+        });
+    }
+
+    // Store previous value in browser local storage
+    function storePreviousSearchFilter() {
+        localStorage.setItem("select-trip", $('#select-trip').val());
+        localStorage.setItem("select-set", $('#select-set').val());
+        localStorage.setItem("select-reef", $('#select-reef').val());
+        localStorage.setItem("select-anno", $('#select-anno').val());
+        localStorage.setItem("select-status", $('#select-status').val());
+        localStorage.setItem("select-project", $('#select-project').val());
+        localStorage.setItem("select-status", $('#select-status').val());
+        localStorage.setItem("select-assigned", $('#select-assigned').val());
+        localStorage.setItem("assigned-ago", $('#assigned-ago').val());
+    }
+
+    function restorePreviousFilter() {
+        var values = localStorage.getItem("select-trip");
+        if (values != null) {
+            $.each(values.split(","), function (i, e) {
+                $("#select-trip option[value='" + e + "']").prop("selected", true);
             });
-       }
+        }
 
-      // Store previous value in browser local storage
-     function storePreviousSearchFilter() {
-         localStorage.setItem("select-trip", $('#select-trip').val());
-         localStorage.setItem("select-set", $('#select-set').val());
-         localStorage.setItem("select-reef", $('#select-reef').val());
-         localStorage.setItem("select-anno", $('#select-anno').val());
-         localStorage.setItem("select-status", $('#select-status').val());
-         localStorage.setItem("select-project", $('#select-project').val());
-         localStorage.setItem("select-status", $('#select-status').val());
-         localStorage.setItem("select-assigned", $('#select-assigned').val());
-         localStorage.setItem("assigned-ago", $('#assigned-ago').val());
-          }
+        values = localStorage.getItem("select-set");
+        if (values != null) {
+            $.each(values.split(","), function (i, e) {
+                $("#select-set option[value='" + e + "']").prop("selected", true);
+            });
+        }
 
-     function restorePreviousFilter() {
-          var values = localStorage.getItem("select-trip");
-          if (values!= null) {
-              $.each(values.split(","), function(i,e){
-                    $("#select-trip option[value='" + e + "']").prop("selected", true);
-                 }); }
+        values = localStorage.getItem("select-reef");
 
-          values = localStorage.getItem("select-set");
-          if (values != null) {
-              $.each(values.split(","), function(i,e){
-                    $("#select-set option[value='" + e + "']").prop("selected", true);
-                 });}
+        if (values != null) {
+            $.each(values.split(","), function (i, e) {
+                $("#select-reef option[value='" + e + "']").prop("selected", true);
+            });
+        }
 
-          values = localStorage.getItem("select-reef");
+        values = localStorage.getItem("select-anno");
 
-          if (values!=null) {
-              $.each(values.split(","), function(i,e){
-                    $("#select-reef option[value='" + e + "']").prop("selected", true);
-                 });}
+        if (values != null) {
+            $.each(values.split(","), function (i, e) {
+                $("#select-anno option[value='" + e + "']").prop("selected", true);
+            });
+        }
 
-          values = localStorage.getItem("select-anno");
+        values = localStorage.getItem("select-status");
+        if (values != null) {
+            $.each(values.split(","), function (i, e) {
+                $("#select-status option[value='" + e + "']").prop("selected", true);
+            });
+        }
 
-          if (values!= null) {
-              $.each(values.split(","), function(i,e){
-                    $("#select-anno option[value='" + e + "']").prop("selected", true);
-                 });}
-
-          values = localStorage.getItem("select-status");
-          if (values!=null ){
-              $.each(values.split(","), function(i,e){
-                    $("#select-status option[value='" + e + "']").prop("selected", true);
-                 });}
-
-          $('#select-project').val(localStorage.getItem("select-project"));
-          $('#select-assigned').val(localStorage.getItem("select-assigned"));
-          $('#assigned-ago').val(localStorage.getItem("assigned-ago"));
-         }
+        $('#select-project').val(localStorage.getItem("select-project"));
+        $('#select-assigned').val(localStorage.getItem("select-assigned"));
+        $('#assigned-ago').val(localStorage.getItem("assigned-ago"));
+    }
 
 })(jQuery);
 

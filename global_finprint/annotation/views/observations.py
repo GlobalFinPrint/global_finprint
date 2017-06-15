@@ -190,7 +190,7 @@ class EditMeasurablesInline(UserAllowedMixin, View):
         return JsonResponse({
             'measurables': list({'name': m.name, 'id': m.id}
                                 for m in Measurable.objects.filter(active=True)),
-            'event_measurables': list({'measurable': m.measurable_id, 'value': m.value}
+            'event_measurables': list({'measurable': m.measurable_id, 'value': m.value, 'id': m.id}
                                       for m in event.active_measurables()),
         })
 
