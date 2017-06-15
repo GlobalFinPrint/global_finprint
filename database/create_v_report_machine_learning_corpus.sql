@@ -17,6 +17,7 @@ SELECT
   bs.longitude,
   bs.depth,
   bs.visibility,
+  ae.event_time,
   av.id                  AS video_id,
   ao.id                  AS observation_id,
   ae.id                  AS event_id
