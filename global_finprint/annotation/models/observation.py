@@ -318,8 +318,8 @@ class AbstractEvent(AuditableModel):
             return 'https://s3-us-west-2.amazonaws.com/finprint-annotator-screen-captures{}'.format(self.filename())
 
         try:
-            conn = S3Connection("AKIAIXQAG7EZ7FXU4IAA", "RvNPRJYjz3b3YcWqm194q6+9Wx5bRSgiPrriyiRu")
-            bucket = conn.get_bucket('finprint-annotator-screen-captures')
+            conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+            bucket = conn.get_bucket(settings.FRAME_CAPTURE_BUCKET)
             key = bucket.get_key(self.filename())
             return key.generate_url(expires_in=300, query_auth=False) if key else None
         except S3ResponseError as e:
@@ -346,8 +346,8 @@ class AbstractEvent(AuditableModel):
             return 'https://s3-us-west-2.amazonaws.com/finprint-annotator-screen-captures{}'.format(self.clip_filename)
 
         try:
-            conn = S3Connection("AKIAIXQAG7EZ7FXU4IAA", "RvNPRJYjz3b3YcWqm194q6+9Wx5bRSgiPrriyiRu")
-            bucket = conn.get_bucket('finprint-annotator-screen-captures')
+            conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+            bucket = conn.get_bucket(settings.FRAME_CAPTURE_BUCKET)
             key = bucket.get_key(self.clip_filename)
             return key.generate_url(expires_in=300, query_auth=False) if key else None
         except S3ResponseError as e:
