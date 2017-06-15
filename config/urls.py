@@ -34,6 +34,7 @@ urlpatterns = [
     url(r"^user/info/(?P<id>\d+)$", UserInfoView.as_view(), name="user_info_view"),
 
     # User management
+    url('^', include('django.contrib.auth.urls')),
     url(r'^accounts/login/$', login, {'template_name': 'registration/login.html',
                                       'authentication_form': FinprintAuthenticationForm}, name='finprint_login'),
     url(r'^accounts/logout/$', logout, {'template_name': 'registration/logged_out.html'}, name='finprint_logout'),
