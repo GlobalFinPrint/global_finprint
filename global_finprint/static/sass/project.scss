@@ -512,7 +512,7 @@ h3.form-title {
   }
 }
 
-#edit-measurables-modal, #full-image-modal {
+#edit-measurables-modal, #full-image-modal,#full-clip-modal {
   .event-image {
     position: relative;
     cursor: pointer;
@@ -1028,4 +1028,18 @@ form #div_id_file .selectize-control {
   max-height:200px;
   overflow:scroll;
 }
-
+.video-icon {
+    display:block;
+    position:absolute;
+    bottom:0;
+    color:#fff;
+    padding-left:3px;
+    font-size:20px;
+}
+.event-clip {
+    padding:40px;
+    video {
+        width:100%;
+        height:70%;
+    }
+}

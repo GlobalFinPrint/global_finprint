@@ -44,6 +44,7 @@ $(function () {
             'click .observation-popover .close': 'closePopover',
             'click .observation-popover .selector': 'selectObservation',
             'click .event-thumbnail:not(".empty")': 'showFullImage',
+            'click .event-thumbnail .video-icon:not(".empty")': 'showFullClip',
             'keydown': 'onKeypress',
             'mouseover': 'onMouseOver',
             'mouseout': 'onMouseOut'
@@ -100,6 +101,26 @@ $(function () {
                 .end()
                 .end()
                 .modal('show');
+        },
+        showFullClip: function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            function clip_failure(e){
+                    alert('error');
+             };
+
+            var url = this.model.get('initial_event').clip_url;
+            var video_temp= '<video width="80%" height="80%" controls>'+
+                         '<source src='+url+' type="video/mp4"> </video>'
+            $('#full-clip-modal').find('.event-clip').html(video_temp)
+
+            $('#full-clip-modal')
+                       .find('div.event-clip')
+                       .attr('style', 'width="500" height="500"')
+                       .end()
+                       .modal('show');
+
         },
         onKeypress: function (e) {
             if (e.which === 37) { // left

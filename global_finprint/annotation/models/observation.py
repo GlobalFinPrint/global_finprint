@@ -192,6 +192,8 @@ class Observation(AbstractObservation):
             json['pretty_time'] = time_display(self.initial_observation_time())
             json['initial_event'] = self.initial_event().to_json(for_web=True)
 
+
+
         return json
 
     def initial_event(self):
@@ -316,9 +318,37 @@ class AbstractEvent(AuditableModel):
             return 'https://s3-us-west-2.amazonaws.com/finprint-annotator-screen-captures{}'.format(self.filename())
 
         try:
-            conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
-            bucket = conn.get_bucket(settings.FRAME_CAPTURE_BUCKET)
+            conn = S3Connection("AKIAIXQAG7EZ7FXU4IAA", "RvNPRJYjz3b3YcWqm194q6+9Wx5bRSgiPrriyiRu")
+            bucket = conn.get_bucket('finprint-annotator-screen-captures')
             key = bucket.get_key(self.filename())
+            return key.generate_url(expires_in=300, query_auth=False) if key else None
+        except S3ResponseError as e:
+            logger.warning('{}{}'.format('Unable to build image url: ', e.message))
+            return None
+
+            # TODO: do we need to check for every key? maybe just use filename and a base_url
+
+    def clip_url(self, verify=True):
+        if self.extent is None:
+            logger.debug('{}'.format('No clip extent: '))
+            return None
+
+        self.clip_filename = None
+
+        if self.filename() is not None:
+            _splits = self.filename().split("/")
+            _len = len(_splits)
+            clip_filename = _splits[_len - 1].split(".")[0] + ".mp4"
+            self.clip_filename = self.filename().strip(_splits[_len - 1]) + clip_filename
+            logger.info('{}{}'.format('8 sec clip file name: ', self.clip_filename))
+
+        if verify is False:
+            return 'https://s3-us-west-2.amazonaws.com/finprint-annotator-screen-captures{}'.format(self.clip_filename)
+
+        try:
+            conn = S3Connection("AKIAIXQAG7EZ7FXU4IAA", "RvNPRJYjz3b3YcWqm194q6+9Wx5bRSgiPrriyiRu")
+            bucket = conn.get_bucket('finprint-annotator-screen-captures')
+            key = bucket.get_key(self.clip_filename)
             return key.generate_url(expires_in=300, query_auth=False) if key else None
         except S3ResponseError as e:
             logger.warning('{}{}'.format('Unable to build image url: ', e.message))
@@ -385,6 +415,7 @@ class Event(AbstractEvent):
         if for_web:
             json['extent_css'] = self.extent_to_css()
             json['image_url'] = self.image_url(verify=False)
+            json['clip_url'] = self.clip_url(verify=False)
             json['attribute_names'] = list(a.name for a in self.attribute.all())
 
         return json

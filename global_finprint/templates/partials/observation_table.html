@@ -48,6 +48,11 @@
                     <td>
                         <div class="annotool-thumbnail" style="background-image:url('{{ e.image_url }}')">
                             <div class="extent" style="{{ e.extent_to_css }}">&nbsp;</div>
+                            {% with clipurl=e.clip_url %}
+                            {% if clipurl %}
+                              <span class="video-icon" value="{{ e.clip_url }}">&#9658;</span>
+                            {% endif %}
+                            {% endwith %}
                         </div>
                     </td>
                 {% else %}
@@ -105,6 +110,17 @@
         <div class="modal-content">
             <div class="close" data-dismiss="modal">&times;</div>
             <div class="event-image">
+                <div class="extent"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="full-clip-modal" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="close" data-dismiss="modal">&times;</div>
+            <div class="event-clip">
                 <div class="extent"></div>
             </div>
         </div>

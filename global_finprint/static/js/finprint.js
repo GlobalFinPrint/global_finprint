@@ -909,8 +909,8 @@ var finprint = finprint || {};  //namespace if necessary...
     }
 
     function initExpandEventThumbnail() {
-        var $modal = $('#full-image-modal');
 
+        var $modal = $('#full-image-modal');
         $('#observation-table .annotool-thumbnail').click(function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -922,6 +922,22 @@ var finprint = finprint || {};  //namespace if necessary...
                 .end()
                 .find('.extent')
                 .attr('style', $target.find('.extent').attr('style'))
+                .end()
+                .modal('show');
+        });
+
+        var $modal1 = $('#full-clip-modal');
+        $('#observation-table .annotool-thumbnail .video-icon').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var $target = $(e.target).closest('.annotool-thumbnail .video-icon');
+            var url = $target[0].getAttribute("value")
+            var video_temp= '<video width="500" height="500" controls>'+
+                         '<source src='+url+' type="video/mp4"> </video>';
+            $modal1.find('.event-clip').html(video_temp)
+            $modal1
+                .find('.event-clip')
+                .attr('style', $target.attr('style'))
                 .end()
                 .modal('show');
         });
