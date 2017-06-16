@@ -351,7 +351,7 @@ class AbstractEvent(AuditableModel):
             key = bucket.get_key(self.clip_filename)
             return key.generate_url(expires_in=300, query_auth=False) if key else None
         except S3ResponseError as e:
-            logger.warning('{}{}'.format('Unable to build image url: ', e.message))
+            logger.warning('{}{}'.format('Unable to build clip url: ', e.message))
             return None
 
     def extent_to_css(self):
