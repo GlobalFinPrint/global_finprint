@@ -295,25 +295,31 @@ var finprint = finprint || {};  //namespace if necessary...
         var $modalForm = $modal.find('form#auto-assignment-form');
 
         var options = {allowEmptyOption: true, plugins: ['remove_button', 'restore_on_backspace']};
-        var fields = [
-            // '#select-set-auto-assign',
-            '#auto-affiliation',
-            '#project',
-        ];
-
 
         $modalForm.submit(false);
-        fields.forEach(function (selector) {
-            $modalForm.find(selector).selectize(options);
 
-        });
+        $modalForm.find('#auto-affiliation').selectize($.extend({}, options, {
+            onChange: function (value) {
+               controlAssignmentButtonEnabling();
+             }
+
+        }));
+
+        $modalForm.find('#project').selectize($.extend({}, options, {
+            onChange: function (value) {
+               controlAssignmentButtonEnabling();
+             }
+
+        }));
 
         var $setSelect = $modalForm.find('#select-set-auto-assign').selectize($.extend({}, options, {
             valueField: 'code',
             labelField: 'code',
             searchField: 'code',
             optgroupField: 'group',
-
+            onChange: function (value) {
+               controlAssignmentButtonEnabling();
+             }
         }));
 
         var $reefSelect = $modalForm.find('#select-reef-auto-assign').selectize($.extend({}, options, {
@@ -334,6 +340,7 @@ var finprint = finprint || {};  //namespace if necessary...
                         callback(sets);
                     });
                 });
+                 controlAssignmentButtonEnabling();
             }
         }));
 
@@ -361,8 +368,11 @@ var finprint = finprint || {};  //namespace if necessary...
                         setSelect.enable();
                         callback(sets);
                     });
+                     controlAssignmentButtonEnabling();
                 });
             }
+
+
         }));
 
         $openLink.click(function (e) {
@@ -390,6 +400,9 @@ var finprint = finprint || {};  //namespace if necessary...
                 $button.removeAttr('disabled');
             });
         });
+
+            $('button#assign-auto').attr('disabled', 'disabled');
+
     }
 
     function initAssignForm() {
@@ -1432,6 +1445,25 @@ var finprint = finprint || {};  //namespace if necessary...
         $('#select-assigned').val(localStorage.getItem("select-assigned"));
         $('#assigned-ago').val(localStorage.getItem("assigned-ago"));
     }
+
+    function controlAssignmentButtonEnabling() {
+        var auto_trip = $('#auto-trip').val();
+        var affilaitions = $('#auto-affiliation').val();
+        var sets = $('#select-set-auto-assign').val();
+        var project = $('#project').val();
+        var reefs = $('#select-reef-auto-assign').val();
+        var auto_num = $('#auto-num').val();
+
+       if (auto_trip || affilaitions || sets ||reefs) {
+          if (auto_num && project) {
+              $('button#assign-auto').removeAttr('disabled');
+           } else {
+            $('button#assign-auto').attr('disabled', 'disabled');
+            }
+        } else {
+          $('button#assign-auto').attr('disabled', 'disabled');
+        }
+      }
 
 })(jQuery);
 
