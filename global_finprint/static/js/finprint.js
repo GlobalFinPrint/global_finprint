@@ -3,6 +3,7 @@ var finprint = finprint || {};  //namespace if necessary...
 (function ($) {
     "use strict";
     var $auto_affiliation,$auto_trip;
+    var $setSelect,$reefSelect;
     $(function () {
         initToggleEnv();
         initAssignForm();
@@ -28,7 +29,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initInlineObsDelete();
         initInlineObsEdit();
         initVideoForm();
-        initEditMeasurables();
+        initEditMeasurables();reef
         initMultipleAssignmentModals();
         initCheckbutton();
     });
@@ -315,7 +316,7 @@ var finprint = finprint || {};  //namespace if necessary...
 
         }));
 
-        var $setSelect = $modalForm.find('#select-set-auto-assign').selectize($.extend({}, options, {
+        $setSelect = $modalForm.find('#select-set-auto-assign').selectize($.extend({}, options, {
             valueField: 'code',
             labelField: 'code',
             searchField: 'code',
@@ -325,7 +326,7 @@ var finprint = finprint || {};  //namespace if necessary...
              }
         }));
 
-        var $reefSelect = $modalForm.find('#select-reef-auto-assign').selectize($.extend({}, options, {
+        $reefSelect = $modalForm.find('#select-reef-auto-assign').selectize($.extend({}, options, {
             valueField: 'id',
             labelField: 'name',
             searchField: 'name',
@@ -344,7 +345,12 @@ var finprint = finprint || {};  //namespace if necessary...
                     });
                 });
                  controlAssignmentButtonEnabling();
+            },
+            onClear: function (value) {
+                 var setSelect = $setSelect[0].selectize;
+                 setSelect.clear(true);
             }
+
         }));
 
         $auto_trip = $modalForm.find('#auto-trip').selectize($.extend({}, options, {
@@ -1564,6 +1570,10 @@ var finprint = finprint || {};  //namespace if necessary...
            control.clear(true);
            var control2 = $auto_trip[0].selectize;
            control2.clear(true);
+           var control3 = $reefSelect[0].selectize;
+           control3.clear(true);
+           var control4 = $setSelect[0].selectize;
+           control4.clear(true);
            $('button#assign-auto').attr('disabled', 'disabled');
            if ($('#include-leads:checkbox:checked').val()=='on') {
               $("#include-leads").prop("checked", false);
