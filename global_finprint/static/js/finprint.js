@@ -1565,7 +1565,7 @@ var finprint = finprint || {};  //namespace if necessary...
            control.clear(true);
            var control2 = $auto_trip[0].selectize;
            control2.clear(true);
-
+           $('button#assign-auto').attr('disabled', 'disabled');
            if ($('#include-leads:checkbox:checked').val()=='on') {
               $("#include-leads").prop("checked", false);
             }
