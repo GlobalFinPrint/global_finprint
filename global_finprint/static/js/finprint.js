@@ -449,6 +449,7 @@ var finprint = finprint || {};  //namespace if necessary...
         });
 
         $modal.find('#cancel-auto').click(function () {
+            $('#before_processing').attr('style',"display:none");
             $('button#assign-auto-confirm').hide();
             $('#assignmentDetails').attr('style',"display:none");
             $modal.find('div.modal-footer span.success-message').fadeOut().removeClass('alert-error');
