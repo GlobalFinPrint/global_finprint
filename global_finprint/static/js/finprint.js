@@ -1547,7 +1547,6 @@ var finprint = finprint || {};  //namespace if necessary...
         if (auto_trip && auto_trip!='---') {filter_combination = filter_combination +"+"+auto_trip};
         if (reefs) {filter_combination = filter_combination +"+"+reefs};
         if (sets) {filter_combination = filter_combination +"+"+sets};
-        if (include_lead) {filter_combination = filter_combination +"+"+"include_lead=ON"};
         if (affilaitions && affilaitions!='---') {filter_combination = filter_combination +"+"+affilaitions};
         if (auto_num) {filter_combination = filter_combination +"+"+auto_num};
         if (project) {filter_combination = filter_combination +"+"+project};
