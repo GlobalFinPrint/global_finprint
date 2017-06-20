@@ -449,6 +449,7 @@ var finprint = finprint || {};  //namespace if necessary...
         });
 
         $modal.find('#cancel-auto').click(function () {
+            $('button#assign-auto-confirm').hide();
             $('#assignmentDetails').attr('style',"display:none");
             $modal.find('div.modal-footer span.success-message').fadeOut().removeClass('alert-error');
             clearAllFilters();
@@ -1565,10 +1566,8 @@ var finprint = finprint || {};  //namespace if necessary...
            control2.clear(true);
 
            if ($('#include-leads:checkbox:checked').val()=='on') {
-              $('#include-leads:checkbox:checked').val(null);
+              $("#include-leads").prop("checked", false);
             }
-
-          // $modal.find('div.modal-footer span.success-message').fadeOut().removeClass('alert-error');
        }
 
 })(jQuery);
