@@ -3,7 +3,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from global_finprint.annotation.views.assignment import VideoAutoAssignView, ManageAssignmentView, ObservationListView, \
     AssignmentListView, AssignmentListTbodyView, AssignmentModalBodyView, UnassignModalBodyView, AssignMultipleVideosModel,\
-    AssignMultipleVideoToAnnotators, RestrictFilterDropDown, AssignedAnnotatorPopup
+    AssignMultipleVideoToAnnotators, RestrictFilterDropDown, AssignedAnnotatorPopup, VideoCountForAutoAssignView,\
+    TotalVideoCountForAutoAssignment
 from global_finprint.annotation.views.compare import AssignmentCompareView, AssignmentDetailView
 
 
@@ -33,6 +34,10 @@ urlpatterns = [
         name='restrict_reefs_sets_based_on_trip'),
 
     url(r"^assigned_annotator/(?P<set_id>\d+)$",csrf_exempt(AssignedAnnotatorPopup.as_view()),
-            name='assigned anotator details per video')
+            name='assigned anotator details per video'),
+
+    url(r"^auto_count$", VideoCountForAutoAssignView.as_view(), name='auto_assign_count'),
+
+    url(r"^total_count$",TotalVideoCountForAutoAssignment.as_view(),name='total_assign_count'),
 
 ]
