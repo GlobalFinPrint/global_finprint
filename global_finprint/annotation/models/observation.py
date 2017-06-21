@@ -413,7 +413,7 @@ class Event(AbstractEvent):
         if for_web:
             json['extent_css'] = self.extent_to_css()
             json['image_url'] = self.image_url(verify=False)
-            json['clip_url'] = self.clip_url(verify=False)
+            json['clip_url'] = self.clip_url(verify=True)
             json['attribute_names'] = list(a.name for a in self.attribute.all())
 
         return json
