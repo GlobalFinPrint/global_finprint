@@ -29,7 +29,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initInlineObsDelete();
         initInlineObsEdit();
         initVideoForm();
-        initEditMeasurables();reef
+        initEditMeasurables();
         initMultipleAssignmentModals();
         initCheckbutton();
     });
@@ -345,12 +345,7 @@ var finprint = finprint || {};  //namespace if necessary...
                     });
                 });
                  controlAssignmentButtonEnabling();
-            },
-            onClear: function (value) {
-                 var setSelect = $setSelect[0].selectize;
-                 setSelect.clear(true);
             }
-
         }));
 
         $auto_trip = $modalForm.find('#auto-trip').selectize($.extend({}, options, {
@@ -385,6 +380,9 @@ var finprint = finprint || {};  //namespace if necessary...
                  reefSelect.clear(true);
                  var setSelect = $setSelect[0].selectize;
                  setSelect.clear(true);
+                 $auto_trip[0].selectize.clear(true);
+                 $auto_trip[0].selectize.trigger('change');
+
             }
 
 
@@ -462,7 +460,7 @@ var finprint = finprint || {};  //namespace if necessary...
             clearAllFilters();
         });
 
-        clearAllFilters();
+        //clearAllFilters();
     }
 
     function initAssignForm() {
@@ -1569,11 +1567,7 @@ var finprint = finprint || {};  //namespace if necessary...
            var control = $auto_affiliation[0].selectize;
            control.clear(true);
            var control2 = $auto_trip[0].selectize;
-           control2.clear(true);
-           var control3 = $reefSelect[0].selectize;
-           control3.clear(true);
-           var control4 = $setSelect[0].selectize;
-           control4.clear(true);
+           control2.trigger('clear');
            $('button#assign-auto').attr('disabled', 'disabled');
            if ($('#include-leads:checkbox:checked').val()=='on') {
               $("#include-leads").prop("checked", false);
