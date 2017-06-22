@@ -3,7 +3,7 @@ var finprint = finprint || {};  //namespace if necessary...
 (function ($) {
     "use strict";
     var $auto_affiliation,$auto_trip;
-    var $setSelect,$reefSelect;
+    var $setSelect,$reefSelect,$auto_project;
     $(function () {
         initToggleEnv();
         initAssignForm();
@@ -309,6 +309,13 @@ var finprint = finprint || {};  //namespace if necessary...
 
         }));
 
+       $auto_project = $modalForm.find('#project').selectize($.extend({}, options, {
+            onChange: function (value) {
+               controlAssignmentButtonEnabling();
+             }
+
+        }));
+
         $modalForm.find('#project').selectize($.extend({}, options, {
             onChange: function (value) {
                controlAssignmentButtonEnabling();
@@ -460,7 +467,7 @@ var finprint = finprint || {};  //namespace if necessary...
             clearAllFilters();
         });
 
-        //clearAllFilters();
+        clearAllFilters();
     }
 
     function initAssignForm() {
@@ -1564,10 +1571,15 @@ var finprint = finprint || {};  //namespace if necessary...
 
       function clearAllFilters() {
            var $modal = $('#automatic-modal');
-           var control = $auto_affiliation[0].selectize;
-           control.clear(true);
-           var control2 = $auto_trip[0].selectize;
-           control2.trigger('clear');
+           if ($auto_affiliation[0]) {
+               var control = $auto_affiliation[0].selectize;
+               control.clear(true);}
+           if ($auto_trip[0]) {
+               var control2 = $auto_trip[0].selectize;
+               control2.trigger('clear');}
+           if ($auto_project[0]){
+               var control3 = $auto_project[0].selectize;
+               control3.clear(true);}
            $('button#assign-auto').attr('disabled', 'disabled');
            if ($('#include-leads:checkbox:checked').val()=='on') {
               $("#include-leads").prop("checked", false);
