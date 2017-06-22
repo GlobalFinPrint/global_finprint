@@ -255,7 +255,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label for="project">Project</label>
-                                <select id="project" name="project" >
+                                <select id="project" name="project" placeholder="---">
                                     {% for project in projects %}
                                         <option value="{{ project.id }}">{{ project.name }}</option>
                                     {% endfor %}
