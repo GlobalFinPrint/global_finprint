@@ -460,7 +460,7 @@ var finprint = finprint || {};  //namespace if necessary...
             clearAllFilters();
         });
 
-        //clearAllFilters();
+        clearAllFilters();
     }
 
     function initAssignForm() {
@@ -1564,10 +1564,12 @@ var finprint = finprint || {};  //namespace if necessary...
 
       function clearAllFilters() {
            var $modal = $('#automatic-modal');
-           var control = $auto_affiliation[0].selectize;
-           control.clear(true);
-           var control2 = $auto_trip[0].selectize;
-           control2.trigger('clear');
+           if ($auto_affiliation[0]) {
+               var control = $auto_affiliation[0].selectize;
+               control.clear(true);}
+           if ($auto_trip[0]) {
+               var control2 = $auto_trip[0].selectize;
+               control2.trigger('clear');}
            $('button#assign-auto').attr('disabled', 'disabled');
            if ($('#include-leads:checkbox:checked').val()=='on') {
               $("#include-leads").prop("checked", false);
