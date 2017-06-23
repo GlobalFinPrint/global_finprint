@@ -192,7 +192,7 @@
                         {% csrf_token %}
                             <div class="col-md-4">
                                 <label for="auto-trip">Trip</label>
-                                <select class="form-control" id="auto-trip" name="trip" placeholder="Select one of trip">
+                                <select class="form-control" id="auto-trip" name="trip" placeholder="Select a trip">
                                     {% for t in trips %}
                                     {% if t.set_set.all|length > 0 %}
                                     <option value="{{ t.id }}">{{ t }}</option>
@@ -240,7 +240,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label for="auto-affiliation">Affiliation</label>
-                                <select class="form-control" id="auto-affiliation" name="affiliation" placeholder="Select one of affiliations">
+                                <select class="form-control" id="auto-affiliation" name="affiliation" placeholder="Select an affiliation">
                                     {% for a in affils %}
                                     {% if a.annotators|length > 0 %}
                                     <option value="{{ a.id }}">{{ a }}</option>
