@@ -1535,8 +1535,8 @@ var finprint = finprint || {};  //namespace if necessary...
         var reefs = $('#select-reef-auto-assign').val();
         var auto_num = $('#auto-num').val();
 
-        if (auto_trip || affilaitions || sets ||reefs) {
-          if (auto_num && project) {
+        if (auto_trip && auto_trip!='---' || affilaitions || sets ||reefs) {
+          if (auto_num && project && project!='---') {
               $('button#assign-auto').removeAttr('disabled');
            } else {
             $('button#assign-auto').attr('disabled', 'disabled');
@@ -1560,7 +1560,7 @@ var finprint = finprint || {};  //namespace if necessary...
         if (sets) {filter_combination = filter_combination +"+"+sets};
         if (affilaitions && affilaitions!='---') {filter_combination = filter_combination +"+"+affilaitions};
         if (auto_num) {filter_combination = filter_combination +"+"+auto_num};
-        if (project) {filter_combination = filter_combination +"+"+project};
+        if (project && project!='---') {filter_combination = filter_combination +"+"+project};
         //just to remove extre + sign
         if (filter_combination[0]=='+') {filter_combination = filter_combination.slice(1);}
         if (filter_combination[-1]=='+') {filter_combination = filter_combination.slice(0,-1);}
