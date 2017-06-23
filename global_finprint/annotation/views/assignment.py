@@ -59,7 +59,7 @@ class VideoAutoAssignView(UserAllowedMixin, View):
         include_leads = bool(request.POST.get('include_leads', False))
         project = get_object_or_404(Project, id=request.POST.get('project'))
 
-        if aff_id !='' :
+        if aff_id :
            annotators = FinprintUser.objects.filter(affiliation_id=aff_id, user__is_active=True).all()
         else :
            annotators = FinprintUser.objects.filter(user__is_active=True).all()
@@ -127,8 +127,10 @@ class VideoCountForAutoAssignView(UserAllowedMixin, View):
         """
         avail = list(a for a in annotators if a not in video.annotators_assigned(project))
         assign_count = 0
-        if len(video.annotators_assigned(project)) < num and len(annotators) > 0 and len(avail) > 0:
-            assign_count += len(avail)
+        count=0
+        while (len(video.annotators_assigned(project))+count) < num and len(annotators) > 0 and (len(avail)-count) > 0:
+            assign_count += 1
+            count += 1;
 
         return assign_count
 
