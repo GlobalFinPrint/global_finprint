@@ -55,7 +55,7 @@ class UserAdmin(admin.UserAdmin):
     fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'password', 'first_name', 'last_name', 'email', 'is_active', 'groups')
+            'fields': ('username', 'first_name', 'last_name', 'email', 'is_active', 'groups', 'password')
         }),
     )
     inlines = (FinprintUserInline,)

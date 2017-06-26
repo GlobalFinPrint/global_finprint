@@ -1,5 +1,5 @@
 # Django
-django==1.9.13
+django==1.10.7
 
 # Configuration
 django-environ==0.4.3
@@ -11,9 +11,11 @@ django-braces==1.11.0
 django-crispy-forms==1.6.1
 django-bootstrap3-datetimepicker-2==2.4.2
 
-# data presentation
+# API, data presentation and reporting
 django-leaflet==0.22.0
 django-geojson==2.10.0
+djangorestframework==3.6.3
+django-report-builder==3.5.0
 
 # Models
 django-model-utils==2.3.1

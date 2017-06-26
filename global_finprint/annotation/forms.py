@@ -50,7 +50,7 @@ class SingleSelectizeWidget(forms.Select):
                 self.choices += [(value, value)]
             final_attrs = self.build_attrs(attrs, name=name)
             output.append(format_html(self.template, name, flatatt(final_attrs)))
-            options = self.render_options(choices, [value])
+            options = self.render_options(choices)
             if options:
                 output.append(options)
             output.append(self.templend)

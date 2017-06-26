@@ -15,9 +15,7 @@ from ...core.version import VersionInfo
 from datetime import datetime
 from ...core.templatetags.time_display import time_display
 
-
 logger = logging.getLogger(__name__)
-
 
 OBSERVATION_TYPE_CHOICES = {
     ('I', 'Of interest'),
@@ -192,6 +190,8 @@ class Observation(AbstractObservation):
             json['pretty_time'] = time_display(self.initial_observation_time())
             json['initial_event'] = self.initial_event().to_json(for_web=True)
 
+
+
         return json
 
     def initial_event(self):
@@ -324,6 +324,34 @@ class AbstractEvent(AuditableModel):
             logger.warning('{}{}'.format('Unable to build image url: ', e.message))
             return None
 
+            # TODO: do we need to check for every key? maybe just use filename and a base_url
+
+    def clip_url(self, verify=True):
+        if self.extent is None:
+            logger.debug('{}'.format('No clip extent: '))
+            return None
+
+        self.clip_filename = None
+
+        if self.filename() is not None:
+            _splits = self.filename().split("/")
+            _len = len(_splits)
+            clip_filename = _splits[_len - 1].split(".")[0] + ".mp4"
+            self.clip_filename = self.filename().strip(_splits[_len - 1]) + clip_filename
+            logger.info('{}{}'.format('8 sec clip file name: ', self.clip_filename))
+
+        if verify is False:
+            return 'https://s3-us-west-2.amazonaws.com/finprint-annotator-screen-captures{}'.format(self.clip_filename)
+
+        try:
+            conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+            bucket = conn.get_bucket(settings.FRAME_CAPTURE_BUCKET)
+            key = bucket.get_key(self.clip_filename)
+            return key.generate_url(expires_in=300, query_auth=False) if key else None
+        except S3ResponseError as e:
+            logger.warning('{}{}'.format('Unable to build clip url: ', e.message))
+            return None
+
     def extent_to_css(self):
         if self.extent is None:
             logger.debug('{}'.format('No image extent: '))
@@ -385,6 +413,7 @@ class Event(AbstractEvent):
         if for_web:
             json['extent_css'] = self.extent_to_css()
             json['image_url'] = self.image_url(verify=False)
+            json['clip_url'] = self.clip_url(verify=True)
             json['attribute_names'] = list(a.name for a in self.attribute.all())
 
         return json

@@ -8,7 +8,10 @@ var Templates = {
 
                     '<% if (initial_event.image_url) { %>' +
                         '<div class="event-thumbnail" style="background-image:url(<%= initial_event.image_url %>)">' +
-                            '<div class="extent" style="<%= initial_event.extent_css %>">&nbsp;</div>' +
+                            '<div class="extent" style="<%= initial_event.extent_css %>">&nbsp;</div>'+
+                            '<% if (initial_event.clip_url) { %>' +
+                              '<span class="video-icon">&#9658;</span>' +
+                            '<% } %>'+
                         '</div>' +
                     '<% } else { %>' +
                         '<div class="event-thumbnail empty"></div>' +

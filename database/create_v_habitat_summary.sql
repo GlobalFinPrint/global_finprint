@@ -5,6 +5,10 @@ CREATE VIEW public.habitat_summary AS
     hst.name        AS site,
     hrf.name        AS reef,
     hrt.description AS reef_habitat,
+    hrg.id          AS region_id,
+    hlc.id          AS location_id,
+    hst.id          AS site_id,
+    hrf.id          AS reef_id,
     hrh.id          AS reef_habitat_id
   FROM (((((habitat_reefhabitat hrh
     JOIN habitat_reef hrf ON ((hrf.id = hrh.reef_id)))

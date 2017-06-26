@@ -6,7 +6,7 @@ import re as re
 from builtins import set as set_utils
 from django.views.generic import View, ListView
 
-from django.shortcuts import get_object_or_404, render_to_response, get_list_or_404
+from django.shortcuts import get_object_or_404, render
 from django.db.models import Count
 from django.http.response import JsonResponse, HttpResponse
 from django.template import RequestContext
@@ -59,7 +59,7 @@ class VideoAutoAssignView(UserAllowedMixin, View):
         include_leads = bool(request.POST.get('include_leads', False))
         project = get_object_or_404(Project, id=request.POST.get('project'))
 
-        if aff_id !='' :
+        if aff_id :
            annotators = FinprintUser.objects.filter(affiliation_id=aff_id, user__is_active=True).all()
         else :
            annotators = FinprintUser.objects.filter(user__is_active=True).all()
@@ -70,23 +70,34 @@ class VideoAutoAssignView(UserAllowedMixin, View):
         video_count = 0
         assigned_count = 0
         new_count = 0
+        videos = None
 
-        if 'auto-set[]' in post_dic :
-            set_ids = post_dic['auto-set[]']
-            if len(set_ids) > 0 :
-                videos =  Video.objects.filter(set__trip_id=trip_id).filter(set__code__in =set_ids).exclude(files__isnull=True).all()
-        else :
+        if trip_id != '':
             videos = Video.objects.filter(set__trip_id=trip_id).exclude(files__isnull=True).all()
 
         if 'auto-reef[]' in post_dic:
             reef_ids = post_dic['auto-reef[]']
-            if len(reef_ids) > 0 :
-              videos = videos.filter(set__reef_habitat__reef_id__in=reef_ids)
+            if trip_id != '':
+                videos = videos.filter(set__reef_habitat__reef_id__in=reef_ids)
+            elif len(reef_ids) > 0:
+                videos = Video.objects.filter(set__reef_habitat__reef_id__in=reef_ids).exclude(
+                    files__isnull=True).all()
 
-        for video in videos:
-            video_count += 1
-            new_count += self.assign_video(annotators, video, num, project)
-            assigned_count += len(video.annotators_assigned(project))
+        if 'auto-set[]' in post_dic:
+            set_ids = post_dic['auto-set[]']
+            if trip_id != '' or ('auto-reef[]' in post_dic and len(post_dic['auto-reef[]']) > 0):
+                videos = videos.filter(set__code__in=set_ids).exclude(files__isnull=True).all()
+            elif len(set_ids) > 0:
+                videos = Video.objects.filter(set__code__in=set_ids).exclude(files__isnull=True).all()
+        if videos != None:
+            for video in videos:
+                video_count += 1
+                new_count += self.assign_video(annotators, video, num, project)
+                assigned_count += len(video.annotators_assigned(project))
+        else :
+            video_count = 0
+            new_count = 0
+            assigned_count = 0
 
         return JsonResponse(
             {
@@ -101,6 +112,143 @@ class VideoAutoAssignView(UserAllowedMixin, View):
             }
         )
 
+class VideoCountForAutoAssignView(UserAllowedMixin, View):
+    """
+        View to handle auto-assignment functionality found at /assignment/
+        """
+    def return_count_of_assign_video(self, annotators, video, num, project):
+        """
+        Assign a video to a number of annotators
+        :param annotators: list of annotator objects
+        :param video: video object
+        :param num: integer denoting how many annotators should have this video assigned
+        :param project: project object
+        :return:
+        """
+        avail = list(a for a in annotators if a not in video.annotators_assigned(project))
+        assign_count = 0
+        count=0
+        while (len(video.annotators_assigned(project))+count) < num and len(annotators) > 0 and (len(avail)-count) > 0:
+            assign_count += 1
+            count += 1;
+
+        return assign_count
+
+    def post(self, request):
+        """
+        Endpoint used by automatic assignment modal to return counts of videos after filter applied
+        :param request:
+        :return:
+        """
+        post_dic = dict(request.POST)
+
+        trip_id = request.POST.get('trip')
+        aff_id = request.POST.get('affiliation')
+        num = int(request.POST.get('num'))
+        include_leads = bool(request.POST.get('include_leads', False))
+        project = get_object_or_404(Project, id=request.POST.get('project'))
+
+        if aff_id != '':
+            annotators = FinprintUser.objects.filter(affiliation_id=aff_id, user__is_active=True).all()
+        else:
+            annotators = FinprintUser.objects.filter(user__is_active=True).all()
+
+        if not include_leads:
+            annotators = list(a for a in annotators if not a.is_lead())
+
+        video_count = 0
+        assigned_count = 0
+        new_count = 0
+        videos = None
+
+        if trip_id != '':
+            videos = Video.objects.filter(set__trip_id=trip_id).exclude(files__isnull=True).all()
+
+        if 'auto-reef[]' in post_dic:
+            reef_ids = post_dic['auto-reef[]']
+            if trip_id != '':
+                videos = videos.filter(set__reef_habitat__reef_id__in=reef_ids)
+            elif len(reef_ids) > 0:
+                videos = Video.objects.filter(set__reef_habitat__reef_id__in=reef_ids).exclude(
+                    files__isnull=True).all()
+
+        if 'auto-set[]' in post_dic:
+            set_ids = post_dic['auto-set[]']
+            if trip_id != '' or ('auto-reef[]' in post_dic and len(post_dic['auto-reef[]']) > 0):
+                videos = videos.filter(set__code__in=set_ids).exclude(files__isnull=True).all()
+            elif len(set_ids) > 0:
+                videos = Video.objects.filter(set__code__in=set_ids).exclude(files__isnull=True).all()
+
+        if videos is not None :
+            for video in videos:
+                video_count += 1
+                new_count += self.return_count_of_assign_video(annotators, video, num, project)
+                assigned_count += len(video.annotators_assigned(project))
+        else :
+            video_count = 0
+            new_count = 0
+            assigned_count = 0
+
+        return JsonResponse(
+            {
+                'status': 'ok',
+                'video_count': video_count,
+                'assignments':
+                    {
+                        'total': video_count * num,
+                        'assigned': assigned_count,
+                        'newly_assigned': new_count
+                    }
+            }
+        )
+
+
+class TotalVideoCountForAutoAssignment(UserAllowedMixin, View):
+    """
+        View to handle auto-assignment functionality found at /assignment/
+        """
+
+    def post(self, request):
+        """
+        Endpoint used by automatic assignment modal to return counts of videos after filter applied
+        :param request:
+        :return:
+        """
+        post_dic = dict(request.POST)
+        trip_id = request.POST.get('trip')
+
+        videos = None
+
+        if trip_id!='' :
+            videos = Video.objects.filter(set__trip_id=trip_id).exclude(files__isnull=True).all()
+
+        if 'auto-reef[]' in post_dic:
+            reef_ids = post_dic['auto-reef[]']
+            if trip_id!='':
+                videos = videos.filter(set__reef_habitat__reef_id__in=reef_ids)
+            elif len(reef_ids) > 0 :
+                videos = Video.objects.filter(set__reef_habitat__reef_id__in=reef_ids).exclude(
+                    files__isnull=True).all()
+
+        if 'auto-set[]' in post_dic :
+            set_ids = post_dic['auto-set[]']
+            if trip_id!='' or ('auto-reef[]' in post_dic and len(post_dic['auto-reef[]']) > 0):
+                videos = videos.filter(set__code__in=set_ids).exclude(files__isnull=True).all()
+            elif len(set_ids) > 0 :
+                videos = Video.objects.filter(set__code__in=set_ids).exclude(files__isnull=True).all()
+
+        if videos is not None and len(videos)!=0 :
+            video_count = len(videos)
+        else :
+            video_count = 0
+
+
+        return JsonResponse(
+            {
+                'status': 'ok',
+                'video_count': video_count
+            }
+        )
 
 class AssignmentListView(UserAllowedMixin, View):
     """
@@ -109,15 +257,15 @@ class AssignmentListView(UserAllowedMixin, View):
     template_name = 'pages/annotation/assignment_list.html'
 
     def get(self, request):
-        context = RequestContext(request, {
+        context = {
             'locations': Location.objects.order_by('name').all().prefetch_related('trip_set'),
             'trips': Trip.objects.order_by('code').all().prefetch_related('set_set'),
             'sites': Site.objects.order_by('name').all().prefetch_related('reef_set'),
             'affils': Affiliation.objects.order_by('name').all().prefetch_related('finprintuser_set'),
             'statuses': AnnotationState.objects.all(),
             'projects': Project.objects.order_by('id').all()
-        })
-        return render_to_response(self.template_name, context=context)
+        }
+        return render(request, self.template_name, context=context)
 
 
 class AssignmentListTbodyView(UserAllowedMixin, View):
@@ -187,10 +335,9 @@ class AssignmentListTbodyView(UserAllowedMixin, View):
             query = query.filter(project_id=project_id)
             unassigned = unassigned.none()
 
-        context = RequestContext(request, {'assignments': sorted(query, key=lambda a: str(a.set())),
-                                           'unassigned': sorted(unassigned, key=lambda s: str(s))
-                                           })
-        return render_to_response(self.template_name, context=context)
+        context = {'assignments': sorted(query, key=lambda a: str(a.set())),
+                                           'unassigned': sorted(unassigned, key=lambda s: str(s))}
+        return render(request, self.template_name, context=context)
 
 
 class AssignmentModalBodyView(UserAllowedMixin, View):
@@ -203,15 +350,15 @@ class AssignmentModalBodyView(UserAllowedMixin, View):
         set = get_object_or_404(Set, id=set_id)
         project = get_object_or_404(Project, id=request.GET.get('project_id', 1))
         current_assignments = set.video.assignment_set.filter(project=project).all()
-        context = RequestContext(request, {
+        context = {
             'set': set,
             'current': current_assignments,
             'current_annos': [a.annotator for a in current_assignments],
             'affiliations': Affiliation.objects.order_by('name').all(),
             'projects': Project.objects.order_by('id').all(),
             'current_project': project,
-        })
-        return render_to_response(self.template_name, context=context)
+        }
+        return render(request, self.template_name, context=context)
 
     def post(self, request, set_id):
         set = get_object_or_404(Set, id=set_id)
@@ -231,10 +378,10 @@ class UnassignModalBodyView(UserAllowedMixin, View):
 
     def get(self, request, assignment_id):
         assignment = get_object_or_404(Assignment, id=assignment_id)
-        context = RequestContext(request, {
+        context = {
             'assignment': assignment
-        })
-        return render_to_response(self.template_name, context=context)
+        }
+        return render(request, self.template_name, context=context)
 
     def post(self, request, assignment_id):
         assignment = get_object_or_404(Assignment, id=assignment_id)
@@ -349,7 +496,7 @@ class AssignMultipleVideosModel(UserAllowedMixin, View):
         set = get_object_or_404(Set, id=set_ids[0])
         project = get_object_or_404(Project, id=1)
         current_assignments = set.video.assignment_set.filter(project=project).all()
-        context = RequestContext(request, {
+        context = {
             'current_set':multiple_assignment_data_set,
             'current': current_assignments,
             'current_annos': [a.annotator for a in current_assignments],
@@ -358,9 +505,9 @@ class AssignMultipleVideosModel(UserAllowedMixin, View):
             'current_project': project,
             'set_ids_str':set_ids_str,
             'total_count':total_count,
-        })
+        }
 
-        return render_to_response(self.template_name, context=context)
+        return render(request, self.template_name, context=context)
 
     def filter_unassigned_list(self, video_list, assigned_video_list):
         unassigned_ids =[]
@@ -430,9 +577,10 @@ class RestrictFilterDropDown(UserAllowedMixin, View) :
         else :
             trip = Trip.objects.order_by('code').all().prefetch_related('set_set')
             sites = Site.objects.order_by('name').all().prefetch_related('reef_set')
-            set_data = list(set(trip))[0].set_set
-            for s in set_data.all():
-                list_of_sets.append({"id": s.id, "code": s.code, "group": str(set_data.instance)})
+            for trip_data in list(set(trip)) :
+                set_data = trip_data.set_set
+                for s in set_data.all():
+                    list_of_sets.append({"id": s.id, "code": s.code, "group": str(set_data.instance)})
 
             for s in sites:
                 for r in s.reef_set.all():
@@ -453,8 +601,9 @@ class AssignedAnnotatorPopup(UserAllowedMixin, View):
         set = get_object_or_404(Set, id=set_id)
         project = get_object_or_404(Project, id=request.GET.get('project_id', 1))
         current_assignments = set.video.assignment_set.filter(project=project).all()
-        context = RequestContext(request, {
+        context = {
             'set': set,
             'current': current_assignments,
-        })
-        return render_to_response(self.template_name, context=context)
+        }
+
+        return render(request, self.template_name, context=context)

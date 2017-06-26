@@ -4,10 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.core.serializers import serialize
 from django.http import HttpResponse
 from django.views.generic import View
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
+from django.db.models import Count
+from django.db.models.functions import Extract
 
-from .models import Report, Planned_Site_Status
+from .models import Report, PlannedSiteStatus
+from ..annotation.models.video import Assignment
 from ..core.mixins import UserAllowedMixin
 
 
@@ -18,8 +20,8 @@ class CustomReportListView(UserAllowedMixin, View):
     template = 'pages/reports/custom_list.html'
 
     def get(self, request):
-        context = RequestContext(request, {'reports': Report.view_list()})
-        return render_to_response(self.template, context=context)
+        context = {'reports': Report.view_list()}
+        return render(request, self.template, context=context)
 
 
 class CustomReportView(UserAllowedMixin, View):
@@ -31,12 +33,12 @@ class CustomReportView(UserAllowedMixin, View):
     def get(self, request, report):
         report = Report(report)
         results = report.results()
-        context = RequestContext(request, {
+        context = {
             'report': report,
             'headers': results[0],
             'rows': results[1:]
-        })
-        return render_to_response(self.template, context=context)
+        }
+        return render(request, self.template, context=context)
 
 
 class CustomReportFileView(UserAllowedMixin, View):
@@ -56,6 +58,30 @@ class CustomReportFileView(UserAllowedMixin, View):
         return response
 
 
+class LeaderboardView(View):
+    """
+    Top annotators
+    """
+    template = 'pages/reports/leaderboard.html'
+
+    def get(self, request):
+        overall_leaders = Assignment.objects.values(
+            'annotator__user__last_name', 'annotator__user__first_name', 'annotator__affiliation__name').exclude(
+            annotator__affiliation_id__in=(0, 1, 7)).filter(status_id__in=(3, 4)).annotate(
+            num_assignments=Count('id')).order_by('-num_assignments')[:25]
+        monthly_leaders = Assignment.objects.values(
+            'annotator__user__last_name', 'annotator__user__first_name',
+            'annotator__affiliation__name').exclude(
+            annotator__affiliation_id__in=(0, 1, 7)).filter(status_id__in=(3, 4)).annotate(
+            num_assignments=Count('id')).order_by('-last_modified_year_month', '-num_assignments')[:25]
+        context = {
+            'overall_leaders': overall_leaders,
+            'monthly_leaders': monthly_leaders
+        }
+        return render(request, self.template, context=context)
+
+
+# todo: not currently used ... intended for status mapping.
 class StatusMapView(UserAllowedMixin, View):
     """
     Report for status map found at /reports/status/map/
@@ -63,7 +89,7 @@ class StatusMapView(UserAllowedMixin, View):
     template = 'pages/reports/status_report_map.html'
 
     def get(self, request):
-        return render_to_response(self.template)
+        return render(request, self.template)
 
 
 @login_required
@@ -74,7 +100,7 @@ def planned_site_geojson(request):
     :return:
     """
     feature = serialize('geojson',
-                        Planned_Site_Status.objects.all(),
+                        PlannedSiteStatus.objects.all(),
                         fields='eez_boundary, status'
                         )
     return HttpResponse(feature, content_type='application/json')

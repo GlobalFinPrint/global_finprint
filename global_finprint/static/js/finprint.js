@@ -2,7 +2,8 @@ var finprint = finprint || {};  //namespace if necessary...
 
 (function ($) {
     "use strict";
-
+    var $auto_affiliation,$auto_trip;
+    var $setSelect,$reefSelect,$auto_project;
     $(function () {
         initToggleEnv();
         initAssignForm();
@@ -94,23 +95,22 @@ var finprint = finprint || {};  //namespace if necessary...
 
         //intially search will be default clicked when page is loaded GLOB-604
         if ($form.serializeArray().some(function (field) {
-                    return field.name !== 'csrfmiddlewaretoken' && field.value;
-                }))
-        {
-                $('#limitSelectionId').hide();
-                $('#no_video_id').hide();
-                $('#spinId').show();
-                $('#spinId2').show();
-                storePreviousSearchFilter()
-                $.post('/assignment/search', $form.serialize(), function (res) {
-                    $target.html(res);
-                    $('#limitSelectionId').show();
-                    $('#no_video_id').show();
-                    $('#spinId').hide();
-                    $('#spinId2').hide();
-                    $('#selectAllAssignmentsId').prop('checked', false)
-                    controlCheckBoxFunctionality();
-                });
+                return field.name !== 'csrfmiddlewaretoken' && field.value;
+            })) {
+            $('#limitSelectionId').hide();
+            $('#no_video_id').hide();
+            $('#spinId').show();
+            $('#spinId2').show();
+            storePreviousSearchFilter()
+            $.post('/assignment/search', $form.serialize(), function (res) {
+                $target.html(res);
+                $('#limitSelectionId').show();
+                $('#no_video_id').show();
+                $('#spinId').hide();
+                $('#spinId2').hide();
+                $('#selectAllAssignmentsId').prop('checked', false)
+                controlCheckBoxFunctionality();
+            });
         }
         $form.find('button#search').click(function () {
             storePreviousSearchFilter()
@@ -296,75 +296,104 @@ var finprint = finprint || {};  //namespace if necessary...
         var $modalForm = $modal.find('form#auto-assignment-form');
 
         var options = {allowEmptyOption: true, plugins: ['remove_button', 'restore_on_backspace']};
-        var fields = [
-           // '#select-set-auto-assign',
-            '#auto-affiliation',
-            '#project',
-        ];
-
 
         $modalForm.submit(false);
-        fields.forEach(function (selector) {
-            $modalForm.find(selector).selectize(options);
 
-        });
+        $('button#assign-auto-confirm').hide();
+        $('button#assign-auto').attr('disabled', 'disabled');
 
-        var $setSelect = $modalForm.find('#select-set-auto-assign').selectize($.extend({}, options, {
+       $auto_affiliation = $modalForm.find('#auto-affiliation').selectize($.extend({}, options, {
+            onChange: function (value) {
+               controlAssignmentButtonEnabling();
+             }
+
+        }));
+
+       $auto_project = $modalForm.find('#project').selectize($.extend({}, options, {
+            onChange: function (value) {
+               controlAssignmentButtonEnabling();
+             }
+
+        }));
+
+        $modalForm.find('#project').selectize($.extend({}, options, {
+            onChange: function (value) {
+               controlAssignmentButtonEnabling();
+             }
+
+        }));
+
+        $setSelect = $modalForm.find('#select-set-auto-assign').selectize($.extend({}, options, {
             valueField: 'code',
             labelField: 'code',
             searchField: 'code',
             optgroupField: 'group',
+            onChange: function (value) {
+               controlAssignmentButtonEnabling();
+             }
+        }));
 
-         }));
-
-        var $reefSelect = $modalForm.find('#select-reef-auto-assign').selectize($.extend({}, options, {
+        $reefSelect = $modalForm.find('#select-reef-auto-assign').selectize($.extend({}, options, {
             valueField: 'id',
             labelField: 'name',
             searchField: 'name',
             optgroupField: 'reef_group',
-            onChange: function(value){
-               var setSelect = $setSelect[0].selectize ;
-               setSelect.disable();
-               setSelect.clearOptions();
-               console.log('#select-reef-auto-assign', value)
-               $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
-                   console.log('reefs selected are: ', res["sets"])
-                   var sets = res["sets"];
-                   setSelect.load(function(callback){
-                           setSelect.enable();
-                           callback(sets);
-                           });
-               });
-           }
-         }));
+            onChange: function (value) {
+                var setSelect = $setSelect[0].selectize;
+                setSelect.disable();
+                setSelect.clearOptions();
+                console.log('#select-reef-auto-assign', value)
+                $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
+                    console.log('reefs selected are: ', res["sets"])
+                    var sets = res["sets"];
+                    setSelect.load(function (callback) {
+                        setSelect.enable();
+                        callback(sets);
+                    });
+                });
+                 controlAssignmentButtonEnabling();
+            }
+        }));
 
-          $modalForm.find('#auto-trip').selectize($.extend({}, options, {
-               onChange: function(value){
-                    console.log('#auto-trip', value)
-                    var reefSelect = $reefSelect[0].selectize ;
-                    reefSelect.disable();
-                    reefSelect.clearOptions();
+        $auto_trip = $modalForm.find('#auto-trip').selectize($.extend({}, options, {
+            onChange: function (value) {
+                console.log('#auto-trip', value)
+                var reefSelect = $reefSelect[0].selectize;
+                reefSelect.disable();
+                reefSelect.clearOptions();
 
-                    var setSelect = $setSelect[0].selectize ;
-                    setSelect.disable();
-                    setSelect.clearOptions();
-                    $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
-                       console.log('/assignment/filter_change', res["sets"])
-                       console.log('/assignment/filter_change', res["reefs"])
-                       var reefs = res["reefs"];
-                       var sets = res["sets"];
-                       reefSelect.load(function(callback){
-                           reefSelect.enable();
-                               callback(reefs);
-                           });
+                var setSelect = $setSelect[0].selectize;
+                setSelect.disable();
+                setSelect.clearOptions();
+                $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
+                    console.log('/assignment/filter_change', res["sets"])
+                    console.log('/assignment/filter_change', res["reefs"])
+                    var reefs = res["reefs"];
+                    var sets = res["sets"];
+                    reefSelect.load(function (callback) {
+                        reefSelect.enable();
+                        callback(reefs);
+                    });
 
-                       setSelect.load(function(callback){
-                           setSelect.enable();
-                               callback(sets);
-                           });
-                   });
-              }
-         }));
+                    setSelect.load(function (callback) {
+                        setSelect.enable();
+                        callback(sets);
+                    });
+                     controlAssignmentButtonEnabling();
+                });
+            },
+            onClear: function (value) {
+                 var reefSelect = $reefSelect[0].selectize;
+                 reefSelect.clear(true);
+                 var setSelect = $setSelect[0].selectize;
+                 setSelect.clear(true);
+                 $auto_trip[0].selectize.clear(true);
+                 $auto_trip[0].selectize.trigger('change');
+
+            }
+
+
+        }));
 
         $openLink.click(function (e) {
             e.preventDefault();
@@ -372,14 +401,48 @@ var finprint = finprint || {};  //namespace if necessary...
         });
 
         $modal.find('#assign-auto').click(function () {
-            var $button = $('button#assign-auto');
-            $button.attr('disabled', 'disabled');
+            $('#assignmentDetails').attr('style',"display:none");
+            $('button#assign-auto').attr('disabled', 'disabled');
+            $('button#assign-auto-confirm').hide();
+
+            $modal.find('div.modal-footer span.success-message').fadeOut().removeClass('alert-error');
+            get_filter_combination()
+            //just to show total count till all videos are processed
+            $.post('/assignment/total_count', $modalForm.serialize(), function (data) {
+                 $('#before_processing').attr('style',"display:true");
+                 $('#total_video_count').text("Processing "+data['video_count']+" video(s).");
+                });
+
+            $.post('/assignment/auto_count', $modalForm.serialize(), function (data) {
+                var $aa = data['assignments'];
+                var $message = ['Processed',
+                    data['video_count'],
+                    ' video(s).',
+                    $aa['assigned'],
+                    'assignment(s) made',
+                    ['(', $aa['newly_assigned'], ' new).'].join('')
+                ].join(' ');
+                $('#before_processing').attr('style',"display:none");
+                $('#assignmentDetails').attr('style',"display:true");
+                $('#total_processed_videos_id').text("Processed "+data['video_count']+" video(s).")
+                $('#assigned_already').text($aa['assigned']+" assignment already existed")
+                $('#newly_assigned_id').text($aa['newly_assigned']+" new assignments made")
+                if ($aa['assigned'] < $aa['total']) {
+                    $modal.find('div.modal-footer span.success-message').addClass('alert-error')
+                }
+          //      $modal.find('div.modal-footer span.success-message').text($message).fadeIn();
+                $('button#assign-auto-confirm').show();
+
+            });
+        });
+
+        $modal.find('#assign-auto-confirm').click(function () {
             $modal.find('div.modal-footer span.success-message').fadeOut().removeClass('alert-error');
             $.post('/assignment/auto', $modalForm.serialize(), function (data) {
                 var $aa = data['assignments'];
                 var $message = ['Processed',
                     data['video_count'],
-                    'video(s).',
+                    ' video(s).',
                     $aa['assigned'],
                     'assignment(s) made',
                     ['(', $aa['newly_assigned'], ' new).'].join('')
@@ -388,9 +451,23 @@ var finprint = finprint || {};  //namespace if necessary...
                     $modal.find('div.modal-footer span.success-message').addClass('alert-error')
                 }
                 $modal.find('div.modal-footer span.success-message').text($message).fadeIn();
-                $button.removeAttr('disabled');
+                $('button#assign-auto').removeAttr('disabled');
+                $('#assignmentDetails').attr('style',"display:none");
+                $('button#assign-auto-confirm').hide();
+                clearAllFilters();
+
             });
         });
+
+        $modal.find('#cancel-auto').click(function () {
+            $('#before_processing').attr('style',"display:none");
+            $('button#assign-auto-confirm').hide();
+            $('#assignmentDetails').attr('style',"display:none");
+            $modal.find('div.modal-footer span.success-message').fadeOut().removeClass('alert-error');
+            clearAllFilters();
+        });
+
+        clearAllFilters();
     }
 
     function initAssignForm() {
@@ -909,8 +986,8 @@ var finprint = finprint || {};  //namespace if necessary...
     }
 
     function initExpandEventThumbnail() {
-        var $modal = $('#full-image-modal');
 
+        var $modal = $('#full-image-modal');
         $('#observation-table .annotool-thumbnail').click(function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -922,6 +999,22 @@ var finprint = finprint || {};  //namespace if necessary...
                 .end()
                 .find('.extent')
                 .attr('style', $target.find('.extent').attr('style'))
+                .end()
+                .modal('show');
+        });
+
+        var $modal1 = $('#full-clip-modal');
+        $('#observation-table .annotool-thumbnail .video-icon').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var $target = $(e.target).closest('.annotool-thumbnail .video-icon');
+            var url = $target[0].getAttribute("value")
+            var video_temp= '<video width="500" height="500" controls>'+
+                         '<source src='+url+' type="video/mp4"> </video>';
+            $modal1.find('.event-clip').html(video_temp)
+            $modal1
+                .find('.event-clip')
+                .attr('style', $target.attr('style'))
                 .end()
                 .modal('show');
         });
@@ -961,9 +1054,9 @@ var finprint = finprint || {};  //namespace if necessary...
                     if (newRowspan === 1) {
                         $parentRow.removeClass('first-event accordion-toggle child-row')
                             .attr('class',
-                               function(i, c){
-                                  return c.replace(/(^|\s)children-\S+/g, '');
-                               })
+                                function (i, c) {
+                                    return c.replace(/(^|\s)children-\S+/g, '');
+                                })
                             .addClass('single-event')
                             .removeAttr('data-is-child')
                             .attr('data-rowspan', 1)
@@ -972,9 +1065,9 @@ var finprint = finprint || {};  //namespace if necessary...
                     } else if ($parentRow.hasClass('child-row')) {
                         $parentRow.removeClass('child-row')
                             .attr('class',
-                               function(i, c){
-                                  return c.replace(/(^|\s)children-\S+/g, '');
-                               })
+                                function (i, c) {
+                                    return c.replace(/(^|\s)children-\S+/g, '');
+                                })
                             .addClass('first-event accordion-toggle')
                             .attr('data-target', '.' + $parentRow.data('isChild'))
                             .removeAttr('data-is-child')
@@ -1196,14 +1289,14 @@ var finprint = finprint || {};  //namespace if necessary...
     function initEditMeasurables() {
         var $modal = $('#edit-measurables-modal');
 
-        $('td.measurables').on('click', 'a.edit-measurables', function (e) {
+        $('td.measurables').on('click', 'a.edit-master-measurables', function (e) {
             e.preventDefault();
             e.stopPropagation();
 
             var $originalTarget = $(e.target);
             var eventId = $originalTarget.data('event-id');
 
-            $.get('/assignment/master/edit_measurables/' + eventId, function (res) {
+            $.get('/assignment/master/measurables/edit/' + eventId, function (res) {
                 var dropdownHtml = '<select class="measurables form-control">';
                 dropdownHtml += '<option value="0">---</option>';
                 res.measurables.forEach(function (m) {
@@ -1211,7 +1304,7 @@ var finprint = finprint || {};  //namespace if necessary...
                 });
                 dropdownHtml += '</select>';
 
-                $modal.find('button#add-measurable').unbind().click(function () {
+                $modal.find('button#add-measurable').off().click(function () {
                     var input = '<input class="form-control" type="text" value=""/>';
                     var remove = '<button class="btn btn-danger remove">Remove</button>';
                     $modal.find('div.measurables')
@@ -1221,28 +1314,41 @@ var finprint = finprint || {};  //namespace if necessary...
                 $modal.modal('show');
                 $modal.find('.measurables').empty();
                 res.event_measurables.forEach(function (em) {
-                    var thisDropDown = $(dropdownHtml).clone()
+                    var thisDropDown = $(dropdownHtml)
+                        .attr('id', 'option-' + em.id)
+                        .clone()
                         .find('option[value="' + em.measurable + '"]')
-                        .attr('selected', 'selected').end()[0].outerHTML;
-                    console.log(thisDropDown);
-                    var input = '<input class="form-control" type="text" value="' + em.value + '"/>';
+                        .attr('selected', 'selected')
+                        .end()[0].outerHTML;
+                    // console.log(thisDropDown);
+                    var input = '<input class="form-control" id="input-' + em.id + '" type="text" value="' + em.value + '"/>';
                     var remove = '<button class="btn btn-danger remove">Remove</button>';
                     $modal.find('div.measurables')
                         .append('<div class="measurable-row">' + thisDropDown + input + remove + '</div>');
                 });
+
+                // add default to a "MaxN" input for the latest control:
+                $modal.find('button#add-measurable').click();
+
+                $modal.find('select.measurables.form-control:not([id])').val(2).attr("selected", "selected");
+                $modal.find('input.form-control:not([id])').focus();
+
             });
 
             $modal.on('click', 'div.measurable-row button.remove', function (e) {
                 $(e.target).parent().remove();
             });
 
-            $modal.find('button#save').unbind().click(function () {
+            $modal.find('button#save').off().click(function () {
                 var data = {measurables: [], values: []};
                 $modal.find('div.measurable-row').each(function () {
-                    data.measurables.push($(this).find('select.measurables').val());
-                    data.values.push($(this).find('input[type="text"]').val());
+                    // don't save empty vals!
+                    if ($(this).find('input[type="text"]').val() !== '') {
+                        data.measurables.push($(this).find('select.measurables').val());
+                        data.values.push($(this).find('input[type="text"]').val());
+                    }
                 });
-                $.post('/assignment/master/edit_measurables/' + eventId, data, function (res) {
+                $.post('/assignment/master/measurables/edit/' + eventId, data, function (res) {
                     $originalTarget.siblings('.content').empty().html(res.measurables.join('<br />'));
                     $modal.modal('hide');
                 });
@@ -1264,21 +1370,21 @@ var finprint = finprint || {};  //namespace if necessary...
             var $this = $(this);
             var oldText = $this.text();
             var setIds = $("input[name='select_check_box']");
-            var ids= []
+            var ids = []
             var video_ids = []
             //adding all the checked ids for assigning
-            for (var i=0;i< setIds.length;i++) {
-              if (setIds[i].checked == true) {
-                ids.push(setIds[i].value)
-                video_ids.push(setIds[i].attributes.getNamedItem("data-id").value)
-              }
+            for (var i = 0; i < setIds.length; i++) {
+                if (setIds[i].checked == true) {
+                    ids.push(setIds[i].value)
+                    video_ids.push(setIds[i].attributes.getNamedItem("data-id").value)
+                }
             }
             if (ids.length == 0) {
-                   alert('You must choose at least 1 video file');
-                   $this.removeAttr('disabled');
-                   $this.text('Assign Videos');
-                   return false;
-                   }
+                alert('You must choose at least 1 video file');
+                $this.removeAttr('disabled');
+                $this.text('Assign Videos');
+                return false;
+            }
 
             if ($form.serializeArray().some(function (field) {
                     return field.name !== 'csrfmiddlewaretoken' && field.value;
@@ -1286,30 +1392,29 @@ var finprint = finprint || {};  //namespace if necessary...
                 $this.attr('disabled', 'disabled');
                 $this.text('Assigning Selected videos...');
                 $.ajax({
-                  type:"POST",
-                  url:"/assignment/assign_selected_videos",
-                  data: {
+                    type: "POST",
+                    url: "/assignment/assign_selected_videos",
+                    data: {
                         'set_ids': ids,
                         'video_ids': video_ids
-                        },
-                 success: function(res){
-                     $modal.find('div.modal-content').html(res);
-                     $modal.find('#new-annotators-list').selectize({plugins: ['remove_button', 'restore_on_backspace']});
-                     $this.removeAttr('disabled');
-                     $this.text('Assign Videos');
-                     $this.text(oldText);
-                     $modal.modal('show');
-                     $('#selectAllAssignmentsId').prop('checked', false)
-                 },
-                 error : function(res) {
-                   alert('You must choose at least 1 video file');
-                   $this.removeAttr('disabled');
-                   $this.text('Assign Videos');
-                   return false;
-                 }
-              });
+                    },
+                    success: function (res) {
+                        $modal.find('div.modal-content').html(res);
+                        $modal.find('#new-annotators-list').selectize({plugins: ['remove_button', 'restore_on_backspace']});
+                        $this.removeAttr('disabled');
+                        $this.text('Assign Videos');
+                        $this.text(oldText);
+                        $modal.modal('show');
+                    },
+                    error: function (res) {
+                        alert('You must choose at least 1 video file');
+                        $this.removeAttr('disabled');
+                        $this.text('Assign Videos');
+                        return false;
+                    }
+                });
 
-             } else {
+            } else {
                 alert('You must choose at least 1 video file');
                 $this.removeAttr('disabled');
                 $this.text('Assign Videos');
@@ -1318,13 +1423,13 @@ var finprint = finprint || {};  //namespace if necessary...
         });
 
         $modal.on('click', 'button#multiAssignmentId', function () {
-            $.post('/assignment/save_multi_video_assignment' , $modal.find('form').serialize(), function () {
+            $.post('/assignment/save_multi_video_assignment', $modal.find('form').serialize(), function () {
                 $modal.modal('hide');
                 $('form#assignment-search-form button#search').click();
             });
         });
 
-         function loadModal(id, params) {
+        function loadModal(id, params) {
             params = params || {};
             $.get('/assignment/assigned_annotator/' + id, params, function (html) {
                 $sec_modal.find('div.modal-content').html(html);
@@ -1339,83 +1444,147 @@ var finprint = finprint || {};  //namespace if necessary...
 
     }
 
-    function initCheckbutton(){
-       $("#selectAllAssignmentsId").click(function () {
-                $(".selectCheckBox").prop('checked', $(this).prop('checked'));
+    function initCheckbutton() {
+        $("#selectAllAssignmentsId").click(function () {
+            $(".selectCheckBox").prop('checked', $(this).prop('checked'));
         });
 
-     }
+    }
 
-     function initSingleCheckbutton(){
-       $(".selectCheckBox").click(function () {
+    function initSingleCheckbutton() {
+        $(".selectCheckBox").click(function () {
             var setIds = $("input[name='select_check_box']");
-            if (checkIfAllCheck(setIds) == false)  {
+            if (checkIfAllCheck(setIds) == false) {
                 $("#selectAllAssignmentsId").prop('checked', $(this).prop('checked'));
-                }
+            }
         });
 
-     }
+    }
 
-     function controlCheckBoxFunctionality() {
-        $('.selectCheckBox').click(function(){
-              if($(".selectCheckBox:checked").length < $(".selectCheckBox").length){
-                   $('#selectAllAssignmentsId').prop('checked', false)
-              } else {
-                   $('#selectAllAssignmentsId').prop('checked', true)
-              }
+    function controlCheckBoxFunctionality() {
+        $('.selectCheckBox').click(function () {
+            if ($(".selectCheckBox:checked").length < $(".selectCheckBox").length) {
+                $('#selectAllAssignmentsId').prop('checked', false)
+            } else {
+                $('#selectAllAssignmentsId').prop('checked', true)
+            }
+        });
+    }
+
+    // Store previous value in browser local storage
+    function storePreviousSearchFilter() {
+        localStorage.setItem("select-trip", $('#select-trip').val());
+        localStorage.setItem("select-set", $('#select-set').val());
+        localStorage.setItem("select-reef", $('#select-reef').val());
+        localStorage.setItem("select-anno", $('#select-anno').val());
+        localStorage.setItem("select-status", $('#select-status').val());
+        localStorage.setItem("select-project", $('#select-project').val());
+        localStorage.setItem("select-status", $('#select-status').val());
+        localStorage.setItem("select-assigned", $('#select-assigned').val());
+        localStorage.setItem("assigned-ago", $('#assigned-ago').val());
+    }
+
+    function restorePreviousFilter() {
+        var values = localStorage.getItem("select-trip");
+        if (values != null) {
+            $.each(values.split(","), function (i, e) {
+                $("#select-trip option[value='" + e + "']").prop("selected", true);
             });
+        }
+
+        values = localStorage.getItem("select-set");
+        if (values != null) {
+            $.each(values.split(","), function (i, e) {
+                $("#select-set option[value='" + e + "']").prop("selected", true);
+            });
+        }
+
+        values = localStorage.getItem("select-reef");
+
+        if (values != null) {
+            $.each(values.split(","), function (i, e) {
+                $("#select-reef option[value='" + e + "']").prop("selected", true);
+            });
+        }
+
+        values = localStorage.getItem("select-anno");
+
+        if (values != null) {
+            $.each(values.split(","), function (i, e) {
+                $("#select-anno option[value='" + e + "']").prop("selected", true);
+            });
+        }
+
+        values = localStorage.getItem("select-status");
+        if (values != null) {
+            $.each(values.split(","), function (i, e) {
+                $("#select-status option[value='" + e + "']").prop("selected", true);
+            });
+        }
+
+        $('#select-project').val(localStorage.getItem("select-project"));
+        $('#select-assigned').val(localStorage.getItem("select-assigned"));
+        $('#assigned-ago').val(localStorage.getItem("assigned-ago"));
+    }
+
+    function controlAssignmentButtonEnabling() {
+        var auto_trip = $('#auto-trip').val();
+        var affilaitions = $('#auto-affiliation').val();
+        var sets = $('#select-set-auto-assign').val();
+        var project = $('#project').val();
+        var reefs = $('#select-reef-auto-assign').val();
+        var auto_num = $('#auto-num').val();
+
+        if (auto_trip && auto_trip!='---' || affilaitions || sets ||reefs) {
+          if (auto_num && project && project!='---') {
+              $('button#assign-auto').removeAttr('disabled');
+           } else {
+            $('button#assign-auto').attr('disabled', 'disabled');
+            }
+        } else {
+          $('button#assign-auto').attr('disabled', 'disabled');
+        }
+      }
+
+      function get_filter_combination() {
+        var auto_trip = $('#auto-trip').text();
+        var affilaitions = $('#auto-affiliation').text();
+        var sets = $('#select-set-auto-assign').text();
+        var project = $('#project').text();
+        var reefs = $('#select-reef-auto-assign').text();
+        var auto_num = $('#auto-num').val();
+        var include_lead = $('#include-leads:checkbox:checked').val();
+        var filter_combination = '';
+        if (auto_trip && auto_trip!='---') {filter_combination = filter_combination +"+"+auto_trip};
+        if (reefs) {filter_combination = filter_combination +"+"+reefs};
+        if (sets) {filter_combination = filter_combination +"+"+sets};
+        if (affilaitions && affilaitions!='---') {filter_combination = filter_combination +"+"+affilaitions};
+        if (auto_num) {filter_combination = filter_combination +"+"+auto_num};
+        if (project && project!='---') {filter_combination = filter_combination +"+"+project};
+        //just to remove extre + sign
+        if (filter_combination[0]=='+') {filter_combination = filter_combination.slice(1);}
+        if (filter_combination[-1]=='+') {filter_combination = filter_combination.slice(0,-1);}
+
+        $('#filters_combination1_id').text(filter_combination);
+        $('#filters_combination_id').text(filter_combination);
+      }
+
+      function clearAllFilters() {
+           var $modal = $('#automatic-modal');
+           if ($auto_affiliation[0]) {
+               var control = $auto_affiliation[0].selectize;
+               control.clear(true);}
+           if ($auto_trip[0]) {
+               var control2 = $auto_trip[0].selectize;
+               control2.trigger('clear');}
+           if ($auto_project[0]){
+               var control3 = $auto_project[0].selectize;
+               control3.clear(true);}
+           $('button#assign-auto').attr('disabled', 'disabled');
+           if ($('#include-leads:checkbox:checked').val()=='on') {
+              $("#include-leads").prop("checked", false);
+            }
        }
-
-      // Store previous value in browser local storage
-     function storePreviousSearchFilter() {
-         localStorage.setItem("select-trip", $('#select-trip').val());
-         localStorage.setItem("select-set", $('#select-set').val());
-         localStorage.setItem("select-reef", $('#select-reef').val());
-         localStorage.setItem("select-anno", $('#select-anno').val());
-         localStorage.setItem("select-status", $('#select-status').val());
-         localStorage.setItem("select-project", $('#select-project').val());
-         localStorage.setItem("select-status", $('#select-status').val());
-         localStorage.setItem("select-assigned", $('#select-assigned').val());
-         localStorage.setItem("assigned-ago", $('#assigned-ago').val());
-          }
-
-     function restorePreviousFilter() {
-          var values = localStorage.getItem("select-trip");
-          if (values!= null) {
-              $.each(values.split(","), function(i,e){
-                    $("#select-trip option[value='" + e + "']").prop("selected", true);
-                 }); }
-
-          values = localStorage.getItem("select-set");
-          if (values != null) {
-              $.each(values.split(","), function(i,e){
-                    $("#select-set option[value='" + e + "']").prop("selected", true);
-                 });}
-
-          values = localStorage.getItem("select-reef");
-
-          if (values!=null) {
-              $.each(values.split(","), function(i,e){
-                    $("#select-reef option[value='" + e + "']").prop("selected", true);
-                 });}
-
-          values = localStorage.getItem("select-anno");
-
-          if (values!= null) {
-              $.each(values.split(","), function(i,e){
-                    $("#select-anno option[value='" + e + "']").prop("selected", true);
-                 });}
-
-          values = localStorage.getItem("select-status");
-          if (values!=null ){
-              $.each(values.split(","), function(i,e){
-                    $("#select-status option[value='" + e + "']").prop("selected", true);
-                 });}
-
-          $('#select-project').val(localStorage.getItem("select-project"));
-          $('#select-assigned').val(localStorage.getItem("select-assigned"));
-          $('#assigned-ago').val(localStorage.getItem("assigned-ago"));
-         }
 
 })(jQuery);
 

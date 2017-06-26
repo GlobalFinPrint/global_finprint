@@ -5,7 +5,7 @@ from django.http.response import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext
 from django.db import transaction
 
@@ -247,7 +247,7 @@ class SetBulkUploadView(UserAllowedMixin, View):
 
         success_message = '' if error_message else 'Bulk upload successful!'
 
-        return render_to_response(self.template,
+        return render(request, self.template,
                                   context=RequestContext(request, {'trip_pk': trip_id,
                                                                    'file_name': file.name,
                                                                    'error_message': error_message,
@@ -275,14 +275,14 @@ class SetListView(UserAllowedMixin, View):
             sets = paginator.page(1)
         except EmptyPage:
             sets = paginator.page(paginator.num_pages)
-        return RequestContext(request, {
+        return {
             'request': request,
             'trip_pk': parent_trip.pk,
             'trip_name': str(parent_trip),
             'sets': sets,
             'search_form': SetSearchForm(self.request.GET or None, trip_id=parent_trip.pk),
             'bulk_form': SetBulkUploadForm(trip_id=parent_trip.pk)
-        })
+        }
 
     def _get_filtered_sets(self, parent_trip):
         """
@@ -460,7 +460,7 @@ class SetListView(UserAllowedMixin, View):
             context['set_level_data_form'] = SetLevelDataForm()
             context['set_level_comments_form'] = SetLevelCommentsForm()
 
-        return render_to_response(self.template, context=context)
+        return render(request, self.template, context=context)
 
     def post(self, request, **kwargs):
         """
@@ -599,4 +599,4 @@ class SetListView(UserAllowedMixin, View):
 
             messages.error(self.request, 'Form errors found')
 
-            return render_to_response(self.template, context=context)
+            return render(request, self.template, context=context)

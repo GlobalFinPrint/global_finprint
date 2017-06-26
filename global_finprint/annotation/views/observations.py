@@ -125,7 +125,7 @@ class ObservationEditData(UserAllowedMixin, View):
     def get(self, request, evt_id, **kwargs):
         event = get_object_or_404(Event, pk=evt_id)
         project = event.observation.assignment.project
-        animals = Animal.objects.filter(project=project).select_related('group').order_by(
+        animals = Animal.objects.filter(projects=project).select_related('group').order_by(
             'group__name', 'genus', 'species')
         tags = project.tag_list()
         return JsonResponse({
@@ -190,7 +190,7 @@ class EditMeasurablesInline(UserAllowedMixin, View):
         return JsonResponse({
             'measurables': list({'name': m.name, 'id': m.id}
                                 for m in Measurable.objects.filter(active=True)),
-            'event_measurables': list({'measurable': m.measurable_id, 'value': m.value}
+            'event_measurables': list({'measurable': m.measurable_id, 'value': m.value, 'id': m.id}
                                       for m in event.active_measurables()),
         })
 
