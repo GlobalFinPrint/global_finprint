@@ -59,7 +59,7 @@ class VideoAutoAssignView(UserAllowedMixin, View):
         include_leads = bool(request.POST.get('include_leads', False))
         project = get_object_or_404(Project, id=request.POST.get('project'))
 
-        if aff_id !='' :
+        if aff_id :
            annotators = FinprintUser.objects.filter(affiliation_id=aff_id, user__is_active=True).all()
         else :
            annotators = FinprintUser.objects.filter(user__is_active=True).all()
@@ -70,23 +70,34 @@ class VideoAutoAssignView(UserAllowedMixin, View):
         video_count = 0
         assigned_count = 0
         new_count = 0
+        videos = None
 
-        if 'auto-set[]' in post_dic :
-            set_ids = post_dic['auto-set[]']
-            if len(set_ids) > 0 :
-                videos =  Video.objects.filter(set__trip_id=trip_id).filter(set__code__in =set_ids).exclude(files__isnull=True).all()
-        else :
+        if trip_id != '':
             videos = Video.objects.filter(set__trip_id=trip_id).exclude(files__isnull=True).all()
 
         if 'auto-reef[]' in post_dic:
             reef_ids = post_dic['auto-reef[]']
-            if len(reef_ids) > 0 :
-              videos = videos.filter(set__reef_habitat__reef_id__in=reef_ids)
+            if trip_id != '':
+                videos = videos.filter(set__reef_habitat__reef_id__in=reef_ids)
+            elif len(reef_ids) > 0:
+                videos = Video.objects.filter(set__reef_habitat__reef_id__in=reef_ids).exclude(
+                    files__isnull=True).all()
 
-        for video in videos:
-            video_count += 1
-            new_count += self.assign_video(annotators, video, num, project)
-            assigned_count += len(video.annotators_assigned(project))
+        if 'auto-set[]' in post_dic:
+            set_ids = post_dic['auto-set[]']
+            if trip_id != '' or ('auto-reef[]' in post_dic and len(post_dic['auto-reef[]']) > 0):
+                videos = videos.filter(set__code__in=set_ids).exclude(files__isnull=True).all()
+            elif len(set_ids) > 0:
+                videos = Video.objects.filter(set__code__in=set_ids).exclude(files__isnull=True).all()
+        if videos != None:
+            for video in videos:
+                video_count += 1
+                new_count += self.assign_video(annotators, video, num, project)
+                assigned_count += len(video.annotators_assigned(project))
+        else :
+            video_count = 0
+            new_count = 0
+            assigned_count = 0
 
         return JsonResponse(
             {
@@ -101,6 +112,143 @@ class VideoAutoAssignView(UserAllowedMixin, View):
             }
         )
 
+class VideoCountForAutoAssignView(UserAllowedMixin, View):
+    """
+        View to handle auto-assignment functionality found at /assignment/
+        """
+    def return_count_of_assign_video(self, annotators, video, num, project):
+        """
+        Assign a video to a number of annotators
+        :param annotators: list of annotator objects
+        :param video: video object
+        :param num: integer denoting how many annotators should have this video assigned
+        :param project: project object
+        :return:
+        """
+        avail = list(a for a in annotators if a not in video.annotators_assigned(project))
+        assign_count = 0
+        count=0
+        while (len(video.annotators_assigned(project))+count) < num and len(annotators) > 0 and (len(avail)-count) > 0:
+            assign_count += 1
+            count += 1;
+
+        return assign_count
+
+    def post(self, request):
+        """
+        Endpoint used by automatic assignment modal to return counts of videos after filter applied
+        :param request:
+        :return:
+        """
+        post_dic = dict(request.POST)
+
+        trip_id = request.POST.get('trip')
+        aff_id = request.POST.get('affiliation')
+        num = int(request.POST.get('num'))
+        include_leads = bool(request.POST.get('include_leads', False))
+        project = get_object_or_404(Project, id=request.POST.get('project'))
+
+        if aff_id != '':
+            annotators = FinprintUser.objects.filter(affiliation_id=aff_id, user__is_active=True).all()
+        else:
+            annotators = FinprintUser.objects.filter(user__is_active=True).all()
+
+        if not include_leads:
+            annotators = list(a for a in annotators if not a.is_lead())
+
+        video_count = 0
+        assigned_count = 0
+        new_count = 0
+        videos = None
+
+        if trip_id != '':
+            videos = Video.objects.filter(set__trip_id=trip_id).exclude(files__isnull=True).all()
+
+        if 'auto-reef[]' in post_dic:
+            reef_ids = post_dic['auto-reef[]']
+            if trip_id != '':
+                videos = videos.filter(set__reef_habitat__reef_id__in=reef_ids)
+            elif len(reef_ids) > 0:
+                videos = Video.objects.filter(set__reef_habitat__reef_id__in=reef_ids).exclude(
+                    files__isnull=True).all()
+
+        if 'auto-set[]' in post_dic:
+            set_ids = post_dic['auto-set[]']
+            if trip_id != '' or ('auto-reef[]' in post_dic and len(post_dic['auto-reef[]']) > 0):
+                videos = videos.filter(set__code__in=set_ids).exclude(files__isnull=True).all()
+            elif len(set_ids) > 0:
+                videos = Video.objects.filter(set__code__in=set_ids).exclude(files__isnull=True).all()
+
+        if videos is not None :
+            for video in videos:
+                video_count += 1
+                new_count += self.return_count_of_assign_video(annotators, video, num, project)
+                assigned_count += len(video.annotators_assigned(project))
+        else :
+            video_count = 0
+            new_count = 0
+            assigned_count = 0
+
+        return JsonResponse(
+            {
+                'status': 'ok',
+                'video_count': video_count,
+                'assignments':
+                    {
+                        'total': video_count * num,
+                        'assigned': assigned_count,
+                        'newly_assigned': new_count
+                    }
+            }
+        )
+
+
+class TotalVideoCountForAutoAssignment(UserAllowedMixin, View):
+    """
+        View to handle auto-assignment functionality found at /assignment/
+        """
+
+    def post(self, request):
+        """
+        Endpoint used by automatic assignment modal to return counts of videos after filter applied
+        :param request:
+        :return:
+        """
+        post_dic = dict(request.POST)
+        trip_id = request.POST.get('trip')
+
+        videos = None
+
+        if trip_id!='' :
+            videos = Video.objects.filter(set__trip_id=trip_id).exclude(files__isnull=True).all()
+
+        if 'auto-reef[]' in post_dic:
+            reef_ids = post_dic['auto-reef[]']
+            if trip_id!='':
+                videos = videos.filter(set__reef_habitat__reef_id__in=reef_ids)
+            elif len(reef_ids) > 0 :
+                videos = Video.objects.filter(set__reef_habitat__reef_id__in=reef_ids).exclude(
+                    files__isnull=True).all()
+
+        if 'auto-set[]' in post_dic :
+            set_ids = post_dic['auto-set[]']
+            if trip_id!='' or ('auto-reef[]' in post_dic and len(post_dic['auto-reef[]']) > 0):
+                videos = videos.filter(set__code__in=set_ids).exclude(files__isnull=True).all()
+            elif len(set_ids) > 0 :
+                videos = Video.objects.filter(set__code__in=set_ids).exclude(files__isnull=True).all()
+
+        if videos is not None and len(videos)!=0 :
+            video_count = len(videos)
+        else :
+            video_count = 0
+
+
+        return JsonResponse(
+            {
+                'status': 'ok',
+                'video_count': video_count
+            }
+        )
 
 class AssignmentListView(UserAllowedMixin, View):
     """

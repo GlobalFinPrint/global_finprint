@@ -212,7 +212,9 @@ class ObservationUpdate(APIView):
             animal_obs.save()
 
         obs.save()
-        return JsonResponse({'observations': Observation.get_for_api(request.va)})
+        evt = obs.event_set.first()
+
+        return JsonResponse({'observations': Observation.get_for_api(request.va), 'filename': evt.filename()})
 
 
 class AnimalList(APIView):
@@ -330,7 +332,8 @@ class EventUpdate(APIView):
         for att_id in request.POST.getlist('attribute', []):
             evt.attribute.add(get_object_or_404(Attribute, pk=att_id))
         evt.save()
-        return JsonResponse({'observations': Observation.get_for_api(request.va)})
+        filename = evt.filename()
+        return JsonResponse({'observations': Observation.get_for_api(request.va),'filename':filename})
 
 
 

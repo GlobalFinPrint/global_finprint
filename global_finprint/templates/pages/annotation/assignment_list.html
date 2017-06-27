@@ -105,8 +105,10 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <button id="assignMultipleVideo" class="btn btn-primary pull-left">Assign Videos</button>
-                    <button id="search" class="btn btn-primary pull-right">Search Assignments</button>
+                    <div class="pull-right">
+                        <button id="assignMultipleVideo" class="btn btn-primary">Assign Videos</button>
+                        <button id="search" class="btn btn-primary">Search Assignments</button>
+                    </div>
                 </div>
             </div>
         </form>
@@ -190,8 +192,7 @@
                         {% csrf_token %}
                             <div class="col-md-4">
                                 <label for="auto-trip">Trip</label>
-                                <select class="form-control" id="auto-trip" name="trip">
-                                    <option value="">---</option>
+                                <select class="form-control" id="auto-trip" name="trip" placeholder="Select a trip">
                                     {% for t in trips %}
                                     {% if t.set_set.all|length > 0 %}
                                     <option value="{{ t.id }}">{{ t }}</option>
@@ -239,8 +240,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <label for="auto-affiliation">Affiliation</label>
-                                <select class="form-control" id="auto-affiliation" name="affiliation">
-                                    <option value="">---</option>
+                                <select class="form-control" id="auto-affiliation" name="affiliation" placeholder="Select an affiliation">
                                     {% for a in affils %}
                                     {% if a.annotators|length > 0 %}
                                     <option value="{{ a.id }}">{{ a }}</option>
@@ -255,7 +255,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label for="project">Project</label>
-                                <select id="project" name="project" >
+                                <select id="project" name="project" placeholder="---">
                                     {% for project in projects %}
                                         <option value="{{ project.id }}">{{ project.name }}</option>
                                     {% endfor %}
@@ -264,9 +264,26 @@
                         </div>
                     </form>
                 </div>
-
+                <div class="modal-footer" id ="assignmentDetails" style="display:none">
+                     <div class="row color-blue filter-det">
+                         <h3 id="filters_combination_id" class="m-t--10"><b>filters details..</b></h3>
+                         <h4 id="total_processed_videos_id">Total Processed videos count..</h4>
+                         <h4 id="assigned_already">Number of videos assigned before...</h4>
+                         <h4 id="newly_assigned_id">Newly assigned videos..</h4>
+                     </div>
+                </div>
+                <div class="modal-footer " id ="before_processing" style="display:none">
+                     <div class="row color-blue filter-det">
+                        <h3 id="filters_combination1_id" class="m-t--10"><b>filters details..</b></h3>
+                         <div class="pull-left loader-parent">
+                             <h3 id="total_video_count" class="color-blue"><b>Total Processed videos count..</b></h3>
+                             <div class="loader"></div>
+                         </div>
+                     </div>
+                </div>
                 <div class="modal-footer">
                     <span class="success-message">Successfully assigned videos</span>
+                    <button class="btn btn-primary" id="assign-auto-confirm">Done</button>
                     <button class="btn btn-default" id="cancel-auto" data-dismiss="modal">Cancel</button>
                     <button class="btn btn-primary" id="assign-auto">Assign</button>
                 </div>
