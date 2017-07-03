@@ -66,6 +66,7 @@ $(function () {
             this.model.events.forEach(function (event) {
                 event.view.render();
             });
+            this.initOnWindowLoad();
         },
         openPopover: function () {
             this.$el.addClass('selected').focus();
@@ -92,34 +93,36 @@ $(function () {
             this.$el.find('.observation-popover .selector').toggleClass('selected');
             this.model.toggleSelected();
         },
-        showFullImage: function () {
-            $('#full-image-modal')
-                .find('div.event-image')
-                .css('background-image', 'url(' + this.model.get('initial_event').image_url + ')')
+        showFullImage: function (e) {
+            var $modal = $('#full-image-modal')
+            e.preventDefault();
+            e.stopPropagation();
+            var $currentTarget = $(e.currentTarget);
+            var url = $currentTarget.data('img-url');
+            var $image =$currentTarget.find('.image-icon');
+            var img_temp= '<img width="500" height="500" style="padding-left:2.5em;padding-right:2.5em" src='+url+'>';
+            $modal.find('.event-image').html(img_temp)
+            $modal
+                .find('.event-image')
+                .attr('style', $image.attr('style'))
+                .end()
                 .find('.extent')
                 .attr('style', this.model.get('initial_event').extent_css)
-                .end()
                 .end()
                 .modal('show');
         },
         showFullClip: function (event) {
             event.preventDefault();
             event.stopPropagation();
-
-            function clip_failure(e){
-                    alert('error');
-             };
-
-            var url = this.model.get('initial_event').clip_url;
-            var video_temp= '<video width="80%" height="80%" controls>'+
-                         '<source src='+url+' type="video/mp4"> </video>'
-            $('#full-clip-modal').find('.event-clip').html(video_temp)
-
-            $('#full-clip-modal')
-                       .find('div.event-clip')
-                       .attr('style', 'width="500" height="500"')
-                       .end()
-                       .modal('show');
+            var $target = $(event.target).closest('.event-thumbnail .video-icon');
+            var url = $target[0].getAttribute("value")
+            var video_temp= '<video width="500" height="500" controls>'+
+                         '<source src='+url+' type="video/mp4"> </video>';
+            $('#full-clip-modal').find('.event-clip').html(video_temp);
+            $('#full-clip-modal').find('.event-clip')
+                .attr('style', $target.attr('style'))
+                .end()
+                .modal('show');
 
         },
         onKeypress: function (e) {
@@ -156,8 +159,59 @@ $(function () {
             this.model.events.map(function (eventModel) {
                 eventModel.view.$el.removeClass('activated');
             });
-        }
-    });
+        },
+        initOnWindowLoad: function () {
+              this.checkPropImage();
+       },
+       checkPropImage : function () {
+                var self = this;
+                $('img.image-icon:not(.loaded)').each(function () {
+                    var currImg = $(this);
+                    var src = currImg.data('src');
+                    if (!src) return;
+
+                    var img = new Image();
+                    img.onload = function () {
+                        // code to set the src on success
+                        currImg.addClass('loaded');
+                        var video = currImg.siblings('.video-icon');
+                        self.checkPropVideo(video);
+                    };
+                    img.onerror = function () {
+                        // doesn't exist or error loading
+                        console.log('no image');
+                        currImg.attr('src', '/static/images/default-image.jpg');
+                    };
+                    setTimeout(function () {
+                            img.src = src; // fires off loading of image
+                            currImg.attr('src', src);
+                    }, 0);
+                });
+        },
+       checkPropVideo: function (video_span) {
+                    var curr_icon = video_span;
+                    var url = curr_icon.attr('value');
+                    if (!url) return;
+
+                    var video = document.createElement('VIDEO');
+                    if (video.canPlayType("video/mp4")) {
+                        video.setAttribute("src",url);
+                     }
+
+                    video.onloadedmetadata = function() {
+                          console.log("Meta data for video loaded");
+                    };
+                    video.onerror = function () {
+                        // doesn't exist or error loading
+                        console.log('no video');
+                        curr_icon.attr('style', 'display:none');
+                    };
+                    setTimeout(function () {
+                           // curr_icon.attr('style', 'display:true');
+                    }, 0);
+
+       }
+       });
 
 
     // Observation model

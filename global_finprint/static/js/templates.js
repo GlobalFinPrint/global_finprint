@@ -7,10 +7,11 @@ var Templates = {
                     '<div><%= pretty_time %></div>' +
 
                     '<% if (initial_event.image_url) { %>' +
-                        '<div class="event-thumbnail" style="background-image:url(<%= initial_event.image_url %>)">' +
+                        '<div class="event-thumbnail" data-img-url="<%= initial_event.image_url%>">' +
+                            '<img class="image-icon" src="/static/images/loading_spinner.gif" data-src="<%= initial_event.image_url%>" style="width:100%">'+
                             '<div class="extent" style="<%= initial_event.extent_css %>">&nbsp;</div>'+
                             '<% if (initial_event.clip_url) { %>' +
-                              '<span class="video-icon">&#9658;</span>' +
+                              ' <span class="video-icon" value="<%= initial_event.clip_url%>">&#9658;</span>' +
                             '<% } %>'+
                         '</div>' +
                     '<% } else { %>' +

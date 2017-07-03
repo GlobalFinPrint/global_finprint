@@ -46,7 +46,8 @@
                 {% with imageurl=e.image_url %}
                 {% if imageurl %}
                     <td>
-                        <div class="annotool-thumbnail" style="background-image:url('{{ e.image_url }}')">
+                        <div class="annotool-thumbnail" data-img-url="{{e.image_url}}">
+                            <img class="image-icon" src="/static/images/loading_spinner.gif" data-src="{{e.image_url}}" style="width:100%">
                             <div class="extent" style="{{ e.extent_to_css }}">&nbsp;</div>
                             {% with clipurl=e.clip_url %}
                             {% if clipurl %}
@@ -109,7 +110,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="close" data-dismiss="modal">&times;</div>
-            <div class="event-image">
+            <div class="image-zoom">
                 <div class="extent"></div>
             </div>
         </div>
