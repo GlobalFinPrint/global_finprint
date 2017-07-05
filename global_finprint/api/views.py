@@ -383,9 +383,9 @@ class RestrictFilterChanges(View):
         # if reef changes
         elif 'reef_id' in post_dic:
             if 'trip_id' in post_dic and trip_id != '':
-                sets = Set.objects.filter(trip_id=trip_id).filter(reef_habitat__reef_id__in=reef_ids)
+                sets = Set.objects.filter(trip_id=trip_id).filter(reef_habitat__reef_id=reef_ids)
             else:
-                sets = Set.objects.filter(reef_habitat__reef_id__in=reef_ids)
+                sets = Set.objects.filter(reef_habitat__reef_id=reef_ids)
 
             for each_set in list(set_utils(sets)):
                 list_of_sets.append({"id": each_set.id, "code": each_set.code, "group": str(each_set.trip)})
