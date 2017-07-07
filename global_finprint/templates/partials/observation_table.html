@@ -1,4 +1,5 @@
 {% load time_display %}
+{% load static %}
 <table class="table table-bordered table-condensed assignment-observation-table {{ master|yesno:"master,," }}" id="observation-table" cellspacing="0" width="100%">
     <thead>
     <tr>
@@ -47,7 +48,7 @@
                 {% if imageurl %}
                     <td>
                         <div class="annotool-thumbnail" data-img-url="{{e.image_url}}">
-                            <img class="image-icon" src="/static/images/loading_spinner.gif" data-src="{{e.image_url}}" style="width:100%">
+                            <img class="image-icon" src="{% static 'images/loading_spinner.gif' %}" data-src="{{e.image_url}}" style="width:100%">
                             <div class="extent" style="{{ e.extent_to_css }}">&nbsp;</div>
                             {% with clipurl=e.clip_url %}
                             {% if clipurl %}
