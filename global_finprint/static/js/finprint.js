@@ -1356,7 +1356,7 @@ var finprint = finprint || {};  //namespace if necessary...
                 $.post('/assignment/master/measurables/edit/' + eventId, data, function (res) {
                     $originalTarget.siblings('.content').empty().html(res.measurables.join('<br />'));
                     $modal.modal('hide');
-                });l
+                });
             });
 
             return false;
@@ -1595,11 +1595,9 @@ var finprint = finprint || {};  //namespace if necessary...
         //methods to be called upon window onload
             window.onload = function() {
                 checkPropImage();
-                checkPropVideo();
             }
         }
         function checkPropImage() {
-                var self = this;
                 $('img.image-icon:not(.loaded)').each(function () {
                     var currImg = $(this);
                     var src = currImg.data('src');
@@ -1610,7 +1608,7 @@ var finprint = finprint || {};  //namespace if necessary...
                         // code to set the src on success
                         currImg.addClass('loaded');
                         var video = currImg.siblings('.video-icon');
-                        self.checkPropVideo(video);
+                        checkPropVideo(video);
                     };
                     img.onerror = function () {
                         // doesn't exist or error loading

@@ -20,6 +20,11 @@ ANIMAL_STAGE_CHOICES = {
 class AnimalGroup(models.Model):
     name = models.CharField(max_length=24)
 
+    @staticmethod
+    def project_groups(project):
+        group_ids = Animal.objects.distinct('group').values_list('group__id')
+        return AnimalGroup.objects.filter(id__in=group_ids)
+
     def __str__(self):
         return u"{0}".format(self.name)
 

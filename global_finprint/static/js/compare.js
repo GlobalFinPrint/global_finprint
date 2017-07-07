@@ -264,7 +264,6 @@ $(function () {
         }
     });
 
-
     // Assignment (observation collection)
     // fetches and holds observation array
     var Assignment = Backbone.Collection.extend({
@@ -373,8 +372,6 @@ $(function () {
             }
         }
     });
-
-
     // Master observation model
     // specifically for observations selected for master record
     var MasterObservation = Observation.extend({
