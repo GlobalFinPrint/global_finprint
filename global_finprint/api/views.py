@@ -336,7 +336,6 @@ class EventUpdate(APIView):
         return JsonResponse({'observations': Observation.get_for_api(request.va),'filename':filename})
 
 
-
 class AffiliationList(APIView):
     """
     Affiliation list 

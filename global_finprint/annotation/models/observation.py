@@ -307,7 +307,7 @@ class AbstractEvent(AuditableModel):
         abstract = True
 
     # TODO: do we need to check for every key? maybe just use filename and a base_url
-    def image_url(self, verify=True):
+    def image_url(self, verify=False):
         if self.extent is None:
             logger.debug('{}'.format('No image extent: '))
             return None
@@ -326,7 +326,7 @@ class AbstractEvent(AuditableModel):
 
             # TODO: do we need to check for every key? maybe just use filename and a base_url
 
-    def clip_url(self, verify=True):
+    def clip_url(self, verify=False):
         if self.extent is None:
             logger.debug('{}'.format('No clip extent: '))
             return None
@@ -413,7 +413,7 @@ class Event(AbstractEvent):
         if for_web:
             json['extent_css'] = self.extent_to_css()
             json['image_url'] = self.image_url(verify=False)
-            json['clip_url'] = self.clip_url(verify=True)
+            json['clip_url'] = self.clip_url(verify=False)
             json['attribute_names'] = list(a.name for a in self.attribute.all())
 
         return json

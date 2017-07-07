@@ -32,6 +32,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initEditMeasurables();
         initMultipleAssignmentModals();
         initCheckbutton();
+        initOnWindowLoad();
     });
 
     function getCSRF() {
@@ -991,14 +992,18 @@ var finprint = finprint || {};  //namespace if necessary...
         $('#observation-table .annotool-thumbnail').click(function (e) {
             e.preventDefault();
             e.stopPropagation();
+            var $currentTarget = $(e.currentTarget);
+            var url = $currentTarget.data('img-url');
+            var $image =$currentTarget.find('.image-icon');
 
-            var $target = $(e.target).closest('.annotool-thumbnail');
+            var img_temp= '<img width="500" height="500" src='+url+'>';
+            $modal.find('.image-zoom').html(img_temp)
             $modal
-                .find('.event-image')
-                .attr('style', $target.attr('style'))
+                .find('.image-zoom')
+                .attr('style', $image.attr('style'))
                 .end()
                 .find('.extent')
-                .attr('style', $target.find('.extent').attr('style'))
+                .attr('style', $currentTarget.find('.extent').attr('style'))
                 .end()
                 .modal('show');
         });
@@ -1586,5 +1591,58 @@ var finprint = finprint || {};  //namespace if necessary...
             }
        }
 
+        function initOnWindowLoad(){
+        //methods to be called upon window onload
+            window.onload = function() {
+                checkPropImage();
+            }
+        }
+        function checkPropImage() {
+                $('img.image-icon:not(.loaded)').each(function () {
+                    var currImg = $(this);
+                    var src = currImg.data('src');
+                    if (!src) return;
+
+                    var img = new Image();
+                    img.onload = function () {
+                        // code to set the src on success
+                        currImg.addClass('loaded');
+                        var video = currImg.siblings('.video-icon');
+                        checkPropVideo(video);
+                    };
+                    img.onerror = function () {
+                        // doesn't exist or error loading
+                        console.log('no image');
+                        currImg.attr('src', '/static/images/default-image.jpg');
+                    };
+                    setTimeout(function () {
+                            img.src = src; // fires off loading of image
+                            currImg.attr('src', src);
+                    }, 0);
+                });
+        }
+
+        function checkPropVideo(video_span) {
+                    var curr_icon = video_span;
+                    var url = curr_icon.attr('value');
+                    if (!url) return;
+
+                    var video = document.createElement('VIDEO');
+                    if (video.canPlayType("video/mp4")) {
+                        video.setAttribute("src",url);
+                     }
+
+                    video.onloadedmetadata = function() {
+                          console.log("Meta data for video loaded");
+                    };
+                    video.onerror = function () {
+                        // doesn't exist or error loading
+                        console.log('no video');
+                        curr_icon.attr('style', 'display:none');
+                    };
+                    setTimeout(function () {
+                           // curr_icon.attr('style', 'display:true');
+                    }, 0);
+       }
 })(jQuery);
 
