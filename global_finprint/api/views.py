@@ -8,6 +8,9 @@ from ..annotation.models.video import Assignment
 from ..annotation.models.observation import Observation, Attribute, Event
 from ..core.models import FinprintUser
 from ..core.models import Affiliation
+from builtins import set as set_utils
+from ..bruv.models import Set
+from ..habitat.models import Site
 
 class APIView(View):
     """
@@ -94,6 +97,8 @@ class SetList(APIView):
                 assignments = assignments.filter(annotator_id__in=affiliated_users_set)
             if 'trip_id' in request.GET:
                 assignments = assignments.filter(video__set__trip__id=request.GET.get('trip_id'))
+            if 'reef_id' in request.GET:
+                assignments = assignments.filter(video__set__reef_habitat__reef_id=request.GET.get('reef_id'))
             if 'set_id' in request.GET:
                 assignments = assignments.filter(video__set__id=request.GET.get('set_id'))
             if 'annotator_id' in request.GET:
@@ -336,7 +341,6 @@ class EventUpdate(APIView):
         return JsonResponse({'observations': Observation.get_for_api(request.va),'filename':filename})
 
 
-
 class AffiliationList(APIView):
     """
     Affiliation list 
@@ -347,3 +351,56 @@ class AffiliationList(APIView):
         for dictObj in affiliations :
             obj[dictObj['id']] = dictObj['name']
         return JsonResponse(obj)
+
+class RestrictFilterChanges(View):
+    """Restrict filter of Reef and Set
+    changes in Trip Filter or Reef Filter restricts Sets
+    changes in Trip Filter restricts Reef Filter 
+    changes in Reef Filter restricts Sets Filter"""
+    def get(self, request):
+        _dic = request.GET
+        list_of_sets = []
+        list_of_reefs = []
+
+        if 'trip_id' in _dic:
+            trip_id = _dic['trip_id']
+        if 'reef_id' in _dic:
+            reef_ids = _dic['reef_id']
+
+        # if trip change
+        if 'trip_id' in _dic and trip_id != '' and 'reef_id' not in _dic:
+            trip = Trip.objects.filter(id=trip_id).order_by('code').all().prefetch_related('set_set')
+            sites = Site.objects.filter(location_id=trip[0].location_id).order_by('name').all().prefetch_related('reef_set')
+            # find the code of each reef and remove those sets
+            set_data = list(set(trip))[0].set_set
+            for s in set_data.all():
+                list_of_sets.append({"id": s.id, "code": s.code, "group": str(set_data.instance)})
+
+            for s in sites:
+                for r in s.reef_set.all():
+                    list_of_reefs.append({"reef_group": str(s), "id": r.id, "name": r.name})
+        # if reef changes
+        elif 'reef_id' in _dic:
+            if 'trip_id' in _dic and trip_id != '':
+                sets = Set.objects.filter(trip_id=trip_id).filter(reef_habitat__reef_id=reef_ids)
+            else:
+                sets = Set.objects.filter(reef_habitat__reef_id=reef_ids)
+
+            for each_set in list(set_utils(sets)):
+                list_of_sets.append({"id": each_set.id, "code": each_set.code, "group": str(each_set.trip)})
+        else:
+            trip = Trip.objects.order_by('code').all().prefetch_related('set_set')
+            sites = Site.objects.order_by('name').all().prefetch_related('reef_set')
+            for trip_data in list(set(trip)):
+                set_data = trip_data.set_set
+                for s in set_data.all():
+                    list_of_sets.append({"id": s.id, "code": s.code, "group": str(set_data.instance)})
+
+            for s in sites:
+                for r in s.reef_set.all():
+                    list_of_reefs.append({"reef_group": str(s), "id": r.id, "name": r.name})
+
+        if 'reef_id' not in _dic:
+            return JsonResponse({'status': 'ok', "reefs": list_of_reefs, "sets": list_of_sets})
+        else:
+            return JsonResponse({'status': 'ok', "sets": list_of_sets})

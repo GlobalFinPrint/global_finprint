@@ -1127,10 +1127,20 @@ form #div_id_file .selectize-control {
     padding-left:3px;
     font-size:20px;
 }
-.event-clip {
+.event-clip, .image-zoom {
     padding:40px;
     video {
         width:100%;
         height:70%;
     }
+    img {
+        width:100%;
+        height:70%;
+    }
 }
+img {
+    width:100%;
+    height:100%;
+}
+
+
