@@ -133,6 +133,7 @@ class Assignment(AuditableModel):
         return {'id': self.id,
                 'set_code': str(self.set()),
                 'file': str(self.video.primary()),
+                'project_name': str(self.project.name),
                 'assigned_to': {'id': self.annotator.id, 'user': str(self.annotator)},
                 'progress': self.progress,
                 'status': {'id': self.status_id, 'name': self.status.name},
