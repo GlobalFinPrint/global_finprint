@@ -6,6 +6,7 @@ from global_finprint.core.mixins import UserAllowedMixin
 from global_finprint.bruv.models import Set
 from global_finprint.annotation.models.video import Assignment, Project
 from global_finprint.annotation.models.observation import MasterRecord, MasterRecordState
+from global_finprint.annotation.models.animal import AnimalGroup
 
 
 class AssignmentCompareView(UserAllowedMixin, View):
@@ -17,6 +18,7 @@ class AssignmentCompareView(UserAllowedMixin, View):
     def get(self, request, set_id):
         set = get_object_or_404(Set, pk=set_id)
         project = get_object_or_404(Project, pk=request.GET.get('project', 1))
+        animal_groups = AnimalGroup.project_groups(project)
         # default to master status 'in progress':
         master_status = get_object_or_404(MasterRecordState, pk=1)
         master, created = MasterRecord.objects.get_or_create(
@@ -27,6 +29,7 @@ class AssignmentCompareView(UserAllowedMixin, View):
             'video_length': set.video.length(),
             'master': master,
             'project': project,
+            'animal_groups': animal_groups,
             # exclude assignments that are 'rejected' or 'disabled':
             'assignment_set': set.video.assignment_set.exclude(status__in=[5, 6]).filter(project=project)
         })

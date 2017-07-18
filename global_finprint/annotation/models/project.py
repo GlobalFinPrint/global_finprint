@@ -10,10 +10,6 @@ class Project(AuditableModel):
     def __str__(self):
         return u'{0}'.format(self.name)
 
-    # def animal_groups(self):
-    #     group_ids = self.animals.all().distinct('group').values_list('group__id')
-    #     return AnimalGroup.objects.filter(id__in=group_ids)
-
     def tag_list(self):
         inactive_ids = set()
         for a in apps.get_model('annotation', 'Attribute').objects.filter(active=False):

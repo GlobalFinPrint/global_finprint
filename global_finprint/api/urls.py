@@ -6,6 +6,7 @@ from ..habitat.views import reef_detail_geojson
 from ..trip.views import trip_sets_geojson
 from ..report.views import planned_site_geojson
 from global_finprint.api import views
+from global_finprint.api.views import RestrictFilterChanges
 
 
 urlpatterns = [
@@ -40,4 +41,5 @@ urlpatterns = [
         csrf_exempt(views.EventUpdate.as_view()), name='api_event_update'),
     url(r"^annotator", csrf_exempt(views.AnnotatorList.as_view()), name='api_annotator_list'),
     url(r"^affiliations", csrf_exempt(views.AffiliationList.as_view()), name='api_affiliation_list'),
+    url(r"^restrict_filter_dropdown$", csrf_exempt(views.RestrictFilterChanges.as_view()), name='restrict_filter_dropdown'),
 ]
