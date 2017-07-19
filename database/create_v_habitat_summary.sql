@@ -4,7 +4,7 @@ CREATE VIEW public.habitat_summary AS
     hlc.name        AS location,
     hst.name        AS site,
     hrf.name        AS reef,
-    hrt.description AS reef_habitat,
+    hrt.type        AS reef_habitat,
     hrg.id          AS region_id,
     hlc.id          AS location_id,
     hst.id          AS site_id,
