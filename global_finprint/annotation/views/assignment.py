@@ -35,7 +35,8 @@ class VideoAutoAssignView(UserAllowedMixin, View):
         :param project: project object
         :return:
         """
-        avail = list(a for a in annotators if a not in video.annotators_assigned(project))
+        assigned_annotators_list = video.annotators_assigned(project)
+        avail = [a for a in annotators if a not in assigned_annotators_list]
         assigned_by = FinprintUser.objects.get(user=self.request.user)
         assign_count = 0
         while len(video.annotators_assigned(project)) < num and len(annotators) > 0 and len(avail) > 0:
@@ -125,12 +126,20 @@ class VideoCountForAutoAssignView(UserAllowedMixin, View):
         :param project: project object
         :return:
         """
-        avail = list(a for a in annotators if a not in video.annotators_assigned(project))
+        assigned_annotators_list = video.annotators_assigned(project)
+        avail = [a for a in annotators if a not in assigned_annotators_list ]
         assign_count = 0
-        count=0
-        while (len(video.annotators_assigned(project))+count) < num and len(annotators) > 0 and (len(avail)-count) > 0:
-            assign_count += 1
-            count += 1;
+        assigned_annotators_num = len(video.annotators_assigned(project))
+        num_of_annotators = len(annotators)
+
+        if num_of_annotators > 0 :
+            count1 = num - assigned_annotators_num
+            count2 =  len(avail)
+            if count2 > 0 and count1 > 0:
+             if count1 <= count2 :
+                assign_count = count1
+             else :
+                assign_count = count2
 
         return assign_count
 
