@@ -13,8 +13,6 @@ WITH zero_times as
   from event_attribute_summary
   group by set_id,
     video_id
---   order by set_id,
---     video_id
 )
 SELECT
   evtsum.trip_code,
@@ -32,10 +30,7 @@ SELECT
   ani.species,
 
   min(evtsum.event_time_minutes)                               AS event_time_minutes_raw,
-  min(((((lpad(((((evtsum.event_time - z.zero_time) / 1000) / 60))::text, 3, '0'::text) || ':'::text)
-         || lpad(((((evtsum.event_time - z.zero_time) / 1000) % 60))::text, 2, '0'::text)) || ':'::text)
-       || lpad((((evtsum.event_time - z.zero_time) % 1000))::text, 3, '0'::text))
-    ) as event_time_minutes,
+  min(public.text_time(evtsum.event_time - z.zero_time))       AS event_time_minutes,
   max(evtsum.numeric_value_from_event_note)                    AS maxn,
 
   evtsum.trip_id,
