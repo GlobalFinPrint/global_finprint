@@ -67,7 +67,9 @@
                 {% if master %}
                     <td class="measurables">
                         <div class="content">
-                            {{ e.active_measurables|join:' stuff <br />' }}
+                            {% for active_measurable in e.active_measurables %}
+                                {{ active_measurable }} <a href="#" class="delete-master-measurable" data-measurable-id="{{ active_measurable.pk }}">&#x274E;</a><br />
+                            {% endfor %}
                         </div>
                         <a href="#" class="edit-master-measurables" data-event-id="{{ e.id }}">Add</a>
                     </td>
