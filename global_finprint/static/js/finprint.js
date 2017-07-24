@@ -1295,6 +1295,16 @@ var finprint = finprint || {};  //namespace if necessary...
         var $modal = $('#edit-measurables-modal');
         var $measurablesCell = $('td.measurables');
 
+        function buildMeasurableList(measurables) {
+            var measurableList = '';
+            measurables.forEach(function (measurable) {
+                measurableList += measurable.name
+                    + '<a href="#" class="delete-master-measurable" data-measurable-id="'
+                    + measurable.id + '">&#x274E;</a><br />';
+            });
+            return measurableList;
+        }
+
         $measurablesCell.on('click', 'a.edit-master-measurables', function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -1355,13 +1365,7 @@ var finprint = finprint || {};  //namespace if necessary...
                     }
                 });
                 $.post('/assignment/master/measurables/edit/' + eventId, data, function (res) {
-                    var measurableList = '';
-                    res.measurables.forEach(function(measurable) {
-                        measurableList += measurable.name
-                            + '<a href="#" class="delete-master-measurable" data-measurable-id="'
-                            + measurable.id + '">&#x274E;</a><br />';
-                    });
-                    $originalTarget.siblings('.content').empty().html(measurableList);
+                    $originalTarget.siblings('.content').empty().html(buildMeasurableList(res.measurables));
                     $modal.modal('hide');
                 });
             });
@@ -1376,13 +1380,7 @@ var finprint = finprint || {};  //namespace if necessary...
             var measurableId = $originalTarget.data('measurable-id');
 
             $.post('/assignment/master/measurables/delete/' + measurableId, null, function (res) {
-                    var measurableList = '';
-                    res.measurables.forEach(function(measurable) {
-                        measurableList += measurable.name
-                            + '<a href="#" class="delete-master-measurable" data-measurable-id="'
-                            + measurable.id + '">&#x274E;</a><br />';
-                    });
-                    $originalTarget.parent().empty().html(measurableList);
+                $originalTarget.parent().empty().html(buildMeasurableList(res.measurables));
                 });
         });
     }
