@@ -12,6 +12,7 @@ from builtins import set as set_utils
 from ..bruv.models import Set
 from ..habitat.models import Site
 
+
 class APIView(View):
     """
     Main view to be inherited by other views requiring auth (also grabs assignment and user)
@@ -343,7 +344,7 @@ class EventUpdate(APIView):
 
 class AffiliationList(APIView):
     """
-    Affiliation list 
+    Affiliation list
     """
     def get(self,request):
         affiliations = Affiliation.objects.all().values('id','name')
@@ -352,10 +353,11 @@ class AffiliationList(APIView):
             obj[dictObj['id']] = dictObj['name']
         return JsonResponse(obj)
 
+
 class RestrictFilterChanges(View):
     """Restrict filter of Reef and Set
     changes in Trip Filter or Reef Filter restricts Sets
-    changes in Trip Filter restricts Reef Filter 
+    changes in Trip Filter restricts Reef Filter
     changes in Reef Filter restricts Sets Filter"""
     def get(self, request):
         _dic = request.GET

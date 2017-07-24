@@ -375,9 +375,22 @@ class AbstractEvent(AuditableModel):
         return any(a.needs_review for a in self.attribute.all())
 
 
+class Measurable(models.Model):
+    name = models.TextField()
+    description = models.TextField(null=True, blank=True)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return u"{0}".format(self.name)
+
+
 class Event(AbstractEvent):
+    measurables = models.ManyToManyField(Measurable, through='EventMeasurable')
     observation = models.ForeignKey(to=Observation)
     raw_import_json = JSONField(null=True)
+
+    def active_measurables(self):
+        return self.eventmeasurable_set.filter(measurable__active=True)
 
     @classmethod
     def create(cls, **kwargs):
@@ -428,13 +441,13 @@ class Event(AbstractEvent):
                                                  self.id)
 
 
-class Measurable(models.Model):
-    name = models.TextField()
-    description = models.TextField(null=True, blank=True)
-    active = models.BooleanField(default=True)
+class EventMeasurable(models.Model):
+    event = models.ForeignKey(Event)
+    measurable = models.ForeignKey(Measurable)
+    value = models.TextField()
 
     def __str__(self):
-        return u"{0}".format(self.name)
+        return u"{}: {}".format(self.measurable, self.value)
 
 
 class MasterEvent(AbstractEvent):
