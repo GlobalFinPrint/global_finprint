@@ -68,7 +68,7 @@
                     <td class="measurables">
                         <div class="content">
                             {% for active_measurable in e.active_measurables %}
-                                {{ active_measurable }} <a href="#" class="measurable-delete" data-event="{% url 'master_measurable_delete' active_measurable.pk %}">&#x274E;</a><br />
+                                {{ active_measurable }} <a href="#" class="delete-master-measurable" data-measurable-id="{{ active_measurable.pk }}">&#x274E;</a><br />
                             {% endfor %}
                         </div>
                         <a href="#" class="edit-master-measurables" data-event-id="{{ e.id }}">Add</a>

@@ -1293,8 +1293,9 @@ var finprint = finprint || {};  //namespace if necessary...
 
     function initEditMeasurables() {
         var $modal = $('#edit-measurables-modal');
+        var $measurablesCell = $('td.measurables');
 
-        $('td.measurables').on('click', 'a.edit-master-measurables', function (e) {
+        $measurablesCell.on('click', 'a.edit-master-measurables', function (e) {
             e.preventDefault();
             e.stopPropagation();
 
@@ -1356,14 +1357,33 @@ var finprint = finprint || {};  //namespace if necessary...
                 $.post('/assignment/master/measurables/edit/' + eventId, data, function (res) {
                     var measurableList = '';
                     res.measurables.forEach(function(measurable) {
-                        measurableList += measurable + '&#x274E;<br />';
+                        measurableList += measurable.name
+                            + '<a href="#" class="delete-master-measurable" data-measurable-id="'
+                            + measurable.id + '">&#x274E;</a><br />';
                     });
                     $originalTarget.siblings('.content').empty().html(measurableList);
                     $modal.modal('hide');
                 });
             });
-
             return false;
+        });
+
+        $measurablesCell.on('click', 'a.delete-master-measurable', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var $originalTarget = $(e.target);
+            var measurableId = $originalTarget.data('measurable-id');
+
+            $.post('/assignment/master/measurables/delete/' + measurableId, null, function (res) {
+                    var measurableList = '';
+                    res.measurables.forEach(function(measurable) {
+                        measurableList += measurable.name
+                            + '<a href="#" class="delete-master-measurable" data-measurable-id="'
+                            + measurable.id + '">&#x274E;</a><br />';
+                    });
+                    $originalTarget.parent().empty().html(measurableList);
+                });
         });
     }
 

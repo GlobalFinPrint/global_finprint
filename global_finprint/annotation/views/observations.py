@@ -3,6 +3,7 @@ from django.views.generic import View, ListView
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.db import transaction
+from django.core import serializers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from global_finprint.annotation.models.observation import MasterRecord, MasterRecordState, MasterObservation, \
@@ -203,9 +204,7 @@ class EditMeasurablesInline(UserAllowedMixin, View):
         for m, v in zip(measurables, values):
             MasterEventMeasurable(master_event_id=event.id, measurable_id=m, value=v).save()
         event.refresh_from_db()
-        return JsonResponse({
-            'measurables': list(str(em) for em in event.active_measurables())
-        })
+        return JsonResponse({'measurables': [{'name': str(em), 'id': em.id} for em in event.active_measurables()]})
 
 
 class ManageMasterView(UserAllowedMixin, View):
@@ -300,7 +299,6 @@ class MasterMeasurableDelete(UserAllowedMixin, View):
     """
     def post(self, request, measurable_id, **kwargs):
         measurable = MasterEventMeasurable.objects.get(id=measurable_id)
+        event = measurable.master_event
         measurable.delete()
-        return JsonResponse({
-            # 'measurables': list(str(em) for em in event.active_measurables())
-        })
+        return JsonResponse({'measurables': [{'name': str(em), 'id': em.id} for em in event.active_measurables()]})
