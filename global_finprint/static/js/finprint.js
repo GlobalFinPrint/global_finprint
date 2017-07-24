@@ -1305,14 +1305,14 @@ var finprint = finprint || {};  //namespace if necessary...
             return measurableList;
         }
 
-        $measurablesCell.on('click', 'a.edit-master-measurables', function (e) {
+        $measurablesCell.on('click', 'a.edit-measurables', function (e) {
             e.preventDefault();
             e.stopPropagation();
 
             var $originalTarget = $(e.target);
             var eventId = $originalTarget.data('event-id');
 
-            $.get('/assignment/master/measurables/edit/' + eventId, function (res) {
+            $.get('/assignment/measurables/edit/' + eventId, function (res) {
                 var dropdownHtml = '<select class="measurables form-control">';
                 dropdownHtml += '<option value="0">---</option>';
                 res.measurables.forEach(function (m) {
@@ -1364,7 +1364,7 @@ var finprint = finprint || {};  //namespace if necessary...
                         data.values.push($(this).find('input[type="text"]').val());
                     }
                 });
-                $.post('/assignment/master/measurables/edit/' + eventId, data, function (res) {
+                $.post('/assignment/measurables/edit/' + eventId, data, function (res) {
                     $originalTarget.siblings('.content').empty().html(buildMeasurableList(res.measurables));
                     $modal.modal('hide');
                 });
@@ -1372,14 +1372,14 @@ var finprint = finprint || {};  //namespace if necessary...
             return false;
         });
 
-        $measurablesCell.on('click', 'a.delete-master-measurable', function (e) {
+        $measurablesCell.on('click', 'a.delete-measurable', function (e) {
             e.preventDefault();
             e.stopPropagation();
 
             var $originalTarget = $(e.target);
             var measurableId = $originalTarget.data('measurable-id');
 
-            $.post('/assignment/master/measurables/delete/' + measurableId, null, function (res) {
+            $.post('/assignment/measurables/delete/' + measurableId, null, function (res) {
                 $originalTarget.parent().empty().html(buildMeasurableList(res.measurables));
                 });
         });

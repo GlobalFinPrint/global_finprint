@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from global_finprint.annotation.views.assignment import VideoAutoAssignView, ManageAssignmentView, ObservationListView, \
     AssignmentListView, AssignmentListTbodyView, AssignmentModalBodyView, UnassignModalBodyView, AssignMultipleVideosModel,\
     AssignMultipleVideoToAnnotators, RestrictFilterDropDown, AssignedAnnotatorPopup, VideoCountForAutoAssignView,\
-    TotalVideoCountForAutoAssignment
+    TotalVideoCountForAutoAssignment, EditMeasurablesInline, MeasurableDelete
 from global_finprint.annotation.views.compare import AssignmentCompareView, AssignmentDetailView
 
 
@@ -23,6 +23,11 @@ urlpatterns = [
     url(r"^compare/(?P<set_id>\d+)$", AssignmentCompareView.as_view(), name='assignment_compare'),
 
     url(r"^master/", include('global_finprint.annotation.urls.master')),
+
+    url(r"^measurables/edit/(?P<evt_id>\d+)$", csrf_exempt(EditMeasurablesInline.as_view()),
+        name='edit_measurables_inline'),
+    url(r"^measurables/delete/(?P<measurable_id>\d+)$", csrf_exempt(MeasurableDelete.as_view()),
+        name='master_measurable_delete'),
 
     url(r"^assign_selected_videos$",  csrf_exempt(AssignMultipleVideosModel.as_view()),
         name='assign_selected_videos'),
