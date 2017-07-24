@@ -1299,7 +1299,7 @@ var finprint = finprint || {};  //namespace if necessary...
             var measurableList = '';
             measurables.forEach(function (measurable) {
                 measurableList += measurable.name
-                    + '<a href="#" class="delete-master-measurable" data-measurable-id="'
+                    + '<a href="#" class="delete-measurable" data-measurable-id="'
                     + measurable.id + '">&#x274E;</a><br />';
             });
             return measurableList;
