@@ -1354,7 +1354,11 @@ var finprint = finprint || {};  //namespace if necessary...
                     }
                 });
                 $.post('/assignment/master/measurables/edit/' + eventId, data, function (res) {
-                    $originalTarget.siblings('.content').empty().html(res.measurables.join('<br />'));
+                    var measurableList = '';
+                    res.measurables.forEach(function(measurable) {
+                        measurableList += measurable + '&#x274E;<br />';
+                    });
+                    $originalTarget.siblings('.content').empty().html(measurableList);
                     $modal.modal('hide');
                 });
             });

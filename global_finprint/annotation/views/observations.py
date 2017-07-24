@@ -292,3 +292,15 @@ class MasterObservationListView(UserAllowedMixin, ListView):
         context['set'] = master_record.set
         context['for'] = ' for {}'.format(master_record.set)
         return context
+
+
+class MasterMeasurableDelete(UserAllowedMixin, View):
+    """
+    Endpoint to delete measurables
+    """
+    def post(self, request, measurable_id, **kwargs):
+        measurable = MasterEventMeasurable.objects.get(id=measurable_id)
+        measurable.delete()
+        return JsonResponse({
+            # 'measurables': list(str(em) for em in event.active_measurables())
+        })
