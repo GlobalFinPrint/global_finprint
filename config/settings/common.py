@@ -33,6 +33,7 @@ THIRD_PARTY_APPS = (
     'braces',
     'leaflet',
     'mptt',
+    'rest_framework',
     'report_builder',
 )
 
@@ -194,10 +195,16 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 LOGIN_URL = 'finprint_login'
 
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
+
 # SLUGLIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
-
-
 
 LOG_DIR = '/var/log/global_finprint/gf_web.log'
 
