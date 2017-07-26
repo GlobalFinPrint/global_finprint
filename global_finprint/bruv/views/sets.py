@@ -316,7 +316,7 @@ class SetListView(UserAllowedMixin, View):
             if search_values['code']:
                 result = result.filter(code__contains=search_values['code'])
         search_terms['trip'] = parent_trip
-        result = result.filter(**search_terms).prefetch_related(*prefetch).order_by('set_date', 'drop_time')
+        result = result.filter(**search_terms).prefetch_related(*prefetch).order_by('code')
 
         return result
 
