@@ -468,6 +468,13 @@ class MasterEvent(AbstractEvent):
         master_event.save()
         for attribute in original_event.attribute.all():
             master_event.attribute.add(attribute)
+        for measurable in original_event.active_measurables():
+            master_measurable = MasterEventMeasurable(
+                master_event=master_event,
+                measurable=measurable.measurable,
+                value=measurable.value
+            )
+            master_measurable.save()
 
     def filename(self):
         return self.original.filename()
