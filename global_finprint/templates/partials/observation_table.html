@@ -11,9 +11,7 @@
         <th>Time</th>
         <th>Image notes</th>
         <th>Tags</th>
-        {% if master %}
-            <th>Measurables</th>
-        {% endif %}
+        <th>Measurables</th>
         <th>Actions</th>
     </tr>
     </thead>
@@ -64,16 +62,16 @@
                 <td>{{ e.event_time|time_display }}</td>
                 <td class="event-note">{{ e.note|default_if_none:"<i>None</i>" }}</td>
                 <td class="attributes">{{ e.attribute.all|join:', ' }}</td>
-                {% if master %}
-                    <td class="measurables">
-                        <div class="content">
-                            {% for active_measurable in e.active_measurables %}
-                                {{ active_measurable }} <a href="#" class="delete-master-measurable" data-measurable-id="{{ active_measurable.pk }}">&#x274E;</a><br />
-                            {% endfor %}
-                        </div>
-                        <a href="#" class="edit-master-measurables" data-event-id="{{ e.id }}">Add</a>
-                    </td>
-                {% endif %}
+                <td class="measurables">
+                    <div class="content">
+                        {% for active_measurable in e.active_measurables %}
+                            {{ active_measurable }} <a href="#" class="delete-measurable"
+                                                       {% if master %}data-is-master="True"{% endif %}
+                                                       data-measurable-id="{{ active_measurable.pk }}">&#x274E;</a><br />
+                        {% endfor %}
+                    </div>
+                    <a href="#" class="edit-measurables" {% if master %}data-is-master="True"{% endif %} data-event-id="{{ e.id }}">Add</a>
+                </td>
                 <td class="action">
                     {% if master %}
                         {% with set=e.master_observation.set %}

@@ -3,11 +3,10 @@ from django.views.generic import View, ListView
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.db import transaction
-from django.core import serializers
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from global_finprint.annotation.models.observation import MasterRecord, MasterRecordState, MasterObservation, \
-    Observation, Event, Animal, Attribute, MasterEvent, Measurable, MasterEventMeasurable
+    Observation, Event, Animal, Attribute, MasterEvent
 from global_finprint.bruv.models import Set, Trip
 from global_finprint.core.mixins import UserAllowedMixin
 
@@ -182,31 +181,6 @@ class ObservationSaveData(UserAllowedMixin, View):
         })
 
 
-class EditMeasurablesInline(UserAllowedMixin, View):
-    """
-    Endpoints to power measurables inline editing on master record review page
-    """
-    def get(self, request, evt_id, **kwargs):
-        event = MasterEvent.objects.get(id=evt_id)
-        return JsonResponse({
-            'measurables': list({'name': m.name, 'id': m.id}
-                                for m in Measurable.objects.filter(active=True)),
-            'event_measurables': list({'measurable': m.measurable_id, 'value': m.value, 'id': m.id}
-                                      for m in event.active_measurables()),
-        })
-
-    def post(self, request, evt_id, **kwargs):
-        event = MasterEvent.objects.get(id=evt_id)
-        event.measurables.clear()
-        measurables = request.POST.getlist('measurables[]', [])
-        values = request.POST.getlist('values[]', [])
-        print(list(zip(measurables, values)))
-        for m, v in zip(measurables, values):
-            MasterEventMeasurable(master_event_id=event.id, measurable_id=m, value=v).save()
-        event.refresh_from_db()
-        return JsonResponse({'measurables': [{'name': str(em), 'id': em.id} for em in event.active_measurables()]})
-
-
 class ManageMasterView(UserAllowedMixin, View):
     def post(self, request, master_id):
         """
@@ -292,13 +266,3 @@ class MasterObservationListView(UserAllowedMixin, ListView):
         context['for'] = ' for {}'.format(master_record.set)
         return context
 
-
-class MasterMeasurableDelete(UserAllowedMixin, View):
-    """
-    Endpoint to delete measurables
-    """
-    def post(self, request, measurable_id, **kwargs):
-        measurable = MasterEventMeasurable.objects.get(id=measurable_id)
-        event = measurable.master_event
-        measurable.delete()
-        return JsonResponse({'measurables': [{'name': str(em), 'id': em.id} for em in event.active_measurables()]})
