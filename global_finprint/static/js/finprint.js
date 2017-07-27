@@ -1295,12 +1295,16 @@ var finprint = finprint || {};  //namespace if necessary...
         var $modal = $('#edit-measurables-modal');
         var $measurablesCell = $('td.measurables');
 
-        function buildMeasurableList(measurables) {
+        function buildMeasurableList(measurables, isMaster) {
             var measurableList = '';
             measurables.forEach(function (measurable) {
                 measurableList += measurable.name
                     + '<a href="#" class="delete-measurable" data-measurable-id="'
-                    + measurable.id + '">&#x274E;</a><br />';
+                    + measurable.id + '"';
+                if (isMaster) {
+                    measurableList += ' data-is-master="true" ';
+                }
+                measurableList += '>&#x274E;</a><br />';
             });
             return measurableList;
         }
@@ -1311,8 +1315,12 @@ var finprint = finprint || {};  //namespace if necessary...
 
             var $originalTarget = $(e.target);
             var eventId = $originalTarget.data('event-id');
+            var data = {};
+            if ($originalTarget.data('is-master')) {
+                data['is-master'] = true;
+            }
 
-            $.get('/assignment/measurables/edit/' + eventId, function (res) {
+            $.get('/assignment/measurables/edit/' + eventId, data, function (res) {
                 var dropdownHtml = '<select class="measurables form-control">';
                 dropdownHtml += '<option value="0">---</option>';
                 res.measurables.forEach(function (m) {
@@ -1336,8 +1344,8 @@ var finprint = finprint || {};  //namespace if necessary...
                         .find('option[value="' + em.measurable + '"]')
                         .attr('selected', 'selected')
                         .end()[0].outerHTML;
-                    // console.log(thisDropDown);
-                    var input = '<input class="form-control" id="input-' + em.id + '" type="text" value="' + em.value + '"/>';
+                    var input = '<input class="form-control" id="input-'
+                        + em.id + '" type="text" value="' + em.value + '"/>';
                     var remove = '<button class="btn btn-danger remove">Remove</button>';
                     $modal.find('div.measurables')
                         .append('<div class="measurable-row">' + thisDropDown + input + remove + '</div>');
@@ -1357,6 +1365,11 @@ var finprint = finprint || {};  //namespace if necessary...
 
             $modal.find('button#save').off().click(function () {
                 var data = {measurables: [], values: []};
+                var isMaster = false;
+                if ($originalTarget.data('is-master')) {
+                    data['is-master'] = true;
+                    isMaster = true;
+                }
                 $modal.find('div.measurable-row').each(function () {
                     // don't save empty vals!
                     if ($(this).find('input[type="text"]').val() !== '') {
@@ -1365,7 +1378,7 @@ var finprint = finprint || {};  //namespace if necessary...
                     }
                 });
                 $.post('/assignment/measurables/edit/' + eventId, data, function (res) {
-                    $originalTarget.siblings('.content').empty().html(buildMeasurableList(res.measurables));
+                    $originalTarget.siblings('.content').empty().html(buildMeasurableList(res.measurables, isMaster));
                     $modal.modal('hide');
                 });
             });
@@ -1378,9 +1391,14 @@ var finprint = finprint || {};  //namespace if necessary...
 
             var $originalTarget = $(e.target);
             var measurableId = $originalTarget.data('measurable-id');
-
-            $.post('/assignment/measurables/delete/' + measurableId, null, function (res) {
-                $originalTarget.parent().empty().html(buildMeasurableList(res.measurables));
+            var data = {};
+            var isMaster = false;
+            if ($originalTarget.data('is-master')) {
+                data['is-master'] = true;
+                isMaster = true;
+            }
+            $.post('/assignment/measurables/delete/' + measurableId, data, function (res) {
+                $originalTarget.parent().empty().html(buildMeasurableList(res.measurables, isMaster));
                 });
         });
     }

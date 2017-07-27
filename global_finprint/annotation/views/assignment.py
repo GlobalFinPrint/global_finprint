@@ -457,8 +457,8 @@ class EditMeasurablesInline(UserAllowedMixin, View):
     Endpoints for the measurables inline editing on obs review pages
     """
 
-    def get(self, request, evt_id, is_master=False, **kwargs):
-        event = MasterEvent.objects.get(id=evt_id) if is_master else Event.objects.get(id=evt_id)
+    def get(self, request, evt_id, **kwargs):
+        event = MasterEvent.objects.get(id=evt_id) if ('is-master' in request.GET) else Event.objects.get(id=evt_id)
         return JsonResponse({
             'measurables': list({'name': m.name, 'id': m.id}
                                 for m in Measurable.objects.filter(active=True)),
@@ -466,14 +466,14 @@ class EditMeasurablesInline(UserAllowedMixin, View):
                                       for m in event.active_measurables()),
         })
 
-    def post(self, request, evt_id, is_master=False, **kwargs):
-        event = MasterEvent.objects.get(id=evt_id) if is_master else Event.objects.get(id=evt_id)
+    def post(self, request, evt_id, **kwargs):
+        event = MasterEvent.objects.get(id=evt_id) if ('is-master' in request.POST) else Event.objects.get(id=evt_id)
         event.measurables.clear()
         measurables = request.POST.getlist('measurables[]', [])
         values = request.POST.getlist('values[]', [])
         print(list(zip(measurables, values)))
         for m, v in zip(measurables, values):
-            if is_master:
+            if 'is-master' in request.POST:
                 MasterEventMeasurable(master_event_id=event.id, measurable_id=m, value=v).save()
             else:
                 EventMeasurable(event_id=event.id, measurable_id=m, value=v).save()
@@ -486,8 +486,8 @@ class MeasurableDelete(UserAllowedMixin, View):
     Endpoint to delete measurables
     """
 
-    def post(self, request, measurable_id, is_master=False, **kwargs):
-        if is_master:
+    def post(self, request, measurable_id, **kwargs):
+        if 'is-master' in request.POST:
             measurable = MasterEventMeasurable.objects.get(id=measurable_id)
             event = measurable.master_event
         else:
