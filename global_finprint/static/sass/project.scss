@@ -516,7 +516,7 @@ h3.form-title {
   }
 }
 
-#edit-measurables-modal, #full-image-modal,#full-clip-modal {
+#edit-measurables-modal, #full-image-modal, #full-clip-modal {
   .event-image {
     position: relative;
     cursor: pointer;
@@ -620,6 +620,8 @@ h3.form-title {
   z-index: 20;
 }
 
+
+// compare annotations page
 .compare-actions {
   margin-bottom: 25px;
 
@@ -887,6 +889,7 @@ form #div_id_file .selectize-control {
   width: 350px;
 }
 
+// todo:  check above for other obs table css ...
 #observation-table {
   .annotool-thumbnail {
     cursor: pointer;
