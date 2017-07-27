@@ -48,6 +48,10 @@ var Templates = {
                             '<td class="data-label">Tags</td>' +
                             '<td class="data"><%= initial_event.attribute_names.join(", ") %></td>' +
                         '</tr>' +
+                        '<tr>' +
+                            '<td class="data-label">Measures</td>' +
+                            '<td class="data"><%= initial_event.measurables.join(", ") %></td>' +
+                        '</tr>' +
                     '</tbody></table>' +
                 '</div>' +
                 '<div class="close">&times;</div>' +

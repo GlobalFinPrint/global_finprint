@@ -428,6 +428,7 @@ class Event(AbstractEvent):
             json['image_url'] = self.image_url(verify=False)
             json['clip_url'] = self.clip_url(verify=False)
             json['attribute_names'] = list(a.name for a in self.attribute.all())
+            json['measurables'] = list(str(m) for m in self.active_measurables())
 
         return json
 
@@ -467,6 +468,13 @@ class MasterEvent(AbstractEvent):
         master_event.save()
         for attribute in original_event.attribute.all():
             master_event.attribute.add(attribute)
+        for measurable in original_event.active_measurables():
+            master_measurable = MasterEventMeasurable(
+                master_event=master_event,
+                measurable=measurable.measurable,
+                value=measurable.value
+            )
+            master_measurable.save()
 
     def filename(self):
         return self.original.filename()
