@@ -5,6 +5,7 @@ DROP VIEW IF EXISTS public.v_report_annotation_status_by_team;
 
 Drop VIEW if exists public.v_report_assignment_status_by_file;
 
+DROP VIEW IF EXISTS public.set_summary;
 Drop VIEW if exists public.v_report_core_set_data;
 Drop VIEW if exists public.v_report_set_environmental_data;
 
@@ -38,6 +39,8 @@ DROP VIEW IF EXISTS public.v_report_observations_pac_summary;
 DROP VIEW IF EXISTS public.v_report_observations_coral_summary;
 
 DROP VIEW IF EXISTS public.v_report_observations_master;
+
+DROP VIEW IF EXISTS public.observation_summary;
 
 -- reef completion:
 DROP VIEW IF EXISTS public.v_report_reef_summary;
