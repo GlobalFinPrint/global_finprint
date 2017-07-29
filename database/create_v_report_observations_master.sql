@@ -4,11 +4,11 @@ CREATE OR REPLACE VIEW public.v_report_observations_master AS
   s.code                                                    AS set_code,
   tr.code || '_' || s.code                                  AS full_code,
 
-  hab.region,
-  hab.location,
-  hab.site,
-  hab.reef,
-  hab.reef_habitat,
+    hab.region_name                                                   AS region_name,
+  hab.location_name                                                 AS location_name,
+  hab.site_name                                                     AS site_name,
+  hab.reef_name                                                     AS reef_name,
+  hab.reef_habitat_name                                             AS reef_habitat_name,
 
   mas.event_time,
   mas.event_time_minutes,
