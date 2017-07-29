@@ -94,6 +94,7 @@ class HabitatSummary(models.Model):
             'reef_habitat_name': self.reef_habitat_name
         }
 
+
 class ObservationSummary(models.Model):
     summary_id = models.IntegerField(primary_key=True)
     trip_code = models.TextField()
@@ -146,15 +147,16 @@ class ObservationSummary(models.Model):
 
 
 class SetSummary(models.Model):
-    team =  models.TextField()
-    trip_code =  models.TextField()
+    set_summary_id = models.IntegerField(primary_key=True)
+    team = models.TextField()
+    trip_code = models.TextField()
     set_code = models.TextField()
     region_name = models.TextField()
     location_name = models.TextField()
     site_name = models.TextField()
     reef_name = models.TextField()
     reef_habitat_name = models.TextField()
-    reef_habitat_id =  models.IntegerField()
+    reef_habitat_id = models.IntegerField()
     set_date = models.DateField()
     drop_time = models.TimeField()
     haul_time = models.TimeField()
@@ -199,6 +201,7 @@ class SetSummary(models.Model):
 
     def to_json(self):
         return {
+            'set_summary_id': self.set_summary_id,
             'team': self.team,
             'trip_code': self.trip_code,
             'set_code': self.set_code,
@@ -217,30 +220,35 @@ class SetSummary(models.Model):
             'longitude': self.longitude,
 
             'depth': self.depth,
-
-            'equipment_frame_type': self.equipment_frame_type,
-            'equipment_camera': self.equipment_camera,
-            'equipment_stereo_camera': self.equipment_stereo_camera,
-            'equipment_camera_height': self.equipment_camera_height,
-            'equipment_arm_length': self.equipment_arm_length,
-
-            'bait_preparation': self.bait_preparation,
-            'bait_type': self.bait_type,
-            'bait_oiled': self.bait_oiled,
-
             'visibility': self.visibility,
 
-            'current_flow_estimated': self.current_flow_estimated,
-            'current_flow_instrumented': self.current_flow_instrumented,
+            'equipment': {
 
+                'frame_type': self.equipment_frame_type,
+                'camera': self.equipment_camera,
+                'stereo': self.equipment_stereo_camera,
+                'camera_height': self.equipment_camera_height,
+                'arm_length': self.equipment_arm_length,
+            },
+            'bait': {
+                'preparation': self.bait_preparation,
+                'type': self.bait_type,
+                'oiled': self.bait_oiled,
+            },
+
+            'current_flow': {
+                'estimated': self.current_flow_estimated,
+                'instrumented': self.current_flow_instrumented,
+            },
             'substrate_type': self.substrate_type,
             'substrate_complexity_type': self.substrate_complexity_type,
             'bruv_image_url': self.bruv_image_url,
-            'splendor_image_url': self.splendor_image_url,
-
-            'video_file_name': self.video_file_name,
-            'video_source': self.video_source,
-            'video_path': self.video_path,
+            'reef_image_url': self.splendor_image_url,
+            'video' : {
+                'file_name': self.video_file_name,
+                'source': self.video_source,
+                'path': self.video_path,
+            },
         }
 
 
