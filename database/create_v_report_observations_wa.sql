@@ -4,11 +4,11 @@ SELECT
   s.code                                                    AS set_code,
   tr.code || '_' || s.code                                  AS full_code,
 
-  hab.region,
-  hab.location,
-  hab.site,
-  hab.reef,
-  hab.reef_habitat,
+  hab.region_name                                                   AS region_name,
+  hab.location_name                                                 AS location_name,
+  hab.site_name                                                     AS site_name,
+  hab.reef_name                                                     AS reef_name,
+  hab.reef_habitat_name                                             AS reef_habitat_name,
 
   u.first_name || ' ' || u.last_name                        AS annotator,
 
@@ -59,7 +59,7 @@ FROM
 
   LEFT JOIN annotation_animal ani ON ani.id = evt.animal_id
 
-WHERE hab.region = 'Western Atlantic'
+WHERE hab.region_name = 'Western Atlantic'
 ORDER BY
   full_code,
   event_time,

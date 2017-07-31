@@ -19,11 +19,11 @@ SELECT
   evtsum.set_code,
   evtsum.trip_code || '_' || evtsum.set_code                   AS full_code,
 
-  hab.region                                                   AS region,
-  hab.location                                                 AS location,
-  hab.site                                                     AS site,
-  hab.reef                                                     AS reef,
-  hab.reef_habitat                                             AS reef_habitat,
+  hab.region_name                                                   AS region_name,
+  hab.location_name                                                 AS location_name,
+  hab.site_name                                                     AS site_name,
+  hab.reef_name                                                     AS reef_name,
+  hab.reef_habitat_name                                             AS reef_habitat_name,
 
   ani.family,
   ani.genus,
@@ -46,18 +46,18 @@ FROM
 
   INNER JOIN annotation_animalobservation aobs ON aobs.observation_id = evtsum.observation_id
   INNER JOIN annotation_animal ani ON ani.id = aobs.animal_id
-WHERE hab.region = 'Western Atlantic'
+WHERE hab.region_name = 'Western Atlantic'
     and evtsum.numeric_value_from_event_note is not null
     and evtsum.max_n_tagged = 1
 GROUP BY
   trip_code,
   set_code,
   full_code,
-  region,
-  location,
-  site,
-  reef,
-  reef_habitat,
+  region_name,
+  location_name,
+  site_name,
+  reef_name,
+  reef_habitat_name,
   family,
   genus,
   species,

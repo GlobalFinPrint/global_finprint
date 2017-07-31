@@ -175,6 +175,7 @@ class Observations(APIView):
         params['assignment'] = request.va
         params['user'] = request.annotator.user
         params['attribute'] = request.POST.getlist('attribute')
+        params['measurables'] = request.POST.getlist('measurables')
         obs = Observation.create(**params)
         evt = obs.event_set.first()
         if request.va.status_id == 1:

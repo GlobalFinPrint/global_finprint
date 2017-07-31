@@ -21,8 +21,8 @@ total_assignments as
   )
 SELECT
   tm.sampler_collaborator  AS team,
-  rg.name                  AS region,
-  l.name                   AS location_name,
+  hab.region_name,
+  hab.location_name,
 
   t.code                   AS trip_code,
   s.code                   AS set_code,
@@ -35,9 +35,9 @@ SELECT
 
   s.depth,
 
-  hab.site,
-  hab.reef,
-  hab.reef_habitat,
+  hab.site_name,
+  hab.reef_name,
+  hab.reef_habitat_name,
 
   s.drop_time,
   s.haul_time,
@@ -83,8 +83,6 @@ SELECT
 FROM
   core_team tm
   INNER JOIN trip_trip t ON t.team_id = tm.id
-  INNER JOIN habitat_location l ON l.id = t.location_id
-  INNER JOIN habitat_region rg ON rg.id = l.region_id
   INNER JOIN bruv_set s ON s.trip_id = t.id
 
   INNER JOIN habitat_summary hab ON hab.reef_habitat_id = s.reef_habitat_id

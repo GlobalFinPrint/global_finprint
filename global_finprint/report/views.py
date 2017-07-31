@@ -2,13 +2,12 @@ import csv
 
 from django.contrib.auth.decorators import login_required
 from django.core.serializers import serialize
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.generic import View
 from django.shortcuts import render
 from django.db.models import Count
-from django.db.models.functions import Extract
 
-from .models import Report, PlannedSiteStatus
+from .models import Report, PlannedSiteStatus, HabitatSummary, ObservationSummary, SetSummary
 from ..annotation.models.video import Assignment
 from ..core.mixins import UserAllowedMixin
 
@@ -79,6 +78,21 @@ class LeaderboardView(View):
             'monthly_leaders': monthly_leaders
         }
         return render(request, self.template, context=context)
+
+
+class HabitatSummaryView(View):
+    def get(self, request):
+        return JsonResponse({'habitats': HabitatSummary.get_for_api()})
+
+
+class ObservationSummaryView(View):
+    def get(self, request, region):
+        return JsonResponse({'region': region, 'observations': ObservationSummary.get_for_api(region)})
+
+
+class SetSummaryView(View):
+    def get(self, request, region):
+        return JsonResponse({'region': region, 'sets': SetSummary.get_for_api(region)})
 
 
 # todo: not currently used ... intended for status mapping.
