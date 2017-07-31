@@ -15,6 +15,8 @@ from ...core.version import VersionInfo
 from datetime import datetime
 from ...core.templatetags.time_display import time_display
 
+MAXN_MEASURABLE_ID = 2
+
 logger = logging.getLogger(__name__)
 
 OBSERVATION_TYPE_CHOICES = {
@@ -96,6 +98,7 @@ class Observation(AbstractObservation):
 
     @staticmethod
     def create(**kwargs):
+        # todo: need to check if these actually exist and throw a nice error rather than failing in db and returning a bad 500
         kwargs['type'] = kwargs.pop('type_choice', None)
         kwargs['created_by'] = kwargs['user'].finprintuser
         kwargs['updated_by'] = kwargs['user'].finprintuser
@@ -114,6 +117,7 @@ class Observation(AbstractObservation):
             'extent': kwargs.pop('extent', None),
             'note': kwargs.pop('note', None),
             'attribute': kwargs.pop('attribute', None),
+            'measurables': kwargs.pop('measurables', None),
             'user': kwargs['user']
         }
 
@@ -127,7 +131,6 @@ class Observation(AbstractObservation):
             animal_fields['observation'] = obs
             animal_obs = AnimalObservation(**animal_fields)
             animal_obs.save()
-
         return obs
 
     @staticmethod
@@ -144,7 +147,8 @@ class Observation(AbstractObservation):
             'event_time',
             'extent',
             'note',
-            'attribute'
+            'attribute',
+            'measurables'
         ]
 
     @classmethod
@@ -189,9 +193,6 @@ class Observation(AbstractObservation):
             json['time'] = self.initial_observation_time()
             json['pretty_time'] = time_display(self.initial_observation_time())
             json['initial_event'] = self.initial_event().to_json(for_web=True)
-
-
-
         return json
 
     def initial_event(self):
@@ -385,7 +386,7 @@ class Measurable(models.Model):
 
 
 class Event(AbstractEvent):
-    measurables = models.ManyToManyField(Measurable, through='EventMeasurable')
+    measurables = models.ManyToManyField(Measurable, through='EventMeasurable', null=True)
     observation = models.ForeignKey(to=Observation)
     raw_import_json = JSONField(null=True)
 
@@ -395,11 +396,18 @@ class Event(AbstractEvent):
     @classmethod
     def create(cls, **kwargs):
         att_ids = kwargs.pop('attribute', [])
+        measurables = kwargs.pop('measurables', [])
         evt = cls(**kwargs)
         evt.save()
         attributes = [Attribute.objects.get(pk=att_id) for att_id in att_ids]
         for att in attributes:
             evt.attribute.add(att)
+        for measurable in measurables:
+            EventMeasurable(
+                value=measurable,
+                event=evt,
+                measurable=Measurable(pk=MAXN_MEASURABLE_ID)
+            ).save()
         return evt
 
     @staticmethod
@@ -410,7 +418,7 @@ class Event(AbstractEvent):
             'event_time',
             'extent',
             'note',
-            'raw_import_json'
+            'raw_import_json',
         ]
 
     def to_json(self, for_web=False):
@@ -420,6 +428,7 @@ class Event(AbstractEvent):
             'extent': None if self.extent is None else str(self.extent),
             'note': self.note,
             'attribute': [a.to_json(children=not for_web) for a in self.attribute.all()],
+            'measurable': [m.to_json() for m in self.active_measurables()],
             'create_datetime': datetime.strftime(self.create_datetime, '%Y-%m-%d %H:%M:%S')
         }
 
@@ -440,15 +449,6 @@ class Event(AbstractEvent):
                                                  set.code,
                                                  self.observation_id,
                                                  self.id)
-
-
-class EventMeasurable(models.Model):
-    event = models.ForeignKey(Event)
-    measurable = models.ForeignKey(Measurable)
-    value = models.TextField()
-
-    def __str__(self):
-        return u"{}: {}".format(self.measurable, self.value)
 
 
 class MasterEvent(AbstractEvent):
@@ -481,6 +481,24 @@ class MasterEvent(AbstractEvent):
 
     def active_measurables(self):
         return self.mastereventmeasurable_set.filter(measurable__active=True)
+
+
+class EventMeasurable(models.Model):
+    event = models.ForeignKey(Event)
+    measurable = models.ForeignKey(Measurable)
+    value = models.TextField()
+
+    def to_json(self):
+        json = {
+            'id': self.pk,
+            'measurable_id': self.measurable.id,
+            'measurable_name': self.measurable.name,
+            'value': self.value
+        }
+        return json
+
+    def __str__(self):
+        return u"{}: {}".format(self.measurable, self.value)
 
 
 class MasterEventMeasurable(models.Model):
