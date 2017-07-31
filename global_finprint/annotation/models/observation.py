@@ -395,16 +395,19 @@ class Event(AbstractEvent):
 
     @classmethod
     def create(cls, **kwargs):
+        # todo:  this implementation assumes we are only get lists of attribute_ids and measurable_values
+        # ... rather than list of attribute and measurable objects
+        # ... hence we make the [weak] assumption that the measurables are all MaxN and use the MAXN_MEASURABLE_ID constant
         att_ids = kwargs.pop('attribute', [])
-        measurables = kwargs.pop('measurables', [])
+        measurable_values = kwargs.pop('measurables', [])
         evt = cls(**kwargs)
         evt.save()
         attributes = [Attribute.objects.get(pk=att_id) for att_id in att_ids]
         for att in attributes:
             evt.attribute.add(att)
-        for measurable in measurables:
+        for measurable_value in measurable_values:
             EventMeasurable(
-                value=measurable,
+                value=measurable_value,
                 event=evt,
                 measurable=Measurable(pk=MAXN_MEASURABLE_ID)
             ).save()
@@ -428,7 +431,7 @@ class Event(AbstractEvent):
             'extent': None if self.extent is None else str(self.extent),
             'note': self.note,
             'attribute': [a.to_json(children=not for_web) for a in self.attribute.all()],
-            'measurable': [m.to_json() for m in self.active_measurables()],
+            'measurables': [m.to_json() for m in self.active_measurables()],
             'create_datetime': datetime.strftime(self.create_datetime, '%Y-%m-%d %H:%M:%S')
         }
 
