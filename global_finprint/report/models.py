@@ -69,25 +69,190 @@ class EventAttributeSummary(models.Model):
 
 # a sql view that can be used for the geo hierarchy
 class HabitatSummary(models.Model):
-    region_name = models.CharField(max_length=100)
-    location_name = models.CharField(max_length=100)
-    site_name = models.CharField(max_length=100)
-    reef_name = models.CharField(max_length=100)
-    reef_habitat_name = models.CharField(max_length=100)
-
-    region = models.ForeignKey(Region, on_delete=models.DO_NOTHING)
-    location = models.ForeignKey(Location, on_delete=models.DO_NOTHING)
-    site = models.ForeignKey(Site, on_delete=models.DO_NOTHING)
-    reef = models.ForeignKey(Reef, on_delete=models.DO_NOTHING)
-    reef_habitat = models.ForeignKey(ReefHabitat, on_delete=models.DO_NOTHING)
+    reef_habitat_id = models.IntegerField(primary_key=True)
+    region_name = models.TextField()
+    location_name = models.TextField()
+    site_name = models.TextField()
+    reef_name = models.TextField()
+    reef_habitat_name = models.TextField()
 
     class Meta:
         managed = False
         db_table = 'habitat_summary'
 
+    @classmethod
+    def get_for_api(cls):
+        return list(ob.to_json() for ob in cls.objects.all())
+
+    def to_json(self):
+        return {
+            'reef_habitat_id': self.reef_habitat_id,
+            'region_name': self.region_name,
+            'location_name': self.location_name,
+            'site_name': self.site_name,
+            'reef_name': self.reef_name,
+            'reef_habitat_name': self.reef_habitat_name
+        }
+
+
+class ObservationSummary(models.Model):
+    summary_id = models.IntegerField(primary_key=True)
+    trip_code = models.TextField()
+    set_code = models.TextField()
+    full_code = models.TextField()
+    region_name = models.TextField()
+    location_name = models.TextField()
+    site_name = models.TextField()
+    reef_name = models.TextField()
+    reef_habitat_name = models.TextField()
+    family = models.TextField()
+    genus = models.TextField()
+    species = models.TextField()
+    event_time_minutes_raw = models.TextField()
+    event_time_minutes = models.TextField()
+    maxn = models.IntegerField()
+    trip_id = models.IntegerField()
+    set_id = models.IntegerField()
+    video_id = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'observation_summary'
+
+    @classmethod
+    def get_for_api(cls, region):
+        return list(ob.to_json() for ob in cls.objects.filter(region_name__iexact=region))
+
+    def to_json(self):
+        return {
+            'summary_id': self.summary_id,
+            'trip_code': self.trip_code,
+            'set_code': self.set_code,
+            'full_code': self.full_code,
+            'region_name': self.region_name,
+            'location_name': self.location_name,
+            'site_name': self.site_name,
+            'reef_name': self.reef_name,
+            'reef_habitat_name': self.reef_habitat_name,
+            'family': self.family,
+            'genus': self.genus,
+            'species': self.species,
+            'event_time_minutes_raw': self.event_time_minutes_raw,
+            'event_time_minutes': self.event_time_minutes,
+            'maxn': self.maxn,
+            'trip_id': self.trip_id,
+            'set_id': self.set_id,
+            'video_id': self.video_id,
+        }
+
+
+class SetSummary(models.Model):
+    set_summary_id = models.IntegerField(primary_key=True)
+    team = models.TextField()
+    trip_code = models.TextField()
+    set_code = models.TextField()
+    region_name = models.TextField()
+    location_name = models.TextField()
+    site_name = models.TextField()
+    reef_name = models.TextField()
+    reef_habitat_name = models.TextField()
+    reef_habitat_id = models.IntegerField()
+    set_date = models.DateField()
+    drop_time = models.TimeField()
+    haul_time = models.TimeField()
+
+    wkt_coordinates = models.TextField()
+    latitude = models.DecimalField(max_digits=10, decimal_places=6)
+    longitude = models.DecimalField(max_digits=10, decimal_places=6)
+
+    depth = models.DecimalField(max_digits=6, decimal_places=2)
+
+    equipment_frame_type = models.TextField()
+    equipment_camera = models.TextField()
+    equipment_stereo_camera = models.BooleanField()
+    equipment_camera_height = models.TextField()
+    equipment_arm_length = models.TextField()
+
+    bait_preparation = models.TextField()
+    bait_type = models.TextField()
+    bait_oiled = models.BooleanField()
+
+    visibility = models.TextField()
+
+    current_flow_estimated = models.TextField()
+    current_flow_instrumented = models.DecimalField(max_digits=6, decimal_places=2)
+
+    substrate_type = models.TextField()
+    substrate_complexity_type = models.TextField()
+    bruv_image_url = models.TextField()
+    splendor_image_url = models.TextField()
+
+    video_file_name = models.TextField()
+    video_source = models.TextField()
+    video_path = models.TextField()
+
+    class Meta:
+        managed = False
+        db_table = 'set_summary'
+
+    @classmethod
+    def get_for_api(cls, region):
+        return list(ob.to_json() for ob in cls.objects.filter(region_name__iexact=region))
+
+    def to_json(self):
+        return {
+            'set_summary_id': self.set_summary_id,
+            'team': self.team,
+            'trip_code': self.trip_code,
+            'set_code': self.set_code,
+            'region_name': self.region_name,
+            'location_name': self.location_name,
+            'site_name': self.site_name,
+            'reef_name': self.reef_name,
+            'reef_habitat_name': self.reef_habitat_name,
+            'reef_habitat_id': self.reef_habitat_id,
+            'set_date': self.set_date,
+            'drop_time': self.drop_time,
+            'haul_time': self.haul_time,
+
+            'wkt_coordinates': self.wkt_coordinates,
+            'latitude': self.latitude,
+            'longitude': self.longitude,
+
+            'depth': self.depth,
+            'visibility': self.visibility,
+
+            'equipment': {
+
+                'frame_type': self.equipment_frame_type,
+                'camera': self.equipment_camera,
+                'stereo': self.equipment_stereo_camera,
+                'camera_height': self.equipment_camera_height,
+                'arm_length': self.equipment_arm_length,
+            },
+            'bait': {
+                'preparation': self.bait_preparation,
+                'type': self.bait_type,
+                'oiled': self.bait_oiled,
+            },
+
+            'current_flow': {
+                'estimated': self.current_flow_estimated,
+                'instrumented': self.current_flow_instrumented,
+            },
+            'substrate_type': self.substrate_type,
+            'substrate_complexity_type': self.substrate_complexity_type,
+            'bruv_image_url': self.bruv_image_url,
+            'reef_image_url': self.splendor_image_url,
+            'video' : {
+                'file_name': self.video_file_name,
+                'source': self.video_source,
+                'path': self.video_path,
+            },
+        }
+
 
 # todo: not currently used ... intended for status mapping.
-
 PLANNED_TRIP_STATUS_CHOICES = {
     ('W', 'Wishlist'),
     ('F', 'Forthcoming'),
