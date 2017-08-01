@@ -2,7 +2,7 @@
 {% block content %}
 <div class="col-md-12">
     <div class="row">
-        <h3>Custom reports</h3>
+        <h3>Standard reports</h3>
         <ul>
             {% for report in reports %}
             <li><a href="{% url 'report_custom' report %}">{{ report | title }}</a></li>

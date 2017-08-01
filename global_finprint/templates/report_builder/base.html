@@ -1,15 +1,32 @@
-
-{% load static from staticfiles %}
-
+<!--{% load static from staticfiles %}-->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap-theme.min.css' %}"/>
+    <!--<link href="{% static 'css/project.css' %}" rel="stylesheet"/>-->
     {% block report_header %}
     {% endblock %}
-</head>
+    <script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
 
+</head>
 <body>
+{% include 'partials/navpartial.html' %}
 {% block content %}
 {% endblock %}
+<script>
+    $(document).ready(function(){
+        $("md-sidenav[md-component-id='left']").toggle();
+    });
+</script>
+<style>
+    md-sidenav, .md-sidenav-left{
+        /* top:50px;*/
+    }
+    .navbar{
+        margin-bottom:0;
+    }
+</style>
 </body>
 </html>

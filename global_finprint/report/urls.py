@@ -1,6 +1,6 @@
 from django.conf.urls import url, include
-from .views import CustomReportListView, CustomReportView, \
-    CustomReportFileView, LeaderboardView, StatusMapView, \
+from .views import CustomReportListView, StandardReportView, \
+    StandardReportFileView, LeaderboardView, StatusMapView, \
     HabitatSummaryView, ObservationSummaryView, SetSummaryView
 
 
@@ -10,9 +10,9 @@ urlpatterns = [
 
     url(r"status/map/$", StatusMapView.as_view(), name="status_map"),
 
-    url(r"custom/(?P<report>\w+)$", CustomReportView.as_view(), name="report_custom"),
+    url(r"custom/(?P<report>\w+)$", StandardReportView.as_view(), name="report_custom"),
     # todo:  generify the format from only .csv?
-    url(r"custom/(?P<report>\w+).(?P<format>\w+)$", CustomReportFileView.as_view(), name="report_custom_csv"),
+    url(r"custom/(?P<report>\w+).(?P<format>\w+)$", StandardReportFileView.as_view(), name="report_custom_csv"),
 
     url(r"habitat/$", HabitatSummaryView.as_view(), name="habitats"),
     url(r"observation/summary/(?P<region>[\w ]+)$", ObservationSummaryView.as_view(), name="observation_summary"),

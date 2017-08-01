@@ -1,0 +1,53 @@
+{% load staticfiles i18n %}
+{% load version_info %}
+<div class="navbar navbar-default navbar-static-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-navbar-collapse-1" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="{% url 'home' %}" class="pull-left">
+                <img style="max-width:100px; margin-top: 7px;" src="{% static 'images/GFP_40.png' %}">
+            </a>
+{#            <a class="navbar-brand" href="{% url 'home' %}">Global FinPrint</a>#}
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <nav class="collapse navbar-collapse" id="bs-navbar-collapse-1">
+
+            {% if user_allowed %}
+            <ul class="nav navbar-nav">
+                <li class="nav-item dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Reports <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'report_builder' %}">Custom</a></li>
+                        <li><a class="dropdown-item" href="{% url 'report_home' %}">Standard</a></li>
+                        <li><a class="dropdown-item" href="{% url 'report_leaderboard' %}">Leaderboards</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <li><a href="{% url 'trip_list' %}">Trips</a></li>
+                </li>
+                <li class="nav-item">
+                    <li><a href="{% url 'assignment_list' %}">Assignments</a></li>
+                </li>
+                <li class="nav-item">
+                    <li><a href="/admin">Admin</a></li>
+                </li>
+            </ul>
+            {% endif %}
+            <ul class="nav navbar-nav navbar-right">
+                <li><p class="navbar-text">{% current_version %}</p></li>
+                {% if request.user.is_authenticated %}
+                    <li><a href="{% url 'password_change' %}"> {{ request.user.username }} </a></li>
+                    <li><a href="{% url 'finprint_logout' %}">{% trans "Logout" %}</a></li>
+                {% else %}
+                    <li><a href="{% url 'finprint_login' %}">{% trans "Log In" %}</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
