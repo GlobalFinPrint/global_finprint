@@ -1,8 +1,9 @@
 import csv
 
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from django.core.serializers import serialize
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest
 from django.views.generic import View
 from django.shortcuts import render
 from django.db.models import Count
@@ -91,6 +92,17 @@ class StatusMapView(UserAllowedMixin, View):
     def get(self, request):
         return render(request, self.template)
 
+def report(request):
+    """ Renders the custom reports page"""
+    assert isinstance(request, HttpRequest)
+    settings.REPORT_BUILDER_INCLUDE = ['report.models.Report']
+    return render(
+        request,
+        'report_builder/report.html',
+        {
+
+        }
+    )
 
 @login_required
 def planned_site_geojson(request):
