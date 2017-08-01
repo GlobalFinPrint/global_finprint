@@ -386,7 +386,7 @@ class Measurable(models.Model):
 
 
 class Event(AbstractEvent):
-    measurables = models.ManyToManyField(Measurable, through='EventMeasurable', null=True)
+    measurables = models.ManyToManyField(Measurable, through='EventMeasurable')
     observation = models.ForeignKey(to=Observation)
     raw_import_json = JSONField(null=True)
 
