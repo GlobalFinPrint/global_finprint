@@ -202,7 +202,7 @@ class SetSummary(models.Model):
 
     def to_json(self):
         return {
-            'set_summary_id': self.set_summary_id,
+            'set_id': self.set_id,
             'team': self.team,
             'trip_code': self.trip_code,
             'set_code': self.set_code,
