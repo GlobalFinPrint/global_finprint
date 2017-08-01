@@ -148,3 +148,5 @@ class Assignment(AuditableModel):
             ))
         except ValueError:
             return None
+
+

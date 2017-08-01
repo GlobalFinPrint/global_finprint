@@ -108,17 +108,6 @@ class StatusMapView(UserAllowedMixin, View):
     def get(self, request):
         return render(request, self.template)
 
-def report(request):
-    """ Renders the custom reports page"""
-    assert isinstance(request, HttpRequest)
-    settings.REPORT_BUILDER_INCLUDE = ['report.models.Report']
-    return render(
-        request,
-        'report_builder/report.html',
-        {
-
-        }
-    )
 
 @login_required
 def planned_site_geojson(request):

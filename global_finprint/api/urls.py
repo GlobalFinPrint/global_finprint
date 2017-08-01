@@ -1,4 +1,4 @@
-from django.conf.urls import url, include
+from django.conf.urls import url
 from django.views.decorators.csrf import csrf_exempt
 from global_finprint.annotation.views.annotation import site_animal_list, annotator_video_list
 from global_finprint.annotation.views.observations import observation_post
