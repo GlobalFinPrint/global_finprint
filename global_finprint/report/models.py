@@ -148,7 +148,7 @@ class ObservationSummary(models.Model):
 
 
 class SetSummary(models.Model):
-    set_summary_id = models.IntegerField(primary_key=True)
+    set_id = models.IntegerField(primary_key=True)
     team = models.TextField()
     trip_code = models.TextField()
     set_code = models.TextField()

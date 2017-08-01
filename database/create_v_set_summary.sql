@@ -1,6 +1,6 @@
 CREATE OR REPLACE VIEW public.set_summary AS
 SELECT
-  row_number() over () as set_summary_id,
+  s.id as set_id,
   tm.sampler_collaborator  AS team,
 
   t.code                   AS trip_code,
