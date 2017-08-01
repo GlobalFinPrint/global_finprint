@@ -19,18 +19,18 @@ class CustomReportListView(UserAllowedMixin, View):
     """
     List for custom reports found at /reports/
     """
-    template = 'pages/reports/custom_list.html'
+    template = 'pages/reports/standard_list.html'
 
     def get(self, request):
         context = {'reports': Report.view_list()}
         return render(request, self.template, context=context)
 
 
-class CustomReportView(UserAllowedMixin, View):
+class StandardReportView(UserAllowedMixin, View):
     """
     Individual report view found at /reports/custom/<report_name>
     """
-    template = 'pages/reports/custom_report.html'
+    template = 'pages/reports/standard_report.html'
 
     def get(self, request, report):
         report = Report(report)
@@ -43,7 +43,7 @@ class CustomReportView(UserAllowedMixin, View):
         return render(request, self.template, context=context)
 
 
-class CustomReportFileView(UserAllowedMixin, View):
+class StandardReportFileView(UserAllowedMixin, View):
     """
     Download report as CSV view
     """
