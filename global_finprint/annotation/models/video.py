@@ -1,7 +1,11 @@
+from itertools import chain
+from decimal import Decimal, getcontext
+
 from django.db import models, connection
+
 from global_finprint.core.models import AuditableModel, FinprintUser
 from .project import Project
-from itertools import chain
+
 
 
 # todo:  pull video file names into ranked list (for l & r, etc.)
@@ -85,6 +89,11 @@ class Assignment(AuditableModel):
         :return: a tuple of (year, month) from the last_modified_datetime
         """
         return self.last_modified_datetime.year, self.last_modified_datetime.month
+
+    @property
+    def progress_hours(self):
+        getcontext().prec = 2
+        return Decimal(self.progress) / 1000 / 60 / 60
 
     _selected_related_list = ['annotator', 'annotator__affiliation', 'video',
                               'video__set', 'video__set__trip', 'status']

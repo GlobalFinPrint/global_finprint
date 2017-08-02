@@ -1,16 +1,16 @@
 import csv
 
 from django.contrib.auth.decorators import login_required
-from django.conf import settings
 from django.core.serializers import serialize
-from django.http import HttpResponse, HttpRequest
 
 from django.http import HttpResponse, JsonResponse
 from django.views.generic import View
 from django.shortcuts import render
-from django.db.models import Count
+from django.db.models import Count, Sum
 
-from .models import Report, PlannedSiteStatus, HabitatSummary, ObservationSummary, SetSummary
+from .models import Report, PlannedSiteStatus, \
+    HabitatSummary, ObservationSummary, SetSummary, \
+    MonthlyLeaderboard
 from ..annotation.models.video import Assignment
 from ..core.mixins import UserAllowedMixin
 
@@ -70,15 +70,13 @@ class LeaderboardView(View):
         overall_leaders = Assignment.objects.values(
             'annotator__user__last_name', 'annotator__user__first_name', 'annotator__affiliation__name').exclude(
             annotator__affiliation_id__in=(0, 1, 7)).filter(status_id__in=(3, 4)).annotate(
-            num_assignments=Count('id')).order_by('-num_assignments')[:25]
-        monthly_leaders = Assignment.objects.values(
-            'annotator__user__last_name', 'annotator__user__first_name',
-            'annotator__affiliation__name').exclude(
-            annotator__affiliation_id__in=(0, 1, 7)).filter(status_id__in=(3, 4)).annotate(
-            num_assignments=Count('id')).order_by('-last_modified_year_month', '-num_assignments')[:25]
+            num_assignments=Count('id'), hours=Sum('progress')).order_by('-num_assignments')[:25]
+        monthly_count_leaders = MonthlyLeaderboard.objects.all().order_by('-month', 'affiliation_name', 'affiliation_count_rank')
+        monthly_hour_leaders = MonthlyLeaderboard.objects.all().order_by('-month', 'affiliation_name', 'affiliation_hour_rank')
         context = {
             'overall_leaders': overall_leaders,
-            'monthly_leaders': monthly_leaders
+            'monthly_count_leaders': monthly_count_leaders,
+            'monthly_hour_leaders': monthly_hour_leaders,
         }
         return render(request, self.template, context=context)
 

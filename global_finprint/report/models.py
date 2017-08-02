@@ -253,6 +253,26 @@ class SetSummary(models.Model):
         }
 
 
+# leaderboards
+class MonthlyLeaderboard(models.Model):
+    leaderboard_id = models.IntegerField(primary_key=True)
+    first_name = models.TextField()
+    last_name = models.TextField()
+    affiliation_name = models.TextField()
+    month = models.TextField()
+    num_assignments = models.IntegerField()
+    hours = models.IntegerField()
+    affiliation_count_rank = models.IntegerField()
+    affiliation_hour_rank = models.IntegerField()
+
+    objects = models.GeoManager()
+
+    class Meta:
+        managed = False
+        db_table = 'monthly_leaderboard'
+
+
+
 # todo: not currently used ... intended for status mapping.
 PLANNED_TRIP_STATUS_CHOICES = {
     ('W', 'Wishlist'),
