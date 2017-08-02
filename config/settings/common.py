@@ -200,7 +200,8 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    ],
+    'PAGE_SIZE':10,
 }
 
 # SLUGLIFIER
@@ -306,9 +307,7 @@ AWS_S3_FRAME_CAPTURE_BUCKET = 'https://s3-us-west-2.amazonaws.com/{}'.format(FRA
 AUTHENTICATION_BACKENDS = ['global_finprint.core.backends.FinprintAuth']
 
 # Report builder config
-REPORT_BUILDER_ASYNC_REPORT = True
+REPORT_BUILDER_ASYNC_REPORT = False
 REPORT_BUILDER_GLOBAL_EXPORT = True
 REPORT_BUILDER_EMAIL_NOTIFICATION = False
-REST_FRAMEWORK = {
-    'PAGE_SIZE':10,
-}
+
