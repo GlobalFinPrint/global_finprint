@@ -4,6 +4,7 @@ DROP VIEW IF EXISTS public.v_report_annotation_status_by_annotator;
 DROP VIEW IF EXISTS public.v_report_annotation_status_by_team;
 
 Drop VIEW if exists public.v_report_assignment_status_by_file;
+Drop VIEW if exists public.v_report_assignment_status AS
 
 DROP VIEW IF EXISTS public.set_summary;
 Drop VIEW if exists public.v_report_core_set_data;
@@ -57,4 +58,3 @@ DROP VIEW IF EXISTS public.master_attribute_summary;
 DROP VIEW IF EXISTS public.habitat_summary;
 DROP VIEW IF EXISTS public.overall_leaderboard;
 DROP VIEW IF EXISTS public.monthly_leaderboard;
-

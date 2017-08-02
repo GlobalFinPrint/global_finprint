@@ -10,6 +10,7 @@
     <td><a href="#" data-annotator-id="{{ a.annotator.id }}">{{ a.annotator }}</a></td>
     <td>{{ a.project }}</td>
     <td>{{ a.create_datetime|date }} ({{ a.create_datetime|naturaltime }})</td>
+    <td>{{ a.last_modified_datetime|date }} ({{ a.last_modified_datetime|naturaltime }})</td>
     <td>{{ a.status }}</td>
     <td>{{ a.progress|time_display }}</td>
     <td>{{ a.observation_set.count }}</td>
