@@ -90,11 +90,6 @@ class Assignment(AuditableModel):
         """
         return self.last_modified_datetime.year, self.last_modified_datetime.month
 
-    @property
-    def progress_hours(self):
-        getcontext().prec = 2
-        return Decimal(self.progress) / 1000 / 60 / 60
-
     _selected_related_list = ['annotator', 'annotator__affiliation', 'video',
                               'video__set', 'video__set__trip', 'status']
 

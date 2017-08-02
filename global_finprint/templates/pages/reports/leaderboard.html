@@ -106,7 +106,7 @@
                                         <td>{{ annotator.month }}</td>
                                         <td>{{ annotator.affiliation_name }}</td>
                                         <td>{{ annotator.first_name }} {{ annotator.last_name }}</td>
-                                        <td>{{ annotator.hours }}</td>
+                                        <td>{{ annotator.hours|floatformat:2 }}</td>
                                         <td>{{ annotator.affiliation_hour_rank }}</td>
                                     </tr>
                                 {% endfor %}

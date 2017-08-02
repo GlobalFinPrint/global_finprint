@@ -261,7 +261,7 @@ class MonthlyLeaderboard(models.Model):
     affiliation_name = models.TextField()
     month = models.TextField()
     num_assignments = models.IntegerField()
-    hours = models.IntegerField()
+    hours = models.DecimalField(max_digits=12, decimal_places=2)
     affiliation_count_rank = models.IntegerField()
     affiliation_hour_rank = models.IntegerField()
 

@@ -6,7 +6,7 @@ SELECT
   af.name as affiliation_name,
   to_char(asig.last_modified_datetime, 'YYYY-MM'::text) AS month,
   count(asig.id) as num_assignments,
-  sum(asig.progress) / 1000 / 60 / 60 as  hours,
+  sum(asig.progress)::decimal(12, 2) / 1000 / 60 / 60 as  hours,
   rank()
   OVER (
     PARTITION BY to_char(asig.last_modified_datetime, 'YYYY-MM'::text), af.name
