@@ -54,7 +54,8 @@ class Attribute(MPTTModel):
             'verbose': self.verbose_name(),
             'description': self.description,
             'level': self.get_level(),
-            'not_selectable': self.not_selectable
+            'not_selectable': self.not_selectable,
+            'global_parent_id': self.global_parent_id if self.global_parent_id else -1 #sending -1 if global_parent_id is null
         }
         if children and not self.is_leaf_node():
             children = list(a for a in self.get_children() if a.active)
