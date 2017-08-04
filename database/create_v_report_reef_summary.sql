@@ -48,6 +48,19 @@ CREATE OR REPLACE VIEW public.v_report_reef_summary AS
           ELSE 0
           END  AS has_two_reviewed_assignments,
           CASE
+          WHEN
+            (sum(COALESCE(assstat.status_count, 0)) = 1)
+              AND
+              (
+                 SELECT sum(assstatcom.status_count)
+                 FROM assignment_status_summary assstatcom
+                 WHERE assstatcom.assignment_status_id IN (4, 5, 6)
+                       AND assstatcom.set_id = S.id
+               ) = 1
+            THEN 1
+          ELSE 0
+          END  AS one_assignment_one_reviewed,
+          CASE
           WHEN mas.id IS NOT NULL
             THEN 1
           ELSE 0
@@ -100,6 +113,7 @@ CREATE OR REPLACE VIEW public.v_report_reef_summary AS
     sum(s.has_assignments)                  AS with_assignments,
     sum(s.has_two_complete_assignments)     AS have_two_complete_assignments,
     sum(s.has_two_reviewed_assignments)     AS have_two_reviewed_assignments,
+    sum(s.one_assignment_one_reviewed)      AS have_one_assignment_and_one_reviewed,
     sum(s.has_complete_master)              AS have_complete_master,
     sum(s.has_all_fields)                   AS have_all_set_fields,
     sum(s.set_complete)                     AS complete_sets,
