@@ -2,8 +2,8 @@ var finprint = finprint || {};  //namespace if necessary...
 
 (function ($) {
     "use strict";
-    var $auto_affiliation,$auto_trip;
-    var $setSelect,$reefSelect,$auto_project;
+    var $auto_affiliation, $auto_trip;
+    var $setSelect, $reefSelect, $auto_project;
     $(function () {
         initToggleEnv();
         initAssignForm();
@@ -303,24 +303,24 @@ var finprint = finprint || {};  //namespace if necessary...
         $('button#assign-auto-confirm').hide();
         $('button#assign-auto').attr('disabled', 'disabled');
 
-       $auto_affiliation = $modalForm.find('#auto-affiliation').selectize($.extend({}, options, {
+        $auto_affiliation = $modalForm.find('#auto-affiliation').selectize($.extend({}, options, {
             onChange: function (value) {
-               controlAssignmentButtonEnabling();
-             }
+                controlAssignmentButtonEnabling();
+            }
 
         }));
 
-       $auto_project = $modalForm.find('#project').selectize($.extend({}, options, {
+        $auto_project = $modalForm.find('#project').selectize($.extend({}, options, {
             onChange: function (value) {
-               controlAssignmentButtonEnabling();
-             }
+                controlAssignmentButtonEnabling();
+            }
 
         }));
 
         $modalForm.find('#project').selectize($.extend({}, options, {
             onChange: function (value) {
-               controlAssignmentButtonEnabling();
-             }
+                controlAssignmentButtonEnabling();
+            }
 
         }));
 
@@ -330,8 +330,8 @@ var finprint = finprint || {};  //namespace if necessary...
             searchField: 'code',
             optgroupField: 'group',
             onChange: function (value) {
-               controlAssignmentButtonEnabling();
-             }
+                controlAssignmentButtonEnabling();
+            }
         }));
 
         $reefSelect = $modalForm.find('#select-reef-auto-assign').selectize($.extend({}, options, {
@@ -352,7 +352,7 @@ var finprint = finprint || {};  //namespace if necessary...
                         callback(sets);
                     });
                 });
-                 controlAssignmentButtonEnabling();
+                controlAssignmentButtonEnabling();
             }
         }));
 
@@ -380,16 +380,16 @@ var finprint = finprint || {};  //namespace if necessary...
                         setSelect.enable();
                         callback(sets);
                     });
-                     controlAssignmentButtonEnabling();
+                    controlAssignmentButtonEnabling();
                 });
             },
             onClear: function (value) {
-                 var reefSelect = $reefSelect[0].selectize;
-                 reefSelect.clear(true);
-                 var setSelect = $setSelect[0].selectize;
-                 setSelect.clear(true);
-                 $auto_trip[0].selectize.clear(true);
-                 $auto_trip[0].selectize.trigger('change');
+                var reefSelect = $reefSelect[0].selectize;
+                reefSelect.clear(true);
+                var setSelect = $setSelect[0].selectize;
+                setSelect.clear(true);
+                $auto_trip[0].selectize.clear(true);
+                $auto_trip[0].selectize.trigger('change');
 
             }
 
@@ -402,7 +402,7 @@ var finprint = finprint || {};  //namespace if necessary...
         });
 
         $modal.find('#assign-auto').click(function () {
-            $('#assignmentDetails').attr('style',"display:none");
+            $('#assignmentDetails').attr('style', "display:none");
             $('button#assign-auto').attr('disabled', 'disabled');
             $('button#assign-auto-confirm').hide();
 
@@ -410,9 +410,9 @@ var finprint = finprint || {};  //namespace if necessary...
             get_filter_combination()
             //just to show total count till all videos are processed
             $.post('/assignment/total_count', $modalForm.serialize(), function (data) {
-                 $('#before_processing').attr('style',"display:true");
-                 $('#total_video_count').text("Processing "+data['video_count']+" video(s).");
-                });
+                $('#before_processing').attr('style', "display:true");
+                $('#total_video_count').text("Processing " + data['video_count'] + " video(s).");
+            });
 
             $.post('/assignment/auto_count', $modalForm.serialize(), function (data) {
                 var $aa = data['assignments'];
@@ -423,15 +423,15 @@ var finprint = finprint || {};  //namespace if necessary...
                     'assignment(s) made',
                     ['(', $aa['newly_assigned'], ' new).'].join('')
                 ].join(' ');
-                $('#before_processing').attr('style',"display:none");
-                $('#assignmentDetails').attr('style',"display:true");
-                $('#total_processed_videos_id').text("Processed "+data['video_count']+" video(s).")
-                $('#assigned_already').text($aa['assigned']+" assignment already existed")
-                $('#newly_assigned_id').text($aa['newly_assigned']+" new assignments made")
+                $('#before_processing').attr('style', "display:none");
+                $('#assignmentDetails').attr('style', "display:true");
+                $('#total_processed_videos_id').text("Processed " + data['video_count'] + " video(s).")
+                $('#assigned_already').text($aa['assigned'] + " assignment already existed")
+                $('#newly_assigned_id').text($aa['newly_assigned'] + " new assignments made")
                 if ($aa['assigned'] < $aa['total']) {
                     $modal.find('div.modal-footer span.success-message').addClass('alert-error')
                 }
-          //      $modal.find('div.modal-footer span.success-message').text($message).fadeIn();
+                //      $modal.find('div.modal-footer span.success-message').text($message).fadeIn();
                 $('button#assign-auto-confirm').show();
 
             });
@@ -453,7 +453,7 @@ var finprint = finprint || {};  //namespace if necessary...
                 }
                 $modal.find('div.modal-footer span.success-message').text($message).fadeIn();
                 $('button#assign-auto').removeAttr('disabled');
-                $('#assignmentDetails').attr('style',"display:none");
+                $('#assignmentDetails').attr('style', "display:none");
                 $('button#assign-auto-confirm').hide();
                 clearAllFilters();
 
@@ -461,9 +461,9 @@ var finprint = finprint || {};  //namespace if necessary...
         });
 
         $modal.find('#cancel-auto').click(function () {
-            $('#before_processing').attr('style',"display:none");
+            $('#before_processing').attr('style', "display:none");
             $('button#assign-auto-confirm').hide();
-            $('#assignmentDetails').attr('style',"display:none");
+            $('#assignmentDetails').attr('style', "display:none");
             $modal.find('div.modal-footer span.success-message').fadeOut().removeClass('alert-error');
             clearAllFilters();
         });
@@ -994,9 +994,9 @@ var finprint = finprint || {};  //namespace if necessary...
             e.stopPropagation();
             var $currentTarget = $(e.currentTarget);
             var url = $currentTarget.data('img-url');
-            var $image =$currentTarget.find('.image-icon');
+            var $image = $currentTarget.find('.image-icon');
 
-            var img_temp= '<img width="500" height="500" src='+url+'>';
+            var img_temp = '<img width="500" height="500" src=' + url + '>';
             $modal.find('.image-zoom').html(img_temp)
             $modal
                 .find('.image-zoom')
@@ -1014,8 +1014,8 @@ var finprint = finprint || {};  //namespace if necessary...
             e.stopPropagation();
             var $target = $(e.target).closest('.annotool-thumbnail .video-icon');
             var url = $target[0].getAttribute("value")
-            var video_temp= '<video width="500" height="500" controls>'+
-                         '<source src='+url+' type="video/mp4"> </video>';
+            var video_temp = '<video width="500" height="500" controls>' +
+                '<source src=' + url + ' type="video/mp4"> </video>';
             $modal1.find('.event-clip').html(video_temp)
             $modal1
                 .find('.event-clip')
@@ -1293,15 +1293,35 @@ var finprint = finprint || {};  //namespace if necessary...
 
     function initEditMeasurables() {
         var $modal = $('#edit-measurables-modal');
+        var $measurablesCell = $('td.measurables');
 
-        $('td.measurables').on('click', 'a.edit-master-measurables', function (e) {
+        function buildMeasurableList(measurables, isMaster) {
+            var measurableList = '';
+            measurables.forEach(function (measurable) {
+                measurableList += measurable.name
+                    + '<a href="#" class="delete-measurable" data-measurable-id="'
+                    + measurable.id + '"';
+                if (isMaster) {
+                    measurableList += ' data-is-master="true" ';
+                }
+                measurableList += ' title="Delete measurable">&#x2716;</a><br />';
+                // measurableList += '>&#x274E;</a><br />';
+            });
+            return measurableList;
+        }
+
+        $measurablesCell.on('click', 'a.edit-measurables', function (e) {
             e.preventDefault();
             e.stopPropagation();
 
             var $originalTarget = $(e.target);
             var eventId = $originalTarget.data('event-id');
+            var data = {};
+            if ($originalTarget.data('is-master')) {
+                data['is-master'] = true;
+            }
 
-            $.get('/assignment/master/measurables/edit/' + eventId, function (res) {
+            $.get('/assignment/measurables/edit/' + eventId, data, function (res) {
                 var dropdownHtml = '<select class="measurables form-control">';
                 dropdownHtml += '<option value="0">---</option>';
                 res.measurables.forEach(function (m) {
@@ -1325,8 +1345,8 @@ var finprint = finprint || {};  //namespace if necessary...
                         .find('option[value="' + em.measurable + '"]')
                         .attr('selected', 'selected')
                         .end()[0].outerHTML;
-                    // console.log(thisDropDown);
-                    var input = '<input class="form-control" id="input-' + em.id + '" type="text" value="' + em.value + '"/>';
+                    var input = '<input class="form-control" id="input-'
+                        + em.id + '" type="text" value="' + em.value + '"/>';
                     var remove = '<button class="btn btn-danger remove">Remove</button>';
                     $modal.find('div.measurables')
                         .append('<div class="measurable-row">' + thisDropDown + input + remove + '</div>');
@@ -1346,6 +1366,11 @@ var finprint = finprint || {};  //namespace if necessary...
 
             $modal.find('button#save').off().click(function () {
                 var data = {measurables: [], values: []};
+                var isMaster = false;
+                if ($originalTarget.data('is-master')) {
+                    data['is-master'] = true;
+                    isMaster = true;
+                }
                 $modal.find('div.measurable-row').each(function () {
                     // don't save empty vals!
                     if ($(this).find('input[type="text"]').val() !== '') {
@@ -1353,13 +1378,29 @@ var finprint = finprint || {};  //namespace if necessary...
                         data.values.push($(this).find('input[type="text"]').val());
                     }
                 });
-                $.post('/assignment/master/measurables/edit/' + eventId, data, function (res) {
-                    $originalTarget.siblings('.content').empty().html(res.measurables.join('<br />'));
+                $.post('/assignment/measurables/edit/' + eventId, data, function (res) {
+                    $originalTarget.siblings('.content').empty().html(buildMeasurableList(res.measurables, isMaster));
                     $modal.modal('hide');
                 });
             });
-
             return false;
+        });
+
+        $measurablesCell.on('click', 'a.delete-measurable', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var $originalTarget = $(e.target);
+            var measurableId = $originalTarget.data('measurable-id');
+            var data = {};
+            var isMaster = false;
+            if ($originalTarget.data('is-master')) {
+                data['is-master'] = true;
+                isMaster = true;
+            }
+            $.post('/assignment/measurables/delete/' + measurableId, data, function (res) {
+                $originalTarget.parent().empty().html(buildMeasurableList(res.measurables, isMaster));
+            });
         });
     }
 
@@ -1375,12 +1416,12 @@ var finprint = finprint || {};  //namespace if necessary...
             var $this = $(this);
             var oldText = $this.text();
             var setIds = $("input[name='select_check_box']");
-            var ids = []
-            var video_ids = []
+            var ids = [];
+            var video_ids = [];
             //adding all the checked ids for assigning
             for (var i = 0; i < setIds.length; i++) {
                 if (setIds[i].checked == true) {
-                    ids.push(setIds[i].value)
+                    ids.push(setIds[i].value);
                     video_ids.push(setIds[i].attributes.getNamedItem("data-id").value)
                 }
             }
@@ -1484,7 +1525,6 @@ var finprint = finprint || {};  //namespace if necessary...
         localStorage.setItem("select-anno", $('#select-anno').val());
         localStorage.setItem("select-status", $('#select-status').val());
         localStorage.setItem("select-project", $('#select-project').val());
-        localStorage.setItem("select-status", $('#select-status').val());
         localStorage.setItem("select-assigned", $('#select-assigned').val());
         localStorage.setItem("assigned-ago", $('#assigned-ago').val());
     }
@@ -1540,18 +1580,18 @@ var finprint = finprint || {};  //namespace if necessary...
         var reefs = $('#select-reef-auto-assign').val();
         var auto_num = $('#auto-num').val();
 
-        if (auto_trip && auto_trip!='---' || affilaitions || sets ||reefs) {
-          if (auto_num && project && project!='---') {
-              $('button#assign-auto').removeAttr('disabled');
-           } else {
-            $('button#assign-auto').attr('disabled', 'disabled');
+        if (auto_trip && auto_trip != '---' || affilaitions || sets || reefs) {
+            if (auto_num && project && project != '---') {
+                $('button#assign-auto').removeAttr('disabled');
+            } else {
+                $('button#assign-auto').attr('disabled', 'disabled');
             }
         } else {
-          $('button#assign-auto').attr('disabled', 'disabled');
+            $('button#assign-auto').attr('disabled', 'disabled');
         }
-      }
+    }
 
-      function get_filter_combination() {
+    function get_filter_combination() {
         var auto_trip = $('#auto-trip').text();
         var affilaitions = $('#auto-affiliation').text();
         var sets = $('#select-set-auto-assign').text();
@@ -1560,89 +1600,115 @@ var finprint = finprint || {};  //namespace if necessary...
         var auto_num = $('#auto-num').val();
         var include_lead = $('#include-leads:checkbox:checked').val();
         var filter_combination = '';
-        if (auto_trip && auto_trip!='---') {filter_combination = filter_combination +"+"+auto_trip};
-        if (reefs) {filter_combination = filter_combination +"+"+reefs};
-        if (sets) {filter_combination = filter_combination +"+"+sets};
-        if (affilaitions && affilaitions!='---') {filter_combination = filter_combination +"+"+affilaitions};
-        if (auto_num) {filter_combination = filter_combination +"+"+auto_num};
-        if (project && project!='---') {filter_combination = filter_combination +"+"+project};
+        if (auto_trip && auto_trip != '---') {
+            filter_combination = filter_combination + "+" + auto_trip
+        }
+        ;
+        if (reefs) {
+            filter_combination = filter_combination + "+" + reefs
+        }
+        ;
+        if (sets) {
+            filter_combination = filter_combination + "+" + sets
+        }
+        ;
+        if (affilaitions && affilaitions != '---') {
+            filter_combination = filter_combination + "+" + affilaitions
+        }
+        ;
+        if (auto_num) {
+            filter_combination = filter_combination + "+" + auto_num
+        }
+        ;
+        if (project && project != '---') {
+            filter_combination = filter_combination + "+" + project
+        }
+        ;
         //just to remove extre + sign
-        if (filter_combination[0]=='+') {filter_combination = filter_combination.slice(1);}
-        if (filter_combination[-1]=='+') {filter_combination = filter_combination.slice(0,-1);}
+        if (filter_combination[0] == '+') {
+            filter_combination = filter_combination.slice(1);
+        }
+        if (filter_combination[-1] == '+') {
+            filter_combination = filter_combination.slice(0, -1);
+        }
 
         $('#filters_combination1_id').text(filter_combination);
         $('#filters_combination_id').text(filter_combination);
-      }
+    }
 
-      function clearAllFilters() {
-           var $modal = $('#automatic-modal');
-           if ($auto_affiliation[0]) {
-               var control = $auto_affiliation[0].selectize;
-               control.clear(true);}
-           if ($auto_trip[0]) {
-               var control2 = $auto_trip[0].selectize;
-               control2.trigger('clear');}
-           if ($auto_project[0]){
-               var control3 = $auto_project[0].selectize;
-               control3.clear(true);}
-           $('button#assign-auto').attr('disabled', 'disabled');
-           if ($('#include-leads:checkbox:checked').val()=='on') {
-              $("#include-leads").prop("checked", false);
-            }
-       }
+    function clearAllFilters() {
+        var $modal = $('#automatic-modal');
+        if ($auto_affiliation[0]) {
+            var control = $auto_affiliation[0].selectize;
+            control.clear(true);
+        }
+        if ($auto_trip[0]) {
+            var control2 = $auto_trip[0].selectize;
+            control2.trigger('clear');
+        }
+        if ($auto_project[0]) {
+            var control3 = $auto_project[0].selectize;
+            control3.clear(true);
+        }
+        $('button#assign-auto').attr('disabled', 'disabled');
+        if ($('#include-leads:checkbox:checked').val() == 'on') {
+            $("#include-leads").prop("checked", false);
+        }
+    }
 
-        function initOnWindowLoad(){
+    function initOnWindowLoad() {
         //methods to be called upon window onload
-            window.onload = function() {
-                checkPropImage();
-            }
+        window.onload = function () {
+            checkPropImage();
         }
-        function checkPropImage() {
-                $('img.image-icon:not(.loaded)').each(function () {
-                    var currImg = $(this);
-                    var src = currImg.data('src');
-                    if (!src) return;
+    }
 
-                    var img = new Image();
-                    img.onload = function () {
-                        // code to set the src on success
-                        currImg.addClass('loaded');
-                        var video = currImg.siblings('.video-icon');
-                        checkPropVideo(video);
-                    };
-                    img.onerror = function () {
-                        // doesn't exist or error loading
-                        console.log('no image');
-                        currImg.attr('src', '/static/images/default-image.jpg');
-                    };
-                    setTimeout(function () {
-                            img.src = src; // fires off loading of image
-                            currImg.attr('src', src);
-                    }, 0);
-                });
+    function checkPropImage() {
+        $('img.image-icon:not(.loaded)').each(function () {
+            var currImg = $(this);
+            var src = currImg.data('src');
+            if (!src) return;
+
+            var img = new Image();
+            img.onload = function () {
+                // code to set the src on success
+                currImg.addClass('loaded');
+                var video = currImg.siblings('.video-icon');
+                checkPropVideo(video);
+            };
+            img.onerror = function () {
+                // doesn't exist or error loading
+                console.log('no image');
+                currImg.attr('src', '/static/images/default-image.jpg');
+            };
+            setTimeout(function () {
+                img.src = src; // fires off loading of image
+                currImg.attr('src', src);
+            }, 0);
+        });
+    }
+
+    function checkPropVideo(video_span) {
+        var curr_icon = video_span;
+        var url = curr_icon.attr('value');
+        if (!url) return;
+
+        var video = document.createElement('VIDEO');
+        if (video.canPlayType("video/mp4")) {
+            video.setAttribute("src", url);
         }
 
-        function checkPropVideo(video_span) {
-                    var curr_icon = video_span;
-                    var url = curr_icon.attr('value');
-                    if (!url) return;
-
-                    var video = document.createElement('VIDEO');
-                    if (video.canPlayType("video/mp4")) {
-                        video.setAttribute("src",url);
-                     }
-
-                    video.onloadedmetadata = function() {
-                          console.log("Meta data for video loaded");
-                    };
-                    video.onerror = function () {
-                        // doesn't exist or error loading
-                        console.log('no video');
-                        curr_icon.attr('style', 'display:none');
-                    };
-                    setTimeout(function () {
-                           // curr_icon.attr('style', 'display:true');
-                    }, 0);
-       }
+        video.onloadedmetadata = function () {
+            console.log("Meta data for video loaded");
+        };
+        video.onerror = function () {
+            // doesn't exist or error loading
+            console.log('no video');
+            curr_icon.attr('style', 'display:none');
+        };
+        setTimeout(function () {
+            // curr_icon.attr('style', 'display:true');
+        }, 0);
+    }
 })(jQuery);
 

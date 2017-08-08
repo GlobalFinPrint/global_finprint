@@ -23,9 +23,9 @@ CREATE VIEW public.v_report_maxn_issues_report AS
     ELSE 0
     END                                                                               AS maxn_tag_no_n,
 
-    hab.location,
-    hab.site,
-    hab.reef,
+    hab.location_name,
+    hab.site_name,
+    hab.reef_name,
 
     evt.trip_code,
     evt.set_code,
@@ -63,8 +63,8 @@ CREATE VIEW public.v_report_maxn_issues_report AS
          OR evt.max_n_tagged = 1)
   -- and lower(hab.region) = 'western atlantic'
   ORDER BY
-    hab.location,
-    hab.site,
-    hab.reef,
+    hab.location_name,
+    hab.site_name,
+    hab.reef_name,
     evt.assignment_id,
     evt.event_time;

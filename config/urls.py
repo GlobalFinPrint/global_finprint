@@ -16,14 +16,17 @@ from global_finprint.core.views import UrlRedirect, UserInfoView
 from global_finprint.core.forms import FinprintAuthenticationForm
 from global_finprint.bruv.views.benthic_category import BenthicCategoryView
 
-
 urlpatterns = [
     url(r"^$", TemplateView.as_view(template_name='pages/home.html'), name="home"),
 
     url(r"^admin/", include(admin.site.urls)),
 
     url(r'^trips/', include('global_finprint.trip.urls')),
+    # report builder
     url(r'^reports/', include('global_finprint.report.urls')),
+
+    url(r'^report_builder/', include('report_builder.urls'), name='report_builder'),
+
     url(r'^api/', include('global_finprint.api.urls')),
     url(r"^assignment/", include('global_finprint.annotation.urls.assignment')),
 
@@ -46,9 +49,11 @@ urlpatterns = [
         name='password_change_done'),
     url(r'^accounts/profile/$', UrlRedirect.as_view()),
 
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-# remove confusing 'Sites' from admin page:
+
 admin.site.unregister(Site)
 
 # Admin site title

@@ -4,27 +4,118 @@
 
     <div class="col-md-12">
         <div class="row">
-            {% include 'partials/paginator_controls.html' with page=trips thing_name='trips' %}
-            <table class="table table-bordered table-condensed trip-table" cellspacing="0" width="100%">
-                <thead>
-                    <tr class="table-header-title">
-                        <th colspan=10><h4>Top 25 Overall: Ready-for-Review and Reviewed Assignments</h4></th>
-                    </tr>
-                    <tr class="table-header-labels well">
-                        <th>Name</th>
-                        <th>Assignments</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for annotator in overall_leaders %}
-                <tr>
-                    <td>{{ annotator.annotator__user__first_name }} {{ annotator.annotator__user__last_name }}
-                    ({{ annotator.annotator__affiliation__name }})</td>
-                    <td>{{ annotator.num_assignments }}</td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingOne">
+                        <h4 class="panel-title">
+                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
+                               aria-expanded="true" aria-controls="collapseOne">
+                                Top 25 Overall: Ready-for-Review and Reviewed Assignments
+                            </a>
+                        </h4>
+                    </div>
+
+                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel"
+                         aria-labelledby="headingOne">
+                        <div class="panel-body">
+                            <table class="table table-bordered table-sm">
+                                <thead>
+                                <tr class="table-header-labels">
+                                    <th>Name</th>
+                                    <th>Affiliation</th>
+                                    <th>Count of watched</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for annotator in overall_leaders %}
+                                    <tr>
+                                        <td>{{ annotator.annotator__user__first_name }} {{ annotator.annotator__user__last_name }}</td>
+                                        <td>{{ annotator.annotator__affiliation__name }}</td>
+                                        <td>{{ annotator.num_assignments }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingTwo">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Top Monthly Annotators by Affiliation: Count of Ready-for-Review and Reviewed
+                                Assignments
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                        <div class="panel-body">
+                            <table class="table table-bordered table-sm">
+                                <thead>
+                                <thead>
+                                <tr class="table-header-labels">
+                                    <th>Month</th>
+                                    <th>Affiliation</th>
+                                    <th>Name</th>
+                                    <th>Count of watched</th>
+                                    <th>Rank</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for annotator in monthly_count_leaders %}
+                                    <tr>
+                                        <td>{{ annotator.month }}</td>
+                                        <td>{{ annotator.affiliation_name }}</td>
+                                        <td>{{ annotator.first_name }} {{ annotator.last_name }}</td>
+                                        <td>{{ annotator.num_assignments }}</td>
+                                        <td>{{ annotator.affiliation_count_rank }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingThree">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                Top Monthly Annotators by Affiliation: Hours of Ready-for-Review and Reviewed
+                                Assignments
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel"
+                         aria-labelledby="headingThree">
+                        <div class="panel-body">
+                            <table class="table table-bordered table-sm">
+                                <thead>
+                                <tr class="table-header-labels">
+                                    <th>Month</th>
+                                    <th>Affiliation</th>
+                                    <th>Name</th>
+                                    <th>Hours watched</th>
+                                    <th>Rank</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for annotator in monthly_hour_leaders %}
+                                    <tr>
+                                        <td>{{ annotator.month }}</td>
+                                        <td>{{ annotator.affiliation_name }}</td>
+                                        <td>{{ annotator.first_name }} {{ annotator.last_name }}</td>
+                                        <td>{{ annotator.hours|floatformat:2 }}</td>
+                                        <td>{{ annotator.affiliation_hour_rank }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

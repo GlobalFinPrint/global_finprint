@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from global_finprint.annotation.views.compare import GetMasterView
 from global_finprint.annotation.views.observations import MasterObservationEditEvent, \
-    MasterObservationSaveEvent, EditMeasurablesInline, MasterObservationListView, ManageMasterView, \
+    MasterObservationSaveEvent, MasterObservationListView, ManageMasterView, \
     MasterObservationDeleteEvent
 
 
@@ -19,9 +19,4 @@ urlpatterns = [
         name='master_save_obs'),
     url(r"^(?P<set_id>\d+)/observation/delete/(?P<evt_id>\d+)$", csrf_exempt(MasterObservationDeleteEvent.as_view()),
         name='master_delete_obs'),
-
-    url(r"^maxn/edit/(?P<evt_id>\d+)$", csrf_exempt(EditMeasurablesInline.as_view()),
-        name='edit_maxn_inline'),
-    url(r"^measurables/edit/(?P<evt_id>\d+)$", csrf_exempt(EditMeasurablesInline.as_view()),
-        name='edit_measurables_inline'),
 ]

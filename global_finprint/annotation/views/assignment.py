@@ -1,25 +1,24 @@
 from datetime import date, timedelta
 from builtins import set as Set_util
 import numpy as np
-import json
 import re as re
 from builtins import set as set_utils
 from django.views.generic import View, ListView
 
 from django.shortcuts import get_object_or_404, render
 from django.db.models import Count
-from django.http.response import JsonResponse, HttpResponse
-from django.template import RequestContext
+from django.http.response import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from ...core.mixins import UserAllowedMixin
 from ...trip.models import Trip
 from ...bruv.models import Set
-from ...habitat.models import Location, Site, Reef,ReefHabitat
+from ...habitat.models import Location, Site
 from ...core.models import Affiliation, FinprintUser
 from ..models.video import Assignment, Video, AnnotationState
 from ..models.project import Project
 from ..models.custommodels import MultiVideoAssignmentData
+from ..models.observation import Measurable, Event, MasterEvent, EventMeasurable, MasterEventMeasurable
 
 
 class VideoAutoAssignView(UserAllowedMixin, View):
@@ -35,7 +34,8 @@ class VideoAutoAssignView(UserAllowedMixin, View):
         :param project: project object
         :return:
         """
-        avail = list(a for a in annotators if a not in video.annotators_assigned(project))
+        assigned_annotators_list = video.annotators_assigned(project)
+        avail = [a for a in annotators if a not in assigned_annotators_list]
         assigned_by = FinprintUser.objects.get(user=self.request.user)
         assign_count = 0
         while len(video.annotators_assigned(project)) < num and len(annotators) > 0 and len(avail) > 0:
@@ -125,12 +125,20 @@ class VideoCountForAutoAssignView(UserAllowedMixin, View):
         :param project: project object
         :return:
         """
-        avail = list(a for a in annotators if a not in video.annotators_assigned(project))
+        assigned_annotators_list = video.annotators_assigned(project)
+        avail = [a for a in annotators if a not in assigned_annotators_list ]
         assign_count = 0
-        count=0
-        while (len(video.annotators_assigned(project))+count) < num and len(annotators) > 0 and (len(avail)-count) > 0:
-            assign_count += 1
-            count += 1;
+        assigned_annotators_num = len(video.annotators_assigned(project))
+        num_of_annotators = len(annotators)
+
+        if num_of_annotators > 0 :
+            count1 = num - assigned_annotators_num
+            count2 =  len(avail)
+            if count2 > 0 and count1 > 0:
+             if count1 <= count2 :
+                assign_count = count1
+             else :
+                assign_count = count2
 
         return assign_count
 
@@ -442,6 +450,51 @@ class ObservationListView(UserAllowedMixin, ListView):
         context['set'] = assignment.video.set
         context['for'] = ' by {}'.format(assignment.annotator.user.get_full_name())
         return context
+
+
+class EditMeasurablesInline(UserAllowedMixin, View):
+    """
+    Endpoints for the measurables inline editing on obs review pages
+    """
+
+    def get(self, request, evt_id, **kwargs):
+        event = MasterEvent.objects.get(id=evt_id) if ('is-master' in request.GET) else Event.objects.get(id=evt_id)
+        return JsonResponse({
+            'measurables': list({'name': m.name, 'id': m.id}
+                                for m in Measurable.objects.filter(active=True)),
+            'event_measurables': list({'measurable': m.measurable_id, 'value': m.value, 'id': m.id}
+                                      for m in event.active_measurables()),
+        })
+
+    def post(self, request, evt_id, **kwargs):
+        event = MasterEvent.objects.get(id=evt_id) if ('is-master' in request.POST) else Event.objects.get(id=evt_id)
+        event.measurables.clear()
+        measurables = request.POST.getlist('measurables[]', [])
+        values = request.POST.getlist('values[]', [])
+        print(list(zip(measurables, values)))
+        for m, v in zip(measurables, values):
+            if 'is-master' in request.POST:
+                MasterEventMeasurable(master_event_id=event.id, measurable_id=m, value=v).save()
+            else:
+                EventMeasurable(event_id=event.id, measurable_id=m, value=v).save()
+        event.refresh_from_db()
+        return JsonResponse({'measurables': [{'name': str(em), 'id': em.id} for em in event.active_measurables()]})
+
+
+class MeasurableDelete(UserAllowedMixin, View):
+    """
+    Endpoint to delete measurables
+    """
+
+    def post(self, request, measurable_id, **kwargs):
+        if 'is-master' in request.POST:
+            measurable = MasterEventMeasurable.objects.get(id=measurable_id)
+            event = measurable.master_event
+        else:
+            measurable = EventMeasurable.objects.get(id=measurable_id)
+            event = measurable.event
+        measurable.delete()
+        return JsonResponse({'measurables': [{'name': str(em), 'id': em.id} for em in event.active_measurables()]})
 
 
 # todo:  rename this as "Modal" from "Model"  and re-format to minimal pep-8 standard.

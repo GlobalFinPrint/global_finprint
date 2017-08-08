@@ -81,7 +81,9 @@ def collect_static():
 def apply_migrations():
     with cd(remote_django_dir):
         sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py dropviews', user='www-data')
+        sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py dropfunctions', user='www-data')
         sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py migrate --noinput', user='www-data')
+        sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py createfunctions', user='www-data')
         sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py createviews', user='www-data')
 
 
@@ -129,10 +131,10 @@ def load_test_data():
 
 def deploy():
     deploy_from_git('production')
-    
+
 def deploy_test(version):
     deploy_from_s3(version,'local')
-    
+
 def deploy_from_git(environment):
     with cd(remote_django_dir):
         sudo('git pull', user='www-data')

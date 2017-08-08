@@ -396,9 +396,11 @@ $(function () {
             this.project = options.project;
         },
         addObservation: function (model) {
+            // todo:  add measurables
             var attributes = model.toJSON();
             attributes.original = model;
             this.add(attributes);
+
             this.view.render();
         },
         removeObservation: function (model) {
@@ -545,7 +547,8 @@ $(function () {
         $style = $('style.legend-style');
         $('.compare-actions .legend .legend-item').each(function (i, li) {
             var style = '.group-' + $(li).data('group') + ' { background-color: ' + colors[i + 1] + ' !important; ';
-            if (i === 4) { // for bright colors that need black text color
+            if (i === 4) {
+                // for bright colors that need black text color
                 style += 'color: black !important; ';
             }
             style += '}\n';

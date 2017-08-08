@@ -14,9 +14,7 @@ SELECT
   animal.id                                  AS animal_id,
   evt.event_time,
   -- format event time to xx:xx:xxx
-  lpad((((evt.event_time / 1000) / 60) :: TEXT), 3, '0')
-  || ':' || lpad(((evt.event_time / 1000) % 60) :: TEXT, 2, '0')
-  || ':' || lpad(((evt.event_time % 1000) :: TEXT), 3, '0') AS event_time_minutes,
+  public.text_time(evt.event_time) AS event_time_minutes,
   CASE
   WHEN (evt.note = 'Time on seabed' :: TEXT)
     THEN 1

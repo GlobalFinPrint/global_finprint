@@ -1,7 +1,11 @@
+from itertools import chain
+from decimal import Decimal, getcontext
+
 from django.db import models, connection
+
 from global_finprint.core.models import AuditableModel, FinprintUser
 from .project import Project
-from itertools import chain
+
 
 
 # todo:  pull video file names into ranked list (for l & r, etc.)
