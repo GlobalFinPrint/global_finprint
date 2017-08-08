@@ -5,13 +5,15 @@ from django.shortcuts import get_object_or_404
 from ..trip.models import Trip
 from ..annotation.models.animal import Animal
 from ..annotation.models.video import Assignment
-from ..annotation.models.observation import Observation, Attribute, Event
+from ..annotation.models.observation import Observation, Attribute, Event, Measurable, EventMeasurable
 from ..core.models import FinprintUser
 from ..core.models import Affiliation
 from builtins import set as set_utils
 from ..bruv.models import Set
 from ..habitat.models import Site
 
+
+MAXN_MEASURABLE_ID = 2
 
 class APIView(View):
     """
@@ -310,6 +312,7 @@ class Events(APIView):
         params['observation'] = obs
         params['user'] = request.annotator.user
         params['attribute'] = request.POST.getlist('attribute')
+        params['measurables'] = request.POST.getlist('measurables')
         evt = Event.create(**params)
         return JsonResponse({'observations': Observation.get_for_api(request.va), 'filename': evt.filename()})
 
@@ -333,8 +336,31 @@ class EventUpdate(APIView):
         params = dict((key, val) for key, val in request.POST.items()
                       if key in Event.valid_fields() and key not in ['extent', 'event_time'])
         params['user'] = request.annotator.user
+        if 'measurables' in request.POST :
+             measurable_values = request.POST.getlist('measurables')
+             # todo: need to modify if there are other measurables than MaxN.. for now considering one element in list
+             for measurable_value in measurable_values:
+                 if 'event_measurable_id' in request.POST :
+                     # updating maxN valuse using pk of EventMeasurable object
+                     event_measurable_id = int(request.POST['event_measurable_id'])
+                     EventMeasurable(
+                         id = event_measurable_id,
+                         value=measurable_value,
+                         event=evt,
+                         measurable=Measurable(pk=MAXN_MEASURABLE_ID)
+                     ).save(force_update=True)
+                 else :
+                     # first time addition of maxN
+                     EventMeasurable(
+                         value=measurable_value,
+                         event=evt,
+                         measurable=Measurable(pk=MAXN_MEASURABLE_ID)
+                     ).save()
+
         for key, val in params.items():
-            setattr(evt, key, val)
+            if key!='measurables' :
+                setattr(evt, key, val)
+
         evt.attribute = []
         for att_id in request.POST.getlist('attribute', []):
             evt.attribute.add(get_object_or_404(Attribute, pk=att_id))

@@ -422,6 +422,7 @@ class Event(AbstractEvent):
             'extent',
             'note',
             'raw_import_json',
+            'measurables',
         ]
 
     def to_json(self, for_web=False):
