@@ -1,23 +1,23 @@
 import logging
+from datetime import datetime
 
-from django.db import models
+from boto.exception import S3ResponseError
+from boto.s3.connection import S3Connection
+from django.conf import settings
 from django.contrib.gis.db import models as geomodels
 from django.contrib.postgres.fields import JSONField
-from django.db import transaction
+from django.db import transaction, models
+
 from global_finprint.core.models import AuditableModel, FinprintUser
-from django.conf import settings
-from boto.s3.connection import S3Connection
-from boto.exception import S3ResponseError
-from .video import Assignment
 from .animal import Animal, ANIMAL_SEX_CHOICES, ANIMAL_STAGE_CHOICES
 from .annotation import Attribute, Project
-from ...core.version import VersionInfo
-from datetime import datetime
+from .video import Assignment
 from ...core.templatetags.time_display import time_display
-
-MAXN_MEASURABLE_ID = 2
+from ...core.version import VersionInfo
 
 logger = logging.getLogger(__name__)
+
+MAXN_MEASURABLE_ID = 2
 
 OBSERVATION_TYPE_CHOICES = {
     ('I', 'Of interest'),
@@ -504,6 +504,9 @@ class EventMeasurable(models.Model):
     def __str__(self):
         return u"{}: {}".format(self.measurable, self.value)
 
+    class Meta:
+        unique_together = ('event', 'measurable')
+
 
 class MasterEventMeasurable(models.Model):
     master_event = models.ForeignKey(MasterEvent)
@@ -512,3 +515,6 @@ class MasterEventMeasurable(models.Model):
 
     def __str__(self):
         return u"{}: {}".format(self.measurable, self.value)
+
+    class Meta:
+        unique_together = ('master_event', 'measurable')
