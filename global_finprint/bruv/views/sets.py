@@ -247,11 +247,10 @@ class SetBulkUploadView(UserAllowedMixin, View):
 
         success_message = '' if error_message else 'Bulk upload successful!'
 
-        return render(request, self.template,
-                                  context=RequestContext(request, {'trip_pk': trip_id,
-                                                                   'file_name': file.name,
-                                                                   'error_message': error_message,
-                                                                   'success_message': success_message}))
+        return render(request, self.template, {'trip_pk': trip_id,
+                                               'file_name': file.name,
+                                               'error_message': error_message,
+                                               'success_message': success_message})
 
 
 class SetListView(UserAllowedMixin, View):
