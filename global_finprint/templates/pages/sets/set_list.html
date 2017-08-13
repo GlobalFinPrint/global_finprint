@@ -229,11 +229,11 @@
                     <th id="equipment">Equipment</th>
                     <th id="bait">Bait</th>
                     <th class="video" colspan=2>Video</th>
+                    <th class="show_observations">Drop/haul</th>
                     <th id="assignments">Reviewed assignments</th>
                     <th id="master">Master record</th>
                     <th id="flow_substrate">All req. fields</th>
                     <th id="observations">Obs</th>
-                    <th class="show_observations">Drop/haul</th>
                     <th id="edit">Edit</th>
                 </tr>
                 </thead>
@@ -252,6 +252,10 @@
                         <td>{{ set.bait }}</td>
                         <td colspan=2>
                             {{ set.video.primary|default_if_none:"<i>None</i>" }}
+                        </td>
+                        <td>
+                            <a class="show-env" href="#" data-set="{{ set.id }}">Show</a>
+                            <a class="hide-env" href="#" data-set="{{ set.id }}">Hide</a>
                         </td>
                         {# todo:  this section could use some optimization as it makes far too many sql calls #}
                         <td>
@@ -293,10 +297,6 @@
                             </a>
                         </td>
                         <td>
-                            <a class="show-env" href="#" data-set="{{ set.id }}">Show</a>
-                            <a class="hide-env" href="#" data-set="{{ set.id }}">Hide</a>
-                        </td>
-                        <td>
                             {% if request.user.is_authenticated %}
                                 <a href="{% url 'set_update' set.trip.id set.id %}">Edit</a>
                             {% else %}
@@ -319,6 +319,7 @@
                         <th class="wind_direction">Wind dir</th>
                         <th class="cloud_cover">Cloud cover</th>
                         <th class="surface_chop">Chop</th>
+                        <th colspan="3"></th>
                     </tr>
                     {% if set.drop_measure %}
                     {% with env=set.drop_measure %}
@@ -336,14 +337,16 @@
                             <td>{{ env.wind_direction }}</td>
                             <td>{{ env.cloud_cover }}</td>
                             <td>{{ env.surface_chop }}</td>
+                            <td colspan="3"></td>
                         </tr>
                     {% endwith %}
                     {% else %}
                         <tr class="env-row set-{{ set.id }} drop">
-                            <td colspan="11"></td>
+                            <td></td>
                             <td><a href="{% url 'set_update' set.trip.id set.id %}#set-env-form">
                                 Add drop measure
                             </a></td>
+                            <td colspan="14"></td>
                         </tr>
                     {% endif %}
                     {% if set.haul_measure %}
@@ -362,14 +365,16 @@
                             <td>{{ env.wind_direction }}</td>
                             <td>{{ env.cloud_cover }}</td>
                             <td>{{ env.surface_chop }}</td>
+                            <td colspan="3"></td>
                         </tr>
                     {% endwith %}
                     {% else %}
                         <tr class="env-row set-{{ set.id }} haul">
-                            <td colspan="12"></td>
+                            <td></td>
                             <td><a href="{% url 'set_update' set.trip.id set.id %}#set-env-form">
                                 Add haul measure
                             </a></td>
+                            <td colspan="14"></td>
                         </tr>
                     {% endif %}
                 {% endfor %}
