@@ -174,11 +174,11 @@ class SetBulkUploadView(UserAllowedMixin, View):
                                                 else row[
                             set_fields_dict['current_flow_estimated']].value.strip().upper()),
                         current_flow_instrumented=row[set_fields_dict['current_flow_instrumented']].value,
-                        comments=('BULK UPLOAD' if row[set_fields_dict['comment']].value is None
-                                  else row[set_fields_dict['comment']].value.strip() + ' -- BULK UPLOAD'),
+                        comments=row[set_fields_dict['comment']].value.strip(),
                         video=new_video,
                         drop_measure=new_drop,
-                        haul_measure=new_haul
+                        haul_measure=new_haul,
+                        bulk_loaded=True,
                     )
                     new_set.save()
 
