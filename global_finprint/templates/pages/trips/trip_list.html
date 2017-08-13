@@ -7,16 +7,14 @@
         <script type="text/javascript">$(function() { window.location.hash = '#trip-form-parent'; });</script>
     {% endif %}
 
-    <div class="col-md-12">
-        <div class="row">
-            <h3>Trips</h3>
-        </div>
+    <div class="row">
+        <h3>
+            Trips
+        </h3>
 
-        <div id="trip-search" class="row well">
-            <div class="search col-md-12 clearfix">
-                <h4>Use filters to limit trip results</h4>
-                {% crispy search_form %}
-            </div>
+        <div class="search col-md-12 clearfix">
+            <h4>Use filters to limit trip results</h4>
+            {% crispy search_form %}
         </div>
 
         <div>
@@ -33,50 +31,49 @@
             </div>
             <div class="row well clearfix trip-form-well">{% crispy form %}</div>
         </div>
-
-        <div class="row">
-            {% include 'partials/paginator_controls.html' with page=trips thing_name='trips' %}
-            <table class="table table-bordered table-condensed trip-table" cellspacing="0" width="100%">
-                <thead>
-                    <tr class="table-header-title">
-                        <th colspan=10><h4>Showing all trips</h4></th>
-                    </tr>
-                    <tr class="table-header-labels well">
-                        <th>Trip code</th>
-                        <th>Source</th>
-                        <th>Start date</th>
-                        <th>End date</th>
-                        <th>Region</th>
-                        <th>Location</th>
-                        <th>Team</th>
-                        <th>Boat</th>
-                        <th>Sets</th>
-                        <th>Edit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for trip in trips %}
-                <tr>
-                    <td>{{ trip.code }}</td>
-                    <td>{{ trip.source }}</td>
-                    <td>{{ trip.start_date|date:"F d Y" }}</td>
-                    <td>{{ trip.end_date|date:"F d Y" }}</td>
-                    <td>{{ trip.region }}</td>
-                    <td>{{ trip.location }}</td>
-                    <td>{{ trip.team }}</td>
-                    <td>{{ trip.boat }}</td>
-                    <td><a href="{% url 'trip_set_list' trip.id %}">View ({{ trip.set_set.count }})</a></td>
-                    <td>
-                        {% if request.user.is_authenticated %}
-                            <a href="{% url 'trip_update' trip.id %}">Edit</a>
-                        {% else %}
-                            <span class="disabled">Edit</span>
-                        {% endif %}
-                    </td>
+    </div>
+    <div class="row">
+        {% include 'partials/paginator_controls.html' with page=trips thing_name='trips' %}
+        <table class="table table-bordered table-condensed trip-table" cellspacing="0" width="100%">
+            <thead>
+                <tr class="table-header-title">
+                    <th colspan=10><h4>Showing all trips</h4></th>
                 </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                <tr class="table-header-labels well">
+                    <th>Trip code</th>
+                    <th>Source</th>
+                    <th>Start date</th>
+                    <th>End date</th>
+                    <th>Region</th>
+                    <th>Location</th>
+                    <th>Team</th>
+                    <th>Boat</th>
+                    <th>Sets</th>
+                    <th>Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for trip in trips %}
+            <tr>
+                <td>{{ trip.code }}</td>
+                <td>{{ trip.source }}</td>
+                <td>{{ trip.start_date|date:"F d Y" }}</td>
+                <td>{{ trip.end_date|date:"F d Y" }}</td>
+                <td>{{ trip.region }}</td>
+                <td>{{ trip.location }}</td>
+                <td>{{ trip.team }}</td>
+                <td>{{ trip.boat }}</td>
+                <td><a href="{% url 'trip_set_list' trip.id %}">View ({{ trip.set_set.count }})</a></td>
+                <td>
+                    {% if request.user.is_authenticated %}
+                        <a href="{% url 'trip_update' trip.id %}">Edit</a>
+                    {% else %}
+                        <span class="disabled">Edit</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock %}
