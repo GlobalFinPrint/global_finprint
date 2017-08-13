@@ -242,6 +242,7 @@ class Set(AuditableModel):
         null=True,
         related_name='set'
     )
+    bulk_loaded = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('trip', 'code')
