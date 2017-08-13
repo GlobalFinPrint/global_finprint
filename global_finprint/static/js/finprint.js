@@ -997,6 +997,7 @@ var finprint = finprint || {};  //namespace if necessary...
             var $image = $currentTarget.find('.image-icon');
 
             var img_temp = '<img width="500" height="500" src=' + url + '>';
+            var modal_title = $currentTarget.data('animal');
             $modal.find('.image-zoom').html(img_temp)
             $modal
                 .find('.image-zoom')
@@ -1004,6 +1005,9 @@ var finprint = finprint || {};  //namespace if necessary...
                 .end()
                 .find('.extent')
                 .attr('style', $currentTarget.find('.extent').attr('style'))
+                .end()
+                .find('.modal-title')
+                .html(modal_title)
                 .end()
                 .modal('show');
         });
@@ -1016,10 +1020,14 @@ var finprint = finprint || {};  //namespace if necessary...
             var url = $target[0].getAttribute("value")
             var video_temp = '<video width="500" height="500" controls>' +
                 '<source src=' + url + ' type="video/mp4"> </video>';
+            var modal_title = $currentTarget.data('animal');
             $modal1.find('.event-clip').html(video_temp)
             $modal1
                 .find('.event-clip')
                 .attr('style', $target.attr('style'))
+                .end()
+                .find('.modal-title')
+                .html(modal_title)
                 .end()
                 .modal('show');
         });
