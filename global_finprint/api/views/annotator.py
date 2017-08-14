@@ -5,14 +5,14 @@ from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotFoun
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
 
-from ..trip.models import Trip
-from ..annotation.models.animal import Animal
-from ..annotation.models.video import Assignment
-from ..annotation.models.observation import Observation, Attribute, Event, Measurable, EventMeasurable
-from ..core.models import FinprintUser
-from ..core.models import Affiliation
-from ..bruv.models import Set
-from ..habitat.models import Site
+from global_finprint.trip.models import Trip
+from global_finprint.annotation.models.animal import Animal
+from global_finprint.annotation.models.video import Assignment
+from global_finprint.annotation.models.observation import Observation, Attribute, Event, Measurable, EventMeasurable
+from global_finprint.core.models import FinprintUser
+from global_finprint.core.models import Affiliation
+from global_finprint.bruv.models import Set
+from global_finprint.habitat.models import Site
 
 MAXN_MEASURABLE_ID = 2
 
