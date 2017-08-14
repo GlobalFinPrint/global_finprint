@@ -1,12 +1,6 @@
 from django.conf.urls import url
 from django.views.decorators.csrf import csrf_exempt
-from global_finprint.annotation.views.annotation import site_animal_list, annotator_video_list
-from global_finprint.annotation.views.observations import observation_post
-from ..habitat.views import reef_detail_geojson
-from ..trip.views import trip_sets_geojson
-from ..report.views import planned_site_geojson
 from global_finprint.api import views
-
 
 urlpatterns = [
 
@@ -44,17 +38,7 @@ urlpatterns = [
     url(r"^trip$", csrf_exempt(views.TripList.as_view()), name='api_trip_list'),
     url(r"^annotator", csrf_exempt(views.AnnotatorList.as_view()), name='api_annotator_list'),
     url(r"^affiliations", csrf_exempt(views.AffiliationList.as_view()), name='api_affiliation_list'),
-    url(r"^restrict_filter_dropdown$", csrf_exempt(views.RestrictFilterChanges.as_view()), name='restrict_filter_dropdown'),
-
-    ######
-    # geo -- (only the sets map is used at this time)
-    url(r"^reef/(?P<reef_id>\d+)/geojson/$", reef_detail_geojson, name='api_reef_detail_geojson'),
-    url(r"^trip/(?P<trip_id>\d+)/sets/geojson/$", trip_sets_geojson, name='api_trip_sets_geojson'),
-    url(r"^report/status/geojson/$", planned_site_geojson, name='api_planned_site_geojson'),
-
-    # annotation -- deprecated
-    url(r"^observation/$", observation_post, name='api_observation_post'),
-    url(r"^annotation/animals/(?P<site_id>\d+)/$", site_animal_list, name='api_animal_list_by_site'),
-    url(r"^annotation/videos/(?P<annotator_id>\d+)/$", annotator_video_list, name='api_video_list_by_annotator'),
+    url(r"^restrict_filter_dropdown$", csrf_exempt(views.RestrictFilterChanges.as_view()),
+        name='restrict_filter_dropdown'),
 
 ]

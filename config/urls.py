@@ -17,42 +17,49 @@ from global_finprint.core.forms import FinprintAuthenticationForm
 from global_finprint.bruv.views.benthic_category import BenthicCategoryView
 
 urlpatterns = [
-    url(r"^$", TemplateView.as_view(template_name='pages/home.html'), name="home"),
+                  url(r"^$", TemplateView.as_view(template_name='pages/home.html'), name="home"),
 
-    url(r"^admin/", include(admin.site.urls)),
+                  url(r"^admin/", include(admin.site.urls)),
 
-    url(r'^trips/', include('global_finprint.trip.urls')),
-    # report builder
-    url(r'^reports/', include('global_finprint.report.urls')),
+                  url(r'^trips/', include('global_finprint.trip.urls')),
+                  # report builder
+                  url(r'^reports/', include('global_finprint.report.urls')),
 
-    url(r'^report_builder/', include('report_builder.urls'), name='report_builder'),
+                  url(r'^report_builder/', include('report_builder.urls'), name='report_builder'),
 
-    url(r'^api/', include('global_finprint.api.urls')),
-    url(r"^assignment/", include('global_finprint.annotation.urls.assignment')),
+                  url(r'^api/', include([
+                      url(r'^', include('global_finprint.api.urls.annotator')),
+                      url(r'^', include('global_finprint.api.urls.ga')),
+                      url(r'^', include('global_finprint.api.urls.geo')),
+                      url(r'^', include('global_finprint.api.urls.summary')),
+                  ])),
 
-    url(r"^substrate/$", BenthicCategoryView.as_view(), name="ajax_substrate"),
+                  url(r"^assignment/", include('global_finprint.annotation.urls.assignment')),
 
-    url(r"^about/$", TemplateView.as_view(template_name='pages/about.html'), name="about"),
+                  url(r"^substrate/$", BenthicCategoryView.as_view(), name="ajax_substrate"),
 
-    url(r"^user/info/(?P<id>\d+)$", UserInfoView.as_view(), name="user_info_view"),
+                  url(r"^about/$", TemplateView.as_view(template_name='pages/about.html'), name="about"),
 
-    # User management
-    url('^', include('django.contrib.auth.urls')),
-    url(r'^accounts/login/$', login, {'template_name': 'registration/login.html',
-                                      'authentication_form': FinprintAuthenticationForm}, name='finprint_login'),
-    url(r'^accounts/logout/$', logout, {'template_name': 'registration/logged_out.html'}, name='finprint_logout'),
-    url(r'^accounts/password_change/$', login_required(password_change),
-        {'password_change_form': PasswordChangeForm},
-        name='password_change'),
-    url(r'^accounts/password_change_done/$', login_required(password_change_done),
-        {'template_name': 'registration/password_change_done.html'},
-        name='password_change_done'),
-    url(r'^accounts/profile/$', UrlRedirect.as_view()),
+                  url(r"^user/info/(?P<id>\d+)$", UserInfoView.as_view(), name="user_info_view"),
 
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+                  # User management
+                  url('^', include('django.contrib.auth.urls')),
+                  url(r'^accounts/login/$', login, {'template_name': 'registration/login.html',
+                                                    'authentication_form': FinprintAuthenticationForm},
+                      name='finprint_login'),
+                  url(r'^accounts/logout/$', logout, {'template_name': 'registration/logged_out.html'},
+                      name='finprint_logout'),
+                  url(r'^accounts/password_change/$', login_required(password_change),
+                      {'password_change_form': PasswordChangeForm},
+                      name='password_change'),
+                  url(r'^accounts/password_change_done/$', login_required(password_change_done),
+                      {'template_name': 'registration/password_change_done.html'},
+                      name='password_change_done'),
+                  url(r'^accounts/profile/$', UrlRedirect.as_view()),
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+                  url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 admin.site.unregister(Site)
 
@@ -71,6 +78,7 @@ if settings.DEBUG:
 
 if settings.DEBUG:
     import debug_toolbar
+
     urlpatterns = [
-        url(r'^__debug__/', include(debug_toolbar.urls)),
-    ] + urlpatterns
+                      url(r'^__debug__/', include(debug_toolbar.urls)),
+                  ] + urlpatterns
