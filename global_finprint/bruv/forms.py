@@ -15,6 +15,7 @@ from ..trip.models import Trip
 from ..habitat.models import Reef, ReefType, Substrate, SubstrateComplexity
 from django.conf import settings
 
+US_WEST_AWS_S3 = 'https://s3-us-west-2.amazonaws.com/'
 
 timepicker_opts = {"format": "HH:mm", "showClear": True}
 datepicker_opts = {"format": "MMMM DD YYYY", "showClear": True, "extraFormats": ["D/M/Y"]}
@@ -315,7 +316,7 @@ class SetLevelDataForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        s3_base_url = 'https://s3-us-west-2.amazonaws.com/' + settings.HABITAT_IMAGE_BUCKET
+        s3_base_url = US_WEST_AWS_S3 + settings.HABITAT_IMAGE_BUCKET
         bruv_image_url = s3_base_url + kwargs['instance'].bruv_image_url \
             if 'instance' in kwargs and kwargs['instance'] and kwargs['instance'].bruv_image_url else None
         splendor_image_url = s3_base_url + kwargs['instance'].splendor_image_url \
