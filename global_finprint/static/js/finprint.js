@@ -1342,7 +1342,7 @@ var finprint = finprint || {};  //namespace if necessary...
                     var input = '<input type="text" class="form-control" id="inputMeasurable' + m.id + '" value="' + measValue + '"' + '>';
                     $modal.find('div.measurables')
                         .append('<div class="measurable-row form-group row" data-measurable-id="' + m.id + '">' +
-                                '<label for="inputMeasurable' + m.id + '" class="col-sm-2 col-form-label">' + m.name + '</label>' +
+                                '<label for="inputMeasurable' + m.id + '" class="col-sm-2 control-label">' + m.name + '</label>' +
                                     '<div class="col-sm-10">' +
                                         input +
                                     '</div>' +
