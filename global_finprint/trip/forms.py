@@ -74,10 +74,12 @@ class TripSearchForm(forms.Form):
                                       .distinct().order_by(Lower('name'), Lower('code')))
     team = forms.ModelChoiceField(required=False,
                                   queryset=Team.objects.filter(trip__in=Trip.objects.all())
-                                  .distinct().order_by(Lower('lead__user__username'), Lower('sampler_collaborator')))
+                                  .distinct().prefetch_related('lead__user')
+                                  .order_by(Lower('lead__user__username'), Lower('sampler_collaborator'))
+                                  )
     reef = forms.ModelChoiceField(required=False,
                                   queryset=Reef.old_manager.order_by(Lower('site__name'), Lower('name'))
-                                  .select_related('site'))
+                                  .prefetch_related('site'))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

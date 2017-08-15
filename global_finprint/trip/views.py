@@ -88,9 +88,9 @@ class TripListView(UserAllowedMixin, CreateView):
             if search_values['reef']:
                 search_terms['set__reef_habitat__reef'] = search_values['reef']
 
-            return Trip.objects.filter(**search_terms).distinct().order_by('start_date').select_related('location')
+            return Trip.objects.filter(**search_terms).distinct().order_by('start_date').prefetch_related('location__region', 'team__lead__user', 'set_set', 'source')
         else:
-            return Trip.objects.all().order_by('start_date').select_related('location')
+            return Trip.objects.all().order_by('start_date').prefetch_related('location__region', 'team__lead__user', 'set_set', 'source')
 
     def get_context_data(self, **kwargs):
         """
