@@ -268,8 +268,8 @@ class AssignmentListView(UserAllowedMixin, View):
         context = {
             'locations': Location.objects.order_by('name').all().prefetch_related('trip_set'),
             'trips': Trip.objects.order_by('code').all().prefetch_related('set_set'),
-            'sites': Site.objects.order_by('name').all().prefetch_related('reef_set'),
-            'affils': Affiliation.objects.order_by('name').all().prefetch_related('finprintuser_set'),
+            'sites': Site.objects.order_by('name').all().prefetch_related('location', 'reef_set'),
+            'affils': Affiliation.objects.order_by('name').all().prefetch_related('finprintuser_set__user'),
             'statuses': AnnotationState.objects.all(),
             'projects': Project.objects.order_by('id').all()
         }

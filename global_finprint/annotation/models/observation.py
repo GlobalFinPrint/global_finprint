@@ -15,6 +15,8 @@ from .video import Assignment
 from ...core.templatetags.time_display import time_display
 from ...core.version import VersionInfo
 
+SCREEN_CAPTURE_URL = 'https://s3-us-west-2.amazonaws.com/finprint-annotator-screen-captures'
+
 logger = logging.getLogger(__name__)
 
 MAXN_MEASURABLE_ID = 2
@@ -314,7 +316,7 @@ class AbstractEvent(AuditableModel):
             return None
 
         if verify is False:
-            return 'https://s3-us-west-2.amazonaws.com/finprint-annotator-screen-captures{}'.format(self.filename())
+            return '{}{}'.format(SCREEN_CAPTURE_URL, self.filename())
 
         try:
             conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
@@ -342,7 +344,7 @@ class AbstractEvent(AuditableModel):
             logger.info('{}{}'.format('8 sec clip file name: ', self.clip_filename))
 
         if verify is False:
-            return 'https://s3-us-west-2.amazonaws.com/finprint-annotator-screen-captures{}'.format(self.clip_filename)
+            return '{}{}'.format(SCREEN_CAPTURE_URL, self.clip_filename)
 
         try:
             conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
