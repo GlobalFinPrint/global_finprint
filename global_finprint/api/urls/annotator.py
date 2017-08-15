@@ -27,6 +27,7 @@ urlpatterns = [
         csrf_exempt(annotator.EventUpdate.as_view()), name='api_event_update'),
 
     url(r"^animal/(?P<animal_id>\d+)$", csrf_exempt(annotator.AnimalDetail.as_view()), name='api_animal_detail'),
+    url(r"^video/(?P<file_name>[\.\w ]+)$", csrf_exempt(annotator.VideoDetail.as_view()), name='api_video_file_detail'),
 
     # progress
     url(r"^set/(?P<set_id>\d+)/done$", csrf_exempt(annotator.StatusUpdate.as_view()), name='api_status_update'),

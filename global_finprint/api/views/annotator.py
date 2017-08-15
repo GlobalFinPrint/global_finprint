@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 
 from global_finprint.trip.models import Trip
 from global_finprint.annotation.models.animal import Animal
-from global_finprint.annotation.models.video import Assignment
+from global_finprint.annotation.models.video import VideoFile, Assignment
 from global_finprint.annotation.models.observation import Observation, Attribute, Event, Measurable, EventMeasurable
 from global_finprint.core.models import FinprintUser
 from global_finprint.core.models import Affiliation
@@ -21,7 +21,6 @@ class APIView(View):
     """
     Main view to be inherited by other views requiring auth (also grabs assignment and user)
     """
-
     def dispatch(self, request, *args, **kwargs):
         if 'token' in request.GET:
             token = request.GET.get('token', None)
@@ -50,7 +49,6 @@ class Login(View):
     """
     Login view
     """
-
     def post(self, request):
         user = authenticate(
             username=request.POST.get('username', None),
@@ -83,7 +81,6 @@ class Logout(APIView):
     """
     Logout view
     """
-
     def post(self, request):
         request.annotator.clear_token()
         return JsonResponse({'status': 'OK'})
@@ -93,7 +90,6 @@ class SetList(APIView):
     """
     Set list view
     """
-
     def get(self, request):
         if request.annotator.is_lead() and 'filtered' in request.GET:
             if 'assigned_by_me' in request.GET:
@@ -124,7 +120,6 @@ class TripList(APIView):
     """
     Trip list view (filter on assigned to current user or not)
     """
-
     def get(self, request):
         if request.GET.get('assigned', False):
             assignments = Assignment.get_active()
@@ -147,7 +142,6 @@ class AnnotatorList(APIView):
     """
     Annotator list view
     """
-
     def get(self, request):
         assignments = Assignment.get_active()
         return JsonResponse({'annotators': list({'id': an.id, 'annotator': str(an)}
@@ -158,7 +152,6 @@ class SetDetail(APIView):
     """
     Set detail view
     """
-
     def get(self, request, set_id):
         return JsonResponse({'set': {'id': request.va.id,
                                      'set_code': str(request.va.set()),
@@ -173,12 +166,37 @@ class SetDetail(APIView):
                                      }})
 
 
+class VideoDetail(APIView):
+    """
+    Video detail view
+    """
+    def get(self, request, file_name):
+        video_list = []
+        video_files = VideoFile.objects.filter(file=file_name)
+        for video_file in video_files:
+            video_list.append(
+                {
+                    'file': video_file.file,
+                    'source': video_file.source,
+                    'path': video_file.path,
+                    'rank': video_file.rank,
+                    'primary': video_file.primary,
+                    'video': {
+                        'id': video_file.video.id,
+                        'set_id': video_file.video.set.id,
+                        'set_code': video_file.video.set.code,
+                        'trip_code': video_file.video.set.trip.code,
+                    }
+                }
+            )
+        return JsonResponse({'videos': video_list})
+
+
 class Observations(APIView):
     """
     Views for getting details of an observation, posting updates for a new observation,
     or deleting an existing observation
     """
-
     def get(self, request, set_id):
         return JsonResponse({'observations': Observation.get_for_api(request.va)})
 
@@ -204,7 +222,6 @@ class ObservationUpdate(APIView):
     """
     View for updating an existing assignment
     """
-
     def post(self, request, set_id, obs_id):
         obs = get_object_or_404(Observation, pk=obs_id, assignment=request.va)
         params = dict((key, val) for key, val in request.POST.items() if key in Observation.valid_fields())
@@ -241,7 +258,6 @@ class AnimalList(APIView):
     """
     Animal list view
     """
-
     def get(self, request, set_id):
         return JsonResponse({'animals': Animal.get_for_api(request.va)})
 
@@ -250,7 +266,6 @@ class AnimalDetail(APIView):
     """
     Animal detail view
     """
-
     def get(self, request, animal_id):
         return JsonResponse({'animal': get_object_or_404(Animal, pk=animal_id).to_json()})
 
@@ -259,7 +274,6 @@ class StatusUpdate(APIView):
     """
     Status update view (moves status to Ready for Review)
     """
-
     def post(self, request, set_id):
         request.va.status_id = 3
         request.va.save()
@@ -270,7 +284,6 @@ class AcceptAssignment(APIView):
     """
     Accept assignment view (moves status to Accepted)
     """
-
     def post(self, request, set_id):
         if not request.annotator.is_lead():
             message = 'Assignment can only be Accepted by a lead'
@@ -287,7 +300,6 @@ class RejectAssignment(APIView):
     """
     Reject assignment view (moves status to Rejected)
     """
-
     def post(self, request, set_id):
         if not request.annotator.is_lead():
             message = 'Assignment can only be Rejected by a lead'
@@ -304,7 +316,6 @@ class ProgressUpdate(APIView):
     """
     Progress update view
     """
-
     def post(self, request, set_id):
         new_progress = request.va.update_progress(int(request.POST.get('progress')))
         return JsonResponse({'progress': new_progress})
@@ -314,7 +325,6 @@ class AttributeList(APIView):
     """
     Attribute (tag) list view
     """
-
     def get(self, request, set_id):
         return JsonResponse({'attributes': Attribute.tree_json(is_lead=request.annotator.is_lead(),
                                                                project=request.va.project)})
@@ -324,7 +334,6 @@ class Events(APIView):
     """
     Event views for creation and deletion
     """
-
     def post(self, request, set_id, obs_id):
         obs = get_object_or_404(Observation, pk=obs_id, assignment=request.va)
         params = dict((key, val) for key, val in request.POST.items() if key in Event.valid_fields())
@@ -349,7 +358,6 @@ class EventUpdate(APIView):
     """
     Event update view
     """
-
     def post(self, request, set_id, obs_id, evt_id):
         obs = get_object_or_404(Observation, pk=obs_id, assignment=request.va)
         evt = get_object_or_404(Event, pk=evt_id, observation=obs)
