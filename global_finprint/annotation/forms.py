@@ -41,7 +41,7 @@ class SingleSelectizeWidget(forms.Select):
     def value_from_datadict(self, data, files, name):
         return data.getlist(name, [None])
 
-    def render(self, name, values, attrs=None, choices=()):
+    def render(self, name, values, attrs=None):
         output = []
         for value in values:
             if value is None:
@@ -50,7 +50,7 @@ class SingleSelectizeWidget(forms.Select):
                 self.choices += [(value, value)]
             final_attrs = self.build_attrs(attrs, name=name)
             output.append(format_html(self.template, name, flatatt(final_attrs)))
-            options = self.render_options(choices)
+            options = self.render_options(selected_choices=[value])
             if options:
                 output.append(options)
             output.append(self.templend)
@@ -125,32 +125,37 @@ class VideoForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         video = kwargs.pop('instance', None)
+        video_files = video.files.order_by('rank') if video is not None else None
         super(VideoForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        self.fields['file'].choices = self.get_filenames()
+        self.fields['file'].choices = self.get_filenames(video_files)
         self.fields['file'].initial = [None]
         self.fields['source'].initial = [None]
         self.fields['path'].initial = [None]
         self.fields['primary'].initial = [True]
         self.fields['remove_row'].initial = [0]
 
-        if video is not None:
-            video_files = video.files.order_by('rank')
-            if video_files.count() > 0:
-                self.fields['file'].initial = list(f.file for f in video_files)
-                self.fields['source'].initial = list(f.source for f in video_files)
-                self.fields['path'].initial = list(f.path for f in video_files)
-                self.fields['primary'].initial = list(f.primary for f in video_files)
-                self.fields['remove_row'].initial = list(range(max(video_files.count(), 1)))
+        if video_files and video_files.count() > 0:
+            self.fields['file'].initial = list(f.file for f in video_files)
+            self.fields['source'].initial = list(f.source for f in video_files)
+            self.fields['path'].initial = list(f.path for f in video_files)
+            self.fields['primary'].initial = list(f.primary for f in video_files)
+            self.fields['remove_row'].initial = list(range(max(video_files.count(), 1)))
 
-    def get_filenames(self):
-        pattern = re.compile('\.\w+$')
-        file_names = [('', '(None)')]
+    def get_filenames(self, video_files):
+        pattern = re.compile('[ .\w]+$')
+        file_names = []
         try:
             conn = S3Connection(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
             files = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME).list()
             file_names += [(f.name, f.name) for f in files if pattern.search(f.name)]
+            if video_files:
+              for file in video_files:
+                    if (file.file, file.file) not in file_names:
+                        file_names.append((file.file, file.file))
+            file_names.sort()
+            file_names.insert(0, ('', '(None)'))
         except BotoException.S3ResponseError:
             pass
         return file_names
