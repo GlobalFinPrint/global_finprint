@@ -107,7 +107,13 @@ a.manual-assign {
     display: inline;
   }
 
-  #save_message {
+  #status-feedback {
+    display: none;
+    text-align: center;
+    vertical-align: middle;
+    color: $green;
+  }
+  #save-feedback {
     display: none;
     text-align: center;
     vertical-align: middle;
@@ -571,9 +577,9 @@ h3.form-title {
 }
 
 .row.master {
-    button#save-master, button#review-master {
-    padding: 4px 10px;
 
+  button#save-master, button#review-master {
+    padding: 4px 10px;
     &:focus {
       outline: none;
     }

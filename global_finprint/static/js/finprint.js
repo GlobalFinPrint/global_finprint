@@ -252,7 +252,7 @@ var finprint = finprint || {};  //namespace if necessary...
             $('a[data-value="' + statusId + '"]').removeClass('notActive').addClass('active');
 
             $buttons.find('form').submit();
-            $('span#save_message').show().delay(1000).fadeOut();
+            $('span#status-feedback').show().delay(1000).fadeOut();
         });
 
         $buttons.find('form').submit(function () {
@@ -278,7 +278,7 @@ var finprint = finprint || {};  //namespace if necessary...
             $('a[data-value="' + statusId + '"]').removeClass('notActive').addClass('active');
 
             $buttons.find('form').submit();
-            $('span#save_message').show().delay(1000).fadeOut();
+            $('span#status-feedback').show().delay(1000).fadeOut();
         });
 
         $buttons.find('form').submit(function () {

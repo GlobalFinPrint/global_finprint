@@ -144,6 +144,7 @@ class VideoForm(forms.Form):
             self.fields['remove_row'].initial = list(range(max(video_files.count(), 1)))
 
     def get_filenames(self, video_files):
+        # todo:  there are directories in the bucket and those should be split from the file name and used as paths
         pattern = re.compile('[ .\w]+$')
         file_names = []
         try:
