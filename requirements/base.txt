@@ -24,6 +24,8 @@ django-mptt==0.8.7
 # For the persistence stores
 psycopg2==2.7.1
 
+# Monitoring and instrumentation
+
 # Unicode slugification
 unicode-slugify==0.1.3
 django-autoslug==1.9.3
@@ -41,5 +43,5 @@ gunicorn==19.3.0
 # Bulk data import
 openpyxl==2.4.7
 
-# Click command line paramter support
+# Click command line parameter support
 click==6.6
