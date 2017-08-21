@@ -73,7 +73,14 @@ class MasterRecord(AuditableModel):
         return list(obs.original for obs in self.masterobservation_set.all())
 
     def to_json(self):
-        return {'original_observation_ids': list(obs.id for obs in self.original_observations())}
+        return {
+            'observation_ids': list(obs.id for obs in self.masterobservation_set.all()),
+            'set_id': self.set.id,
+            'project_id': self.project.id,
+            'status': self.status.name,
+            'note': self.note,
+            'original_observation_ids': list(obs.id for obs in self.original_observations()),
+        }
 
 
 class AbstractObservation(AuditableModel):
