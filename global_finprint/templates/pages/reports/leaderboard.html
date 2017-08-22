@@ -10,7 +10,7 @@
                         <h4 class="panel-title">
                             <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
                                aria-expanded="true" aria-controls="collapseOne">
-                                Top 25 Overall: Ready-for-Review and Reviewed Assignments
+                                Top 25 Overall: Count of Ready-for-Review and Reviewed Assignments
                             </a>
                         </h4>
                     </div>
@@ -42,14 +42,48 @@
                 <div class="panel panel-default">
                     <div class="panel-heading" role="tab" id="headingTwo">
                         <h4 class="panel-title">
+                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"
+                               aria-expanded="true" aria-controls="collapseTwo">
+                                Top 25 Overall: Hours of Ready-for-Review and Reviewed Assignments
+                            </a>
+                        </h4>
+                    </div>
+
+                    <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel"
+                         aria-labelledby="headingTwo">
+                        <div class="panel-body">
+                            <table class="table table-bordered table-sm">
+                                <thead>
+                                <tr class="table-header-labels">
+                                    <th>Name</th>
+                                    <th>Affiliation</th>
+                                    <th>Count of watched</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for annotator in overall_leaders_by_hour %}
+                                    <tr>
+                                        <td>{{ annotator.annotator__user__first_name }} {{ annotator.annotator__user__last_name }}</td>
+                                        <td>{{ annotator.annotator__affiliation__name }}</td>
+                                        <td>{{ annotator.hours|floatformat:2 }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingThree">
+                        <h4 class="panel-title">
                             <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
-                               href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                               href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                                 Top Monthly Annotators by Affiliation: Count of Ready-for-Review and Reviewed
                                 Assignments
                             </a>
                         </h4>
                     </div>
-                    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
                         <div class="panel-body">
                             <table class="table table-bordered table-sm">
                                 <thead>
@@ -78,17 +112,17 @@
                     </div>
                 </div>
                 <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingThree">
+                    <div class="panel-heading" role="tab" id="headingFour">
                         <h4 class="panel-title">
                             <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
-                               href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                               href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                                 Top Monthly Annotators by Affiliation: Hours of Ready-for-Review and Reviewed
                                 Assignments
                             </a>
                         </h4>
                     </div>
-                    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel"
-                         aria-labelledby="headingThree">
+                    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel"
+                         aria-labelledby="headingFour">
                         <div class="panel-body">
                             <table class="table table-bordered table-sm">
                                 <thead>

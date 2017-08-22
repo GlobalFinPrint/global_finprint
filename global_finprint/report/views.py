@@ -6,7 +6,7 @@ from django.core.serializers import serialize
 from django.http import HttpResponse, JsonResponse
 from django.views.generic import View
 from django.shortcuts import render
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, ExpressionWrapper, DecimalField
 
 from .models import Report, PlannedSiteStatus, \
     HabitatSummary, ObservationSummary, SetSummary, \
@@ -70,11 +70,17 @@ class LeaderboardView(View):
         overall_leaders = Assignment.objects.values(
             'annotator__user__last_name', 'annotator__user__first_name', 'annotator__affiliation__name').exclude(
             annotator__affiliation_id__in=(0, 1, 7)).filter(status_id__in=(3, 4)).annotate(
-            num_assignments=Count('id'), hours=Sum('progress')).order_by('-num_assignments')[:25]
+            num_assignments=Count('id')).order_by('-num_assignments')[:25]
+        overall_leaders_hour = Assignment.objects.values(
+            'annotator__user__last_name', 'annotator__user__first_name', 'annotator__affiliation__name').exclude(
+            annotator__affiliation_id__in=(0, 1, 7)).filter(status_id__in=(3, 4)).annotate(
+            hours=ExpressionWrapper(Sum('progress') / 1000 / 60 / 60,
+                                    output_field=DecimalField(max_digits=12, decimal_places=2))).order_by('-hours')[:25]
         monthly_count_leaders = MonthlyLeaderboard.objects.all().order_by('-month', 'affiliation_name', 'affiliation_count_rank')
         monthly_hour_leaders = MonthlyLeaderboard.objects.all().order_by('-month', 'affiliation_name', 'affiliation_hour_rank')
         context = {
             'overall_leaders': overall_leaders,
+            'overall_leaders_by_hour': overall_leaders_hour,
             'monthly_count_leaders': monthly_count_leaders,
             'monthly_hour_leaders': monthly_hour_leaders,
         }
