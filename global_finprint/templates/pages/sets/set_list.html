@@ -385,8 +385,17 @@
         function main_map_init(map, options) {
             var sets_geojson_url = '{% url "api_trip_sets_geojson" trip_pk %}';
 
+            function onEachFeature(feature, layer) {
+                // does this feature have a property named popupContent?
+                if (feature.properties && feature.properties.code) {
+                    layer.bindPopup(feature.properties.code);
+                }
+            }
+
             $.getJSON(sets_geojson_url, function (data) {
-                L.geoJson(data).addTo(map);
+                L.geoJson(data, {
+                    onEachFeature: onEachFeature
+                }).addTo(map);
                 map.fitBounds(L.geoJson(data).getBounds().pad(20))
             });
         }

@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView
+from django.db.models import F
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.serializers import serialize
@@ -130,7 +131,6 @@ def trip_detail(request, pk):
     return JsonResponse(data)
 
 
-@login_required
 def trip_sets_geojson(request, trip_id):
     """
     Get geoJSON per set for specified trip
@@ -138,8 +138,9 @@ def trip_sets_geojson(request, trip_id):
     :param trip_id:
     :return:
     """
+    set_markers = Set.objects.filter(trip_id=trip_id)
     feature = serialize('geojson',
-                        Set.objects.filter(trip_id=trip_id),
-                        fields='coordinates, drop_time'
+                        set_markers,
+                        fields='coordinates, drop_time, code',
                         )
     return HttpResponse(feature, content_type='application/json')
