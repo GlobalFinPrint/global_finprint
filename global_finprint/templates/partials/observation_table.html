@@ -70,10 +70,12 @@
             <td class="measurables">
                 <div class="content">
                     {% for active_measurable in e.active_measurables %}
-                        {{ active_measurable }} <a href="#" class="delete-measurable"
-                                                   {% if master %}data-is-master="True"{% endif %}
-                                                   data-measurable-id="{{ active_measurable.pk }}"
-                                                   title="Delete measurable">&#x2716;</a><br/>
+                        {% if active_measurable.value %}
+                             {{ active_measurable }} <a href="#" class="delete-measurable"
+                                                           {% if master %}data-is-master="True"{% endif %}
+                                                           data-measurable-id="{{ active_measurable.pk }}"
+                                                           title="Delete measurable">&#x2716;</a><br/>
+                            {% endif %}
                     {% endfor %}
                 </div>
                 <a href="#" class="edit-measurables" {% if master %}data-is-master="True"{% endif %}
