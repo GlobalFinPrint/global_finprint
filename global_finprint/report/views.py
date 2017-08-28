@@ -98,7 +98,7 @@ class ObservationSummaryView(View):
 
 
 class SetSummaryView(View):
-    def get(self, request, region):
+    def get(self, request, region=None):
         return JsonResponse({'region': region, 'sets': SetSummary.get_for_api(region)})
 
 

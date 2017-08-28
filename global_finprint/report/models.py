@@ -201,7 +201,10 @@ class SetSummary(models.Model):
 
     @classmethod
     def get_for_api(cls, region):
-        return list(ob.to_json() for ob in cls.objects.filter(region_name__iexact=region))
+        if region:
+            return list(ob.to_json() for ob in cls.objects.filter(region_name__iexact=region))
+        else:
+            return list(ob.to_json() for ob in cls.objects.filter())
 
     def to_json(self):
         return {

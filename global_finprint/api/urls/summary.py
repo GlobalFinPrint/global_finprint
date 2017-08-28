@@ -7,6 +7,7 @@ urlpatterns = [
     url(r"habitat/$", HabitatSummaryView.as_view(), name="habitats"),
     url(r"observation/$", ObservationSummaryView.as_view(), name="observation_summary"),
     url(r"observation/(?P<region>[\w ]+)$", ObservationSummaryView.as_view(), name="observation_summary"),
+    url(r"set/$", SetSummaryView.as_view(), name="set_summary"),
     url(r"set/(?P<region>[\w ]+)$", SetSummaryView.as_view(), name="set_summary"),
 
 ]
