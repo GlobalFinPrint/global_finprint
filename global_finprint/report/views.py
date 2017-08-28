@@ -93,7 +93,7 @@ class HabitatSummaryView(View):
 
 
 class ObservationSummaryView(View):
-    def get(self, request, region):
+    def get(self, request, region=None):
         return JsonResponse({'region': region, 'observations': ObservationSummary.get_for_api(region)})
 
 
