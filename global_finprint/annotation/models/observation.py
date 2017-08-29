@@ -174,6 +174,7 @@ class Observation(AbstractObservation):
             'type_choice': self.type,
             'duration': self.duration,
             'comment': self.comment,
+            'create_datetime': self.create_datetime,
             'events': [e.to_json(for_web=for_web) for e in self.event_set.all()]
         }
 
