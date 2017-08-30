@@ -2,7 +2,7 @@
 {% block content %}
 <div class="col-md-12">
     <div class="row">
-        <h3>{{ report | title }} - first 15 rows</h3>
+        <h3>{{ report | title }}{% if rows|length_is:limit %} - first {{ limit }} rows{% endif %}</h3>
         <a href="{% url 'report_standard_csv' report 'csv' %}">Download entire report as a csv file</a>
         <table class="table table-striped">
             <thead>
