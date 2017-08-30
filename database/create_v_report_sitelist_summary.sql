@@ -1,21 +1,27 @@
 -- noinspection SqlNoDataSourceInspectionForFile
 CREATE OR REPLACE VIEW public.v_report_sitelist_summary AS
 SELECT
-  rg.name           AS region_name,
-  l.name            AS location_name,
-  s.name            AS site_name,
-  r.name            AS reef_name,
-  s.type            AS site_type,
-  ps.type           AS protection_status,
-  mpa.name          AS mpa_name,
-  mpa.founded       AS mpa_founded,
-  mpa.area          AS mpa_area,
-  mpac.type         AS mpa_compliance_type,
-  mpai.type         AS mpa_isolation,
-  l.id              AS location_id,
-  COALESCE(s.id, 0) AS site_id,
-  r.id              AS reef_id,
-  mpa.id            AS mpa_id
+  rg.name                  AS region_name,
+  l.name                   AS location_name,
+  coalesce(s.name, '')     AS site_name,
+  coalesce(r.name, '')     AS reef_name,
+
+  coalesce(s.type, '')     AS site_type,
+  coalesce(ps.type, '')    AS protection_status,
+  coalesce(mpa.name, '')   AS mpa_name,
+  coalesce(mpa.founded, 0) AS mpa_founded,
+  coalesce(mpa.area, 0.0)  AS mpa_area,
+  coalesce(mpac.type, '')  AS mpa_compliance_type,
+  coalesce(mpai.type, '')  AS mpa_isolation,
+
+  l.code                   AS location_code,
+  coalesce(s.code, '')     AS site_code,
+  coalesce(r.code, '')     AS region_code,
+
+  l.id                     AS location_id,
+  COALESCE(s.id, 0)        AS site_id,
+  coalesce(r.id, 0)        AS reef_id,
+  coalesce(mpa.id, 0)      AS mpa_id
 FROM habitat_region rg
   JOIN habitat_location l ON l.region_id = rg.id
   LEFT JOIN habitat_site s ON s.location_id = l.id
