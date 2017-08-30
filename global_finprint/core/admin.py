@@ -66,6 +66,9 @@ class UserAdmin(admin.UserAdmin):
         }),
     )
     add_form = UserCreationForm
+    list_display = ('username', 'last_name', 'first_name', 'email', 'is_active')
+    list_filter = ['finprintuser__affiliation', 'groups', 'is_active', 'is_superuser']
+    search_fields = ['last_name', 'first_name', 'username', 'email', 'finprintuser__affiliation__name']
 
     def get_formsets_with_inlines(self, request, obj=None):
         for inline in self.get_inline_instances(request, obj):
