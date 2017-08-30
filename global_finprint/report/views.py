@@ -20,7 +20,7 @@ class StandardReportListView(UserAllowedMixin, View):
     List for custom reports found at /reports/
     """
     template = 'pages/reports/standard_list.html'
-    DEFAULT_REPORT_LIMIT = 15
+    DEFAULT_REPORT_LIMIT = 25
 
     def get(self, request):
         context = {
@@ -44,7 +44,8 @@ class StandardReportView(UserAllowedMixin, View):
         context = {
             'report': report,
             'headers': results[0],
-            'rows': results[1:]
+            'rows': results[1:],
+            'limit': limit,
         }
         return render(request, self.template, context=context)
 
