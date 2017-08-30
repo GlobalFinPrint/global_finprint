@@ -25,9 +25,11 @@ class Report:
             cursor.execute(query)
             return list(cls(row[0]) for row in cursor.fetchall())
 
-    def results(self):
+    def results(self, limit=None):
+        if not limit:
+            limit = 'all'
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM {}".format(self.db_view))
+            cursor.execute("SELECT * FROM {} limit {}".format(self.db_view, limit))
             return [tuple(col[0] for col in cursor.description)] + cursor.fetchall()
 
     def __str__(self):
