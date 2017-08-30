@@ -269,14 +269,13 @@ class SetSummary(models.Model):
                 'oiled': self.bait_oiled,
             },
 
-            'current_flow': {
-                'estimated': self.current_flow_estimated,
-                'instrumented': self.current_flow_instrumented,
-            },
+            'current_flow_estimated': self.current_flow_estimated,
+            'current_flow_instrumented': self.current_flow_instrumented,
             'substrate_type': self.substrate_type,
             'substrate_complexity_type': self.substrate_complexity_type,
             'bruv_image_url': self.bruv_image_url,
             'reef_image_url': self.splendor_image_url,
+
             'video' : {
                 'file_name': self.video_file_name,
                 'source': self.video_source,
