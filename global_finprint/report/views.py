@@ -15,14 +15,18 @@ from ..annotation.models.video import Assignment
 from ..core.mixins import UserAllowedMixin
 
 
-class CustomReportListView(UserAllowedMixin, View):
+class StandardReportListView(UserAllowedMixin, View):
     """
     List for custom reports found at /reports/
     """
     template = 'pages/reports/standard_list.html'
+    DEFAULT_REPORT_LIMIT = 15
 
     def get(self, request):
-        context = {'reports': Report.view_list()}
+        context = {
+            'reports': Report.view_list(),
+            'limit': self.DEFAULT_REPORT_LIMIT
+        }
         return render(request, self.template, context=context)
 
 
@@ -32,9 +36,11 @@ class StandardReportView(UserAllowedMixin, View):
     """
     template = 'pages/reports/standard_report.html'
 
-    def get(self, request, report):
+    def get(self, request, report, limit=None):
         report = Report(report)
-        results = report.results()
+        if not limit:
+            limit = 'all'
+        results = report.results(limit)
         context = {
             'report': report,
             'headers': results[0],
