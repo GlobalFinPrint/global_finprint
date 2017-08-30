@@ -91,6 +91,8 @@ class FinprintUserAdmin(ModelAdmin):
     actions = None
     fields = ('user', 'affiliation')
     ordering = ['affiliation__name', 'user__last_name', 'user__first_name']
+    list_filter = ['affiliation__name']
+    search_fields = ['affiliation__name', 'user__last_name', 'user__first_name']
 
     # disable the delete button and remove delete from actions
     def has_delete_permission(self, request, obj=None):
