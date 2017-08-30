@@ -39,7 +39,8 @@ class StandardReportView(UserAllowedMixin, View):
         context = {
             'report': report,
             'headers': results[0],
-            'rows': results[1:]
+            'rows': results[1:],
+            'limit': limit,
         }
         return render(request, self.template, context=context)
 
