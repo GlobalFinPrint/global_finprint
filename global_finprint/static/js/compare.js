@@ -99,8 +99,8 @@ $(function () {
             e.stopPropagation();
             var $currentTarget = $(e.currentTarget);
             var url = $currentTarget.data('img-url');
-            var $image =$currentTarget.find('.image-icon');
-            var img_temp= '<img width="500" height="500" style="padding-left:2.5em;padding-right:2.5em" src='+url+'>';
+            var $image = $currentTarget.find('.image-icon');
+            var img_temp = '<img width="500" height="500" style="padding-left:2.5em;padding-right:2.5em" src=' + url + '>';
             $modal.find('.event-image').html(img_temp)
             $modal
                 .find('.event-image')
@@ -116,8 +116,8 @@ $(function () {
             event.stopPropagation();
             var $target = $(event.target).closest('.event-thumbnail .video-icon');
             var url = $target[0].getAttribute("value")
-            var video_temp= '<video width="500" height="500" controls>'+
-                         '<source src='+url+' type="video/mp4"> </video>';
+            var video_temp = '<video width="500" height="500" controls>' +
+                '<source src=' + url + ' type="video/mp4"> </video>';
             $('#full-clip-modal').find('.event-clip').html(video_temp);
             $('#full-clip-modal').find('.event-clip')
                 .attr('style', $target.attr('style'))
@@ -161,57 +161,57 @@ $(function () {
             });
         },
         initOnWindowLoad: function () {
-              this.checkPropImage();
-       },
-       checkPropImage : function () {
-                var self = this;
-                $('img.image-icon:not(.loaded)').each(function () {
-                    var currImg = $(this);
-                    var src = currImg.data('src');
-                    if (!src) return;
-
-                    var img = new Image();
-                    img.onload = function () {
-                        // code to set the src on success
-                        currImg.addClass('loaded');
-                        var video = currImg.siblings('.video-icon');
-                        self.checkPropVideo(video);
-                    };
-                    img.onerror = function () {
-                        // doesn't exist or error loading
-                        console.log('no image');
-                        currImg.attr('src', '/static/images/default-image.jpg');
-                    };
-                    setTimeout(function () {
-                            img.src = src; // fires off loading of image
-                            currImg.attr('src', src);
-                    }, 0);
-                });
+            this.checkPropImage();
         },
-       checkPropVideo: function (video_span) {
-                    var curr_icon = video_span;
-                    var url = curr_icon.attr('value');
-                    if (!url) return;
+        checkPropImage: function () {
+            var self = this;
+            $('img.image-icon:not(.loaded)').each(function () {
+                var currImg = $(this);
+                var src = currImg.data('src');
+                if (!src) return;
 
-                    var video = document.createElement('VIDEO');
-                    if (video.canPlayType("video/mp4")) {
-                        video.setAttribute("src",url);
-                     }
+                var img = new Image();
+                img.onload = function () {
+                    // code to set the src on success
+                    currImg.addClass('loaded');
+                    var video = currImg.siblings('.video-icon');
+                    self.checkPropVideo(video);
+                };
+                img.onerror = function () {
+                    // doesn't exist or error loading
+                    console.log('no image');
+                    currImg.attr('src', '/static/images/default-image.jpg');
+                };
+                setTimeout(function () {
+                    img.src = src; // fires off loading of image
+                    currImg.attr('src', src);
+                }, 0);
+            });
+        },
+        checkPropVideo: function (video_span) {
+            var curr_icon = video_span;
+            var url = curr_icon.attr('value');
+            if (!url) return;
 
-                    video.onloadedmetadata = function() {
-                          console.log("Meta data for video loaded");
-                    };
-                    video.onerror = function () {
-                        // doesn't exist or error loading
-                        console.log('no video');
-                        curr_icon.attr('style', 'display:none');
-                    };
-                    setTimeout(function () {
-                           // curr_icon.attr('style', 'display:true');
-                    }, 0);
+            var video = document.createElement('VIDEO');
+            if (video.canPlayType("video/mp4")) {
+                video.setAttribute("src", url);
+            }
 
-       }
-       });
+            video.onloadedmetadata = function () {
+                console.log("Meta data for video loaded");
+            };
+            video.onerror = function () {
+                // doesn't exist or error loading
+                console.log('no video');
+                curr_icon.attr('style', 'display:none');
+            };
+            setTimeout(function () {
+                // curr_icon.attr('style', 'display:true');
+            }, 0);
+
+        }
+    });
 
 
     // Observation model
@@ -329,7 +329,7 @@ $(function () {
         timelineHighlight: function (e) {
             // don't do anything if we are already highlighted or not "reviewed"
             if (this.$el.find('.timeline-holder').hasClass('highlighted')
-                    || this.collection.status_id !== 4) {
+                || this.collection.status_id !== 4) {
                 return;
             }
 
