@@ -1,17 +1,4 @@
 $(function () {
-    // Event view
-    // handles rendering event tick onto the assignment timeline
-    var EventView = Backbone.View.extend({
-        template: _.template(Templates.eventView),
-        render: function () {
-            var templateData = _.extend({
-                left: this.model.getTimePercent() + '%'
-            }, this.model.attributes);
-            this.setElement(this.template(templateData));
-            this.model.getAssignment().find('.timeline').append(this.el);
-        }
-    });
-
 
     // Event model
     // logic and data for events
@@ -27,7 +14,6 @@ $(function () {
         }
     });
 
-
     // Events collection
     // holder for event array
     var Events = Backbone.Collection.extend({
@@ -35,6 +21,99 @@ $(function () {
         comparator: 'event_time'
     });
 
+    // Event view
+    // handles rendering event tick onto the assignment timeline
+    var EventView = Backbone.View.extend({
+        template: _.template(Templates.eventView),
+        render: function () {
+            var templateData = _.extend({
+                left: this.model.getTimePercent() + '%'
+            }, this.model.attributes);
+            this.setElement(this.template(templateData));
+            this.model.getAssignment().find('.timeline').append(this.el);
+        }
+    });
+
+    // Observation model
+    // logic and data for observations
+    var Observation = Backbone.Model.extend({
+        defaults: {
+            animal: 'None <i>(Of Interest)</i>',
+            selected: false,
+            group: 'int'
+        },
+        constructor: function (attributes) {
+            this.events = new Events;
+            this.events.reset(attributes.events);
+            this.events.observation = this;
+            this.view = new ObservationView({model: this});
+            Backbone.Model.apply(this, arguments);
+        },
+        getAssignment: function () {
+            return this.collection.view.$el;
+        },
+        getTimePercent: function () {
+            return this.get('time') / this.getAssignment().data('length') * 100;
+        },
+        getMaster: function () {
+            return this.collection.master;
+        },
+        getAssignmentStatus: function () {
+            return this.collection.status_id;
+        },
+        nextModel: function () {
+            return this.collection.nextModel(this);
+        },
+        previousModel: function () {
+            return this.collection.previousModel(this);
+        },
+        toggleSelected: function () {
+            this.set('selected', !this.get('selected'));
+            if (this.get('selected')) {
+                this.getMaster().addObservation(this);
+            } else {
+                this.getMaster().removeObservation(this);
+            }
+        },
+        select: function () {
+            if (!this.get('selected')) {
+                this.set('selected', true);
+                this.view.$el.find('.observation-popover .selector').addClass('selected');
+                this.getMaster().addObservation(this);
+            }
+        }
+    });
+
+    // Assignment (observation collection)
+    // fetches and holds observation array
+    var Assignment = Backbone.Collection.extend({
+        model: Observation,
+        comparator: 'time',
+        initialize: function (models, options) {
+            this.view = options.view;
+            this.url = '/assignment/detail/' + options.id;
+            this.master = options.master;
+            this.label = options.label;
+            this.status_id = options.status_id;
+        },
+        parse: function (json) {
+            return json.observations;
+        },
+        nextModel: function (currentModel) {
+            if (currentModel === this.last()) {
+                return this.first();
+            } else {
+                return this.at(this.indexOf(currentModel) + 1);
+            }
+        },
+        previousModel: function (currentModel) {
+            if (currentModel === this.first()) {
+                return this.last();
+            } else {
+                return this.at(this.indexOf(currentModel) - 1);
+            }
+        }
+    });
 
     // Observation view
     // handles rendering an observation tick onto the assignment timeline
@@ -213,89 +292,6 @@ $(function () {
         }
     });
 
-
-    // Observation model
-    // logic and data for observations
-    var Observation = Backbone.Model.extend({
-        defaults: {
-            animal: 'None <i>(Of Interest)</i>',
-            selected: false,
-            group: 'int'
-        },
-        constructor: function (attributes) {
-            this.events = new Events;
-            this.events.reset(attributes.events);
-            this.events.observation = this;
-            this.view = new ObservationView({model: this});
-            Backbone.Model.apply(this, arguments);
-        },
-        getAssignment: function () {
-            return this.collection.view.$el;
-        },
-        getTimePercent: function () {
-            return this.get('time') / this.getAssignment().data('length') * 100;
-        },
-        getMaster: function () {
-            return this.collection.master;
-        },
-        getAssignmentStatus: function () {
-            return this.collection.status_id;
-        },
-        nextModel: function () {
-            return this.collection.nextModel(this);
-        },
-        previousModel: function () {
-            return this.collection.previousModel(this);
-        },
-        toggleSelected: function () {
-            this.set('selected', !this.get('selected'));
-            if (this.get('selected')) {
-                this.getMaster().addObservation(this);
-            } else {
-                this.getMaster().removeObservation(this);
-            }
-        },
-        select: function () {
-            if (!this.get('selected')) {
-                this.set('selected', true);
-                this.view.$el.find('.observation-popover .selector').addClass('selected');
-                this.getMaster().addObservation(this);
-            }
-        }
-    });
-
-    // Assignment (observation collection)
-    // fetches and holds observation array
-    var Assignment = Backbone.Collection.extend({
-        model: Observation,
-        comparator: 'time',
-        initialize: function (models, options) {
-            this.view = options.view;
-            this.url = '/assignment/detail/' + options.id;
-            this.master = options.master;
-            this.label = options.label;
-            this.status_id = options.status_id;
-        },
-        parse: function (json) {
-            return json.observations;
-        },
-        nextModel: function (currentModel) {
-            if (currentModel === this.last()) {
-                return this.first();
-            } else {
-                return this.at(this.indexOf(currentModel) + 1);
-            }
-        },
-        previousModel: function (currentModel) {
-            if (currentModel === this.first()) {
-                return this.last();
-            } else {
-                return this.at(this.indexOf(currentModel) - 1);
-            }
-        }
-    });
-
-
     // Assignment view
     // handles fetching observation data and rendering for a single assignment
     var AssignmentView = Backbone.View.extend({
@@ -372,6 +368,7 @@ $(function () {
             }
         }
     });
+
     // Master observation model
     // specifically for observations selected for master record
     var MasterObservation = Observation.extend({
@@ -384,7 +381,6 @@ $(function () {
             nextModelView.openPopover();
         }
     });
-
 
     // Master (observation collection)
     // holds selected observations for the master record
@@ -408,7 +404,6 @@ $(function () {
             this.view.render();
         }
     });
-
 
     // Master view
     // displays data for the master record timeline
@@ -519,7 +514,6 @@ $(function () {
         }
     });
 
-
     // Don't talk to server with Backbone unless its a 'read'
     var oldSync = Backbone.sync;
     Backbone.sync = function (method) {
@@ -527,7 +521,6 @@ $(function () {
             return oldSync.apply(this, arguments);
         }
     };
-
 
     // initialize based on data loaded onto page
     var masterView = new MasterView({el: $('.row.master')[0]});
