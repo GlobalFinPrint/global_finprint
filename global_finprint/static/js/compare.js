@@ -158,7 +158,7 @@ $(function () {
             }
         },
         togglePopover: function (e) {
-            if (e === undefined || e.target == this.el) {
+            if (e === undefined || e.target === this.el) {
                 $('.event').removeClass('activated');
                 $('.observation').not(this.el).removeClass('selected').blur();
                 if (this.$el.hasClass('selected')) {
@@ -173,14 +173,14 @@ $(function () {
             this.model.toggleSelected();
         },
         showFullImage: function (e) {
-            var $modal = $('#full-image-modal')
+            var $modal = $('#full-image-modal');
             e.preventDefault();
             e.stopPropagation();
             var $currentTarget = $(e.currentTarget);
             var url = $currentTarget.data('img-url');
             var $image = $currentTarget.find('.image-icon');
             var img_temp = '<img width="500" height="500" style="padding-left:2.5em;padding-right:2.5em" src=' + url + '>';
-            $modal.find('.event-image').html(img_temp)
+            $modal.find('.event-image').html(img_temp);
             $modal
                 .find('.event-image')
                 .attr('style', $image.attr('style'))
@@ -197,9 +197,9 @@ $(function () {
             var url = $target[0].getAttribute("value")
             var video_temp = '<video width="500" height="500" controls>' +
                 '<source src=' + url + ' type="video/mp4"> </video>';
-            $('#full-clip-modal').find('.event-clip').html(video_temp);
-            $('#full-clip-modal').find('.event-clip')
-                .attr('style', $target.attr('style'))
+            var event_clip = $('#full-clip-modal').find('.event-clip');
+            event_clip.html(video_temp);
+            event_clip.attr('style', $target.attr('style'))
                 .end()
                 .modal('show');
 
