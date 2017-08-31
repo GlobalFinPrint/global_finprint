@@ -229,18 +229,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="checkbox include-leads">
-                                    <label for="include-leads">
-                                        <input type="checkbox" id="include-leads" name="include_leads" />
-                                        Include leads?
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
+                        <div class="row" style="margin-top:20px">
                             <div class="col-md-4">
                                 <label for="auto-affiliation">Affiliation</label>
                                 <select class="form-control" id="auto-affiliation" name="affiliation" placeholder="Select an affiliation">
@@ -263,6 +252,16 @@
                                         <option value="{{ project.id }}">{{ project.name }}</option>
                                     {% endfor %}
                                 </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="checkbox include-leads">
+                                    <label for="include-leads">
+                                        <input type="checkbox" id="include-leads" name="include_leads" />
+                                        Include leads?
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </form>
