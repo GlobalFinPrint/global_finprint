@@ -2,7 +2,7 @@ from decimal import Decimal
 from collections import Counter
 
 from django.contrib.gis.db import models
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.urlresolvers import reverse
 from django.contrib.gis.geos import Point
 
@@ -203,7 +203,9 @@ class Set(AuditableModel):
     drop_time = models.TimeField()
     haul_date = models.DateField(null=True, blank=True)
     haul_time = models.TimeField(null=True, blank=True)
-    visibility = models.CharField(max_length=3, choices=VISIBILITY_CHOICES, help_text='m')
+    visibility = models.IntegerField(null=True, blank=True,
+                                     validators=[MinValueValidator(-1), MaxValueValidator(50)],
+                                     help_text='m')
     depth = models.DecimalField(help_text='m', decimal_places=2, max_digits=12,
                                 validators=[MinValueValidator(Decimal('0.01'))])
     comments = models.TextField(null=True, blank=True)
