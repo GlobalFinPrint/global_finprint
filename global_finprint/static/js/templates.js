@@ -1,5 +1,6 @@
 var Templates = {
     eventView: '<div class="event" style="left:calc(<%= left %> - 6px);"></div>',
+
     observationView: '<div class="observation group-<%= group %>" style="left:calc(<%= left %> - 10px);" tabindex="0">' +
             '<%= label %>' +
             '<div class="observation-popover clear <%= leftRightAligned %>-aligned" style="<%= popoverPosition %>">' +
