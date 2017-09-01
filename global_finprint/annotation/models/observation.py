@@ -74,7 +74,7 @@ class MasterRecord(AuditableModel):
 
     def to_json(self):
         return {
-            'observation_ids': list(obs.id for obs in self.masterobservation_set.all()),
+            'master_observation_ids': list(obs.id for obs in self.masterobservation_set.all()),
             'set_id': self.set.id,
             'project_id': self.project.id,
             'status': self.status.name,
@@ -93,11 +93,52 @@ class AbstractObservation(AuditableModel):
     class Meta:
         abstract = True
 
+    def initial_event(self):
+        pass
+
+    def get_event_set(self):
+        pass
+
+    def get_animalobservation(self):
+        pass
+
     def initial_observation_time(self):
         if self.observation_time is None:
             self.observation_time = self.initial_event().event_time
             self.save()
         return self.observation_time
+
+    def to_json(self, for_web=False):
+        events = self.get_event_set()
+        json = {
+            'id': self.id,
+            'type': self.get_type_display(),
+            'type_choice': self.type,
+            'duration': self.duration,
+            'comment': self.comment,
+            'create_datetime': self.create_datetime,
+            'events': [e.to_json(for_web=for_web) for e in events.all()]
+        }
+
+        if self.type == 'A':
+            animal = self.get_animalobservation()
+            json.update({
+                'animal': str(animal.animal),
+                'animal_id': animal.animal_id,
+                'sex': animal.get_sex_display(),
+                'sex_choice': animal.sex,
+                'stage': animal.get_stage_display(),
+                'stage_choice': animal.stage,
+                'length': animal.length,
+                'group': animal.animal.group.id,
+                'group_name': str(animal.animal.group)
+            })
+
+        if for_web:
+            json['time'] = self.initial_observation_time()
+            json['pretty_time'] = time_display(self.initial_observation_time())
+            json['initial_event'] = self.initial_event().to_json(for_web=True)
+        return json
 
 
 class Observation(AbstractObservation):
@@ -174,36 +215,11 @@ class Observation(AbstractObservation):
     def set(self):
         return self.assignment.video.set
 
-    def to_json(self, for_web=False):
-        json = {
-            'id': self.id,
-            'type': self.get_type_display(),
-            'type_choice': self.type,
-            'duration': self.duration,
-            'comment': self.comment,
-            'create_datetime': self.create_datetime,
-            'events': [e.to_json(for_web=for_web) for e in self.event_set.all()]
-        }
+    def get_animalobservation(self):
+        return self.animalobservation
 
-        if self.type == 'A':
-            animal = self.animalobservation
-            json.update({
-                'animal': str(animal.animal),
-                'animal_id': animal.animal_id,
-                'sex': animal.get_sex_display(),
-                'sex_choice': animal.sex,
-                'stage': animal.get_stage_display(),
-                'stage_choice': animal.stage,
-                'length': animal.length,
-                'group': animal.animal.group.id,
-                'group_name': str(animal.animal.group)
-            })
-
-        if for_web:
-            json['time'] = self.initial_observation_time()
-            json['pretty_time'] = time_display(self.initial_observation_time())
-            json['initial_event'] = self.initial_event().to_json(for_web=True)
-        return json
+    def get_event_set(self):
+        return self.event_set.order_by('event_time')
 
     def initial_event(self):
         return self.event_set.order_by('create_datetime').first()
@@ -254,10 +270,13 @@ class MasterObservation(AbstractObservation):
     def set(self):
         return self.master_record.set
 
+    def get_animalobservation(self):
+        return self.masteranimalobservation
+
     def initial_event(self):
         return self.masterevent_set.order_by('original_id').first()
 
-    def event_set(self):
+    def get_event_set(self):
         return self.masterevent_set.order_by('event_time')
 
     def annotator(self):
@@ -271,7 +290,7 @@ class MasterObservation(AbstractObservation):
         return [initial_event] + list(self.masterevent_set.exclude(id=initial_event.id).order_by('-event_time'))
 
     def needs_review(self):
-        return any(e.needs_review() for e in self.event_set())
+        return any(e.needs_review() for e in self.get_event_set())
 
 
 class AbstractAnimalObservation(AuditableModel):
@@ -385,6 +404,29 @@ class AbstractEvent(AuditableModel):
     def needs_review(self):
         return any(a.needs_review for a in self.attribute.all())
 
+    def active_measurables(self):
+        pass
+
+    def to_json(self, for_web=False):
+        json = {
+            'id': self.pk,
+            'event_time': self.event_time,
+            'extent': None if self.extent is None else str(self.extent),
+            'note': self.note,
+            'attribute': [a.to_json(children=not for_web) for a in self.attribute.all()],
+            'measurables': [m.to_json() for m in self.active_measurables()],
+            'create_datetime': datetime.strftime(self.create_datetime, '%Y-%m-%d %H:%M:%S')
+        }
+
+        if for_web:
+            json['extent_css'] = self.extent_to_css()
+            json['image_url'] = self.image_url(verify=False)
+            json['clip_url'] = self.clip_url(verify=False)
+            json['attribute_names'] = list(a.name for a in self.attribute.all())
+            json['measurables'] = list(str(m) for m in self.active_measurables())
+
+        return json
+
 
 class Measurable(models.Model):
     name = models.TextField()
@@ -434,26 +476,6 @@ class Event(AbstractEvent):
             'raw_import_json',
             'measurables',
         ]
-
-    def to_json(self, for_web=False):
-        json = {
-            'id': self.pk,
-            'event_time': self.event_time,
-            'extent': None if self.extent is None else str(self.extent),
-            'note': self.note,
-            'attribute': [a.to_json(children=not for_web) for a in self.attribute.all()],
-            'measurables': [m.to_json() for m in self.active_measurables()],
-            'create_datetime': datetime.strftime(self.create_datetime, '%Y-%m-%d %H:%M:%S')
-        }
-
-        if for_web:
-            json['extent_css'] = self.extent_to_css()
-            json['image_url'] = self.image_url(verify=False)
-            json['clip_url'] = self.clip_url(verify=False)
-            json['attribute_names'] = list(a.name for a in self.attribute.all())
-            json['measurables'] = list(str(m) for m in self.active_measurables())
-
-        return json
 
     def filename(self):
         set = self.observation.set()
@@ -522,6 +544,15 @@ class MasterEventMeasurable(models.Model):
     master_event = models.ForeignKey(MasterEvent)
     measurable = models.ForeignKey(Measurable)
     value = models.TextField()
+
+    def to_json(self):
+        json = {
+            'id': self.pk,
+            'measurable_id': self.measurable.id,
+            'measurable_name': self.measurable.name,
+            'value': self.value
+        }
+        return json
 
     def __str__(self):
         return u"{}: {}".format(self.measurable, self.value)
