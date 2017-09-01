@@ -194,7 +194,7 @@ $(function () {
             event.preventDefault();
             event.stopPropagation();
             var $target = $(event.target).closest('.event-thumbnail .video-icon');
-            var url = $target[0].getAttribute("value")
+            var url = $target[0].getAttribute("value");
             var video_temp = '<video width="500" height="500" controls>' +
                 '<source src=' + url + ' type="video/mp4"> </video>';
             var event_clip = $('#full-clip-modal').find('.event-clip');
@@ -413,11 +413,24 @@ $(function () {
             'click button#review-master': 'reviewMaster'
         },
         initialize: function (options) {
-            this.loadingPromises = options.loadingPromises;
+            var self = this;
+            this.loadingPromise = $.Deferred();
             this.collection = new MasterRecord([], {
                 id: this.$el.data('set-id'),
                 project: this.$el.data('project-id'),
                 view: this
+            });
+            this.collection.fetch().then(function () {
+                self.render();
+                $('button.select-all, button#save-master, button#review-master').removeAttr('disabled');
+                self.$el.find('.busy-indicator').fadeOut();
+                self.loadingPromise.resolve();
+            });
+        },
+        render: function () {
+            this.$el.find('.timeline').empty();
+            this.collection.forEach(function (observation) {
+                observation.view.render();
             });
         },
         saveMaster: function () {
@@ -492,26 +505,28 @@ $(function () {
                     .delay(1000)
                     .fadeOut();
             });
-        },
-        load: function (loadingPromises) {
-            var self = this;
-            $.get(this.collection.url + '?project=' + this.collection.project, function (res) {
-                $.when.apply($, loadingPromises).done(function () {
-                    var ids = res.original_observation_ids;
-                    _.each(assignmentViews, function (view) {
-                        view.collection.forEach(function (model) {
-                            if (ids.indexOf(model.id) !== -1) {
-                                model.select();
-                                self.collection.addObservation(model);
-                            }
-                        });
-                    });
-                    self.render();
-                    self.$el.find('.busy-indicator').fadeOut();
-                    $('button.select-all, button#save-master, button#review-master').removeAttr('disabled');
-                });
-            });
         }
+        // },
+        // load: function (loadingPromises) {
+        //     var self = this;
+        //     $.get(this.collection.url + '?project=' + this.collection.project, function (res) {
+        //         $.when.apply($, loadingPromises).done(function () {
+        //             var ids = res.master_observation_ids;
+        //             // var ids = res.original_observation_ids;
+        //             // _.each(assignmentViews, function (view) {
+        //             //     view.collection.forEach(function (model) {
+        //             //         if (ids.indexOf(model.id) !== -1) {
+        //             //             model.select();
+        //             //             self.collection.addObservation(model);
+        //             //         }
+        //             //     });
+        //             // });
+        //             self.render();
+        //             self.$el.find('.busy-indicator').fadeOut();
+        //             $('button.select-all, button#save-master, button#review-master').removeAttr('disabled');
+        //         });
+        //     });
+        // }
     });
 
     // Don't talk to server with Backbone unless its a 'read'
@@ -527,9 +542,9 @@ $(function () {
     var assignmentViews = $('.row.assignment').map(function (_, row) {
         return new AssignmentView({el: row, masterView: masterView});
     });
-    masterView.load(_.map(assignmentViews, function (view) {
-        return view.loadingPromise;
-    }));
+    // masterView.load(_.map(assignmentViews, function (view) {
+    //     return view.loadingPromise;
+    // }));
 
 
     $(function () {
