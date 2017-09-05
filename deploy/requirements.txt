@@ -1,8 +1,8 @@
-boto==2.36.0
 fabric==1.10.1
+boto==2.46.1
 requests==2.6.0
 ebs-deploy==1.7
 simplejson==3.6.5
-six==1.9.0
+six==1.10.0
 PyYAML==3.11
 configobj==5.0.6
