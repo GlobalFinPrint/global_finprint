@@ -997,7 +997,7 @@ var finprint = finprint || {};  //namespace if necessary...
             var $image = $currentTarget.find('.image-icon');
 
             var img_temp = '<img width="500" height="500" src=' + url + '>';
-            var modal_title = $currentTarget.data('animal');
+            var modal_title = $currentTarget.closest('.annotool-thumbnail').data('animal');;
             $modal.find('.image-zoom').html(img_temp)
             $modal
                 .find('.image-zoom')
@@ -1020,7 +1020,7 @@ var finprint = finprint || {};  //namespace if necessary...
             var url = $target[0].getAttribute("value")
             var video_temp = '<video width="500" height="500" controls>' +
                 '<source src=' + url + ' type="video/mp4"> </video>';
-            var modal_title = $currentTarget.data('animal');
+            var modal_title = $(e.target).closest('.annotool-thumbnail').data('animal');
             $modal1.find('.event-clip').html(video_temp)
             $modal1
                 .find('.event-clip')
@@ -1372,12 +1372,88 @@ var finprint = finprint || {};  //namespace if necessary...
             return false;
         });
 
+
+        $measurablesCell.on('click', 'a.edit-master-measurables', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var $originalTarget = $(e.target);
+            var eventId = $originalTarget.data('event-id');
+            var data = {};
+            if ($originalTarget.data('is-master')) {
+                data['is-master'] = true;
+            }
+            //disbaling the button
+            $(e.target).hide();
+            $originalTarget.parent().find('#save_master_measurables_id').show();
+            $originalTarget.parent().find('#cancel_master_measurables_id').show();
+            $originalTarget.siblings('.content').html("");
+            // adding input form for each measurable value if edit is pressed
+            $.get('/assignment/measurables/edit/' + eventId, data, function (res) {
+                res.measurables.forEach(function (m) {
+                    var measValue = '';
+                    res.event_measurables.forEach(function (em) {
+                        if (em.measurable === m.id) {
+                            measValue = em.value;
+                        }
+                    });
+                    var measurableEditBlock = '<div class="measurables_item measurable-label">'
+                                            + '<label class="col-sm-6">'+m.name+':</label>'
+                                            + '<input class="editText" type="text" data-id='+m.id+' value='+measValue+'>'
+                                            + '<a href="#" class="delete-master-measurable" '
+                                            + '{% if master %}data-is-master="True"{% endif %}'
+                                                             +'data-measurable-id='+m.id
+                                                             +' title="Delete measurable">&#x2716;</a><br/></div>';
+                    $(e.target).parent().find('.content').append(measurableEditBlock);
+
+                });
+            });
+
+            $(e.target).parent().find('#max_n_buttons_id').show();
+
+            $(e.target).parent().find('button#save_master_measurables_id').off().click(function () {
+                var data = {measurables: [], values: []};
+                var isMaster = false;
+                $(this).hide();
+                $(this).siblings('#cancel_master_measurables_id').hide();
+                if ($originalTarget.data('is-master')) {
+                    data['is-master'] = true;
+                    isMaster = true;
+                }
+                $(e.target).parent().find('div.content').each(function () {
+                    // don't save empty vals!
+                    if ($(this).find('input[type="text"]').val() !== '') {
+                        data.measurables.push($(this).find('input[type="text"]').data('id'));
+                        data.values.push($(this).find('input[type="text"]').val());
+                    }
+                });
+                $.post('/assignment/measurables/edit/' + eventId, data, function (res) {
+                    $originalTarget.siblings('.content').empty().html(buildMeasurableList(res.measurables, isMaster));
+                    $originalTarget.find('#save_master_measurables_id').hide();
+                    $originalTarget.find('#cancel_master_measurables_id').hide();
+                    $originalTarget.show();
+                    location.reload();
+                });
+            });
+            $(e.target).parent().find('button#cancel_master_measurables_id').off().click(function () {
+                location.reload();
+            });
+
+            return false;
+        });
+        //this is needed when edit is clicked
+        $measurablesCell.on('click', 'a.delete-master-measurable', function (e) {
+                location.reload();
+         });
+
         $measurablesCell.on('click', 'a.delete-measurable', function (e) {
+        // change for master data set
             e.preventDefault();
             e.stopPropagation();
 
             var $originalTarget = $(e.target);
             var measurableId = $originalTarget.data('measurable-id');
+            if (measurableId=='undefined') {$originalTarget.parent().find('input[type="text"]').data('id');};
             var data = {};
             var isMaster = false;
             if ($originalTarget.data('is-master')) {

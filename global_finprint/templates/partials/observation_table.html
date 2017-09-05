@@ -71,15 +71,28 @@
                 <div class="content">
                     {% for active_measurable in e.active_measurables %}
                         {% if active_measurable.value %}
-                             {{ active_measurable }} <a href="#" class="delete-measurable"
-                                                           {% if master %}data-is-master="True"{% endif %}
-                                                           data-measurable-id="{{ active_measurable.pk }}"
-                                                           title="Delete measurable">&#x2716;</a><br/>
+                            <div class="measurables_item measurable-label">
+                                <label class="col-sm-5">MaxN: </label>
+                                    <input type="text" data-id="{{ active_measurable.pk }}" value="{{ active_measurable.value }}" disabled="disabled">
+                                    <a href="#" class="delete-measurable"
+                                       {% if master %}data-is-master="True"{% endif %}
+                                            data-measurable-id="{{ active_measurable.pk }}"
+                                            title="Delete measurable">&#x2716;</a><br/>
+                            </div>
                         {% endif %}
                     {% endfor %}
                 </div>
-                <a href="#" class="edit-measurables" {% if master %}data-is-master="True"{% endif %}
-                   data-event-id="{{ e.id }}">Edit</a>
+                {% if "master" not in request.path %}
+                   <a href="#" class="edit-measurables left-align" {% if master %}data-is-master="True"{% endif %}
+                     data-event-id="{{ e.id }}">Edit</a>
+                {% else %}
+                    <div id="max_n_buttons_id" style="display:none" class="save-cancel">
+                        <button id="save_master_measurables_id" class="btn btn-primary button-sm">Save</button>
+                        <button id="cancel_master_measurables_id" class="btn btn-default button-sm" data-dismiss="modal">Cancel</button>
+                    </div>
+                    <a href="#" class="edit-master-measurables" {% if master %}data-is-master="True"{% endif %}
+                     data-event-id="{{ e.id }}">Edit</a>
+                {% endif %}
             </td>
             <td class="action">
                 {% if master %}
@@ -171,3 +184,5 @@
         </div>
     </div>
 </div>
+
+
