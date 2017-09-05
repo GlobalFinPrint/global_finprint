@@ -437,7 +437,7 @@ $(function () {
             var $this = $(this);
             var $feedback = $('span#save-feedback');
             var data = {
-                observation_ids: this.collection.pluck('id'),
+                original_observation_ids: this.collection.pluck('original_observation_id'),
                 project: this.collection.project
             };
 
@@ -477,7 +477,7 @@ $(function () {
             var $this = $(this);
             var $feedback = $('span#save-feedback');
             var data = {
-                observation_ids: this.collection.pluck('id'),
+                original_observation_ids: this.collection.pluck('original_observation_id'),
                 project: this.collection.project
             };
 
@@ -506,27 +506,6 @@ $(function () {
                     .fadeOut();
             });
         }
-        // },
-        // load: function (loadingPromises) {
-        //     var self = this;
-        //     $.get(this.collection.url + '?project=' + this.collection.project, function (res) {
-        //         $.when.apply($, loadingPromises).done(function () {
-        //             var ids = res.master_observation_ids;
-        //             // var ids = res.original_observation_ids;
-        //             // _.each(assignmentViews, function (view) {
-        //             //     view.collection.forEach(function (model) {
-        //             //         if (ids.indexOf(model.id) !== -1) {
-        //             //             model.select();
-        //             //             self.collection.addObservation(model);
-        //             //         }
-        //             //     });
-        //             // });
-        //             self.render();
-        //             self.$el.find('.busy-indicator').fadeOut();
-        //             $('button.select-all, button#save-master, button#review-master').removeAttr('disabled');
-        //         });
-        //     });
-        // }
     });
 
     // Don't talk to server with Backbone unless its a 'read'

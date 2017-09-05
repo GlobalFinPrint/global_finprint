@@ -292,6 +292,8 @@ class MasterObservation(AbstractObservation):
     def needs_review(self):
         return any(e.needs_review() for e in self.get_event_set())
 
+    def to_json(self, for_web=False):
+        return super(self).to_json()
 
 class AbstractAnimalObservation(AuditableModel):
     animal = models.ForeignKey(Animal)

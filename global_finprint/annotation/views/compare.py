@@ -73,17 +73,16 @@ class GetMasterView(UserAllowedMixin, View):
         return JsonResponse({
             'observations': list(o.to_json(for_web=True) for o in observations)
         })
-        # return JsonResponse(master.to_json())
 
     def post(self, request, set_id):
         project = get_object_or_404(Project, pk=request.POST.get('project', 1))
         master_record = get_object_or_404(MasterRecord, project=project, set=get_object_or_404(Set, pk=set_id))
-        observation_ids = list(int(obs_id) for obs_id in request.POST.getlist('observation_ids[]'))
+        original_observation_ids = list(int(org_obs_id) for org_obs_id in request.POST.getlist('original_observation_ids[]'))
 
-        if set(observation_ids) == set(obs.id for obs in master_record.original_observations()):
+        if set(original_observation_ids) == set(obs.id for obs in master_record.original_observations()):
             return JsonResponse({'success': 'no changes'})
 
-        success, err_msg = master_record.copy_observations(observation_ids)
+        success, err_msg = master_record.copy_observations(original_observation_ids)
         if success:
             response = JsonResponse({'success': 'ok'})
         else:
