@@ -168,8 +168,7 @@ class SetBulkUploadView(UserAllowedMixin, View):
                             row[set_fields_dict['bait']].value is None
                             else row[set_fields_dict['bait']].value.strip()
                         ],
-                        visibility=('' if row[set_fields_dict['visibility']].value is None
-                                    else row[set_fields_dict['visibility']].value),
+                        visibility=row[set_fields_dict['visibility']].value,
                         current_flow_estimated=('' if row[set_fields_dict['current_flow_estimated']].value is None
                                                 else row[
                             set_fields_dict['current_flow_estimated']].value.strip().upper()),

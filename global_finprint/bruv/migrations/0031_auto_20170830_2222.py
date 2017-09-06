@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                   WHEN visibility IS NULL
                     THEN '-1'
                   WHEN visibility = '>15'
-                    THEN '20'
+                    THEN '25'
                   ELSE
                     visibility
                   END
