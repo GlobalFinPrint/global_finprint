@@ -1,9 +1,16 @@
 from django.views.generic import View
+from django.shortcuts import render
 
 
 class WebHelpView(View):
-    pass
+    template = 'pages/help/web_help.html'
+
+    def get(self, request):
+        return render(request, self.template)
 
 
 class ClientHelpView(View):
-    pass
+    template = 'pages/help/client_help.html'
+
+    def get(self, request):
+        return render(request, self.template)
