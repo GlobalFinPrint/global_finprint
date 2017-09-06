@@ -290,7 +290,7 @@ LEAFLET_CONFIG = {
              {}),
         ],
     'DEFAULT_CENTER': (-6.0, 15.0),
-    'DEFAULT_ZOOM': 3,
+    'DEFAULT_ZOOM': 4,
     'MIN_ZOOM': 2,
     'MAX_ZOOM': 13,
 }

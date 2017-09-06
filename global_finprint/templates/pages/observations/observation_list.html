@@ -6,6 +6,9 @@
         <div class="row manage-master-state-buttons" data-id="{{ master.id }}">
             <div class="pull-left">
                 <a class="btn btn-default" href="{% url 'assignment_compare' set.id %}?project=1">Compare Assignments</a>
+                {% if set.master %}
+                    <a class="btn btn-default" href="{% url 'master_review' set.master.id %}">Master Record</a>
+                {% endif %}
             </div>
         </div>
         <div class="row color-rows" data-diff-cell="0">

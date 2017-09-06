@@ -31,7 +31,8 @@ class AssignmentCompareView(UserAllowedMixin, View):
             'project': project,
             'animal_groups': animal_groups,
             # exclude assignments that are 'rejected' or 'disabled':
-            'assignment_set': set.video.assignment_set.exclude(status__in=[5, 6]).filter(project=project)
+            'assignment_set': set.video.assignment_set.exclude(status__in=[5, 6]).filter(project=project),
+            'state_list': MasterRecordState.objects.all()
         })
         return render(request, self.template_name, context=context)
 

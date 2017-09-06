@@ -66,8 +66,8 @@ class SetBulkUploadView(UserAllowedMixin, View):
             workbook = load_workbook(BytesIO(file.read()), read_only=True)
             set_sheet = workbook.get_sheet_by_name('Set')
             env_sheet = workbook.get_sheet_by_name('Environment')
-            if not list(set_sheet.rows)[1:]:
-                raise BulkImportError('Bulk upload spreadsheet is empty.')
+            if not list(set_sheet.rows)[1:] and not list(env_sheet.rows)[1:]:
+                raise BulkImportError('Bulk upload spreadsheets are empty.')
 
             with transaction.atomic():
                 trip_dict = dict(Trip.objects.values_list('code', 'id'))
@@ -174,11 +174,12 @@ class SetBulkUploadView(UserAllowedMixin, View):
                                                 else row[
                             set_fields_dict['current_flow_estimated']].value.strip().upper()),
                         current_flow_instrumented=row[set_fields_dict['current_flow_instrumented']].value,
-                        comments=('BULK UPLOAD' if row[set_fields_dict['comment']].value is None
-                                  else row[set_fields_dict['comment']].value.strip() + ' -- BULK UPLOAD'),
+                        comments=('' if row[set_fields_dict['comment']].value is None
+                                    else row[set_fields_dict['comment']].value.strip()),
                         video=new_video,
                         drop_measure=new_drop,
-                        haul_measure=new_haul
+                        haul_measure=new_haul,
+                        bulk_loaded=True,
                     )
                     new_set.save()
 
@@ -199,9 +200,21 @@ class SetBulkUploadView(UserAllowedMixin, View):
                     if row[env_fields_dict['drop_haul']].value is None:
                         raise BulkImportError('drop_haul is missing.')
                     elif row[env_fields_dict['drop_haul']].value.strip().lower() == 'drop':
-                        env = set.drop_measure
+                        if set.drop_measure:
+                            env = set.drop_measure
+                        else:
+                            env = EnvironmentMeasure()
+                            env.save()
+                            set.drop_measure = env
+                            set.save()
                     elif row[env_fields_dict['drop_haul']].value.strip().lower() == 'haul':
-                        env = set.haul_measure
+                        if set.haul_measure:
+                            env = set.haul_measure
+                        else:
+                            env = EnvironmentMeasure()
+                            env.save()
+                            set.haul_measure = env
+                            set.save()
                     else:
                         raise BulkImportError('drop_haul needs to be "drop" or "haul"')
 

@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load staticfiles %}
+{% load active_if_equal %}
+
 {% block content %}
     <div class="col-md-12">
         {% include 'partials/breadcrumb.html' with trip=trip set=set current_page_name='<b>Compare assignments</b>' %}
@@ -19,18 +21,30 @@
             </div>
         </div>
 
-        <div class="row master"
+        <div class="row master manage-master-state-buttons"
+             data-id="{{ master.id }}"
              data-set-id="{{ set.id }}"
              data-project-id="{{ project.pk }}"
              data-length="{{ video_length }}"
              tabindex="0">
-            <p class="review-label compare-actions">
-                <span class="circle">M</span> Master
-                | <b> Status:</b> {{ master.status|lower }}
-                <button id="save-master" class="btn btn-primary btn-fp" disabled="disabled">Save</button>
-                <button id="review-master" class="btn btn-primary btn-fp" data-href-target="{% url 'master_review' master.id %}" disabled="disabled">Review</button>
-                <span id="save-feedback"></span>
-            </p>
+            <form class="form-inline">
+                <label class="mr-sm-2 review-label compare-actions" for="master-state-buttons"><span class="circle">M</span> Master | <b> Status:</b></label>
+                <div class="btn-group btn-group-sm" role="group" id="master-state-buttons">
+                    {% for master_state in state_list %}
+                        <a class="btn btn-default
+                                {% active_if_equal master.status.id master_state.id %}"
+                           data-toggle="assignment_state"
+                           data-value="{{ master_state.id }}">{{ master_state.name }}</a>
+                    {% endfor %}
+                </div>
+                <input type="hidden" name="master_state" id="master_state">
+                <input type="hidden" name="action" value="update">
+                {% csrf_token %}
+            </form>
+            <button id="save-master" class="btn btn-primary btn-fp" disabled="disabled">Save</button>
+            <button id="review-master" class="btn btn-primary btn-fp" data-href-target="{% url 'master_review' master.id %}" disabled="disabled">Review</button>
+            <span id="status-feedback"></span>
+            <span id="save-feedback"></span>
             <div class="timeline-holder">
                 <div class="busy-indicator">Loading...</div>
                 <div class="timeline"></div>

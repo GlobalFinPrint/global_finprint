@@ -13,8 +13,10 @@
 </head>
 <body>
 {% include 'partials/navpartial.html' %}
+<div style="margin-left: 20px; margin-right: 20px;">
 {% block content %}
 {% endblock %}
+</div>
 <script>
     $(document).ready(function(){
         $("md-sidenav[md-component-id='left']").toggle();
@@ -26,6 +28,9 @@
     }
     .navbar{
         margin-bottom:0;
+    }
+    md-content {
+        margin-left: 5px;
     }
 </style>
 </body>

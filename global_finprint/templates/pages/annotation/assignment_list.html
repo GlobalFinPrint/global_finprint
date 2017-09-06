@@ -105,8 +105,10 @@
 
             <div class="row">
                 <div class="col-md-12">
-                    <div class="pull-right">
+                    <div class="pull-left">
                         <button id="assignMultipleVideo" class="btn btn-primary">Assign Videos</button>
+                    </div>
+                    <div class="pull-right">
                         <button id="search" class="btn btn-primary">Search Assignments</button>
                     </div>
                 </div>
@@ -136,12 +138,12 @@
             </thead>
             <tbody id="assignment-target">
                     <tr id="spinId">
-                        <td colspan="13">
+                        <td colspan="14">
                             Loading...
                         </td>
                     </tr>
                     <tr id="limitSelectionId">
-                    <td colspan="13">
+                    <td colspan="14">
                     <h4 class="text-center" >Use the form above to limit selection</h4>
                 </td></tr>
             </tbody>
@@ -227,18 +229,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="checkbox include-leads">
-                                    <label for="include-leads">
-                                        <input type="checkbox" id="include-leads" name="include_leads" />
-                                        Include leads?
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
+                        <div class="row" style="margin-top:20px">
                             <div class="col-md-4">
                                 <label for="auto-affiliation">Affiliation</label>
                                 <select class="form-control" id="auto-affiliation" name="affiliation" placeholder="Select an affiliation">
@@ -261,6 +252,16 @@
                                         <option value="{{ project.id }}">{{ project.name }}</option>
                                     {% endfor %}
                                 </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="checkbox include-leads">
+                                    <label for="include-leads">
+                                        <input type="checkbox" id="include-leads" name="include_leads" />
+                                        Include leads?
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </form>

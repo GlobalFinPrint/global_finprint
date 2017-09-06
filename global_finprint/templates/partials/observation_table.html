@@ -49,7 +49,7 @@
             {% with imageurl=e.image_url %}
                 {% if imageurl %}
                     <td>
-                        <div class="annotool-thumbnail" data-img-url="{{ e.image_url }}">
+                        <div class="annotool-thumbnail" data-img-url="{{ e.image_url }}" data-animal="{{ o.animal }}">
                             <img class="image-icon" src="{% static 'images/loading_spinner.gif' %}"
                                  data-src="{{ e.image_url }}" style="width:100%">
                             <div class="extent" style="{{ e.extent_to_css }}">&nbsp;</div>
@@ -70,20 +70,22 @@
             <td class="measurables">
                 <div class="content">
                     {% for active_measurable in e.active_measurables %}
-                        {{ active_measurable }} <a href="#" class="delete-measurable"
-                                                   {% if master %}data-is-master="True"{% endif %}
-                                                   data-measurable-id="{{ active_measurable.pk }}"
-                                                   title="Delete measurable">&#x2716;</a><br/>
+                        {% if active_measurable.value %}
+                             {{ active_measurable }} <a href="#" class="delete-measurable"
+                                                           {% if master %}data-is-master="True"{% endif %}
+                                                           data-measurable-id="{{ active_measurable.pk }}"
+                                                           title="Delete measurable">&#x2716;</a><br/>
+                        {% endif %}
                     {% endfor %}
                 </div>
                 <a href="#" class="edit-measurables" {% if master %}data-is-master="True"{% endif %}
-                   data-event-id="{{ e.id }}">Add</a>
+                   data-event-id="{{ e.id }}">Edit</a>
             </td>
             <td class="action">
                 {% if master %}
                     {% with set=e.master_observation.set %}
                         <a href="#" class="obs-edit" data-obs-type="master"
-                           data-event="{% url 'master_edit_obs' set.pk e.pk %}">Edit</a>
+                           data-event="{% url 'master_edit_obs' set.pk e.pk %}">Edit Observation</a>
                         {% if e.id != firstevent.id or rowspan == 1 %}
                             <a href="#" class="obs-delete"
                                data-event="{% url 'master_delete_obs' set.pk e.pk %}">Delete</a>
@@ -95,7 +97,7 @@
                 {% else %}
                     {% with set=e.observation.set %}
                         <a href="#" class="obs-edit" data-obs-type="regular"
-                           data-event="{% url 'observation_edit_data' set.trip.pk set.pk e.pk %}">Edit</a>
+                           data-event="{% url 'observation_edit_data' set.trip.pk set.pk e.pk %}">Edit Observation</a>
                     {% endwith %}
                 {% endif %}
             </td>
@@ -109,7 +111,7 @@
                     <h4>No observations for this master record</h4>
                 </td>
             {% else %}
-                <td colspan=9 class="text-center">
+                <td colspan=10 class="text-center">
                     <h4>{{ assignment.annotator }} has not yet submitted any observations for this video</h4>
                 </td>
             {% endif %}
@@ -121,9 +123,14 @@
 <div id="full-image-modal" class="modal fade">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="close" data-dismiss="modal">&times;</div>
-            <div class="image-zoom">
-                <div class="extent"></div>
+            <div class="modal-header">
+                <h4 class="modal-title"></h4>
+                <div class="close" data-dismiss="modal">&times;</div>
+            </div>
+            <div class="modal-body">
+                <div class="image-zoom">
+                    <div class="extent"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -132,9 +139,14 @@
 <div id="full-clip-modal" class="modal fade">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="close" data-dismiss="modal">&times;</div>
-            <div class="event-clip">
-                <div class="extent"></div>
+            <div class="modal-header">
+                <h4 class="modal-title"></h4>
+                <div class="close" data-dismiss="modal">&times;</div>
+            </div>
+            <div class="modal-body">
+                <div class="event-clip">
+                    <div class="extent"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -147,8 +159,9 @@
 
             <div class="modal-body edit-measurables">
                 <h3>Edit measurables</h3>
-                <div class="measurables"></div>
-                <button id="add-measurable" class="btn btn-info">Add measurable</button>
+                <form class="form-horizontal">
+                    <div class="measurables"></div>
+                </form>
             </div>
 
             <div class="modal-footer">

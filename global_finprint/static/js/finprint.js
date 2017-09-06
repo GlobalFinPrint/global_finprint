@@ -252,7 +252,7 @@ var finprint = finprint || {};  //namespace if necessary...
             $('a[data-value="' + statusId + '"]').removeClass('notActive').addClass('active');
 
             $buttons.find('form').submit();
-            $('span#save_message').show().delay(1000).fadeOut();
+            $('span#status-feedback').show().delay(1000).fadeOut();
         });
 
         $buttons.find('form').submit(function () {
@@ -278,7 +278,7 @@ var finprint = finprint || {};  //namespace if necessary...
             $('a[data-value="' + statusId + '"]').removeClass('notActive').addClass('active');
 
             $buttons.find('form').submit();
-            $('span#save_message').show().delay(1000).fadeOut();
+            $('span#status-feedback').show().delay(1000).fadeOut();
         });
 
         $buttons.find('form').submit(function () {
@@ -997,6 +997,7 @@ var finprint = finprint || {};  //namespace if necessary...
             var $image = $currentTarget.find('.image-icon');
 
             var img_temp = '<img width="500" height="500" src=' + url + '>';
+            var modal_title = $currentTarget.data('animal');
             $modal.find('.image-zoom').html(img_temp)
             $modal
                 .find('.image-zoom')
@@ -1004,6 +1005,9 @@ var finprint = finprint || {};  //namespace if necessary...
                 .end()
                 .find('.extent')
                 .attr('style', $currentTarget.find('.extent').attr('style'))
+                .end()
+                .find('.modal-title')
+                .html(modal_title)
                 .end()
                 .modal('show');
         });
@@ -1016,10 +1020,14 @@ var finprint = finprint || {};  //namespace if necessary...
             var url = $target[0].getAttribute("value")
             var video_temp = '<video width="500" height="500" controls>' +
                 '<source src=' + url + ' type="video/mp4"> </video>';
+            var modal_title = $currentTarget.data('animal');
             $modal1.find('.event-clip').html(video_temp)
             $modal1
                 .find('.event-clip')
                 .attr('style', $target.attr('style'))
+                .end()
+                .find('.modal-title')
+                .html(modal_title)
                 .end()
                 .modal('show');
         });
@@ -1305,7 +1313,6 @@ var finprint = finprint || {};  //namespace if necessary...
                     measurableList += ' data-is-master="true" ';
                 }
                 measurableList += ' title="Delete measurable">&#x2716;</a><br />';
-                // measurableList += '>&#x274E;</a><br />';
             });
             return measurableList;
         }
@@ -1322,46 +1329,25 @@ var finprint = finprint || {};  //namespace if necessary...
             }
 
             $.get('/assignment/measurables/edit/' + eventId, data, function (res) {
-                var dropdownHtml = '<select class="measurables form-control">';
-                dropdownHtml += '<option value="0">---</option>';
-                res.measurables.forEach(function (m) {
-                    dropdownHtml += '<option value="' + m.id + '">' + m.name + '</option>';
-                });
-                dropdownHtml += '</select>';
-
-                $modal.find('button#add-measurable').off().click(function () {
-                    var input = '<input class="form-control" type="text" value=""/>';
-                    var remove = '<button class="btn btn-danger remove">Remove</button>';
-                    $modal.find('div.measurables')
-                        .append('<div class="measurable-row">' + dropdownHtml + input + remove + '</div>');
-                });
-
                 $modal.modal('show');
                 $modal.find('.measurables').empty();
-                res.event_measurables.forEach(function (em) {
-                    var thisDropDown = $(dropdownHtml)
-                        .attr('id', 'option-' + em.id)
-                        .clone()
-                        .find('option[value="' + em.measurable + '"]')
-                        .attr('selected', 'selected')
-                        .end()[0].outerHTML;
-                    var input = '<input class="form-control" id="input-'
-                        + em.id + '" type="text" value="' + em.value + '"/>';
-                    var remove = '<button class="btn btn-danger remove">Remove</button>';
+
+                res.measurables.forEach(function (m) {
+                    var measValue = '';
+                    res.event_measurables.forEach(function (em) {
+                        if (em.measurable === m.id) {
+                            measValue = em.value;
+                        }
+                    });
+                    var input = '<input type="text" class="form-control" id="inputMeasurable' + m.id + '" value="' + measValue + '"' + '>';
                     $modal.find('div.measurables')
-                        .append('<div class="measurable-row">' + thisDropDown + input + remove + '</div>');
+                        .append('<div class="measurable-row form-group row" data-measurable-id="' + m.id + '">' +
+                                '<label for="inputMeasurable' + m.id + '" class="col-sm-3 control-label">' + m.name + '</label>' +
+                                    '<div class="col-sm-9">' +
+                                        input +
+                                    '</div>' +
+                                '</div>');
                 });
-
-                // add default to a "MaxN" input for the latest control:
-                $modal.find('button#add-measurable').click();
-
-                $modal.find('select.measurables.form-control:not([id])').val(2).attr("selected", "selected");
-                $modal.find('input.form-control:not([id])').focus();
-
-            });
-
-            $modal.on('click', 'div.measurable-row button.remove', function (e) {
-                $(e.target).parent().remove();
             });
 
             $modal.find('button#save').off().click(function () {
@@ -1374,7 +1360,7 @@ var finprint = finprint || {};  //namespace if necessary...
                 $modal.find('div.measurable-row').each(function () {
                     // don't save empty vals!
                     if ($(this).find('input[type="text"]').val() !== '') {
-                        data.measurables.push($(this).find('select.measurables').val());
+                        data.measurables.push($(this).data('measurable-id'));
                         data.values.push($(this).find('input[type="text"]').val());
                     }
                 });

@@ -195,7 +195,7 @@ class BenthicCategory(MPTTModel):
 class Set(AuditableModel):
     # suggested code pattern:
     # [site.code][reef.code]_[set number within reef]
-    code = models.CharField(max_length=32, help_text='[site + reef code]_xxx', null=True, blank=True)
+    code = models.CharField(max_length=32, db_index=True, help_text='[site + reef code]_xxx', null=True, blank=True)
     set_date = models.DateField()
     coordinates = models.PointField(null=True)
     latitude = models.DecimalField(max_digits=12, decimal_places=8)
@@ -242,6 +242,7 @@ class Set(AuditableModel):
         null=True,
         related_name='set'
     )
+    bulk_loaded = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('trip', 'code')

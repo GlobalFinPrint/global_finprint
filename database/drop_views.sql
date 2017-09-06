@@ -41,6 +41,7 @@ DROP VIEW IF EXISTS public.v_report_observations_coral_summary;
 
 DROP VIEW IF EXISTS public.v_report_observations_master;
 
+DROP VIEW IF EXISTS public.legacy_observation_summary;
 DROP VIEW IF EXISTS public.observation_summary;
 
 -- reef completion:

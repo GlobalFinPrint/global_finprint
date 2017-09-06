@@ -12,7 +12,7 @@
                 <div class="input-group pull-right">
                     <div class="btn-toolbar">
                         <div class="input-group">
-                            <span id="save_message" class="inline .success">
+                            <span id="status-feedback" class="inline .success">
                                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>  Status change saved  </span>
                         </div>
                         <div id="assignment-state-buttons" class="btn-group">
@@ -33,6 +33,9 @@
             <div class="pull-left">
                 <a class="btn btn-default" href="{% url 'assignment_compare' set.id %}?project=1">Compare Assignments</a>
                 <a class="btn btn-default" href="{% url 'set_observation_list' trip.id set.id %}">All Observations</a>
+                {% if set.master %}
+                    <a class="btn btn-default" href="{% url 'master_review' set.master.id %}">Master Record</a>
+                {% endif %}
             </div>
         </div>
 

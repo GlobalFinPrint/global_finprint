@@ -76,6 +76,18 @@ class HabitatSummary(models.Model):
     reef_name = models.TextField()
     reef_habitat_name = models.TextField()
 
+    site_type = models.TextField()
+    reef_protected_status = models.TextField()
+    mpa_name = models.TextField()
+    mpa_compliance = models.TextField()
+    mpa_isolation = models.TextField()
+
+    region_id = models.IntegerField()
+    location_id = models.IntegerField()
+    site_id = models.IntegerField()
+    reef_id = models.IntegerField()
+    mpa_id = models.IntegerField()
+
     class Meta:
         managed = False
         db_table = 'habitat_summary'
@@ -91,7 +103,19 @@ class HabitatSummary(models.Model):
             'location_name': self.location_name,
             'site_name': self.site_name,
             'reef_name': self.reef_name,
-            'reef_habitat_name': self.reef_habitat_name
+            'reef_habitat_name': self.reef_habitat_name,
+
+            'site_type': self.site_type,
+            'reef_protected_status': self.reef_protected_status,
+            'mpa_name': self.mpa_name,
+            'mpa_compliance': self.mpa_compliance,
+            'mpa_isolation': self.mpa_isolation,
+
+            'region_id': self.region_id,
+            'location_id': self.location_id,
+            'site_id': self.site_id,
+            'reef_id': self.reef_id,
+            'mpa_id': self.mpa_id,
         }
 
 
@@ -122,7 +146,10 @@ class ObservationSummary(models.Model):
 
     @classmethod
     def get_for_api(cls, region):
-        return list(ob.to_json() for ob in cls.objects.filter(region_name__iexact=region))
+        if region:
+            return list(ob.to_json() for ob in cls.objects.filter(region_name__iexact=region))
+        else:
+            return list(ob.to_json() for ob in cls.objects.all())
 
     def to_json(self):
         return {
@@ -198,7 +225,10 @@ class SetSummary(models.Model):
 
     @classmethod
     def get_for_api(cls, region):
-        return list(ob.to_json() for ob in cls.objects.filter(region_name__iexact=region))
+        if region:
+            return list(ob.to_json() for ob in cls.objects.filter(region_name__iexact=region))
+        else:
+            return list(ob.to_json() for ob in cls.objects.filter())
 
     def to_json(self):
         return {
