@@ -335,10 +335,6 @@ class SetLevelDataForm(forms.ModelForm):
             value['total_percent'] = sum(value['percents'])
             self.fields['benthic_category'].initial = value
         self.fields['visibility'].required = False
-        self.fields['visibility'].choices = \
-            sorted(self.fields['visibility'].choices,
-                   key=lambda _: _[0].isdigit() and int(_[0]) or _[0] == '' and -1 or 100)
-        self.fields['visibility'].choices[0] = (None, '---')
         self.helper.layout = cfl.Layout(
             'visibility', 'current_flow_instrumented', 'current_flow_estimated',
             cfl.Div('bruv_image_file', 'splendor_image_file', 'benthic_category'),
