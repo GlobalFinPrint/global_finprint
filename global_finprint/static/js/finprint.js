@@ -998,7 +998,7 @@ var finprint = finprint || {};  //namespace if necessary...
 
             var img_temp = '<img width="500" height="500" src=' + url + '>';
             var modal_title = $currentTarget.data('animal');
-            $modal.find('.image-zoom').html(img_temp)
+            $modal.find('.image-zoom').html(img_temp);
             $modal
                 .find('.image-zoom')
                 .attr('style', $image.attr('style'))
@@ -1017,11 +1017,11 @@ var finprint = finprint || {};  //namespace if necessary...
             e.preventDefault();
             e.stopPropagation();
             var $target = $(e.target).closest('.annotool-thumbnail .video-icon');
-            var url = $target[0].getAttribute("value")
+            var url = $target[0].getAttribute("value");
             var video_temp = '<video width="500" height="500" controls>' +
                 '<source src=' + url + ' type="video/mp4"> </video>';
-            var modal_title = $currentTarget.data('animal');
-            $modal1.find('.event-clip').html(video_temp)
+            var modal_title = $target.data('animal');
+            $modal1.find('.event-clip').html(video_temp);
             $modal1
                 .find('.event-clip')
                 .attr('style', $target.attr('style'))
