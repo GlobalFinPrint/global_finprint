@@ -1020,7 +1020,7 @@ var finprint = finprint || {};  //namespace if necessary...
             var url = $target[0].getAttribute("value");
             var video_temp = '<video width="500" height="500" controls>' +
                 '<source src=' + url + ' type="video/mp4"> </video>';
-            var modal_title = $target.data('animal');
+            var modal_title = $target.closest('.annotool-thumbnail').data('animal');
             $modal1.find('.event-clip').html(video_temp);
             $modal1
                 .find('.event-clip')
