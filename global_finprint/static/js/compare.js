@@ -215,7 +215,11 @@ $(function () {
                 this.closePopover();
                 this.$el.closest('.row').focus();
             } else if (e.which === 32) { // space
-                this.selectObservation();
+                // do not select if obs is in an un-reviewed assignment.
+                if (this.model.getAssignmentStatus() === 4 || !this.model.getAssignmentStatus() )
+                {
+                    this.selectObservation();
+                }
             }
         },
         getLabel: function () {
@@ -376,9 +380,17 @@ $(function () {
             selected: true
         },
         toggleSelected: function () {
-            var nextModelView = this.nextModel().view;
-            this.get('original').view.selectObservation();
-            nextModelView.openPopover();
+            // if de-selected then remove from master record
+            this.set('selected', !this.get('selected'));
+            if (!this.get('selected')) {
+                this.collection.removeObservation(this);
+            }
+        },
+        select: function () {
+            if (!this.get('selected')) {
+                this.set('selected', true);
+                this.view.$el.find('.observation-popover .selector').addClass('selected');
+            }
         }
     });
 
