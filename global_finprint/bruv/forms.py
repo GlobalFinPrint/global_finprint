@@ -369,12 +369,11 @@ class SetLevelCommentsForm(forms.ModelForm):
     Form for set level comments used in set form
     """
     comments = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=False)
-    message_to_annotators = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=False)
     tags = forms.MultipleChoiceField(widget=SelectizeWidget, choices=SetTag.get_choices, required=False)
 
     class Meta:
         model = Set
-        fields = ['comments', 'message_to_annotators', 'tags']
+        fields = ['comments','tags']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
