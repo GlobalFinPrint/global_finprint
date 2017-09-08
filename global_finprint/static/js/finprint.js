@@ -1384,7 +1384,8 @@ var finprint = finprint || {};  //namespace if necessary...
                 isMaster = true;
             }
             $.post('/assignment/measurables/delete/' + measurableId, data, function (res) {
-                $originalTarget.parent().empty().html(buildMeasurableList(res.measurables, isMaster));
+               //refresh the page
+               location.reload();
             });
         });
     }
