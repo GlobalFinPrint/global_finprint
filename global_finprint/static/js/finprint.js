@@ -702,7 +702,7 @@ var finprint = finprint || {};  //namespace if necessary...
 
             var remainingPercent = Math.max(0, 100 - $parent.find('input[name="total-percent"]').val());
 
-            $.get('/substrate/', function (res) {
+            $.get('/api/habitat/substrate/', function (res) {
                 var leftHTML, centerHTML, rightHTML;
 
                 leftHTML = '<div class="substrate-row"><select class="substrate select form-control" name="benthic-category">';
@@ -760,7 +760,7 @@ var finprint = finprint || {};  //namespace if necessary...
                 return $splitModal.remove();
             }
 
-            $.get('/substrate/', {parent_id: parentId}, function (res) {
+            $.get('/api/habitat/substrate/', {parent_id: parentId}, function (res) {
                 var $subLeft, $subCenter, $subRight, modalHtml, messageHtml;
 
                 if (!res.substrates.length) {
@@ -1017,7 +1017,7 @@ var finprint = finprint || {};  //namespace if necessary...
             e.preventDefault();
             e.stopPropagation();
             var $target = $(e.target).closest('.annotool-thumbnail .video-icon');
-            var url = $target[0].getAttribute("value")
+            var url = $target[0].getAttribute("value");
             var video_temp = '<video width="500" height="500" controls>' +
                 '<source src=' + url + ' type="video/mp4"> </video>';
             var modal_title = $(e.target).closest('.annotool-thumbnail').data('animal');
