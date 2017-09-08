@@ -1231,9 +1231,9 @@ var finprint = finprint || {};  //namespace if necessary...
                 $attributesCell.find('select[multiple="multiple"]').selectize(
                     {allowEmptyOption: true, plugins: ['remove_button', 'restore_on_backspace']}
                 );
-                //edit functionality to include measurables coloumn
-                editMeasurablesInline($thisRow.find('td.measurables'));
             });
+             //edit functionality to include measurables coloumn
+            editMeasurablesInline($thisRow.find('td.measurables'));
         });
     }
 
@@ -1715,11 +1715,13 @@ var finprint = finprint || {};  //namespace if necessary...
                         measValue = em.value;
                     }
                 });
-                var measurableEditBlock = '<div class="measurables_item measurable-label">'
-                                        + '<label class="col-sm-6">'+m.name+':</label>'
-                                        + '<input class="editText" type="text" data-id='+m.id+' value='+measValue+'>'
-                                        + '</div>';
-                $originalTarget.parent().find('.content').append(measurableEditBlock);
+                if (measValue != '') {
+                    var measurableEditBlock = '<div class="measurables_item measurable-label">'
+                                            + '<label>'+m.name+':</label>'
+                                            + '<input class="editText" type="text" data-id='+m.id+' value='+measValue+'>'
+                                            + '</div>';
+                    $originalTarget.parent().find('.content').append(measurableEditBlock);
+                    }
             });
         });
         //hide the edit button inside measurables coloumn
@@ -1735,7 +1737,7 @@ var finprint = finprint || {};  //namespace if necessary...
             data['is-master'] = true;
             isMaster = true;
         }
-        $originalTarget.parent().find('div.content').each(function () {
+        $originalTarget.parent().find('div.measurables_item').each(function () {
             // don't save empty vals!
             if ($(this).find('input[type="text"]').val() !== '') {
                 data.measurables.push($(this).find('input[type="text"]').data('id'));
