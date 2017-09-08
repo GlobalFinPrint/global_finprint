@@ -15,7 +15,7 @@ from ..annotation.models.video import Assignment
 from ..core.mixins import UserAllowedMixin
 
 
-class CustomReportListView(UserAllowedMixin, View):
+class StandardReportListView(UserAllowedMixin, View):
     """
     List for custom reports found at /reports/
     """
