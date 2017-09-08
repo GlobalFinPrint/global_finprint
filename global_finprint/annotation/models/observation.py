@@ -61,9 +61,12 @@ class MasterRecord(AuditableModel):
     @transaction.atomic
     def copy_observations(self, observation_ids):
         try:
-            for old_master_observation in self.masterobservation_set.all():
+            for old_master_observation in self.masterobservation_set.exclude(original_id__in=observation_ids):
+                # delete diff on MasterRecord side
                 old_master_observation.delete()
-            for observation in Observation.objects.filter(pk__in=observation_ids):
+            for observation in Observation.objects.filter(pk__in=observation_ids).exclude(
+                    pk__in=self.masterobservation_set.values_list('original_id')):
+                # add diff on observation_ids side
                 MasterObservation.create_from_original(self, observation)
             return True, None
         except Exception as e:
@@ -240,6 +243,13 @@ class Observation(AbstractObservation):
 
     def needs_review(self):
         return any(e.needs_review() for e in self.event_set.all())
+
+    def to_json(self, for_web=False):
+        abstract_observation_json = super().to_json(for_web=for_web)
+        abstract_observation_json.update({
+            'original_observation_id': self.id
+        })
+        return abstract_observation_json
 
 
 class MasterObservation(AbstractObservation):
