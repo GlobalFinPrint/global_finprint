@@ -16,7 +16,7 @@ SELECT
 
   l.code                   AS location_code,
   coalesce(s.code, '')     AS site_code,
-  coalesce(r.code, '')     AS region_code,
+  coalesce(r.code, '')     AS reef_code,
 
   l.id                     AS location_id,
   COALESCE(s.id, 0)        AS site_id,
