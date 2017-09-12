@@ -20,11 +20,19 @@
 <script>
     $(document).ready(function(){
         $("md-sidenav[md-component-id='left']").toggle();
+        $('body').click(function(e){
+            if($(e.target).is('button.md-fab') ||
+                $(e.target).parent().is('button.md-fab')){
+                    setTimeout(function(){
+                        window.scrollTo(0,0);
+                    }, 5);
+            }
+        });
     });
 </script>
 <style>
-    md-sidenav.md-sidenav-left{
-        top:55px;
+    body{
+        overflow:auto;
     }
     md-backdrop{
         top:55px;
@@ -44,6 +52,9 @@
     }
     md-content[ng-controller="FieldsCtrl"] > div{
         border:1px solid lightgray;
+    }
+    .handsontable table.htCore{
+        table-layout:auto;
     }
 </style>
 </body>
