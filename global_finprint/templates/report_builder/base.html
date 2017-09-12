@@ -23,8 +23,11 @@
     });
 </script>
 <style>
-    md-sidenav, .md-sidenav-left{
-        /* top:50px;*/
+    md-sidenav.md-sidenav-left{
+        top:55px;
+    }
+    md-backdrop{
+        top:55px;
     }
     .navbar{
         margin-bottom:0;
@@ -38,6 +41,9 @@
     }
     .md-button.md-fab.md-fab-bottom-left{
         bottom:80px;
+    }
+    md-content[ng-controller="FieldsCtrl"] > div{
+        border:1px solid lightgray;
     }
 </style>
 </body>
