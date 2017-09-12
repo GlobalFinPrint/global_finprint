@@ -1112,8 +1112,9 @@ var finprint = finprint || {};  //namespace if necessary...
             var $durationCell = $thisRow.find('td.duration');
             var $eventNoteCell = $thisRow.find('td.event-note');
             var $attributesCell = $thisRow.find('td.attributes');
-            var $measurableCell = $thisRow.find('td.measurables')
-
+            var $measurableCell = $thisRow.find('td.measurables');
+            //old measurables html
+            var oldMeasurableHtml = $thisRow.find('td.measurables').html();
 
             $.get(dataUrl, function (resp) {
                 var oldActions, oldAnimal, oldObsNote, oldDuration, oldEventNote, oldAttributes;
@@ -1138,7 +1139,6 @@ var finprint = finprint || {};  //namespace if necessary...
                         tags: $attributesCell.find('select.edit-attributes').val()
                     }
                 }
-
                 // actions
                 oldActions = $actionsCell.html();
                 actionsHTML = '<a href="#" class="edit-save" data-save="' + saveUrl + '">Save</a>';
@@ -1182,7 +1182,7 @@ var finprint = finprint || {};  //namespace if necessary...
                     $eventNoteCell.html(oldEventNote);
                     $attributesCell.html(oldAttributes);
                     $measurableCell.siblings('.content').empty().html();
-                    location.reload();
+                    $measurableCell.html(oldMeasurableHtml);
                 });
 
                 // animal dropdown
@@ -1360,9 +1360,6 @@ var finprint = finprint || {};  //namespace if necessary...
                 $.post('/assignment/measurables/edit/' + eventId, data, function (res) {
                     $originalTarget.siblings('.content').empty().html(buildMeasurableList(res.measurables, isMaster));
                     $modal.modal('hide');
-                    //refresh the page
-                    location.reload();
-
                 });
             });
 
@@ -1376,7 +1373,6 @@ var finprint = finprint || {};  //namespace if necessary...
 
             var $originalTarget = $(e.target);
             var measurableId = $originalTarget.data('measurable-id');
-            if (measurableId=='undefined') {$originalTarget.parent().find('input[type="text"]').data('id');};
             var data = {};
             var isMaster = false;
             if ($originalTarget.data('is-master')) {
@@ -1384,8 +1380,7 @@ var finprint = finprint || {};  //namespace if necessary...
                 isMaster = true;
             }
             $.post('/assignment/measurables/delete/' + measurableId, data, function (res) {
-               //refresh the page
-               location.reload();
+                $originalTarget.parent().empty().html(buildMeasurableList(res.measurables, isMaster));
             });
         });
     }
@@ -1748,7 +1743,6 @@ var finprint = finprint || {};  //namespace if necessary...
         $.post('/assignment/measurables/edit/' + eventId, data, function (res) {
             $originalTarget.siblings('.content').empty().html(buildMeasurableList(res.measurables, isMaster));
             $originalTarget.show();
-            location.reload();
         });
 
     }
