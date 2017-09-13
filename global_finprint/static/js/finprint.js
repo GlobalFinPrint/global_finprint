@@ -995,10 +995,12 @@ var finprint = finprint || {};  //namespace if necessary...
             var $currentTarget = $(e.currentTarget);
             var url = $currentTarget.data('img-url');
             var $image = $currentTarget.find('.image-icon');
-
+            var extent_config = $currentTarget.find('.extent').attr('style');
             var img_temp = '<img width="500" height="500" src=' + url + '>';
             var modal_title = $currentTarget.data('animal');
+            var extent_html='<div class="zoom_image_extent" style="'+extent_config+'">&nbsp;</div>';
             $modal.find('.image-zoom').html(img_temp);
+            $modal.find('.image-zoom').append(extent_html);
             $modal
                 .find('.image-zoom')
                 .attr('style', $image.attr('style'))
