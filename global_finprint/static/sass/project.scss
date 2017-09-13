@@ -1161,6 +1161,10 @@ img {
     width:100%;
     height:100%;
 }
+.zoom_image_extent {
+   position: absolute;
+   border: 1px solid lightgreen;
+}
 .button-sm {
     padding: 6px 5px !important;
     font-size: 11px !important;
