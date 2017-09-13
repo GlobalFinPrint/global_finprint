@@ -4,8 +4,8 @@ var Templates = {
     observationView: '<div class="observation group-<%= group %>" style="left:calc(<%= left %> - 10px);" tabindex="0">' +
             '<%= label %>' +
             '<div class="observation-popover clear <%= leftRightAligned %>-aligned" style="<%= popoverPosition %>">' +
-                '<div class="row">' +
-                    '<b class="observation-title"><%= animal %></b>' +
+                '<div class="row ">' +
+                    '<h5 class="observation-title"><%= animal %></h5>' +
                 '</div>' +
 
                 '<div class="row">' +
