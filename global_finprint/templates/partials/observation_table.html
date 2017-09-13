@@ -71,15 +71,16 @@
                 <div class="content">
                     {% for active_measurable in e.active_measurables %}
                         {% if active_measurable.value %}
-                             {{ active_measurable }} <a href="#" class="delete-measurable"
-                                                           {% if master %}data-is-master="True"{% endif %}
-                                                           data-measurable-id="{{ active_measurable.pk }}"
-                                                           title="Delete measurable">&#x2716;</a><br/>
+                                   {{active_measurable}}
+                                    <a href="#" class="delete-measurable"
+                                       {% if master %}data-is-master="True"{% endif %}
+                                            data-measurable-id="{{ active_measurable.pk }}"
+                                            title="Delete measurable">&#x2716;</a>
                         {% endif %}
                     {% endfor %}
                 </div>
-                <a href="#" class="edit-measurables" {% if master %}data-is-master="True"{% endif %}
-                   data-event-id="{{ e.id }}">Edit</a>
+                   <a href="#" class="edit-measurables left-align" {% if master %}data-is-master="True"{% endif %}
+                     data-event-id="{{ e.id }}">Add</a>
             </td>
             <td class="action">
                 {% if master %}
@@ -158,7 +159,7 @@
             <div class="close" data-dismiss="modal">&times;</div>
 
             <div class="modal-body edit-measurables">
-                <h3>Edit measurables</h3>
+                <h3>Add measurables</h3>
                 <form class="form-horizontal">
                     <div class="measurables"></div>
                 </form>
@@ -171,3 +172,5 @@
         </div>
     </div>
 </div>
+
+

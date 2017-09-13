@@ -997,8 +997,8 @@ var finprint = finprint || {};  //namespace if necessary...
             var $image = $currentTarget.find('.image-icon');
 
             var img_temp = '<img width="500" height="500" src=' + url + '>';
-            var modal_title = $currentTarget.data('animal');
-            $modal.find('.image-zoom').html(img_temp);
+            var modal_title = $currentTarget.closest('.annotool-thumbnail').data('animal');;
+            $modal.find('.image-zoom').html(img_temp)
             $modal
                 .find('.image-zoom')
                 .attr('style', $image.attr('style'))
@@ -1020,8 +1020,8 @@ var finprint = finprint || {};  //namespace if necessary...
             var url = $target[0].getAttribute("value");
             var video_temp = '<video width="500" height="500" controls>' +
                 '<source src=' + url + ' type="video/mp4"> </video>';
-            var modal_title = $target.closest('.annotool-thumbnail').data('animal');
-            $modal1.find('.event-clip').html(video_temp);
+            var modal_title = $(e.target).closest('.annotool-thumbnail').data('animal');
+            $modal1.find('.event-clip').html(video_temp)
             $modal1
                 .find('.event-clip')
                 .attr('style', $target.attr('style'))
@@ -1112,6 +1112,9 @@ var finprint = finprint || {};  //namespace if necessary...
             var $durationCell = $thisRow.find('td.duration');
             var $eventNoteCell = $thisRow.find('td.event-note');
             var $attributesCell = $thisRow.find('td.attributes');
+            var $measurableCell = $thisRow.find('td.measurables');
+            //old measurables html
+            var oldMeasurableHtml = $thisRow.find('td.measurables').html();
 
             $.get(dataUrl, function (resp) {
                 var oldActions, oldAnimal, oldObsNote, oldDuration, oldEventNote, oldAttributes;
@@ -1136,7 +1139,6 @@ var finprint = finprint || {};  //namespace if necessary...
                         tags: $attributesCell.find('select.edit-attributes').val()
                     }
                 }
-
                 // actions
                 oldActions = $actionsCell.html();
                 actionsHTML = '<a href="#" class="edit-save" data-save="' + saveUrl + '">Save</a>';
@@ -1148,7 +1150,8 @@ var finprint = finprint || {};  //namespace if necessary...
                     .find('.edit-save').one('click', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
-
+                    //calling for saving measurable column
+                    saveInlineEditForMeasurables($measurableCell);
                     $.post(saveUrl, serialize(), function (res) {
                         $actionsCell.html(oldActions);
                         $animalCell.html(res.animal);
@@ -1178,6 +1181,8 @@ var finprint = finprint || {};  //namespace if necessary...
                     $durationCell.html(oldDuration);
                     $eventNoteCell.html(oldEventNote);
                     $attributesCell.html(oldAttributes);
+                    $measurableCell.siblings('.content').empty().html();
+                    $measurableCell.html(oldMeasurableHtml);
                 });
 
                 // animal dropdown
@@ -1227,6 +1232,8 @@ var finprint = finprint || {};  //namespace if necessary...
                     {allowEmptyOption: true, plugins: ['remove_button', 'restore_on_backspace']}
                 );
             });
+             //edit functionality to include measurables coloumn
+            editMeasurablesInline($thisRow.find('td.measurables'));
         });
     }
 
@@ -1303,20 +1310,6 @@ var finprint = finprint || {};  //namespace if necessary...
         var $modal = $('#edit-measurables-modal');
         var $measurablesCell = $('td.measurables');
 
-        function buildMeasurableList(measurables, isMaster) {
-            var measurableList = '';
-            measurables.forEach(function (measurable) {
-                measurableList += measurable.name
-                    + '<a href="#" class="delete-measurable" data-measurable-id="'
-                    + measurable.id + '"';
-                if (isMaster) {
-                    measurableList += ' data-is-master="true" ';
-                }
-                measurableList += ' title="Delete measurable">&#x2716;</a><br />';
-            });
-            return measurableList;
-        }
-
         $measurablesCell.on('click', 'a.edit-measurables', function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -1369,10 +1362,12 @@ var finprint = finprint || {};  //namespace if necessary...
                     $modal.modal('hide');
                 });
             });
+
             return false;
         });
 
         $measurablesCell.on('click', 'a.delete-measurable', function (e) {
+        // change for master data set
             e.preventDefault();
             e.stopPropagation();
 
@@ -1695,6 +1690,75 @@ var finprint = finprint || {};  //namespace if necessary...
         setTimeout(function () {
             // curr_icon.attr('style', 'display:true');
         }, 0);
+    }
+
+    function editMeasurablesInline(row) {
+    // handles the dit of measurables coloumn if edit is pressed from action column
+        var $thisRow = row;
+        var $originalTarget = $thisRow.find('.edit-measurables');
+        var eventId = $originalTarget.data('event-id');
+        var data = {};
+        if ($originalTarget.data('is-master')) {
+            data['is-master'] = true;
+        }
+        $originalTarget.siblings('.content').html("");
+        // adding input form for each measurable value if edit is pressed
+        $.get('/assignment/measurables/edit/' + eventId, data, function (res) {
+            res.measurables.forEach(function (m) {
+                var measValue = '';
+                res.event_measurables.forEach(function (em) {
+                    if (em.measurable === m.id) {
+                        measValue = em.value;
+                    }
+                });
+                if (measValue != '') {
+                    var measurableEditBlock = '<div class="measurables_item measurable-label">'
+                                            + '<label>'+m.name+':</label>'
+                                            + '<input class="editText" type="text" data-id='+m.id+' value='+measValue+'>'
+                                            + '</div>';
+                    $originalTarget.parent().find('.content').append(measurableEditBlock);
+                    }
+            });
+        });
+        //hide the edit button inside measurables coloumn
+        $thisRow.find('.edit-measurables').hide();
+    }
+
+    function saveInlineEditForMeasurables(row) {
+        var $originalTarget = row.find('.edit-measurables');
+        var eventId = $originalTarget.data('event-id');
+        var data = {measurables: [], values: []};
+        var isMaster = false;
+        if ($originalTarget.data('is-master')) {
+            data['is-master'] = true;
+            isMaster = true;
+        }
+        $originalTarget.parent().find('div.measurables_item').each(function () {
+            // don't save empty vals!
+            if ($(this).find('input[type="text"]').val() !== '') {
+                data.measurables.push($(this).find('input[type="text"]').data('id'));
+                data.values.push($(this).find('input[type="text"]').val());
+            }
+        });
+        $.post('/assignment/measurables/edit/' + eventId, data, function (res) {
+            $originalTarget.siblings('.content').empty().html(buildMeasurableList(res.measurables, isMaster));
+            $originalTarget.show();
+        });
+
+    }
+
+    function buildMeasurableList(measurables, isMaster) {
+            var measurableList = '';
+            measurables.forEach(function (measurable) {
+                measurableList += measurable.name.trim()+" "
+                    + '<a href="#" class="delete-measurable" data-measurable-id="'
+                    + measurable.id + '"';
+                if (isMaster) {
+                    measurableList += ' data-is-master="true" ';
+                }
+                measurableList += ' title="Delete measurable" style="margin-left:-1px !important">&#x2716;</a><br />';
+            });
+            return measurableList;
     }
 })(jQuery);
 
