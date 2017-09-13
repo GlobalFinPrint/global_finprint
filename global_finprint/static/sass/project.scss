@@ -729,7 +729,7 @@ h3.form-title {
         cursor: default;
         text-align: left;
         top: -170px;
-        height: 160px;
+        height: 170px;
         width: 600px;
         background-color: lighten($green, 25%);
         border: 2px solid lighten($gray, 25%);
@@ -773,6 +773,10 @@ h3.form-title {
             border-top-color: lighten($gray, 25%);
             border-width: 18px;
             margin-left: -23px;
+        }
+
+        .observation-title {
+            margin-left: 18px;
         }
 
         .left, .right {
