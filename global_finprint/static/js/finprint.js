@@ -995,10 +995,12 @@ var finprint = finprint || {};  //namespace if necessary...
             var $currentTarget = $(e.currentTarget);
             var url = $currentTarget.data('img-url');
             var $image = $currentTarget.find('.image-icon');
-
+            var extent_config = $currentTarget.find('.extent').attr('style');
             var img_temp = '<img width="500" height="500" src=' + url + '>';
-            var modal_title = $currentTarget.closest('.annotool-thumbnail').data('animal');;
-            $modal.find('.image-zoom').html(img_temp)
+            var modal_title = $currentTarget.data('animal');
+            var extent_html='<div class="zoom_image_extent" style="'+extent_config+'">&nbsp;</div>';
+            $modal.find('.image-zoom').html(img_temp);
+            $modal.find('.image-zoom').append(extent_html);
             $modal
                 .find('.image-zoom')
                 .attr('style', $image.attr('style'))
@@ -1309,6 +1311,20 @@ var finprint = finprint || {};  //namespace if necessary...
     function initEditMeasurables() {
         var $modal = $('#edit-measurables-modal');
         var $measurablesCell = $('td.measurables');
+
+        function buildMeasurableList(measurables, isMaster) {
+            var measurableList = '';
+            measurables.forEach(function (measurable) {
+                measurableList += measurable.name
+                    + '<a href="#" class="delete-measurable" data-measurable-id="'
+                    + measurable.id + '"';
+                if (isMaster) {
+                    measurableList += ' data-is-master="true" ';
+                }
+                measurableList += ' title="Delete measurable">&#x2716;</a><br />';
+            });
+            return measurableList;
+        }
 
         $measurablesCell.on('click', 'a.edit-measurables', function (e) {
             e.preventDefault();
