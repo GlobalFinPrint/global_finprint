@@ -181,6 +181,9 @@ a.manual-assign {
 
     td.measurables a {
       text-decoration: none;
+      &.delete-measurable {
+            margin-left:-3px;
+      }
     }
   }
 }

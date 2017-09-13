@@ -1750,13 +1750,13 @@ var finprint = finprint || {};  //namespace if necessary...
     function buildMeasurableList(measurables, isMaster) {
             var measurableList = '';
             measurables.forEach(function (measurable) {
-                measurableList += measurable.name
+                measurableList += measurable.name.trim()+" "
                     + '<a href="#" class="delete-measurable" data-measurable-id="'
                     + measurable.id + '"';
                 if (isMaster) {
                     measurableList += ' data-is-master="true" ';
                 }
-                measurableList += ' title="Delete measurable">&#x2716;</a><br />';
+                measurableList += ' title="Delete measurable" style="margin-left:-1px !important">&#x2716;</a><br />';
             });
             return measurableList;
     }
