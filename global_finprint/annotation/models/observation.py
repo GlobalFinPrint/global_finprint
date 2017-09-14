@@ -308,8 +308,6 @@ class MasterObservation(AbstractObservation):
     def animal(self):
         return self.masteranimalobservation.animal
 
-
-
     def needs_review(self):
         return any(e.needs_review() for e in self.get_event_set())
 
