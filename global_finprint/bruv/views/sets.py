@@ -588,11 +588,19 @@ class SetListView(UserAllowedMixin, View):
                 messages.success(self.request, 'Set updated')
 
             # navigate back to set list
-            success_url = reverse_lazy('trip_set_list', args=[trip_pk])
-            if 'save-and-add' in request.POST:
-                success_url += '#set-form-parent'
+            if 'save-and-next' in request.POST:
+                next_set = edited_set.next_by_code
+                if next_set:
+                    success_url = reverse_lazy('set_update', args=[trip_pk, next_set.id]) + '#set-form-parent'
+                    success_url += '#set-form-parent'
+                else:
+                    success_url = reverse_lazy('trip_set_list', args=[trip_pk]) + '#'
             else:
-                success_url += '#'
+                success_url = reverse_lazy('trip_set_list', args=[trip_pk])
+                if 'save-and-add' in request.POST:
+                    success_url += '#set-form-parent'
+                else:
+                    success_url += '#'
             return HttpResponseRedirect(success_url)
 
         # one or more forms have errors

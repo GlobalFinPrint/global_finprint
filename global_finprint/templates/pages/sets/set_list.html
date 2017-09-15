@@ -205,6 +205,9 @@
                         <a href="{% url 'trip_set_list' trip_pk %}" class="btn btn-default btn-fp">Cancel</a>
                         {% if not set_pk %}
                             <input type="submit" name="save-and-add" value="Save & add new set" class="btn btn-primary btn-fp" id="submit-id-save-and-add-new" />
+                        {% else %}
+                            {# todo:  make this conditional on there being a next set #}
+                            <input type="submit" name="save-and-next" value="Save & edit next set" class="btn btn-primary btn-fp" id="submit-id-save-and-next" />
                         {% endif %}
                         <input type="submit" name="save" value="Save{{ set_pk|yesno:" changes, new set" }}" class="btn btn-primary btn-fp" id="submit-id-save" />
                     </div>

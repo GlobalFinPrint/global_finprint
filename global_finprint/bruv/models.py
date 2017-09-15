@@ -244,6 +244,10 @@ class Set(AuditableModel):
     def environmentmeasure_set(self):
         return [x for x in [self.haul_measure, self.drop_measure] if x is not None]
 
+    @property
+    def next_by_code(self):
+        return self.trip.get_next_set_by_code(self.code)
+
     def save(self, *args, **kwargs):
         # todo:  we're assuming the input is latitude & longitude!  this should be checked!
         self.coordinates = Point(float(self.longitude), float(self.latitude))
