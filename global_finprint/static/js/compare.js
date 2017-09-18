@@ -174,20 +174,27 @@ $(function () {
             this.model.toggleSelected();
         },
         showFullImage: function (e) {
-            var $modal = $('#full-image-modal');
+            var $modal = $('#full-image-modal')
             e.preventDefault();
             e.stopPropagation();
             var $currentTarget = $(e.currentTarget);
+            var modal_title = $currentTarget.closest('.event-thumbnail').data('image-name');
             var url = $currentTarget.data('img-url');
-            var $image = $currentTarget.find('.image-icon');
-            var img_temp = '<img width="500" height="500" style="padding-left:2.5em;padding-right:2.5em" src=' + url + '>';
+            var $image =$currentTarget.find('.image-icon');
+            var extent_config = $currentTarget.find('.extent').attr('style');
+            var img_temp= '<img width="500" height="500" style="padding-left:2.5em;padding-right:2.5em" src='+url+'>';
             $modal.find('.event-image').html(img_temp);
+            var extent_html='<div class="zoom_image_extent" style="'+extent_config+'">&nbsp;</div>';
+            $modal.find('.event-image').append(extent_html);
             $modal
                 .find('.event-image')
                 .attr('style', $image.attr('style'))
                 .end()
                 .find('.extent')
-                .attr('style', this.model.get('initial_event').extent_css)
+                .attr('style', $currentTarget.find('.extent').attr('style'))
+                .end()
+                .find('.modal-title')
+                .html(modal_title)
                 .end()
                 .modal('show');
         },
@@ -196,11 +203,15 @@ $(function () {
             event.stopPropagation();
             var $target = $(event.target).closest('.event-thumbnail .video-icon');
             var url = $target[0].getAttribute("value");
-            var video_temp = '<video id="8sec_clip" width="500" height="500" controls>' +
+            var modal_title = $target.closest('.event-thumbnail').data('image-name');
+            var video_temp = '<video width="500" height="500" controls>' +
                 '<source src=' + url + ' type="video/mp4"> </video>';
             var event_clip = $('#full-clip-modal').find('.event-clip');
             event_clip.html(video_temp);
             event_clip.attr('style', $target.attr('style'))
+                .end()
+                .find('.modal-title')
+                .html(modal_title)
                 .end()
                 .modal('show');
 
@@ -393,12 +404,6 @@ $(function () {
             if (!this.get('selected')) {
                 this.collection.removeObservation(this);
             }
-        },
-        select: function () {
-            if (!this.get('selected')) {
-                this.set('selected', true);
-                this.view.$el.find('.observation-popover .selector').addClass('selected');
-            }
         }
     });
 
@@ -412,11 +417,9 @@ $(function () {
             this.project = options.project;
         },
         addObservation: function (model) {
-            // todo:  add measurables
             var attributes = model.toJSON();
             attributes.original = model;
             this.add(attributes);
-
             this.view.render();
         },
         removeObservation: function (model) {
@@ -453,7 +456,7 @@ $(function () {
                 observation.view.render();
             });
         },
-        saveMaster: function () {
+        save: function (review) {
             var $this = $(this);
             var $feedback = $('span#save-feedback');
             var data = {
@@ -473,7 +476,7 @@ $(function () {
                         .show()
                         .delay(1000)
                         .fadeOut();
-                } else if (res.success === 'no changes') {
+                } else if (res.success === 'no changes' && !review) {
                     $feedback
                         .removeClass('success failure')
                         .text('No changes to save...')
@@ -481,7 +484,9 @@ $(function () {
                         .delay(1000)
                         .fadeOut();
                 }
-
+                if (review) {
+                    window.location.href = $('button#review-master').attr('data-href-target');
+                }
             }).error(function () {
                 $this.removeAttr('disabled');
                 $feedback
@@ -493,38 +498,11 @@ $(function () {
                     .fadeOut();
             });
         },
+        saveMaster: function () {
+            this.save(review=false);
+        },
         reviewMaster: function () {
-            var $this = $(this);
-            var $feedback = $('span#save-feedback');
-            var data = {
-                original_observation_ids: this.collection.pluck('original_observation_id'),
-                project: this.collection.project
-            };
-
-            $this.attr('disabled', 'disabled');
-
-            $.post(this.collection.url, data, function (res) {
-                $this.removeAttr('disabled');
-                if (res.success === 'ok') {
-                    $feedback
-                        .removeClass('failure')
-                        .addClass('success')
-                        .text('Changes saved!')
-                        .show()
-                        .delay(1000)
-                        .fadeOut();
-                }
-                window.location.href = $('button#review-master').attr('data-href-target');
-            }).error(function () {
-                $this.removeAttr('disabled');
-                $feedback
-                    .removeClass('success')
-                    .addClass('failure')
-                    .text('Encountered an error saving changes; please try again later.')
-                    .show()
-                    .delay(1000)
-                    .fadeOut();
-            });
+            this.save(review=true);
         }
     });
 

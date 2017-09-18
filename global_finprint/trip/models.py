@@ -48,6 +48,9 @@ class Trip(AuditableModel):
     def region(self):
         return self.location.region
 
+    def get_next_set_by_code(self, set_code):
+        return self.set_set.filter(code__gt=set_code).order_by('code').first()
+
     def completed(self):
         return all(s.completed() for s in self.set_set.all())
 

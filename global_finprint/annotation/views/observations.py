@@ -109,7 +109,7 @@ class MasterObservationDeleteEvent(UserAllowedMixin, View):
         event = get_object_or_404(MasterEvent, pk=evt_id)
         observation = event.master_observation
         try:
-            if len(observation.event_set()) > 1:
+            if len(observation.event_set_for_table) > 1:
                 event.delete(keep_parents=True)
             else:
                 observation.delete()

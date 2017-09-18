@@ -61,9 +61,12 @@ class MasterRecord(AuditableModel):
     @transaction.atomic
     def copy_observations(self, observation_ids):
         try:
-            for old_master_observation in self.masterobservation_set.all():
+            for old_master_observation in self.masterobservation_set.exclude(original_id__in=observation_ids):
+                # delete diff on MasterRecord side
                 old_master_observation.delete()
-            for observation in Observation.objects.filter(pk__in=observation_ids):
+            for observation in Observation.objects.filter(pk__in=observation_ids).exclude(
+                    pk__in=self.masterobservation_set.values_list('original_id')):
+                # add diff on observation_ids side
                 MasterObservation.create_from_original(self, observation)
             return True, None
         except Exception as e:
@@ -93,8 +96,13 @@ class AbstractObservation(AuditableModel):
     class Meta:
         abstract = True
 
+    @property
     def initial_event(self):
-        pass
+        return None
+
+    @property
+    def event_set_for_table(self):
+        return None
 
     def get_event_set(self):
         pass
@@ -104,7 +112,7 @@ class AbstractObservation(AuditableModel):
 
     def initial_observation_time(self):
         if self.observation_time is None:
-            self.observation_time = self.initial_event().event_time
+            self.observation_time = self.initial_event.event_time
             self.save()
         return self.observation_time
 
@@ -137,7 +145,7 @@ class AbstractObservation(AuditableModel):
         if for_web:
             json['time'] = self.initial_observation_time()
             json['pretty_time'] = time_display(self.initial_observation_time())
-            json['initial_event'] = self.initial_event().to_json(for_web=True)
+            json['initial_event'] = self.initial_event.to_json(for_web=True)
         return json
 
 
@@ -205,6 +213,15 @@ class Observation(AbstractObservation):
     def get_for_api(cls, assignment):
         return list(ob.to_json() for ob in cls.objects.filter(assignment=assignment))
 
+    @property
+    def initial_event(self):
+        return self.event_set.order_by('create_datetime').first()
+
+    @property
+    def event_set_for_table(self):
+        initial_event = self.initial_event
+        return [initial_event] + list(self.event_set.exclude(id=initial_event.id).order_by('-event_time'))
+
     def remove_relations(self):
         # remove events
         self.event_set.all().delete()
@@ -221,13 +238,6 @@ class Observation(AbstractObservation):
     def get_event_set(self):
         return self.event_set.order_by('event_time')
 
-    def initial_event(self):
-        return self.event_set.order_by('create_datetime').first()
-
-    def event_set_for_table(self):
-        initial_event = self.initial_event()
-        return [initial_event] + list(self.event_set.exclude(id=initial_event.id).order_by('-event_time'))
-
     def __str__(self):
         # todo:  update to first event?
         return u"{0}".format(self.type)
@@ -240,6 +250,13 @@ class Observation(AbstractObservation):
 
     def needs_review(self):
         return any(e.needs_review() for e in self.event_set.all())
+
+    def to_json(self, for_web=False):
+        abstract_observation_json = super().to_json(for_web=for_web)
+        abstract_observation_json.update({
+            'original_observation_id': self.id
+        })
+        return abstract_observation_json
 
 
 class MasterObservation(AbstractObservation):
@@ -267,14 +284,20 @@ class MasterObservation(AbstractObservation):
         for event in original_observation.event_set.all():
             MasterEvent.create_from_original(master_observation, event)
 
+    @property
+    def initial_event(self):
+        return self.masterevent_set.order_by('original_id').first()
+
+    @property
+    def event_set_for_table(self):
+        initial_event = self.initial_event
+        return [initial_event] + list(self.masterevent_set.exclude(id=initial_event.id).order_by('-event_time'))
+
     def set(self):
         return self.master_record.set
 
     def get_animalobservation(self):
         return self.masteranimalobservation
-
-    def initial_event(self):
-        return self.masterevent_set.order_by('original_id').first()
 
     def get_event_set(self):
         return self.masterevent_set.order_by('event_time')
@@ -284,10 +307,6 @@ class MasterObservation(AbstractObservation):
 
     def animal(self):
         return self.masteranimalobservation.animal
-
-    def event_set_for_table(self):
-        initial_event = self.initial_event()
-        return [initial_event] + list(self.masterevent_set.exclude(id=initial_event.id).order_by('-event_time'))
 
     def needs_review(self):
         return any(e.needs_review() for e in self.get_event_set())

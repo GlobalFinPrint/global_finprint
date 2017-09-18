@@ -515,6 +515,7 @@ class SetListView(UserAllowedMixin, View):
                 reef=set_form.cleaned_data['reef'],
                 habitat=set_form.cleaned_data['habitat'])
 
+            current_set = None
             # create new set and env measures
             if set_pk is None:
                 new_set = set_form.save()
@@ -537,6 +538,7 @@ class SetListView(UserAllowedMixin, View):
                 self._process_habitat_substrate(new_set, request)
 
                 messages.success(self.request, 'Set created')
+                current_set = new_set
 
             # edit existing set and env measures
             else:
@@ -586,13 +588,29 @@ class SetListView(UserAllowedMixin, View):
                 self._process_habitat_substrate(edited_set, request)
 
                 messages.success(self.request, 'Set updated')
+                current_set = edited_set
 
-            # navigate back to set list
-            success_url = reverse_lazy('trip_set_list', args=[trip_pk])
-            if 'save-and-add' in request.POST:
-                success_url += '#set-form-parent'
+            # determine action following save
+            if 'save-and-next' in request.POST:
+                next_set = edited_set.next_by_code
+                if next_set:
+                    # edit next in order
+                    success_url = reverse_lazy('set_update', args=[trip_pk, next_set.id]) + '#set-form-parent'
+                else:
+                    # exit to list
+                    success_url = reverse_lazy('trip_set_list', args=[trip_pk]) + '#'
             else:
-                success_url += '#'
+                success_url = reverse_lazy('trip_set_list', args=[trip_pk])
+                if 'save-and-add' in request.POST:
+                    # add a new set
+                    success_url += '#set-form-parent'
+                elif current_set and 'save-and-remain' in request.POST:
+                    # stay here
+                    success_url = reverse_lazy('set_update', args=[trip_pk, current_set.id]) + '#set-form-parent'
+                else:
+                    # exit to list
+                    success_url += '#'
+
             return HttpResponseRedirect(success_url)
 
         # one or more forms have errors
