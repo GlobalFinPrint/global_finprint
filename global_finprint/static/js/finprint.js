@@ -609,6 +609,9 @@ var finprint = finprint || {};  //namespace if necessary...
                 $parent.find(target).show();
             }
         });
+       register_shortcut_for_observation_table();
+
+       $($('tbody#collapse-parent').children('tr')[0]).addClass("selected");
     }
 
     function initSelectizeWidgets() {
@@ -1018,7 +1021,7 @@ var finprint = finprint || {};  //namespace if necessary...
             e.stopPropagation();
             var $target = $(e.target).closest('.annotool-thumbnail .video-icon');
             var url = $target[0].getAttribute("value");
-            var video_temp = '<video width="500" height="500" controls>' +
+            var video_temp = '<video id="8sec_clip" width="500" height="500" controls>' +
                 '<source src=' + url + ' type="video/mp4"> </video>';
             var modal_title = $target.closest('.annotool-thumbnail').data('animal');
             $modal1.find('.event-clip').html(video_temp);
@@ -1030,6 +1033,13 @@ var finprint = finprint || {};  //namespace if necessary...
                 .html(modal_title)
                 .end()
                 .modal('show');
+        });
+
+        $modal1.find("div#closeModalId").click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $modal1.find('.event-clip video').removeAttr("id");
+            $modal1.modal('hide');
         });
     }
 
@@ -1696,5 +1706,218 @@ var finprint = finprint || {};  //namespace if necessary...
             // curr_icon.attr('style', 'display:true');
         }, 0);
     }
+
+    function register_shortcut_for_observation_table() {
+         var $parent = $('tbody#collapse-parent');
+
+         Mousetrap.bind('up', function(e, combo) {
+             e.preventDefault();
+             change_observation_selection('up');
+         });
+
+         Mousetrap.bind('down', function(e, combo) {
+             e.preventDefault();
+             change_observation_selection('down');
+         });
+
+         Mousetrap.bind('shift+up', function(e, combo) {
+             e.preventDefault();
+             scroll_window(0,50);
+         });
+
+         Mousetrap.bind('shift+down', function(e, combo) {
+             e.preventDefault();
+             scroll_window(0,-50);
+         });
+
+         Mousetrap.bind('ctrl+e', function(e, combo) {
+         // edit the observation inline
+            e.preventDefault();
+            var $parent = $('tbody#collapse-parent');
+            $parent.find('.selected a.obs-edit').trigger('click');
+
+            var animal_observation = $parent.find('.selected .animal');
+            if (animal_observation.size() > 0) {
+                animal_observation.focus();
+            } else {
+                $parent.find('.selected .obs_note .edit-obsnote').focus();
+            }
+
+         });
+
+         Mousetrap.bind('ctrl+s', function(e, combo) {
+            e.preventDefault();
+            var $parent = $('tbody#collapse-parent');
+            $parent.find('.selected a.edit-save').trigger('click');
+         });
+
+         Mousetrap.bind('ctrl+a', function(e, combo) {
+         // show Add measurables popup of selected event
+            e.preventDefault();
+            var $parent = $('tbody#collapse-parent');
+            $parent.find('.selected a.edit-measurables').trigger('click');
+         });
+
+         Mousetrap.bind('ctrl+i', function(e, combo) {
+         // click on image to zoom out
+            e.preventDefault();
+            var $parent = $('tbody#collapse-parent');
+            $parent.find('.selected div.annotool-thumbnail').trigger('click');
+            //TODO: on click up and down should show next or prev image
+
+         });
+
+         Mousetrap.bind('ctrl+v', function(e, combo) {
+         // open event clip of 8 sec if present
+            e.preventDefault();
+            var $parent = $('tbody#collapse-parent');
+            var $video_icon = $parent.find('.selected span.video-icon');
+            if ($video_icon.attr('style') != "display:none") {
+                $video_icon.trigger('click');
+            }
+         });
+
+         Mousetrap.bind('esc', function(e, combo) {
+          // show Add measurables popup of selected event
+          //TODO: make sure on cacel it destroy the instance of modal containing video or Image
+            e.preventDefault();
+            var $parent = $('tbody#collapse-parent');
+            $parent.find('.selected a.edit-cancel').trigger('click');
+
+            //closes if there is an image zoomed out
+            $('.close').trigger('click');
+         });
+
+         Mousetrap.bind('space', function(e, combo) {
+             var element = $("#8sec_clip")[0];
+             if (element !='undefined') {
+                 if(element.paused){
+                    element.play();
+                  } else {
+                    element.pause();
+                 }
+             }
+         });
+
+         Mousetrap.bind('f5', function(e, combo) {
+             // open event clip of 8 sec if present
+            e.preventDefault();
+            var element = $("#8sec_clip")[0];
+            if (element!='undefined') {
+                 element['request_full_screen'] = element.requestFullscreen
+                                    || element.mozRequestFullScreen
+                                    || element.msRequestFullscreen
+                                    || element.webkitRequestFullscreen;
+                    if( !(screen.height-30 <=window.innerHeight) || window.innerHeight != screen.height) {
+                        // full screen validation
+                         element.request_full_screen();
+                    }
+            }
+          });
+
+    }
+
+    function scroll_window(x, y) {
+          window.scrollBy(x,y);
+    }
+
+    function collapse_parent($parent){
+          $parent.find('tr.child-row')
+                .hide()
+                .end()
+                .find('tr.first-event, tr.single-event')
+                .removeClass('selected')
+                .end()
+                .find('.rowspan')
+                .removeAttr('rowspan')
+                .end();
+
+    }
+
+    function change_observation_selection(action) {
+        var $parent = $('tbody#collapse-parent');
+        var prev_index = $parent.find('.selected').index();
+        var max_size = $parent.children('tr').size();
+
+        // limit the selection if its on 0th row or last row
+        if ((prev_index-1 < 0 && action =='up') ||
+            (prev_index+1 == max_size && action =='down')) {
+           return;
+        }
+
+        var index_new, target ,rowspan;
+
+        if (action =='up') {
+            // Check if up key is pressed on a collapsable row
+            if($($parent.children('tr')[prev_index]).hasClass('first-event')){
+                collapse_parent($parent);
+            } else {
+               $($parent.children('tr')[prev_index]).removeClass("selected");
+            }
+
+            index_new = prev_index-1;
+
+            if($($parent.children('tr')[index_new]).hasClass('child-row')) {
+            // getting target to update rowspan in case if we are getting child row first with up button
+                target = $($parent.children('tr')[index_new]).data('target');
+                if (! target) {
+                    target = "."+$($parent.children('tr')[index_new]).data('is-child');
+                }
+            } else {
+                target = $($parent.children('tr')[index_new]).data('target');
+                if (! target) {
+                // we need class varible as target as we are using "($parent.find(target)).show();"
+                //that's why "." is added
+                    target = "."+$($parent.children('tr')[index_new]).data('is-child');
+                }
+            }
+
+        } else if(action =='down') {
+            index_new = prev_index+1;
+            // Check if down key is pressed on an expanded row
+            if($($parent.children('tr')[index_new]).hasClass('single-event')){
+                collapse_parent($parent);
+            }
+            // If down key is pressed on a child
+            else if($($parent.children('tr')[prev_index]).hasClass('child-row') &&
+                $($parent.children('tr')[index_new]).hasClass('single-event')){
+                // collapse parent
+                collapse_parent();
+            } else {
+                $($parent.children('tr')[prev_index]).removeClass("selected");
+            }
+
+            if($($parent.children('tr')[index_new]).hasClass('child-row')) {
+                target = $($parent.children('tr')[index_new]).data('target');
+                if (! target) {
+                    target = "."+$($parent.children('tr')[index_new]).data('is-child');
+                }
+            } else if($($parent.children('tr')[index_new]).hasClass('first-event')){
+                target = $($parent.children('tr')[index_new]).data('target');
+            } else {
+                target = $($parent.children('tr')[index_new]).data('target');
+            }
+        }
+
+        $($parent.children('tr')[prev_index]).removeClass('selected');
+        // to update rowspan if goinn from down to up
+        if($($parent.children('tr')[index_new]).hasClass('child-row')){
+            // adding rowspan as we are clearing above
+            var data_target = "." + $($parent.children('tr')[index_new]).data('is-child');
+            var first_child = $($parent).find("tr[data-target='"+data_target+"']");
+            rowspan = first_child.data('rowspan');
+            $($parent).find("tr[data-target='"+data_target+"']").find('.rowspan').attr('rowspan',rowspan);
+            $($parent.children('tr')[index_new]).addClass('selected');
+        } else {
+            rowspan = $($parent.children('tr')[index_new]).data('rowspan');
+            $($parent.children('tr')[index_new]).addClass('selected');
+            if (rowspan > 1) {
+               $($parent.children('tr')[index_new]).find('.rowspan').attr('rowspan',rowspan);
+            }
+        }
+
+        ($parent.find(target)).show();
+    }
+
 })(jQuery);
 

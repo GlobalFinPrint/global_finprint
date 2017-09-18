@@ -126,7 +126,8 @@ $(function () {
             'click .event-thumbnail .video-icon:not(".empty")': 'showFullClip',
             'keydown': 'onKeypress',
             'mouseover': 'onMouseOver',
-            'mouseout': 'onMouseOut'
+            'mouseout': 'onMouseOut',
+            'click #full-clip-modal #closeModalId':'destroyEventClip'
         },
         template: _.template(Templates.observationView),
         render: function () {
@@ -195,7 +196,7 @@ $(function () {
             event.stopPropagation();
             var $target = $(event.target).closest('.event-thumbnail .video-icon');
             var url = $target[0].getAttribute("value");
-            var video_temp = '<video width="500" height="500" controls>' +
+            var video_temp = '<video id="8sec_clip" width="500" height="500" controls>' +
                 '<source src=' + url + ' type="video/mp4"> </video>';
             var event_clip = $('#full-clip-modal').find('.event-clip');
             event_clip.html(video_temp);
@@ -293,6 +294,13 @@ $(function () {
                 // curr_icon.attr('style', 'display:true');
             }, 0);
 
+        },
+        destroyEventClip: function() {
+             var $modal1 = $('#full-image-modal');
+             e.preventDefault();
+             e.stopPropagation();
+             $modal1.find('.event-clip video').removeAttr("id");
+             $modal1.modal('hide');
         }
     });
 
