@@ -174,7 +174,7 @@ $(function () {
             this.model.toggleSelected();
         },
         showFullImage: function (e) {
-            var $modal = $('#full-image-modal')
+            var $modal = $('#full-image-modal');
             e.preventDefault();
             e.stopPropagation();
             var $currentTarget = $(e.currentTarget);
