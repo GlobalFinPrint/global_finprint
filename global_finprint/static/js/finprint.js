@@ -589,12 +589,11 @@ var finprint = finprint || {};  //namespace if necessary...
             var alreadyToggled = $(this).hasClass('selected');
 
             // hide all children and deselect everything
+            $parent.find('tr.selected').removeClass('expanded').removeClass('selected');
             $parent
                 .find('tr.child-row')
                 .hide()
                 .end()
-                .find('tr.first-event, tr.single-event')
-                .removeClass('selected')
                 .find('td.rowspan')
                 .removeAttr('rowspan');
 
@@ -604,8 +603,10 @@ var finprint = finprint || {};  //namespace if necessary...
                 rowspan = $(this).data('rowspan');
                 $(this)
                     .addClass('selected')
+                    .addClass('expanded')
                     .find('td.rowspan')
                     .attr('rowspan', rowspan);
+                // Expand the row to show its children rows
                 $parent.find(target).show();
             }
         });
@@ -1034,7 +1035,14 @@ var finprint = finprint || {};  //namespace if necessary...
                 .find('.modal-title')
                 .html(modal_title)
                 .end()
-                .modal('show');
+                .modal('show')
+                .on('hidden.bs.modal', function(){
+                    // Remove fullscreen event shortcut when modal is hidden
+                    Mousetrap.unbind('f5');
+                });
+
+            // Attach Fullscreen event shortcut (F5)
+            Mousetrap.bind('f5', shortcut_f5);
         });
 
         $modal1.find("div#closeModalId").click(function (e) {
@@ -1199,7 +1207,7 @@ var finprint = finprint || {};  //namespace if necessary...
 
                 // animal dropdown
                 oldAnimal = $animalCell.html();
-                animalHTML = '<select class="edit-animal">';
+                animalHTML = '<select class="edit-animal mousetrap">';
 
                 animals.forEach(function (animal) {
                     if (animal.group_name != animalGroup) {
@@ -1217,22 +1225,22 @@ var finprint = finprint || {};  //namespace if necessary...
 
                 // observation note
                 oldObsNote = $obsNoteCell.html();
-                obsNoteHTML = '<textarea class="edit-obsnote">' + obs_note + '</textarea>';
+                obsNoteHTML = '<textarea class="edit-obsnote mousetrap">' + obs_note + '</textarea>';
                 $obsNoteCell.html(obsNoteHTML);
 
                 // duration
                 oldDuration = $durationCell.html();
-                durationHTML = '<input type="number" min="0" class="edit-duration" value="' + duration + '" />';
+                durationHTML = '<input type="number" min="0" class="edit-duration mousetrap" value="' + duration + '" />';
                 $durationCell.html(durationHTML);
 
                 // event note
                 oldEventNote = $eventNoteCell.html();
-                eventNoteHTML = '<textarea class="edit-eventnote">' + event_note + '</textarea>';
+                eventNoteHTML = '<textarea class="edit-eventnote mousetrap">' + event_note + '</textarea>';
                 $eventNoteCell.html(eventNoteHTML);
 
                 // attributes
                 oldAttributes = $attributesCell.html();
-                attributesHTML = '<select class="edit-attributes" multiple="multiple">';
+                attributesHTML = '<select class="edit-attributes mousetrap" multiple="multiple">';
                 attributesHTML += tags.map(function (tag) {
                     return '<option value="' + tag.id + '"' +
                         (selectedTagIds.indexOf(tag.id) !== -1 ? ' selected="selected"' : '') +
@@ -1746,12 +1754,16 @@ var finprint = finprint || {};  //namespace if necessary...
             e.preventDefault();
             var $parent = $('tbody#collapse-parent');
             $parent.find('.selected a.obs-edit').trigger('click');
-
             var animal_observation = $parent.find('.selected .animal');
             if (animal_observation.size() > 0) {
-                animal_observation.focus();
+               setTimeout(function(){
+                    animal_observation.children('select').focus();
+                }, 100);
+
             } else {
-                $parent.find('.selected .obs_note .edit-obsnote').focus();
+                setTimeout(function(){
+                    $parent.find('.selected .edit-obsnote').focus();
+                }, 100);
             }
 
          });
@@ -1769,6 +1781,7 @@ var finprint = finprint || {};  //namespace if necessary...
             $parent.find('.selected a.edit-measurables').trigger('click');
          });
 
+         // CTRL+I will zoom selected rows's image in overlay window
          Mousetrap.bind('ctrl+i', function(e, combo) {
          // click on image to zoom out
             e.preventDefault();
@@ -1778,6 +1791,7 @@ var finprint = finprint || {};  //namespace if necessary...
 
          });
 
+         // CTRL+V will zoom selected row's video in overlay window
          Mousetrap.bind('ctrl+v', function(e, combo) {
          // open event clip of 8 sec if present
             e.preventDefault();
@@ -1790,11 +1804,9 @@ var finprint = finprint || {};  //namespace if necessary...
 
          Mousetrap.bind('esc', function(e, combo) {
           // show Add measurables popup of selected event
-          //TODO: make sure on cacel it destroy the instance of modal containing video or Image
             e.preventDefault();
             var $parent = $('tbody#collapse-parent');
             $parent.find('.selected a.edit-cancel').trigger('click');
-
             //closes if there is an image zoomed out
             $('.close').trigger('click');
          });
@@ -1809,23 +1821,22 @@ var finprint = finprint || {};  //namespace if necessary...
                  }
              }
          });
+    }
 
-         Mousetrap.bind('f5', function(e, combo) {
-             // open event clip of 8 sec if present
-            e.preventDefault();
-            var element = $("#8sec_clip")[0];
-            if (element!='undefined') {
-                 element['request_full_screen'] = element.requestFullscreen
-                                    || element.mozRequestFullScreen
-                                    || element.msRequestFullscreen
-                                    || element.webkitRequestFullscreen;
-                    if( !(screen.height-30 <=window.innerHeight) || window.innerHeight != screen.height) {
-                        // full screen validation
-                         element.request_full_screen();
-                    }
-            }
-          });
-
+    function shortcut_f5(e, combo){
+        // open event clip of 8 sec if present
+        e.preventDefault();
+        var element = $("#8sec_clip")[0];
+        if (element) {
+             element['request_full_screen'] = element.requestFullscreen
+                                || element.mozRequestFullScreen
+                                || element.msRequestFullscreen
+                                || element.webkitRequestFullscreen;
+             if(!(screen.height-30 <=window.innerHeight) || window.innerHeight != screen.height) {
+                  // full screen validation
+                 element.request_full_screen();
+             }
+        }
     }
 
     function scroll_window(x, y) {
@@ -1833,16 +1844,13 @@ var finprint = finprint || {};  //namespace if necessary...
     }
 
     function collapse_parent($parent){
-          $parent.find('tr.child-row')
-                .hide()
-                .end()
-                .find('tr.first-event, tr.single-event')
-                .removeClass('selected')
-                .end()
-                .find('.rowspan')
-                .removeAttr('rowspan')
-                .end();
-
+        $parent.find('tr.selected').removeClass('selected').removeClass('expanded');
+        $parent.find('tr.child-row')
+               .hide()
+               .end()
+               .find('td.rowspan')
+               .removeAttr('rowspan')
+               .end();
     }
 
     function change_observation_selection(action) {
@@ -1910,24 +1918,27 @@ var finprint = finprint || {};  //namespace if necessary...
             }
         }
 
-        $($parent.children('tr')[prev_index]).removeClass('selected');
+        $parent.find('tr.selected').removeClass('selected');
         // to update rowspan if goinn from down to up
         if($($parent.children('tr')[index_new]).hasClass('child-row')){
             // adding rowspan as we are clearing above
             var data_target = "." + $($parent.children('tr')[index_new]).data('is-child');
-            var first_child = $($parent).find("tr[data-target='"+data_target+"']");
-            rowspan = first_child.data('rowspan');
+            var first_event = $($parent).find("tr[data-target='"+data_target+"']");
+            first_event.addClass('expanded');
+            rowspan = first_event.data('rowspan');
             $($parent).find("tr[data-target='"+data_target+"']").find('.rowspan').attr('rowspan',rowspan);
             $($parent.children('tr')[index_new]).addClass('selected');
         } else {
             rowspan = $($parent.children('tr')[index_new]).data('rowspan');
             $($parent.children('tr')[index_new]).addClass('selected');
+            // The row has child rows
             if (rowspan > 1) {
                $($parent.children('tr')[index_new]).find('.rowspan').attr('rowspan',rowspan);
+               $($parent.children('tr')[index_new]).addClass('expanded');
             }
         }
 
-        ($parent.find(target)).show();
+        $parent.find(target).show();
     }
 
     function editMeasurablesInline(row) {
@@ -1952,7 +1963,7 @@ var finprint = finprint || {};  //namespace if necessary...
                 if (measValue != '') {
                     var measurableEditBlock = '<div class="measurables_item measurable-label">'
                                             + '<label>'+m.name+':</label>'
-                                            + '<input class="editText" type="text" data-id='+m.id+' value='+measValue+'>'
+                                            + '<input class="editText mousetrap" type="text" data-id='+m.id+' value='+measValue+'>'
                                             + '</div>';
                     $originalTarget.parent().find('.content').append(measurableEditBlock);
                     }
@@ -1998,6 +2009,6 @@ var finprint = finprint || {};  //namespace if necessary...
             });
             return measurableList;
     }
-    
+
 })(jQuery);
 

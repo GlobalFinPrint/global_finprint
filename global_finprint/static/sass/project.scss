@@ -153,7 +153,8 @@ a.manual-assign {
 
       &.selected {
         background-color: $parent-row;
-
+      }
+      &.expanded {
         td.attributes:after {
           @include glyphicon('\e259');
         }
@@ -1241,4 +1242,6 @@ img {
   border: 1px solid lightgreen;
 }
 
-
+#observation-table tbody tr.child-row.selected {
+  background-color: rgba(126,211,33,0.5) !important;
+}
