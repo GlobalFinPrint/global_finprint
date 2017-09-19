@@ -48,14 +48,6 @@ var Templates = {
                                 '<% } else { %>' +
                                     '<div class="event-thumbnail empty"></div>' +
                                 '<% } %>' +
-
-                                '<% if (status_id == 4 || !status_id) { %>' +
-                                '<div class="selector<%= selected ? " selected" : "" %>">' +
-                                    '<span class="checkmark glyphicon glyphicon-ok"></span>' +
-                                    '<div class="empty-selection">&nbsp;</div>' +
-                                '</div>' +
-                                '<% } %>' +
-
                             '</div>' +
                             '<div class="right">' +
                                 '<table><tbody>' +
@@ -78,6 +70,17 @@ var Templates = {
                                 '</tbody></table>' +
                             '</div>' +
 
+                            '<div class="left">' +
+                            '<% if (status_id == 4 || !status_id) { %>' +
+                                '<div class="selector<%= selected ? " selected" : "" %>">' +
+                                    '<span class="checkmark glyphicon glyphicon-ok"></span>' +
+                                    '<div class="empty-selection">&nbsp;</div>' +
+                                '</div>' +
+                                '<% } %>' +
+                            '</div>' +
+                            '<div class="right">' +
+                                '<%= comment %>' +
+                            '</div>' +
                 //         '</div>' +
                 //     '</div>' +
                 // '</div>' +
