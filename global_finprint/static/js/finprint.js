@@ -1741,12 +1741,12 @@ var finprint = finprint || {};  //namespace if necessary...
 
          Mousetrap.bind('shift+up', function(e, combo) {
              e.preventDefault();
-             scroll_window(0,50);
+             scroll_window(0,-50);
          });
 
          Mousetrap.bind('shift+down', function(e, combo) {
              e.preventDefault();
-             scroll_window(0,-50);
+             scroll_window(0,50);
          });
 
          Mousetrap.bind('ctrl+e', function(e, combo) {
