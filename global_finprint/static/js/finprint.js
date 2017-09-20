@@ -1039,10 +1039,12 @@ var finprint = finprint || {};  //namespace if necessary...
                 .on('hidden.bs.modal', function(){
                     // Remove fullscreen event shortcut when modal is hidden
                     Mousetrap.unbind('f5');
+                    Mousetrap.unbind('space');
                 });
 
             // Attach Fullscreen event shortcut (F5)
             Mousetrap.bind('f5', shortcut_f5);
+            Mousetrap.bind('space', shortcut_space);
         });
 
         $modal1.find("div#closeModalId").click(function (e) {
@@ -1758,12 +1760,12 @@ var finprint = finprint || {};  //namespace if necessary...
             if (animal_observation.size() > 0) {
                setTimeout(function(){
                     animal_observation.children('select').focus();
-                }, 100);
+                }, 500);
 
             } else {
                 setTimeout(function(){
                     $parent.find('.selected .edit-obsnote').focus();
-                }, 100);
+                }, 500);
             }
 
          });
@@ -1802,25 +1804,37 @@ var finprint = finprint || {};  //namespace if necessary...
             }
          });
 
-         Mousetrap.bind('esc', function(e, combo) {
+         Mousetrap.bind('esc',shortcut_esc);
+    }
+
+    function shortcut_esc(e, combo){
+     // play/pause event clip of 8 sec if present
+        e.preventDefault();
+        Mousetrap.bind('esc', function(e, combo) {
           // show Add measurables popup of selected event
             e.preventDefault();
             var $parent = $('tbody#collapse-parent');
             $parent.find('.selected a.edit-cancel').trigger('click');
             //closes if there is an image zoomed out
             $('.close').trigger('click');
-         });
+        });
+    }
 
-         Mousetrap.bind('space', function(e, combo) {
-             var element = $("#8sec_clip")[0];
-             if (element !='undefined') {
-                 if(element.paused){
-                    element.play();
-                  } else {
-                    element.pause();
+    function shortcut_space(e, combo) {
+    // play/pause event clip of 8 sec if present
+        e.preventDefault();
+        var element = $("#8sec_clip")[0];
+
+        Mousetrap.bind('space', function(e, combo) {
+                 var element = $("#8sec_clip")[0];
+                 if (element !='undefined') {
+                     if(element.paused){
+                        element.play();
+                      } else {
+                        element.pause();
+                     }
                  }
-             }
-         });
+             });
     }
 
     function shortcut_f5(e, combo){
