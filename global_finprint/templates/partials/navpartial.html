@@ -45,8 +45,8 @@
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" target="_blank" href="{% url 'web_help' %}">Website Guide (pdf)</a></li>
                         <li><a class="dropdown-item" target="_blank" href="{% url 'client_help' %}">Annotator Client Guide (pdf)</a></li>
-                        <li><a class="dropdown-item" target="_blank" href="{% url 'client_help' %}">Annotator Client Quick Reference (pdf)</a></li>
-                        <li><a class="dropdown-item" href="{% url 'home' %}">Terminology and FAQ</a></li>
+                        {#  <li><a class="dropdown-item" target="_blank" href="{% url 'client_help' %}">Annotator Client Quick Reference (pdf)</a></li>#}
+                        {#  <li><a class="dropdown-item" href="{% url 'home' %}">Terminology and FAQ</a></li>#}
                     </ul>
                 </li>
                 {% if request.user.is_authenticated %}
