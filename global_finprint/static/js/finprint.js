@@ -589,12 +589,11 @@ var finprint = finprint || {};  //namespace if necessary...
             var alreadyToggled = $(this).hasClass('selected');
 
             // hide all children and deselect everything
+            $parent.find('tr.selected').removeClass('expanded').removeClass('selected');
             $parent
                 .find('tr.child-row')
                 .hide()
                 .end()
-                .find('tr.first-event, tr.single-event')
-                .removeClass('selected')
                 .find('td.rowspan')
                 .removeAttr('rowspan');
 
@@ -604,11 +603,16 @@ var finprint = finprint || {};  //namespace if necessary...
                 rowspan = $(this).data('rowspan');
                 $(this)
                     .addClass('selected')
+                    .addClass('expanded')
                     .find('td.rowspan')
                     .attr('rowspan', rowspan);
+                // Expand the row to show its children rows
                 $parent.find(target).show();
             }
         });
+       register_shortcut_for_observation_table();
+
+       $($('tbody#collapse-parent').children('tr')[0]).addClass("selected");
     }
 
     function initSelectizeWidgets() {
@@ -702,7 +706,7 @@ var finprint = finprint || {};  //namespace if necessary...
 
             var remainingPercent = Math.max(0, 100 - $parent.find('input[name="total-percent"]').val());
 
-            $.get('/substrate/', function (res) {
+            $.get('/api/habitat/substrate/', function (res) {
                 var leftHTML, centerHTML, rightHTML;
 
                 leftHTML = '<div class="substrate-row"><select class="substrate select form-control" name="benthic-category">';
@@ -760,7 +764,7 @@ var finprint = finprint || {};  //namespace if necessary...
                 return $splitModal.remove();
             }
 
-            $.get('/substrate/', {parent_id: parentId}, function (res) {
+            $.get('/api/habitat/substrate/', {parent_id: parentId}, function (res) {
                 var $subLeft, $subCenter, $subRight, modalHtml, messageHtml;
 
                 if (!res.substrates.length) {
@@ -995,10 +999,12 @@ var finprint = finprint || {};  //namespace if necessary...
             var $currentTarget = $(e.currentTarget);
             var url = $currentTarget.data('img-url');
             var $image = $currentTarget.find('.image-icon');
-
+            var extent_config = $currentTarget.find('.extent').attr('style');
             var img_temp = '<img width="500" height="500" src=' + url + '>';
             var modal_title = $currentTarget.data('animal');
+            var extent_html='<div class="zoom_image_extent" style="'+extent_config+'">&nbsp;</div>';
             $modal.find('.image-zoom').html(img_temp);
+            $modal.find('.image-zoom').append(extent_html);
             $modal
                 .find('.image-zoom')
                 .attr('style', $image.attr('style'))
@@ -1018,10 +1024,10 @@ var finprint = finprint || {};  //namespace if necessary...
             e.stopPropagation();
             var $target = $(e.target).closest('.annotool-thumbnail .video-icon');
             var url = $target[0].getAttribute("value");
-            var video_temp = '<video width="500" height="500" controls>' +
+            var video_temp = '<video id="8sec_clip" width="500" height="500" controls>' +
                 '<source src=' + url + ' type="video/mp4"> </video>';
-            var modal_title = $target.closest('.annotool-thumbnail').data('animal');
-            $modal1.find('.event-clip').html(video_temp);
+            var modal_title = $(e.target).closest('.annotool-thumbnail').data('animal');
+            $modal1.find('.event-clip').html(video_temp)
             $modal1
                 .find('.event-clip')
                 .attr('style', $target.attr('style'))
@@ -1029,7 +1035,23 @@ var finprint = finprint || {};  //namespace if necessary...
                 .find('.modal-title')
                 .html(modal_title)
                 .end()
-                .modal('show');
+                .modal('show')
+                .on('hidden.bs.modal', function(){
+                    // Remove fullscreen event shortcut when modal is hidden
+                    Mousetrap.unbind('f5');
+                    Mousetrap.unbind('space');
+                });
+
+            // Attach Fullscreen event shortcut (F5)
+            Mousetrap.bind('f5', shortcut_f5);
+            Mousetrap.bind('space', shortcut_space);
+        });
+
+        $modal1.find("div#closeModalId").click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $modal1.find('.event-clip video').removeAttr("id");
+            $modal1.modal('hide');
         });
     }
 
@@ -1112,6 +1134,9 @@ var finprint = finprint || {};  //namespace if necessary...
             var $durationCell = $thisRow.find('td.duration');
             var $eventNoteCell = $thisRow.find('td.event-note');
             var $attributesCell = $thisRow.find('td.attributes');
+            var $measurableCell = $thisRow.find('td.measurables');
+            //old measurables html
+            var oldMeasurableHtml = $thisRow.find('td.measurables').html();
 
             $.get(dataUrl, function (resp) {
                 var oldActions, oldAnimal, oldObsNote, oldDuration, oldEventNote, oldAttributes;
@@ -1136,7 +1161,6 @@ var finprint = finprint || {};  //namespace if necessary...
                         tags: $attributesCell.find('select.edit-attributes').val()
                     }
                 }
-
                 // actions
                 oldActions = $actionsCell.html();
                 actionsHTML = '<a href="#" class="edit-save" data-save="' + saveUrl + '">Save</a>';
@@ -1148,7 +1172,8 @@ var finprint = finprint || {};  //namespace if necessary...
                     .find('.edit-save').one('click', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
-
+                    //calling for saving measurable column
+                    saveInlineEditForMeasurables($measurableCell);
                     $.post(saveUrl, serialize(), function (res) {
                         $actionsCell.html(oldActions);
                         $animalCell.html(res.animal);
@@ -1178,11 +1203,13 @@ var finprint = finprint || {};  //namespace if necessary...
                     $durationCell.html(oldDuration);
                     $eventNoteCell.html(oldEventNote);
                     $attributesCell.html(oldAttributes);
+                    $measurableCell.siblings('.content').empty().html();
+                    $measurableCell.html(oldMeasurableHtml);
                 });
 
                 // animal dropdown
                 oldAnimal = $animalCell.html();
-                animalHTML = '<select class="edit-animal">';
+                animalHTML = '<select class="edit-animal mousetrap">';
 
                 animals.forEach(function (animal) {
                     if (animal.group_name != animalGroup) {
@@ -1200,22 +1227,22 @@ var finprint = finprint || {};  //namespace if necessary...
 
                 // observation note
                 oldObsNote = $obsNoteCell.html();
-                obsNoteHTML = '<textarea class="edit-obsnote">' + obs_note + '</textarea>';
+                obsNoteHTML = '<textarea class="edit-obsnote mousetrap">' + obs_note + '</textarea>';
                 $obsNoteCell.html(obsNoteHTML);
 
                 // duration
                 oldDuration = $durationCell.html();
-                durationHTML = '<input type="number" min="0" class="edit-duration" value="' + duration + '" />';
+                durationHTML = '<input type="number" min="0" class="edit-duration mousetrap" value="' + duration + '" />';
                 $durationCell.html(durationHTML);
 
                 // event note
                 oldEventNote = $eventNoteCell.html();
-                eventNoteHTML = '<textarea class="edit-eventnote">' + event_note + '</textarea>';
+                eventNoteHTML = '<textarea class="edit-eventnote mousetrap">' + event_note + '</textarea>';
                 $eventNoteCell.html(eventNoteHTML);
 
                 // attributes
                 oldAttributes = $attributesCell.html();
-                attributesHTML = '<select class="edit-attributes" multiple="multiple">';
+                attributesHTML = '<select class="edit-attributes mousetrap" multiple="multiple">';
                 attributesHTML += tags.map(function (tag) {
                     return '<option value="' + tag.id + '"' +
                         (selectedTagIds.indexOf(tag.id) !== -1 ? ' selected="selected"' : '') +
@@ -1227,6 +1254,8 @@ var finprint = finprint || {};  //namespace if necessary...
                     {allowEmptyOption: true, plugins: ['remove_button', 'restore_on_backspace']}
                 );
             });
+             //edit functionality to include measurables coloumn
+            editMeasurablesInline($thisRow.find('td.measurables'));
         });
     }
 
@@ -1369,10 +1398,12 @@ var finprint = finprint || {};  //namespace if necessary...
                     $modal.modal('hide');
                 });
             });
+
             return false;
         });
 
         $measurablesCell.on('click', 'a.delete-measurable', function (e) {
+        // change for master data set
             e.preventDefault();
             e.stopPropagation();
 
@@ -1696,5 +1727,302 @@ var finprint = finprint || {};  //namespace if necessary...
             // curr_icon.attr('style', 'display:true');
         }, 0);
     }
+
+    function register_shortcut_for_observation_table() {
+         var $parent = $('tbody#collapse-parent');
+
+         Mousetrap.bind('up', function(e, combo) {
+             e.preventDefault();
+             change_observation_selection('up');
+         });
+
+         Mousetrap.bind('down', function(e, combo) {
+             e.preventDefault();
+             change_observation_selection('down');
+         });
+
+         Mousetrap.bind('shift+up', function(e, combo) {
+             e.preventDefault();
+             scroll_window(0,-50);
+         });
+
+         Mousetrap.bind('shift+down', function(e, combo) {
+             e.preventDefault();
+             scroll_window(0,50);
+         });
+
+         Mousetrap.bind('ctrl+e', function(e, combo) {
+         // edit the observation inline
+            e.preventDefault();
+            var $parent = $('tbody#collapse-parent');
+            $parent.find('.selected a.obs-edit').trigger('click');
+            var animal_observation = $parent.find('.selected .animal');
+            if (animal_observation.size() > 0) {
+               setTimeout(function(){
+                    animal_observation.children('select').focus();
+                }, 500);
+
+            } else {
+                setTimeout(function(){
+                    $parent.find('.selected .edit-obsnote').focus();
+                }, 500);
+            }
+
+         });
+
+         Mousetrap.bind('ctrl+s', function(e, combo) {
+            e.preventDefault();
+            var $parent = $('tbody#collapse-parent');
+            $parent.find('.selected a.edit-save').trigger('click');
+         });
+
+         Mousetrap.bind('ctrl+a', function(e, combo) {
+         // show Add measurables popup of selected event
+            e.preventDefault();
+            var $parent = $('tbody#collapse-parent');
+            $parent.find('.selected a.edit-measurables').trigger('click');
+         });
+
+         // CTRL+I will zoom selected rows's image in overlay window
+         Mousetrap.bind('ctrl+i', function(e, combo) {
+         // click on image to zoom out
+            e.preventDefault();
+            var $parent = $('tbody#collapse-parent');
+            $parent.find('.selected div.annotool-thumbnail').trigger('click');
+            //TODO: on click up and down should show next or prev image
+
+         });
+
+         // CTRL+V will zoom selected row's video in overlay window
+         Mousetrap.bind('ctrl+v', function(e, combo) {
+         // open event clip of 8 sec if present
+            e.preventDefault();
+            var $parent = $('tbody#collapse-parent');
+            var $video_icon = $parent.find('.selected span.video-icon');
+            if ($video_icon.attr('style') != "display:none") {
+                $video_icon.trigger('click');
+            }
+         });
+
+         Mousetrap.bind('esc',shortcut_esc);
+    }
+
+    function shortcut_esc(e, combo){
+     // play/pause event clip of 8 sec if present
+        e.preventDefault();
+        Mousetrap.bind('esc', function(e, combo) {
+          // show Add measurables popup of selected event
+            e.preventDefault();
+            var $parent = $('tbody#collapse-parent');
+            $parent.find('.selected a.edit-cancel').trigger('click');
+            //closes if there is an image zoomed out
+            $('.close').trigger('click');
+        });
+    }
+
+    function shortcut_space(e, combo) {
+    // play/pause event clip of 8 sec if present
+        e.preventDefault();
+        var element = $("#8sec_clip")[0];
+
+        Mousetrap.bind('space', function(e, combo) {
+                 var element = $("#8sec_clip")[0];
+                 if (element !='undefined') {
+                     if(element.paused){
+                        element.play();
+                      } else {
+                        element.pause();
+                     }
+                 }
+             });
+    }
+
+    function shortcut_f5(e, combo){
+        // open event clip of 8 sec if present
+        e.preventDefault();
+        var element = $("#8sec_clip")[0];
+        if (element) {
+             element['request_full_screen'] = element.requestFullscreen
+                                || element.mozRequestFullScreen
+                                || element.msRequestFullscreen
+                                || element.webkitRequestFullscreen;
+             if(!(screen.height-30 <=window.innerHeight) || window.innerHeight != screen.height) {
+                  // full screen validation
+                 element.request_full_screen();
+             }
+        }
+    }
+
+    function scroll_window(x, y) {
+          window.scrollBy(x,y);
+    }
+
+    function collapse_parent($parent){
+        $parent.find('tr.selected').removeClass('selected').removeClass('expanded');
+        $parent.find('tr.child-row')
+               .hide()
+               .end()
+               .find('td.rowspan')
+               .removeAttr('rowspan')
+               .end();
+    }
+
+    function change_observation_selection(action) {
+        var $parent = $('tbody#collapse-parent');
+        var prev_index = $parent.find('.selected').index();
+        var max_size = $parent.children('tr').size();
+
+        // limit the selection if its on 0th row or last row
+        if ((prev_index-1 < 0 && action =='up') ||
+            (prev_index+1 == max_size && action =='down')) {
+           return;
+        }
+
+        var index_new, target ,rowspan;
+
+        if (action =='up') {
+            // Check if up key is pressed on a collapsable row
+            if($($parent.children('tr')[prev_index]).hasClass('first-event')){
+                collapse_parent($parent);
+            } else {
+               $($parent.children('tr')[prev_index]).removeClass("selected");
+            }
+
+            index_new = prev_index-1;
+
+            if($($parent.children('tr')[index_new]).hasClass('child-row')) {
+            // getting target to update rowspan in case if we are getting child row first with up button
+                target = $($parent.children('tr')[index_new]).data('target');
+                if (! target) {
+                    target = "."+$($parent.children('tr')[index_new]).data('is-child');
+                }
+            } else {
+                target = $($parent.children('tr')[index_new]).data('target');
+                if (! target) {
+                // we need class varible as target as we are using "($parent.find(target)).show();"
+                //that's why "." is added
+                    target = "."+$($parent.children('tr')[index_new]).data('is-child');
+                }
+            }
+
+        } else if(action =='down') {
+            index_new = prev_index+1;
+            // Check if down key is pressed on an expanded row
+            if($($parent.children('tr')[index_new]).hasClass('single-event')){
+                collapse_parent($parent);
+            }
+            // If down key is pressed on a child
+            else if($($parent.children('tr')[prev_index]).hasClass('child-row') &&
+                $($parent.children('tr')[index_new]).hasClass('single-event')){
+                // collapse parent
+                collapse_parent();
+            } else {
+                $($parent.children('tr')[prev_index]).removeClass("selected");
+            }
+
+            if($($parent.children('tr')[index_new]).hasClass('child-row')) {
+                target = $($parent.children('tr')[index_new]).data('target');
+                if (! target) {
+                    target = "."+$($parent.children('tr')[index_new]).data('is-child');
+                }
+            } else if($($parent.children('tr')[index_new]).hasClass('first-event')){
+                target = $($parent.children('tr')[index_new]).data('target');
+            } else {
+                target = $($parent.children('tr')[index_new]).data('target');
+            }
+        }
+
+        $parent.find('tr.selected').removeClass('selected');
+        // to update rowspan if goinn from down to up
+        if($($parent.children('tr')[index_new]).hasClass('child-row')){
+            // adding rowspan as we are clearing above
+            var data_target = "." + $($parent.children('tr')[index_new]).data('is-child');
+            var first_event = $($parent).find("tr[data-target='"+data_target+"']");
+            first_event.addClass('expanded');
+            rowspan = first_event.data('rowspan');
+            $($parent).find("tr[data-target='"+data_target+"']").find('.rowspan').attr('rowspan',rowspan);
+            $($parent.children('tr')[index_new]).addClass('selected');
+        } else {
+            rowspan = $($parent.children('tr')[index_new]).data('rowspan');
+            $($parent.children('tr')[index_new]).addClass('selected');
+            // The row has child rows
+            if (rowspan > 1) {
+               $($parent.children('tr')[index_new]).find('.rowspan').attr('rowspan',rowspan);
+               $($parent.children('tr')[index_new]).addClass('expanded');
+            }
+        }
+
+        $parent.find(target).show();
+    }
+
+    function editMeasurablesInline(row) {
+    // handles the dit of measurables coloumn if edit is pressed from action column
+        var $thisRow = row;
+        var $originalTarget = $thisRow.find('.edit-measurables');
+        var eventId = $originalTarget.data('event-id');
+        var data = {};
+        if ($originalTarget.data('is-master')) {
+            data['is-master'] = true;
+        }
+        $originalTarget.siblings('.content').html("");
+        // adding input form for each measurable value if edit is pressed
+        $.get('/assignment/measurables/edit/' + eventId, data, function (res) {
+            res.measurables.forEach(function (m) {
+                var measValue = '';
+                res.event_measurables.forEach(function (em) {
+                    if (em.measurable === m.id) {
+                        measValue = em.value;
+                    }
+                });
+                if (measValue != '') {
+                    var measurableEditBlock = '<div class="measurables_item measurable-label">'
+                                            + '<label>'+m.name+':</label>'
+                                            + '<input class="editText mousetrap" type="text" data-id='+m.id+' value='+measValue+'>'
+                                            + '</div>';
+                    $originalTarget.parent().find('.content').append(measurableEditBlock);
+                    }
+            });
+        });
+        //hide the edit button inside measurables coloumn
+        $thisRow.find('.edit-measurables').hide();
+    }
+
+    function saveInlineEditForMeasurables(row) {
+        var $originalTarget = row.find('.edit-measurables');
+        var eventId = $originalTarget.data('event-id');
+        var data = {measurables: [], values: []};
+        var isMaster = false;
+        if ($originalTarget.data('is-master')) {
+            data['is-master'] = true;
+            isMaster = true;
+        }
+        $originalTarget.parent().find('div.measurables_item').each(function () {
+            // don't save empty vals!
+            if ($(this).find('input[type="text"]').val() !== '') {
+                data.measurables.push($(this).find('input[type="text"]').data('id'));
+                data.values.push($(this).find('input[type="text"]').val());
+            }
+        });
+        $.post('/assignment/measurables/edit/' + eventId, data, function (res) {
+            $originalTarget.siblings('.content').empty().html(buildMeasurableList(res.measurables, isMaster));
+            $originalTarget.show();
+        });
+
+    }
+
+    function buildMeasurableList(measurables, isMaster) {
+            var measurableList = '';
+            measurables.forEach(function (measurable) {
+                measurableList += measurable.name.trim()+" "
+                    + '<a href="#" class="delete-measurable" data-measurable-id="'
+                    + measurable.id + '"';
+                if (isMaster) {
+                    measurableList += ' data-is-master="true" ';
+                }
+                measurableList += ' title="Delete measurable" style="margin-left:-1px !important">&#x2716;</a><br />';
+            });
+            return measurableList;
+    }
+
 })(jQuery);
 

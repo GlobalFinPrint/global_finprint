@@ -14,35 +14,30 @@ from django.views.defaults import bad_request, permission_denied, page_not_found
 
 from global_finprint.core.views import UrlRedirect, UserInfoView
 from global_finprint.core.forms import FinprintAuthenticationForm
-from global_finprint.bruv.views.benthic_category import BenthicCategoryView
 
 urlpatterns = [
                   url(r"^$", TemplateView.as_view(template_name='pages/home.html'), name="home"),
-
-                  url(r"^admin/", include(admin.site.urls)),
-
-                  url(r'^trips/', include('global_finprint.trip.urls')),
-                  # report builder
-                  url(r'^reports/', include('global_finprint.report.urls')),
-
-                  url(r'^report_builder/', include('report_builder.urls'), name='report_builder'),
 
                   url(r'^api/', include([
                       url(r'^', include('global_finprint.api.urls.annotator')),
                       url(r'^', include('global_finprint.api.urls.ga')),
                       url(r'^', include('global_finprint.api.urls.geo')),
                       url(r'^', include('global_finprint.api.urls.summary')),
+                      url(r'^', include('global_finprint.api.urls.habitat')),
                   ])),
-
+                  url(r'^trips/', include('global_finprint.trip.urls')),
                   url(r"^assignment/", include('global_finprint.annotation.urls.assignment')),
 
-                  url(r"^substrate/$", BenthicCategoryView.as_view(), name="ajax_substrate"),
+                  url(r'^reports/', include('global_finprint.report.urls')),
+                  url(r'^report_builder/', include('report_builder.urls'), name='report_builder'),
 
-                  url(r"^about/$", TemplateView.as_view(template_name='pages/about.html'), name="about"),
+                  url(r"^help/", include('global_finprint.help.urls')),
 
-                  url(r"^user/info/(?P<id>\d+)$", UserInfoView.as_view(), name="user_info_view"),
+                  url(r"^admin/", include(admin.site.urls)),
 
                   # User management
+                  url(r"^user/info/(?P<id>\d+)$", UserInfoView.as_view(), name="user_info_view"),
+
                   url('^', include('django.contrib.auth.urls')),
                   url(r'^accounts/login/$', login, {'template_name': 'registration/login.html',
                                                     'authentication_form': FinprintAuthenticationForm},

@@ -66,6 +66,9 @@ class UserAdmin(admin.UserAdmin):
         }),
     )
     add_form = UserCreationForm
+    list_display = ('username', 'last_name', 'first_name', 'email', 'is_active')
+    list_filter = ['finprintuser__affiliation', 'groups', 'is_active', 'is_superuser']
+    search_fields = ['last_name', 'first_name', 'username', 'email', 'finprintuser__affiliation__name']
 
     def get_formsets_with_inlines(self, request, obj=None):
         for inline in self.get_inline_instances(request, obj):
@@ -91,6 +94,8 @@ class FinprintUserAdmin(ModelAdmin):
     actions = None
     fields = ('user', 'affiliation')
     ordering = ['affiliation__name', 'user__last_name', 'user__first_name']
+    list_filter = ['affiliation__name']
+    search_fields = ['affiliation__name', 'user__last_name', 'user__first_name']
 
     # disable the delete button and remove delete from actions
     def has_delete_permission(self, request, obj=None):

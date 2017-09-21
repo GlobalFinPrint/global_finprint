@@ -25,9 +25,11 @@ class Report:
             cursor.execute(query)
             return list(cls(row[0]) for row in cursor.fetchall())
 
-    def results(self):
+    def results(self, limit=None):
+        if not limit:
+            limit = 'all'
         with connection.cursor() as cursor:
-            cursor.execute("SELECT * FROM {}".format(self.db_view))
+            cursor.execute("SELECT * FROM {} limit {}".format(self.db_view, limit))
             return [tuple(col[0] for col in cursor.description)] + cursor.fetchall()
 
     def __str__(self):
@@ -267,14 +269,13 @@ class SetSummary(models.Model):
                 'oiled': self.bait_oiled,
             },
 
-            'current_flow': {
-                'estimated': self.current_flow_estimated,
-                'instrumented': self.current_flow_instrumented,
-            },
+            'current_flow_estimated': self.current_flow_estimated,
+            'current_flow_instrumented': self.current_flow_instrumented,
             'substrate_type': self.substrate_type,
             'substrate_complexity_type': self.substrate_complexity_type,
             'bruv_image_url': self.bruv_image_url,
             'reef_image_url': self.splendor_image_url,
+
             'video' : {
                 'file_name': self.video_file_name,
                 'source': self.video_source,

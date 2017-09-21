@@ -1,5 +1,6 @@
 CREATE OR REPLACE VIEW public.observation_summary AS
 WITH
+  -- when the bruv was tagged as being settled on the bottom
     zero_times AS (
       SELECT
         event_attribute_summary.set_id,
@@ -13,6 +14,7 @@ WITH
       FROM event_attribute_summary
       GROUP BY event_attribute_summary.set_id, event_attribute_summary.video_id
   ),
+  -- get the maxn values for each animal
     event_measurable AS (
       SELECT
         evt_meas.value AS maxn,
@@ -30,6 +32,7 @@ WITH
         JOIN bruv_set s ON ((s.video_id = assig.video_id)))
       WHERE meas.name = 'MaxN'
   ),
+  -- reduce to only the greatest maxn per animal
     reduced_maxn AS (
       SELECT
         max(em.maxn) AS maxn,
@@ -38,7 +41,8 @@ WITH
       FROM event_measurable em
       GROUP BY em.animal_id, em.set_id
   )
--- earliest occurance of maxn + a bunch of other useful data
+-- further reduce to the earliest occurrence of the greatest maxn value + add in additional
+--     animal and habitat data
 SELECT
   row_number()
   OVER ()                                                               AS summary_id,
@@ -59,6 +63,7 @@ SELECT
 
   reduced_maxn.maxn,
   public.text_time(min(event_measurable.event_time))                    AS event_time_minutes_raw,
+  -- adjust the raw event time based on tagged zero time
   public.text_time(min(event_measurable.event_time) - min(z.zero_time)) AS event_time_minutes,
 
   t.id                                                                  AS trip_id,

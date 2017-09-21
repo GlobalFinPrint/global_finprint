@@ -1,17 +1,4 @@
 $(function () {
-    // Event view
-    // handles rendering event tick onto the assignment timeline
-    var EventView = Backbone.View.extend({
-        template: _.template(Templates.eventView),
-        render: function () {
-            var templateData = _.extend({
-                left: this.model.getTimePercent() + '%'
-            }, this.model.attributes);
-            this.setElement(this.template(templateData));
-            this.model.getAssignment().find('.timeline').append(this.el);
-        }
-    });
-
 
     // Event model
     // logic and data for events
@@ -27,7 +14,6 @@ $(function () {
         }
     });
 
-
     // Events collection
     // holder for event array
     var Events = Backbone.Collection.extend({
@@ -35,184 +21,18 @@ $(function () {
         comparator: 'event_time'
     });
 
-
-    // Observation view
-    // handles rendering an observation tick onto the assignment timeline
-    var ObservationView = Backbone.View.extend({
-        events: {
-            'click': 'togglePopover',
-            'click .observation-popover .close': 'closePopover',
-            'click .observation-popover .selector': 'selectObservation',
-            'click .event-thumbnail:not(".empty")': 'showFullImage',
-            'click .event-thumbnail .video-icon:not(".empty")': 'showFullClip',
-            'keydown': 'onKeypress',
-            'mouseover': 'onMouseOver',
-            'mouseout': 'onMouseOut'
-        },
-        template: _.template(Templates.observationView),
+    // Event view
+    // handles rendering event tick onto the assignment timeline
+    var EventView = Backbone.View.extend({
+        template: _.template(Templates.eventView),
         render: function () {
-            var timePercent = this.model.getTimePercent();
-            var popoverPosition = (timePercent > 50 ? 'right' : 'left') + ': calc(' + timePercent + '%' +
-                (timePercent > 50 ? ' - 28px' : ' - 11px') + ');';
             var templateData = _.extend({
-                left: timePercent + '%',
-                popoverPosition: popoverPosition,
-                leftRightAligned: timePercent > 50 ? 'right' : 'left',
-                label: this.getLabel(),
-                status_id: this.model.getAssignmentStatus()
+                left: this.model.getTimePercent() + '%'
             }, this.model.attributes);
             this.setElement(this.template(templateData));
             this.model.getAssignment().find('.timeline').append(this.el);
-            this.model.events.forEach(function (event) {
-                event.view.render();
-            });
-            this.initOnWindowLoad();
-        },
-        openPopover: function () {
-            this.$el.addClass('selected').focus();
-            this.activateEvents();
-        },
-        closePopover: function () {
-            this.$el.removeClass('selected').blur();
-            if (!this.$el.is(':hover')) {
-                this.deactivateEvents();
-            }
-        },
-        togglePopover: function (e) {
-            if (e === undefined || e.target == this.el) {
-                $('.event').removeClass('activated');
-                $('.observation').not(this.el).removeClass('selected').blur();
-                if (this.$el.hasClass('selected')) {
-                    this.closePopover();
-                } else {
-                    this.openPopover();
-                }
-            }
-        },
-        selectObservation: function () {
-            this.$el.find('.observation-popover .selector').toggleClass('selected');
-            this.model.toggleSelected();
-        },
-        showFullImage: function (e) {
-            var $modal = $('#full-image-modal')
-            e.preventDefault();
-            e.stopPropagation();
-            var $currentTarget = $(e.currentTarget);
-            var url = $currentTarget.data('img-url');
-            var $image =$currentTarget.find('.image-icon');
-            var img_temp= '<img width="500" height="500" style="padding-left:2.5em;padding-right:2.5em" src='+url+'>';
-            $modal.find('.event-image').html(img_temp)
-            $modal
-                .find('.event-image')
-                .attr('style', $image.attr('style'))
-                .end()
-                .find('.extent')
-                .attr('style', this.model.get('initial_event').extent_css)
-                .end()
-                .modal('show');
-        },
-        showFullClip: function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-            var $target = $(event.target).closest('.event-thumbnail .video-icon');
-            var url = $target[0].getAttribute("value")
-            var video_temp= '<video width="500" height="500" controls>'+
-                         '<source src='+url+' type="video/mp4"> </video>';
-            $('#full-clip-modal').find('.event-clip').html(video_temp);
-            $('#full-clip-modal').find('.event-clip')
-                .attr('style', $target.attr('style'))
-                .end()
-                .modal('show');
-
-        },
-        onKeypress: function (e) {
-            if (e.which === 37) { // left
-                this.closePopover();
-                this.model.previousModel().view.openPopover();
-            } else if (e.which === 39) { // right
-                this.closePopover();
-                this.model.nextModel().view.openPopover();
-            } else if (e.which === 27) { // escape
-                this.closePopover();
-                this.$el.closest('.row').focus();
-            } else if (e.which === 32) { // space
-                this.selectObservation();
-            }
-        },
-        getLabel: function () {
-            return this.model.has('original') ? this.model.get('original').collection.label : '';
-        },
-        onMouseOver: function () {
-            this.activateEvents();
-        },
-        onMouseOut: function () {
-            if (!this.$el.hasClass('selected')) {
-                this.deactivateEvents();
-            }
-        },
-        activateEvents: function () {
-            this.model.events.map(function (eventModel) {
-                eventModel.view.$el.addClass('activated');
-            });
-        },
-        deactivateEvents: function () {
-            this.model.events.map(function (eventModel) {
-                eventModel.view.$el.removeClass('activated');
-            });
-        },
-        initOnWindowLoad: function () {
-              this.checkPropImage();
-       },
-       checkPropImage : function () {
-                var self = this;
-                $('img.image-icon:not(.loaded)').each(function () {
-                    var currImg = $(this);
-                    var src = currImg.data('src');
-                    if (!src) return;
-
-                    var img = new Image();
-                    img.onload = function () {
-                        // code to set the src on success
-                        currImg.addClass('loaded');
-                        var video = currImg.siblings('.video-icon');
-                        self.checkPropVideo(video);
-                    };
-                    img.onerror = function () {
-                        // doesn't exist or error loading
-                        console.log('no image');
-                        currImg.attr('src', '/static/images/default-image.jpg');
-                    };
-                    setTimeout(function () {
-                            img.src = src; // fires off loading of image
-                            currImg.attr('src', src);
-                    }, 0);
-                });
-        },
-       checkPropVideo: function (video_span) {
-                    var curr_icon = video_span;
-                    var url = curr_icon.attr('value');
-                    if (!url) return;
-
-                    var video = document.createElement('VIDEO');
-                    if (video.canPlayType("video/mp4")) {
-                        video.setAttribute("src",url);
-                     }
-
-                    video.onloadedmetadata = function() {
-                          console.log("Meta data for video loaded");
-                    };
-                    video.onerror = function () {
-                        // doesn't exist or error loading
-                        console.log('no video');
-                        curr_icon.attr('style', 'display:none');
-                    };
-                    setTimeout(function () {
-                           // curr_icon.attr('style', 'display:true');
-                    }, 0);
-
-       }
-       });
-
+        }
+    });
 
     // Observation model
     // logic and data for observations
@@ -295,6 +115,205 @@ $(function () {
         }
     });
 
+    // Observation view
+    // handles rendering an observation tick onto the assignment timeline
+    var ObservationView = Backbone.View.extend({
+        events: {
+            'click': 'togglePopover',
+            'click .observation-popover .close': 'closePopover',
+            'click .observation-popover .selector': 'selectObservation',
+            'click .event-thumbnail:not(".empty")': 'showFullImage',
+            'click .event-thumbnail .video-icon:not(".empty")': 'showFullClip',
+            'keydown': 'onKeypress',
+            'mouseover': 'onMouseOver',
+            'mouseout': 'onMouseOut',
+            'click #full-clip-modal #closeModalId':'destroyEventClip'
+        },
+        template: _.template(Templates.observationView),
+        render: function () {
+            var timePercent = this.model.getTimePercent();
+            var popoverPosition = (timePercent > 50 ? 'right' : 'left') + ': calc(' + timePercent + '%' +
+                (timePercent > 50 ? ' - 28px' : ' - 11px') + ');';
+            var templateData = _.extend({
+                left: timePercent + '%',
+                popoverPosition: popoverPosition,
+                leftRightAligned: timePercent > 50 ? 'right' : 'left',
+                label: this.getLabel(),
+                status_id: this.model.getAssignmentStatus()
+            }, this.model.attributes);
+            this.setElement(this.template(templateData));
+            this.model.getAssignment().find('.timeline').append(this.el);
+            this.model.events.forEach(function (event) {
+                event.view.render();
+            });
+            this.initOnWindowLoad();
+        },
+        openPopover: function () {
+            this.$el.addClass('selected').focus();
+            this.activateEvents();
+        },
+        closePopover: function () {
+            this.$el.removeClass('selected').blur();
+            if (!this.$el.is(':hover')) {
+                this.deactivateEvents();
+            }
+        },
+        togglePopover: function (e) {
+            if (e === undefined || e.target === this.el) {
+                $('.event').removeClass('activated');
+                $('.observation').not(this.el).removeClass('selected').blur();
+                if (this.$el.hasClass('selected')) {
+                    this.closePopover();
+                } else {
+                    this.openPopover();
+                }
+            }
+        },
+        selectObservation: function () {
+            this.$el.find('.observation-popover .selector').toggleClass('selected');
+            this.model.toggleSelected();
+        },
+        showFullImage: function (e) {
+            var $modal = $('#full-image-modal')
+            e.preventDefault();
+            e.stopPropagation();
+            var $currentTarget = $(e.currentTarget);
+            var modal_title = $currentTarget.closest('.event-thumbnail').data('image-name');
+            var url = $currentTarget.data('img-url');
+            var $image =$currentTarget.find('.image-icon');
+            var extent_config = $currentTarget.find('.extent').attr('style');
+            var img_temp= '<img width="500" height="500" style="padding-left:2.5em;padding-right:2.5em" src='+url+'>';
+            $modal.find('.event-image').html(img_temp);
+            var extent_html='<div class="zoom_image_extent" style="'+extent_config+'">&nbsp;</div>';
+            $modal.find('.event-image').append(extent_html);
+            $modal
+                .find('.event-image')
+                .attr('style', $image.attr('style'))
+                .end()
+                .find('.extent')
+                .attr('style', $currentTarget.find('.extent').attr('style'))
+                .end()
+                .find('.modal-title')
+                .html(modal_title)
+                .end()
+                .modal('show');
+        },
+        showFullClip: function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            var $target = $(event.target).closest('.event-thumbnail .video-icon');
+            var url = $target[0].getAttribute("value");
+            var modal_title = $target.closest('.event-thumbnail').data('image-name');
+            var video_temp = '<video width="500" height="500" controls>' +
+                '<source src=' + url + ' type="video/mp4"> </video>';
+            var event_clip = $('#full-clip-modal').find('.event-clip');
+            event_clip.html(video_temp);
+            event_clip.attr('style', $target.attr('style'))
+                .end()
+                .find('.modal-title')
+                .html(modal_title)
+                .end()
+                .modal('show');
+
+        },
+        onKeypress: function (e) {
+            if (e.which === 37) { // left
+                this.closePopover();
+                this.model.previousModel().view.openPopover();
+            } else if (e.which === 39) { // right
+                this.closePopover();
+                this.model.nextModel().view.openPopover();
+            } else if (e.which === 27) { // escape
+                this.closePopover();
+                this.$el.closest('.row').focus();
+            } else if (e.which === 32) { // space
+                // do not select if obs is in an un-reviewed assignment.
+                if (this.model.getAssignmentStatus() === 4 || !this.model.getAssignmentStatus() )
+                {
+                    this.selectObservation();
+                }
+            }
+        },
+        getLabel: function () {
+            return this.model.has('original') ? this.model.get('original').collection.label : '';
+        },
+        onMouseOver: function () {
+            this.activateEvents();
+        },
+        onMouseOut: function () {
+            if (!this.$el.hasClass('selected')) {
+                this.deactivateEvents();
+            }
+        },
+        activateEvents: function () {
+            this.model.events.map(function (eventModel) {
+                eventModel.view.$el.addClass('activated');
+            });
+        },
+        deactivateEvents: function () {
+            this.model.events.map(function (eventModel) {
+                eventModel.view.$el.removeClass('activated');
+            });
+        },
+        initOnWindowLoad: function () {
+            this.checkPropImage();
+        },
+        checkPropImage: function () {
+            var self = this;
+            $('img.image-icon:not(.loaded)').each(function () {
+                var currImg = $(this);
+                var src = currImg.data('src');
+                if (!src) return;
+
+                var img = new Image();
+                img.onload = function () {
+                    // code to set the src on success
+                    currImg.addClass('loaded');
+                    var video = currImg.siblings('.video-icon');
+                    self.checkPropVideo(video);
+                };
+                img.onerror = function () {
+                    // doesn't exist or error loading
+                    console.log('no image');
+                    currImg.attr('src', '/static/images/default-image.jpg');
+                };
+                setTimeout(function () {
+                    img.src = src; // fires off loading of image
+                    currImg.attr('src', src);
+                }, 0);
+            });
+        },
+        checkPropVideo: function (video_span) {
+            var curr_icon = video_span;
+            var url = curr_icon.attr('value');
+            if (!url) return;
+
+            var video = document.createElement('VIDEO');
+            if (video.canPlayType("video/mp4")) {
+                video.setAttribute("src", url);
+            }
+
+            video.onloadedmetadata = function () {
+                console.log("Meta data for video loaded");
+            };
+            video.onerror = function () {
+                // doesn't exist or error loading
+                console.log('no video');
+                curr_icon.attr('style', 'display:none');
+            };
+            setTimeout(function () {
+                // curr_icon.attr('style', 'display:true');
+            }, 0);
+
+        },
+        destroyEventClip: function() {
+             var $modal1 = $('#full-image-modal');
+             e.preventDefault();
+             e.stopPropagation();
+             $modal1.find('.event-clip video').removeAttr("id");
+             $modal1.modal('hide');
+        }
+    });
 
     // Assignment view
     // handles fetching observation data and rendering for a single assignment
@@ -329,7 +348,7 @@ $(function () {
         timelineHighlight: function (e) {
             // don't do anything if we are already highlighted or not "reviewed"
             if (this.$el.find('.timeline-holder').hasClass('highlighted')
-                    || this.collection.status_id !== 4) {
+                || this.collection.status_id !== 4) {
                 return;
             }
 
@@ -372,6 +391,7 @@ $(function () {
             }
         }
     });
+
     // Master observation model
     // specifically for observations selected for master record
     var MasterObservation = Observation.extend({
@@ -379,12 +399,13 @@ $(function () {
             selected: true
         },
         toggleSelected: function () {
-            var nextModelView = this.nextModel().view;
-            this.get('original').view.selectObservation();
-            nextModelView.openPopover();
+            // if de-selected then remove from master record
+            this.set('selected', !this.get('selected'));
+            if (!this.get('selected')) {
+                this.collection.removeObservation(this);
+            }
         }
     });
-
 
     // Master (observation collection)
     // holds selected observations for the master record
@@ -396,11 +417,9 @@ $(function () {
             this.project = options.project;
         },
         addObservation: function (model) {
-            // todo:  add measurables
             var attributes = model.toJSON();
             attributes.original = model;
             this.add(attributes);
-
             this.view.render();
         },
         removeObservation: function (model) {
@@ -408,7 +427,6 @@ $(function () {
             this.view.render();
         }
     });
-
 
     // Master view
     // displays data for the master record timeline
@@ -418,18 +436,31 @@ $(function () {
             'click button#review-master': 'reviewMaster'
         },
         initialize: function (options) {
-            this.loadingPromises = options.loadingPromises;
+            var self = this;
+            this.loadingPromise = $.Deferred();
             this.collection = new MasterRecord([], {
                 id: this.$el.data('set-id'),
                 project: this.$el.data('project-id'),
                 view: this
             });
+            this.collection.fetch().then(function () {
+                self.render();
+                $('button.select-all, button#save-master, button#review-master').removeAttr('disabled');
+                self.$el.find('.busy-indicator').fadeOut();
+                self.loadingPromise.resolve();
+            });
         },
-        saveMaster: function () {
+        render: function () {
+            this.$el.find('.timeline').empty();
+            this.collection.forEach(function (observation) {
+                observation.view.render();
+            });
+        },
+        save: function (review) {
             var $this = $(this);
             var $feedback = $('span#save-feedback');
             var data = {
-                observation_ids: this.collection.pluck('id'),
+                original_observation_ids: this.collection.pluck('original_observation_id'),
                 project: this.collection.project
             };
 
@@ -445,7 +476,7 @@ $(function () {
                         .show()
                         .delay(1000)
                         .fadeOut();
-                } else if (res.success === 'no changes') {
+                } else if (res.success === 'no changes' && !review) {
                     $feedback
                         .removeClass('success failure')
                         .text('No changes to save...')
@@ -453,7 +484,9 @@ $(function () {
                         .delay(1000)
                         .fadeOut();
                 }
-
+                if (review) {
+                    window.location.href = $('button#review-master').attr('data-href-target');
+                }
             }).error(function () {
                 $this.removeAttr('disabled');
                 $feedback
@@ -464,61 +497,14 @@ $(function () {
                     .delay(1000)
                     .fadeOut();
             });
+        },
+        saveMaster: function () {
+            this.save(review=false);
         },
         reviewMaster: function () {
-            var $this = $(this);
-            var $feedback = $('span#save-feedback');
-            var data = {
-                observation_ids: this.collection.pluck('id'),
-                project: this.collection.project
-            };
-
-            $this.attr('disabled', 'disabled');
-
-            $.post(this.collection.url, data, function (res) {
-                $this.removeAttr('disabled');
-                if (res.success === 'ok') {
-                    $feedback
-                        .removeClass('failure')
-                        .addClass('success')
-                        .text('Changes saved!')
-                        .show()
-                        .delay(1000)
-                        .fadeOut();
-                }
-                window.location.href = $('button#review-master').attr('data-href-target');
-            }).error(function () {
-                $this.removeAttr('disabled');
-                $feedback
-                    .removeClass('success')
-                    .addClass('failure')
-                    .text('Encountered an error saving changes; please try again later.')
-                    .show()
-                    .delay(1000)
-                    .fadeOut();
-            });
-        },
-        load: function (loadingPromises) {
-            var self = this;
-            $.get(this.collection.url + '?project=' + this.collection.project, function (res) {
-                $.when.apply($, loadingPromises).done(function () {
-                    var ids = res.original_observation_ids;
-                    _.each(assignmentViews, function (view) {
-                        view.collection.forEach(function (model) {
-                            if (ids.indexOf(model.id) !== -1) {
-                                model.select();
-                                self.collection.addObservation(model);
-                            }
-                        });
-                    });
-                    self.render();
-                    self.$el.find('.busy-indicator').fadeOut();
-                    $('button.select-all, button#save-master, button#review-master').removeAttr('disabled');
-                });
-            });
+            this.save(review=true);
         }
     });
-
 
     // Don't talk to server with Backbone unless its a 'read'
     var oldSync = Backbone.sync;
@@ -528,15 +514,14 @@ $(function () {
         }
     };
 
-
     // initialize based on data loaded onto page
     var masterView = new MasterView({el: $('.row.master')[0]});
     var assignmentViews = $('.row.assignment').map(function (_, row) {
         return new AssignmentView({el: row, masterView: masterView});
     });
-    masterView.load(_.map(assignmentViews, function (view) {
-        return view.loadingPromise;
-    }));
+    // masterView.load(_.map(assignmentViews, function (view) {
+    //     return view.loadingPromise;
+    // }));
 
 
     $(function () {

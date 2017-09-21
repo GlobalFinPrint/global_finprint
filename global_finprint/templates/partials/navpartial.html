@@ -40,13 +40,22 @@
             </ul>
             {% endif %}
             <ul class="nav navbar-nav navbar-right">
-                <li><p class="navbar-text">{% current_version %}</p></li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Help <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" target="_blank" href="{% url 'web_help' %}">Website Guide (pdf)</a></li>
+                        <li><a class="dropdown-item" target="_blank" href="{% url 'client_help' %}">Annotator Client Guide (pdf)</a></li>
+                        <li><a class="dropdown-item" target="_blank" href="{% url 'client_help' %}">Annotator Client Quick Reference (pdf)</a></li>
+                        <li><a class="dropdown-item" href="{% url 'home' %}">Terminology and FAQ</a></li>
+                    </ul>
+                </li>
                 {% if request.user.is_authenticated %}
                     <li><a href="{% url 'password_change' %}"> {{ request.user.username }} </a></li>
                     <li><a href="{% url 'finprint_logout' %}">{% trans "Logout" %}</a></li>
                 {% else %}
                     <li><a href="{% url 'finprint_login' %}">{% trans "Log In" %}</a></li>
                 {% endif %}
+                <li><p class="navbar-text">{% current_version %}</p></li>
             </ul>
         </nav>
     </div>

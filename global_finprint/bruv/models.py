@@ -2,7 +2,7 @@ from decimal import Decimal
 from collections import Counter
 
 from django.contrib.gis.db import models
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.urlresolvers import reverse
 from django.contrib.gis.geos import Point
 
@@ -30,25 +30,6 @@ CURRENT_DIRECTION = {
     ('W', 'West'),
     ('NW', 'Northwest'),
 }
-VISIBILITY_CHOICES = {
-    ('0', 'LEGACY'),
-    ('1', '1'),
-    ('2', '2'),
-    ('3', '3'),
-    ('4', '4'),
-    ('5', '5'),
-    ('6', '6'),
-    ('7', '7'),
-    ('8', '8'),
-    ('9', '9'),
-    ('10', '10'),
-    ('11', '11'),
-    ('12', '12'),
-    ('13', '13'),
-    ('14', '14'),
-    ('15', '15'),
-    ('>15', '>15'),
-}
 TIDE_CHOICES = {
     ('F', 'Flood'),
     ('E', 'Ebb'),
@@ -68,6 +49,14 @@ BAIT_TYPE_CHOICES = {
 }
 
 
+class BaitContainer(models.Model):
+    # starting seed:  cage, bag
+    type = models.CharField(max_length=32)
+
+    def __str__(self):
+        return u"{0}".format(self.type)
+
+
 class FrameType(models.Model):
     # starting seed:  rebar, stainless rebar, PVC, mixed
     type = models.CharField(max_length=32)
@@ -81,12 +70,14 @@ class Equipment(AuditableModel):
     camera = models.CharField(max_length=32)
     stereo = models.BooleanField(default=False)
     frame_type = models.ForeignKey(to=FrameType)
-    bait_container = models.CharField(max_length=1, choices=EQUIPMENT_BAIT_CONTAINER, default='C')
+    container = models.ForeignKey(to=BaitContainer)
     arm_length = models.PositiveIntegerField(null=True, help_text='centimeters')
     camera_height = models.PositiveIntegerField(null=True, help_text='centimeters')
 
     def __str__(self):
-        return u"{0} / {1}{2}".format(self.frame_type.type, self.camera, ' (Stereo)' if self.stereo else '')
+        return u"{0} / {1} / {2}{3}".format(self.frame_type.type,
+                                            self.container.type,
+                                            self.camera, ' (Stereo)' if self.stereo else '')
 
     class Meta:
         verbose_name_plural = "Equipment"
@@ -203,7 +194,9 @@ class Set(AuditableModel):
     drop_time = models.TimeField()
     haul_date = models.DateField(null=True, blank=True)
     haul_time = models.TimeField(null=True, blank=True)
-    visibility = models.CharField(max_length=3, choices=VISIBILITY_CHOICES, help_text='m')
+    visibility = models.IntegerField(null=True, blank=True,
+                                     validators=[MinValueValidator(-1), MaxValueValidator(50)],
+                                     help_text='m')
     depth = models.DecimalField(help_text='m', decimal_places=2, max_digits=12,
                                 validators=[MinValueValidator(Decimal('0.01'))])
     comments = models.TextField(null=True, blank=True)
@@ -250,6 +243,10 @@ class Set(AuditableModel):
     @property
     def environmentmeasure_set(self):
         return [x for x in [self.haul_measure, self.drop_measure] if x is not None]
+
+    @property
+    def next_by_code(self):
+        return self.trip.get_next_set_by_code(self.code)
 
     def save(self, *args, **kwargs):
         # todo:  we're assuming the input is latitude & longitude!  this should be checked!

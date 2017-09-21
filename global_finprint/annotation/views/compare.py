@@ -64,53 +64,28 @@ class GetMasterView(UserAllowedMixin, View):
     def get(self, request, set_id):
         project = get_object_or_404(Project, pk=request.GET.get('project', 1))
         master = get_object_or_404(MasterRecord, project=project, set=get_object_or_404(Set, pk=set_id))
-        return JsonResponse(master.to_json())
+        observations = master.masterobservation_set.all() \
+            .prefetch_related('masterevent_set',
+                              'masterevent_set__attribute') \
+            .select_related('masteranimalobservation',
+                            'masteranimalobservation__animal')
+        observations = sorted(observations, key=lambda x: x.initial_observation_time())
+        return JsonResponse({
+            'observations': list(o.to_json(for_web=True) for o in observations)
+        })
 
     def post(self, request, set_id):
         project = get_object_or_404(Project, pk=request.POST.get('project', 1))
         master_record = get_object_or_404(MasterRecord, project=project, set=get_object_or_404(Set, pk=set_id))
-        observation_ids = list(int(obs_id) for obs_id in request.POST.getlist('observation_ids[]'))
+        original_observation_ids = list(int(org_obs_id) for org_obs_id in request.POST.getlist('original_observation_ids[]'))
 
-        if set(observation_ids) == set(obs.id for obs in master_record.original_observations()):
+        if set(original_observation_ids) == set(obs.id for obs in master_record.original_observations()):
             return JsonResponse({'success': 'no changes'})
 
-        success, err_msg = master_record.copy_observations(observation_ids)
+        success, err_msg = master_record.copy_observations(original_observation_ids)
         if success:
             response = JsonResponse({'success': 'ok'})
         else:
             response = JsonResponse({'error': err_msg})
             response.status_code = 500
         return response
-
-
-# deprecated
-#
-# class MasterSetCompleted(UserAllowedMixin, View):
-#     """
-#     Endpoint to mark a master record as 'completed'
-#     """
-#     def get(self, request, master_id):
-#         master = get_object_or_404(MasterRecord, pk=master_id)
-#         master.completed = (request.GET.get('checked', 'false') == 'true')
-#         master.save()
-#         return JsonResponse({'success': 'ok'})
-#
-#
-# class MasterSetDeprecated(UserAllowedMixin, View):
-#     """
-#     Endpoint to mark a master record as 'deprecated'
-#     """
-#     def get(self, request, master_id):
-#         master = get_object_or_404(MasterRecord, pk=master_id)
-#         master.deprecated = (request.GET.get('checked', 'false') == 'true')
-#         master.save()
-#         return JsonResponse({'success': 'ok'})
-#
-#
-# class MasterManageView(UserAllowedMixin, View):
-#     """
-#     Endpoint to update master record status
-#     """
-#     def post(self, request, master_id):
-#         master = get_object_or_404(MasterRecord, pk=master_id)
-#         return JsonResponse({'status': 'ok'})

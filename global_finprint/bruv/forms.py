@@ -335,10 +335,6 @@ class SetLevelDataForm(forms.ModelForm):
             value['total_percent'] = sum(value['percents'])
             self.fields['benthic_category'].initial = value
         self.fields['visibility'].required = False
-        self.fields['visibility'].choices = \
-            sorted(self.fields['visibility'].choices,
-                   key=lambda _: _[0].isdigit() and int(_[0]) or _[0] == '' and -1 or 100)
-        self.fields['visibility'].choices[0] = (None, '---')
         self.helper.layout = cfl.Layout(
             'visibility', 'current_flow_instrumented', 'current_flow_estimated',
             cfl.Div('bruv_image_file', 'splendor_image_file', 'benthic_category'),
@@ -369,12 +365,11 @@ class SetLevelCommentsForm(forms.ModelForm):
     Form for set level comments used in set form
     """
     comments = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=False)
-    message_to_annotators = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=False)
     tags = forms.MultipleChoiceField(widget=SelectizeWidget, choices=SetTag.get_choices, required=False)
 
     class Meta:
         model = Set
-        fields = ['comments', 'message_to_annotators', 'tags']
+        fields = ['comments','tags']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
