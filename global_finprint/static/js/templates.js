@@ -6,7 +6,7 @@ var Templates = {
             '<div class="observation-popover clear <%= leftRightAligned %>-aligned" style="<%= popoverPosition %>">' +
 
                 '<div class="row ">' +
-                    '<h5 class="observation-title"><%= animal %></h5>' +
+                        '<h5 class="observation-title"><%= animal %></h5>' +
                 '</div>' +
 
                 '<div class="row">' +
@@ -24,24 +24,29 @@ var Templates = {
                         '<% } %>' +
                     '</div>' +
                     '<div class="right">' +
-                        '<table><tbody>' +
-                            '<tr>' +
-                                '<td class="data-label">Event time</td>' +
-                                '<td class="data"><%= pretty_time %></td>' +
-                            '</tr>' +
-                            '<tr>' +
-                                '<td class="data-label">Image notes</td>' +
-                                '<td class="data"><%= s.prune(initial_event.note, 25) %></td>' +
-                            '</tr>' +
-                            '<tr>' +
-                                '<td class="data-label">Tags</td>' +
-                                '<td class="data"><%= initial_event.attribute_names.join(", ") %></td>' +
-                            '</tr>' +
-                            '<tr>' +
-                                '<td class="data-label">Measures</td>' +
-                                '<td class="data"><%= initial_event.measurables.join(", ") %></td>' +
-                            '</tr>' +
-                        '</tbody></table>' +
+                        '<div class="row">' +
+                            '<ul class="nav nav-tabs">' +
+                                '<% _.each(events, function(event) { %>' +
+                                    '<li><a data-toggle="tab" href="#section<%= event.id %>"><%= event.event_pretty_time %></a></li>' +
+                                '<% }); %>' +
+                            '</ul>' +
+                        '</div>' +
+                        '<div class="row">' +
+                            '<table><tbody>' +
+                                '<tr>' +
+                                    '<td class="data-label">Image notes</td>' +
+                                    '<td class="data"><%= s.prune(initial_event.note, 25) %></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                    '<td class="data-label">Tags</td>' +
+                                    '<td class="data"><%= initial_event.attribute_names.join(", ") %></td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                    '<td class="data-label">Measures</td>' +
+                                    '<td class="data"><%= initial_event.measurables.join(", ") %></td>' +
+                                '</tr>' +
+                            '</tbody></table>' +
+                        '</div>' +
                     '</div>' +
                 '</div>' +
 

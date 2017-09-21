@@ -143,8 +143,8 @@ class AbstractObservation(AuditableModel):
             })
 
         if for_web:
-            json['time'] = self.initial_observation_time()
-            json['pretty_time'] = time_display(self.initial_observation_time())
+            json['initial_event_time'] = self.initial_observation_time()
+            json['initial_event_pretty_time'] = time_display(self.initial_observation_time())
             json['initial_event'] = self.initial_event.to_json(for_web=True)
         return json
 
@@ -437,6 +437,7 @@ class AbstractEvent(AuditableModel):
         json = {
             'id': self.pk,
             'event_time': self.event_time,
+            'event_pretty_time': time_display(self.event_time),
             'extent': None if self.extent is None else str(self.extent),
             'note': self.note,
             'attribute': [a.to_json(children=not for_web) for a in self.attribute.all()],

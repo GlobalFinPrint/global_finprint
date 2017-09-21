@@ -727,8 +727,8 @@ h3.form-title {
         visibility: hidden;
         cursor: default;
         text-align: left;
-        top: -220px;
-        height: 200px;
+        top: -250px;
+        height: 230px;
         width: 600px;
         background-color: lighten($green, 25%);
         border: 2px solid lighten($gray, 25%);
@@ -867,6 +867,15 @@ h3.form-title {
           padding-bottom: 3px;
           -webkit-user-select: none;
         }
+      }
+
+      .nav-tabs > li > a {
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+      }
+
+      .nav {
+        min-height: 40px !important
       }
     }
 
