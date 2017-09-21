@@ -66,3 +66,4 @@ global_finprint/static/bower_components
 global_finprint/media/
 global_finprint/static/version.txt
 global_finprint/static/css/project.css.map
+global_finprint/static/pdf/*.docx
