@@ -53,7 +53,7 @@ $(function () {
             return this.collection.view.$el;
         },
         getTimePercent: function () {
-            return this.get('time') / this.getAssignment().data('length') * 100;
+            return this.get('initial_event_time') / this.getAssignment().data('length') * 100;
         },
         getMaster: function () {
             return this.collection.master;
@@ -88,7 +88,7 @@ $(function () {
     // fetches and holds observation array
     var Assignment = Backbone.Collection.extend({
         model: Observation,
-        comparator: 'time',
+        comparator: 'initial_event_time',
         initialize: function (models, options) {
             this.view = options.view;
             this.url = '/assignment/detail/' + options.id;
