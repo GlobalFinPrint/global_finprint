@@ -1002,7 +1002,7 @@ var finprint = finprint || {};  //namespace if necessary...
             var extent_config = $currentTarget.find('.extent').attr('style');
             var img_temp = '<img width="500" height="500" src=' + url + '>';
             var modal_title = $currentTarget.data('animal');
-            var extent_html='<div class="zoom_image_extent" style="'+extent_config+'">&nbsp;</div>';
+            var extent_html='<div class="zoom_image_extent close_image_modal" style="'+extent_config+'">&nbsp;</div>';
             $modal.find('.image-zoom').html(img_temp);
             $modal.find('.image-zoom').append(extent_html);
             $modal
@@ -1016,6 +1016,13 @@ var finprint = finprint || {};  //namespace if necessary...
                 .html(modal_title)
                 .end()
                 .modal('show');
+        });
+
+        $modal.find("div#closeImageModalId").click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $modal.find('.image-zoom .zoom_image_extent').removeClass("close_image_modal");
+            $modal.modal('hide');
         });
 
         var $modal1 = $('#full-clip-modal');
@@ -1734,11 +1741,21 @@ var finprint = finprint || {};  //namespace if necessary...
          Mousetrap.bind('up', function(e, combo) {
              e.preventDefault();
              change_observation_selection('up');
+             var is_modal_close = $('div.close_image_modal')[0];
+             // checking if image modal is zoomed out else no need zoom-out image
+             if (typeof is_modal_close != 'undefined') {
+                zoom_out_image();
+             }
          });
 
          Mousetrap.bind('down', function(e, combo) {
              e.preventDefault();
              change_observation_selection('down');
+              // checking if image modal is zoomed out else no need zoom-out image
+             var is_modal_close = $('div.close_image_modal')[0];
+             if (typeof is_modal_close != 'undefined') {
+                zoom_out_image();
+             }
          });
 
          Mousetrap.bind('shift+up', function(e, combo) {
@@ -1767,6 +1784,11 @@ var finprint = finprint || {};  //namespace if necessary...
                     $parent.find('.selected .edit-obsnote').focus();
                 }, 500);
             }
+            if ($parent.find('.selected').hasClass('child-row')) {
+                setTimeout(function(){
+                    $parent.find('.selected .edit-eventnote').focus();
+                }, 500);
+            }
 
          });
 
@@ -1787,9 +1809,7 @@ var finprint = finprint || {};  //namespace if necessary...
          Mousetrap.bind('ctrl+i', function(e, combo) {
          // click on image to zoom out
             e.preventDefault();
-            var $parent = $('tbody#collapse-parent');
-            $parent.find('.selected div.annotool-thumbnail').trigger('click');
-            //TODO: on click up and down should show next or prev image
+            zoom_out_image();
 
          });
 
@@ -1807,17 +1827,35 @@ var finprint = finprint || {};  //namespace if necessary...
          Mousetrap.bind('esc',shortcut_esc);
     }
 
+    function zoom_out_image() {
+         var $parent = $('tbody#collapse-parent');
+
+         //close video modal if there is one
+         if (typeof $('#closeModalId') != 'undefined') {
+         setTimeout(function(){
+             $('#closeModalId').trigger('click');},200);
+         }
+
+         if (typeof ($parent.find('.selected div.annotool-thumbnail')[0]) !='undefined') {
+            $parent.find('.selected div.annotool-thumbnail').trigger('click');
+         } else {
+           //put default image with default size
+            $('#full-image-modal .image-zoom img').attr("src","/static/images/no-image.jpg");
+            $('#full-image-modal .image-zoom .close_image_modal').removeClass('zoom_image_extent');
+            $('#full-image-modal .modal-title').text("No Image Available");
+            $('#full-image-modal .image-zoom img').css('height',null);
+         }
+    }
+
     function shortcut_esc(e, combo){
      // play/pause event clip of 8 sec if present
         e.preventDefault();
-        Mousetrap.bind('esc', function(e, combo) {
-          // show Add measurables popup of selected event
-            e.preventDefault();
-            var $parent = $('tbody#collapse-parent');
-            $parent.find('.selected a.edit-cancel').trigger('click');
+        // show Add measurables popup of selected event
+        e.preventDefault();
+        var $parent = $('tbody#collapse-parent');
+        $parent.find('.selected a.edit-cancel').trigger('click');
             //closes if there is an image zoomed out
-            $('.close').trigger('click');
-        });
+        $('.close').trigger('click');
     }
 
     function shortcut_space(e, combo) {
@@ -1825,16 +1863,13 @@ var finprint = finprint || {};  //namespace if necessary...
         e.preventDefault();
         var element = $("#8sec_clip")[0];
 
-        Mousetrap.bind('space', function(e, combo) {
-                 var element = $("#8sec_clip")[0];
-                 if (element !='undefined') {
-                     if(element.paused){
-                        element.play();
-                      } else {
-                        element.pause();
-                     }
-                 }
-             });
+        if (element !='undefined') {
+               if(element.paused){
+                    element.play();
+               } else {
+                    element.pause();
+               }
+        }
     }
 
     function shortcut_f5(e, combo){

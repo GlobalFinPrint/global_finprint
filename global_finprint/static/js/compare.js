@@ -184,8 +184,16 @@ $(function () {
             var extent_config = $currentTarget.find('.extent').attr('style');
             var img_temp= '<img width="500" height="500" style="padding-left:2.5em;padding-right:2.5em" src='+url+'>';
             $modal.find('.event-image').html(img_temp);
-            var extent_html='<div class="zoom_image_extent" style="'+extent_config+'">&nbsp;</div>';
+            var extent_html='<div class="zoom_image_extent close_image_modal" style="'+extent_config+'">&nbsp;</div>';
             $modal.find('.event-image').append(extent_html);
+            //intialize on event on closing modal
+            $modal.find("div#closeImageModalId").click(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $modal.find('.zoom_image_extent').removeClass("close_image_modal");
+                $modal.modal('hide');
+            });
+
             $modal
                 .find('.event-image')
                 .attr('style', $image.attr('style'))
