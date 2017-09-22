@@ -182,7 +182,7 @@ a.manual-assign {
     td.measurables a {
       text-decoration: none;
       &.delete-measurable {
-        margin-left: -3px;
+        margin-left: 2px;
       }
     }
   }
@@ -1199,7 +1199,7 @@ form #div_id_file .selectize-control {
     }
   }
   a.delete-measurable {
-    margin-left: 5px;
+    margin-left: 2px;
   }
   label {
     padding: 0;

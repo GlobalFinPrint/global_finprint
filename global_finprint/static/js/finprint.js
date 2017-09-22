@@ -1845,14 +1845,12 @@ var finprint = finprint || {};  //namespace if necessary...
     function shortcut_esc(e, combo){
      // play/pause event clip of 8 sec if present
         e.preventDefault();
-        Mousetrap.bind('esc', function(e, combo) {
-          // show Add measurables popup of selected event
-            e.preventDefault();
-            var $parent = $('tbody#collapse-parent');
-            $parent.find('.selected a.edit-cancel').trigger('click');
+        // show Add measurables popup of selected event
+        e.preventDefault();
+        var $parent = $('tbody#collapse-parent');
+        $parent.find('.selected a.edit-cancel').trigger('click');
             //closes if there is an image zoomed out
-            $('.close').trigger('click');
-        });
+        $('.close').trigger('click');
     }
 
     function shortcut_space(e, combo) {
@@ -1860,16 +1858,13 @@ var finprint = finprint || {};  //namespace if necessary...
         e.preventDefault();
         var element = $("#8sec_clip")[0];
 
-        Mousetrap.bind('space', function(e, combo) {
-                 var element = $("#8sec_clip")[0];
-                 if (element !='undefined') {
-                     if(element.paused){
-                        element.play();
-                      } else {
-                        element.pause();
-                     }
-                 }
-             });
+        if (element !='undefined') {
+               if(element.paused){
+                    element.play();
+               } else {
+                    element.pause();
+               }
+        }
     }
 
     function shortcut_f5(e, combo){
