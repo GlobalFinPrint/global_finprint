@@ -1784,6 +1784,11 @@ var finprint = finprint || {};  //namespace if necessary...
                     $parent.find('.selected .edit-obsnote').focus();
                 }, 500);
             }
+            if ($parent.find('.selected').hasClass('child-row')) {
+                setTimeout(function(){
+                    $parent.find('.selected .edit-eventnote').focus();
+                }, 500);
+            }
 
          });
 
