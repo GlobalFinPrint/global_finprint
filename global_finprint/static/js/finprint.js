@@ -269,6 +269,7 @@ var finprint = finprint || {};  //namespace if necessary...
         var $buttons = $('div.manage-master-state-buttons');
         var masterId = $buttons.data('id');
         var $radio = $('div#master-state-buttons a');
+        var $saveMaster = $('button#save-master');
 
         $radio.on('click', function () {
             var statusId = $(this).data('value');
@@ -279,6 +280,10 @@ var finprint = finprint || {};  //namespace if necessary...
 
             $buttons.find('form').submit();
             $('span#status-feedback').show().delay(1000).fadeOut();
+            // if we are on the compare page there will be a save button with a method bound to the click
+            if ($saveMaster) {
+                $saveMaster.click();
+            }
         });
 
         $buttons.find('form').submit(function () {
