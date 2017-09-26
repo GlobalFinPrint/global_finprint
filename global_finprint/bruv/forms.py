@@ -96,7 +96,10 @@ class SetSearchForm(forms.Form):
                                      queryset=ReefType.objects.all().order_by(Lower('type')))
     equipment = forms.ModelChoiceField(required=False,
                                        queryset=Equipment.objects.filter(set__in=Set.objects.all())
-                                       .distinct().order_by(Lower('frame_type__type'), Lower('camera'), 'stereo')
+                                       .distinct().order_by(Lower('frame_type__type'),
+                                                            Lower('container__type'),
+                                                            Lower('camera'),
+                                                            'stereo')
                                        )
     bait = forms.ModelChoiceField(required=False,
                                   queryset=Bait.objects.filter(set__in=Set.objects.all())
