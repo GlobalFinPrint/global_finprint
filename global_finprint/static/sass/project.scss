@@ -182,7 +182,7 @@ a.manual-assign {
     td.measurables a {
       text-decoration: none;
       &.delete-measurable {
-        margin-left: -3px;
+        margin-left: 2px;
       }
     }
   }
@@ -1173,13 +1173,7 @@ form #div_id_file .selectize-control {
 .image-zoom {
   img {
     width: 100%;
-    height: 70%;
   }
-}
-
-img {
-  width: 100%;
-  height: 100%;
 }
 
 .zoom_image_extent {
@@ -1205,7 +1199,7 @@ img {
     }
   }
   a.delete-measurable {
-    margin-left: 5px;
+    margin-left: 2px;
   }
   label {
     padding: 0;

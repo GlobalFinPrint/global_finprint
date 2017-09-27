@@ -81,6 +81,7 @@ class Equipment(AuditableModel):
 
     class Meta:
         verbose_name_plural = "Equipment"
+        ordering = ['frame_type__type', 'container__type', 'camera']
 
 
 class EnvironmentMeasure(AuditableModel):

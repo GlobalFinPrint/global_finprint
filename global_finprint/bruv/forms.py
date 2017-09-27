@@ -86,8 +86,8 @@ class SetSearchForm(forms.Form):
     Set search form
     """
     search_set_date = forms.DateField(required=False,
-                               input_formats=['%B %d %Y'],
-                               widget=DateTimePicker(options=datepicker_opts))
+                                      input_formats=['%B %d %Y'],
+                                      widget=DateTimePicker(options=datepicker_opts))
     reef = forms.ModelChoiceField(required=False,
                                   queryset=Reef.objects.all().order_by(
                                       Lower('site__name'), Lower('name'), Lower('site__code'), Lower('code')
@@ -95,8 +95,10 @@ class SetSearchForm(forms.Form):
     habitat = forms.ModelChoiceField(required=False,
                                      queryset=ReefType.objects.all().order_by(Lower('type')))
     equipment = forms.ModelChoiceField(required=False,
-                                       queryset=Equipment.objects.filter(set__in=Set.objects.all())
-                                       .distinct().order_by(Lower('frame_type__type'), Lower('camera'), 'stereo')
+                                       queryset=Equipment.objects.order_by(Lower('frame_type__type'),
+                                                                           Lower('container__type'),
+                                                                           Lower('camera'),
+                                                                           'stereo')
                                        )
     bait = forms.ModelChoiceField(required=False,
                                   queryset=Bait.objects.filter(set__in=Set.objects.all())
@@ -163,6 +165,7 @@ class ImageSelectWidget(forms.FileInput):
     """
     Helper widget for image controls in set form
     """
+
     def __init__(self, image_url=None, attrs={}):
         self.image_url = image_url
         super().__init__(attrs)
@@ -187,6 +190,7 @@ class BenthicWidget(forms.Widget):
     """
     Helper widget for benthic category data in set form
     """
+
     def render(self, name, value, attrs=None):
         try:
             total_percent = value.pop('total_percent', 0)
@@ -369,7 +373,7 @@ class SetLevelCommentsForm(forms.ModelForm):
 
     class Meta:
         model = Set
-        fields = ['comments','tags']
+        fields = ['comments', 'tags']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
