@@ -9,7 +9,7 @@ Files in this directory:
 6) collect_static.sh (Django manage.py script for collectstatic.  requires set_env.sh)
 7) run_gunicorn.sh (starts Gunicorn.  requires set_env.sh)
 
-To build fresh deplyoment:
+To build fresh deployment:
 1) install fabric if you haven't already
 2) spin up a clean instance of Ubuntu 14.04
 3) create a database instance, empty database and deploy migrations
