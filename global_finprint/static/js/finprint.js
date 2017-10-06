@@ -1002,6 +1002,11 @@ var finprint = finprint || {};  //namespace if necessary...
             e.preventDefault();
             e.stopPropagation();
             var $currentTarget = $(e.currentTarget);
+           // on click make the current row selected and handle collapse event
+            collapse_parent($('tbody#collapse-parent'));
+            $currentTarget.parent().parent().addClass("selected");
+            uncollapseOnMediaClick();
+
             var url = $currentTarget.data('img-url');
             var $image = $currentTarget.find('.image-icon');
             var extent_config = $currentTarget.find('.extent').attr('style');
@@ -1035,6 +1040,12 @@ var finprint = finprint || {};  //namespace if necessary...
             e.preventDefault();
             e.stopPropagation();
             var $target = $(e.target).closest('.annotool-thumbnail .video-icon');
+            // on click make the current row selected and handle collapse event
+            collapse_parent($('tbody#collapse-parent'));
+            $target.parent().parent().parent().addClass("selected");
+            uncollapseOnMediaClick();
+
+
             var url = $target[0].getAttribute("value");
             var video_temp = '<video id="8sec_clip" width="500" height="500" controls>' +
                 '<source src=' + url + ' type="video/mp4"> </video>';
@@ -1744,6 +1755,8 @@ var finprint = finprint || {};  //namespace if necessary...
          var $parent = $('tbody#collapse-parent');
 
          Mousetrap.bind('up', function(e, combo) {
+          // set focus on current selected item
+             window.scrollTo(0,$(".selected")[0].offsetTop);
              e.preventDefault();
              change_observation_selection('up');
              var is_modal_close = $('div.close_image_modal')[0];
@@ -1754,6 +1767,8 @@ var finprint = finprint || {};  //namespace if necessary...
          });
 
          Mousetrap.bind('down', function(e, combo) {
+          // set focus on current selected item
+             window.scrollTo(0,$(".selected")[0].offsetTop);
              e.preventDefault();
              change_observation_selection('down');
               // checking if image modal is zoomed out else no need zoom-out image
@@ -1898,13 +1913,18 @@ var finprint = finprint || {};  //namespace if necessary...
     }
 
     function collapse_parent($parent){
-        $parent.find('tr.selected').removeClass('selected').removeClass('expanded');
+
         $parent.find('tr.child-row')
                .hide()
                .end()
                .find('td.rowspan')
                .removeAttr('rowspan')
+               .end()
+               .find('tr.expanded')
+               .removeClass('expanded')
                .end();
+
+        $parent.find('tr.selected').removeClass('selected');
     }
 
     function change_observation_selection(action) {
@@ -1955,7 +1975,7 @@ var finprint = finprint || {};  //namespace if necessary...
             else if($($parent.children('tr')[prev_index]).hasClass('child-row') &&
                 $($parent.children('tr')[index_new]).hasClass('single-event')){
                 // collapse parent
-                collapse_parent();
+                collapse_parent($parent);
             } else {
                 $($parent.children('tr')[prev_index]).removeClass("selected");
             }
@@ -1993,6 +2013,8 @@ var finprint = finprint || {};  //namespace if necessary...
         }
 
         $parent.find(target).show();
+        $parent.find('.selected').focus();
+
     }
 
     function editMeasurablesInline(row) {
@@ -2064,5 +2086,32 @@ var finprint = finprint || {};  //namespace if necessary...
             return measurableList;
     }
 
-})(jQuery);
+    function uncollapseOnMediaClick() {
+       var $parent = $('tbody#collapse-parent');
+       var index = $parent.find('.selected').index();
+       var index_new, target ,rowspan;
+       if($($parent.children('tr')[index]).hasClass('child-row')){
+            // adding rowspan as we are clearing above
+            target = "."+$($parent.children('tr')[index]).data('is-child');
+                      // adding rowspan as we are clearing above
+            var data_target = "." + $($parent.children('tr')[index]).data('is-child');
+            var first_event = $($parent).find("tr[data-target='"+data_target+"']");
+            if (first_event.hasClass('expanded') == false) {
+              first_event.addClass('expanded');
+            }
+            rowspan = first_event.data('rowspan');
+            $($parent).find("tr[data-target='"+data_target+"']").find('.rowspan').attr('rowspan',rowspan);
+        } else if($($parent.children('tr')[index]).hasClass('first-event')){
+            target = $($parent.children('tr')[index]).data('target');
+            rowspan = $($parent.children('tr')[index]).data('rowspan');
+            // The row has child rows
+            if (rowspan > 1) {
+               $($parent.children('tr')[index]).find('.rowspan').attr('rowspan',rowspan);
+               $($parent.children('tr')[index]).addClass('expanded');
+            }
+        }
 
+        $parent.find(target).show();
+        $parent.find('.selected').focus();
+    }
+})(jQuery);
