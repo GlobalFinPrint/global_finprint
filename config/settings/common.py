@@ -207,7 +207,7 @@ REST_FRAMEWORK = {
 # SLUGLIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 
-LOG_DIR = '/var/log/global_finprint/gf_web.log'
+LOG_DIR = env("DJANGO_LOGGING_DIR", default=str('/var/log/global_finprint/gf_web.log'))
 
 LOGGING = {
     'version': 1,
