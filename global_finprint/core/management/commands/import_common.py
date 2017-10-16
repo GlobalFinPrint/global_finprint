@@ -51,30 +51,37 @@ IMPORT_USER = 'GFImport'
 logger = logging.getLogger('scripts')
 animal_map = None
 
+
 class DataError(Exception):
     pass
+
 
 # lru_cache automatically memoizes the result from the first call to
 # the following functions
 @functools.lru_cache()
 def get_bait_type_map():
-    return  make_choices_reverse_map(gfbm.BAIT_TYPE_CHOICES)
+    return make_choices_reverse_map(gfbm.BAIT_TYPE_CHOICES)
+
 
 @functools.lru_cache()
 def get_tide_state_map():
-    return  make_choices_reverse_map(gfbm.TIDE_CHOICES)
+    return make_choices_reverse_map(gfbm.TIDE_CHOICES)
+
 
 @functools.lru_cache()
 def get_surface_chop_map():
-    return  make_choices_reverse_map(gfbm.SURFACE_CHOP_CHOICES)
+    return make_choices_reverse_map(gfbm.SURFACE_CHOP_CHOICES)
+
 
 @functools.lru_cache()
 def get_animal_sex_map():
     return make_choices_reverse_map(gfaa.ANIMAL_SEX_CHOICES)
 
+
 @functools.lru_cache()
 def get_animal_stage_map():
     return make_choices_reverse_map(gfaa.ANIMAL_STAGE_CHOICES)
+
 
 # TODO: add unit test (probably based off of one of the above functions)
 def make_choices_reverse_map(choices_set):
@@ -85,18 +92,20 @@ def make_choices_reverse_map(choices_set):
         result[abrev.lower()] = abrev
     return result
 
+
 @functools.lru_cache()
 def get_import_user():
     return djam.User.objects.filter(username=IMPORT_USER).first()
 
+
 def import_trip(
-        trip_code,
-        location_name,
-        start_date,
-        end_date,
-        investigator,
-        collaborator,
-        boat,
+    trip_code,
+    location_name,
+    start_date,
+    end_date,
+    investigator,
+    collaborator,
+    boat,
 ):
     '''Adds a trip, and associated objects to the database, using the Django models.'''
     try:
@@ -115,7 +124,7 @@ def import_trip(
                 lead = gfcm.FinprintUser.objects.filter(user=lead_candidates[0]).first()
             validate_data(lead, 'No FinprintUser associated with "{}"'.format(investigator))
 
-            team=gfcm.Team.objects.filter(lead=lead).first()
+            team = gfcm.Team.objects.filter(lead=lead).first()
             validate_data(team, 'No such team: {} - {}'.format(investigator, collaborator))
 
             source = gftm.Source.objects.filter(code=trip_code[:2]).first()
@@ -137,24 +146,25 @@ def import_trip(
     except DataError:
         logger.error('Trip "%s" not created.', trip_code)
 
+
 def import_set(
-        set_code,
-        trip_code,
-        set_date,
-        latitude,
-        longitude,
-        depth,
-        drop_time,
-        haul_time,
-        site_name,
-        reef_name,
-        habitat_type,
-        equipment_str,
-        bait_str,
-        visibility,
-        source_video_str,
-        aws_video_str,
-        comment
+    set_code,
+    trip_code,
+    set_date,
+    latitude,
+    longitude,
+    depth,
+    drop_time,
+    haul_time,
+    site_name,
+    reef_name,
+    habitat_type,
+    equipment_str,
+    bait_str,
+    visibility,
+    source_video_str,
+    aws_video_str,
+    comment
 ):
     '''Uses the django model interface to add a new set and associated objects.'''
     try:
@@ -174,7 +184,7 @@ def import_set(
             video = gfav.Video(file=aws_video_str, source_folder=source_video_str, user=get_import_user())
             video.save()
             if not visibility:
-                visibility = '0'
+                visibility = -1
 
             set = gfbm.Set(
                 code=set_code,
@@ -200,23 +210,24 @@ def import_set(
             logger.warning('Set "%s" already exists, ignoring.', set_code)
     except DataError:
         logger.error('Set "%s" not created.', set_code)
-    
+
+
 def import_environment_measure(
-        trip_code,
-        set_code,
-        reading_date,
-        is_drop,
-        temp,
-        salinity,
-        conductivity,
-        dissolved_oxygen,
-        current_flow,
-        current_direction,
-        tide_state,
-        wind_speed,
-        wind_direction,
-        cloud_cover,
-        surface_chop
+    trip_code,
+    set_code,
+    reading_date,
+    is_drop,
+    temp,
+    salinity,
+    conductivity,
+    dissolved_oxygen,
+    current_flow,
+    current_direction,
+    tide_state,
+    wind_speed,
+    wind_direction,
+    cloud_cover,
+    surface_chop
 ):
     '''Uses the django model interface to add an enviroment measure to a set.'''
     measure_type = 'drop' if is_drop else 'haul'
@@ -282,23 +293,24 @@ def import_environment_measure(
     except DataError:
         logger.error('Failed while adding %s data for set "%s" on trip "%s"', measure_type, set_code, trip_code)
 
+
 def import_observation(
-        trip_code,
-        set_code,
-        obsv_date,
-        obsv_time,
-        duration,
-        family,
-        genus,
-        species,
-        behavior,
-        sex,
-        stage,
-        length,
-        comment,
-        annotator,
-        annotation_date,
-        raw_import_json
+    trip_code,
+    set_code,
+    obsv_date,
+    obsv_time,
+    duration,
+    family,
+    genus,
+    species,
+    behavior,
+    sex,
+    stage,
+    length,
+    comment,
+    annotator,
+    annotation_date,
+    raw_import_json
 ):
     '''
     Uses the django model to add an observation.
@@ -379,7 +391,7 @@ def import_observation(
 
                 attribute_ids = []
                 if behavior:
-                    att, _  = gfan.Attribute.objects.get_or_create(name=behavior)
+                    att, _ = gfan.Attribute.objects.get_or_create(name=behavior)
                     attribute_ids = [att.id]
 
                 event = gfao.Event.create(
@@ -400,6 +412,7 @@ def import_observation(
     except DataError:
         logger.error('Failed while adding observation for set "%s" of trip "%s"', set_code, trip_code)
 
+
 def update_set_data(trip_code, set_code, visibility):
     '''
     Updates the visibility value associated with a set.
@@ -417,9 +430,11 @@ def update_set_data(trip_code, set_code, visibility):
     except DataError:
         logger.error('Failed to update visibility for set "{}" of trip "{}"'.format(set_code, trip_code))
 
+
 def load_animal_mapping(mapping_file):
     global animal_map
     animal_map = json.load(open(mapping_file))
+
 
 # TODO: test that this grabs the correct entries from the mapping file,
 # could just assign a structure to animal_map prior to call.
@@ -431,15 +446,16 @@ def get_animal_mapping(family, genus, species):
         if animal_map:
             result = animal_map[str(family)][str(genus)][str(species)]
     except KeyError:
-        pass # no special mapping for this animal
+        pass  # no special mapping for this animal
     return result
+
 
 # TODO: add test for both negative and positive cases
 def does_observation_exist(
-        assignment,
-        duration,
-        obsv_time,
-        raw_import_json
+    assignment,
+    duration,
+    obsv_time,
+    raw_import_json
 ):
     result = False
     event = gfao.Event.objects.filter(
@@ -451,6 +467,7 @@ def does_observation_exist(
     if event:
         result = True
     return result
+
 
 # TODO: add tests for success and failure
 def get_assignment(annotator_user, video):
@@ -468,6 +485,7 @@ def get_assignment(annotator_user, video):
         )
         assignment.save()
     return assignment
+
 
 # TODO: add test cases for last name only, full name, user doesn't exist.
 def get_user(full_name, column):
@@ -489,6 +507,7 @@ def get_user(full_name, column):
     validate_data(finprint_user, 'No finprint user associated with django user for "{}"'.format(full_name))
     return finprint_user
 
+
 # TODO: add test cases for last name, doesn't exist
 # TODO: What to do if multiple users with same last name?
 def find_users_with_lastname(last_name):
@@ -498,8 +517,10 @@ def find_users_with_lastname(last_name):
     else:
         return None
 
+
 def get_annotator(annotator):
     return get_user(annotator, 'annotator')
+
 
 # TODO: Test cases:
 #   - reef habitat already exists
@@ -520,11 +541,12 @@ def get_reef_habitat(site_name, reef_name, habitat_type):
 
     return gfhm.ReefHabitat.get_or_create(reef, reef_type)
 
+
 # TODO: Add test cases for parsing equipment strings, and for frames and equipment that don't already exist
 def parse_equipment_string(equipment_str):
     if equipment_str == 'Stereo stainless rebar / GoPro3 Silver+':
         equipment = gfbm.Equipment.objects.get(pk=5)
-        validate_data(equipment,'Equipment with id 5 missing.')
+        validate_data(equipment, 'Equipment with id 5 missing.')
     else:
         equip_array = equipment_str.split('/')
         validate_data(
@@ -542,6 +564,7 @@ def parse_equipment_string(equipment_str):
             'No equipment model found with camera "{}" and frame "{}" (frame_str "{}")'.format(
                 camera_str, frame_str, equipment_str))
     return equipment
+
 
 # TODO: Add test cases for parsing bait strings, and for baits that don't exist.
 def parse_bait_string(bait_str):
@@ -574,6 +597,7 @@ def minutes2milliseconds(minutes):
     else:
         return 0
 
+
 # TODO: test that it converts correctly
 def time2milliseconds(the_time):
     """
@@ -588,6 +612,7 @@ def time2milliseconds(the_time):
         result += the_time.second
         result *= 1000
     return 0
+
 
 def validate_data(predicate, error_msg):
     if not predicate:
