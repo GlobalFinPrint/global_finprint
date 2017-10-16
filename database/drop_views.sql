@@ -52,6 +52,7 @@ DROP VIEW IF EXISTS public.v_report_maxn_issues_report;
 
 -- other useful stuff:
 DROP VIEW IF EXISTS public.v_report_machine_learning_corpus;
+DROP VIEW IF EXISTS public.v_report_zero_time_images;
 
 -- supporting views
 DROP VIEW IF EXISTS public.event_attribute_summary;
