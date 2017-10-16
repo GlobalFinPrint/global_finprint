@@ -17,8 +17,8 @@ ANIMAL_MAP = 'global_finprint/core/management/commands/sherman_animal_map.json'
 def bulk_import(excel_file, em_files_root):
     wb = openpyxl.load_workbook(excel_file)
     sheet = wb['Set']
-    get_cell = bc.get_cell_by_name_extractor(bc.get_header_map(sheet.rows[0]))
-    for row in sheet.rows[1:]:
+    get_cell = bc.get_cell_by_name_extractor(bc.get_header_map(sheet[1]))
+    for row in sheet.iter_rows(row_offset=1):
         trip_code = get_cell(row, 'trip_code').value
         set_code = get_cell(row, 'set_code').value
         if trip_code and set_code:
