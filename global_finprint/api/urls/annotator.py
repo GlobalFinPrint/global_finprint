@@ -19,6 +19,7 @@ urlpatterns = [
     url(r"^set/(?P<set_id>\d+)/animals$", csrf_exempt(annotator.AnimalList.as_view()), name='api_animal_list'),
 
     # reading and writing obs and events
+    #   note:  these urls are somewhat misleading because they end up filtering by assignment:
     url(r"^set/(?P<set_id>\d+)/obs$", csrf_exempt(annotator.Observations.as_view()), name='api_observation'),
     url(r"^set/(?P<set_id>\d+)/obs/(?P<obs_id>\d+)$", csrf_exempt(annotator.ObservationUpdate.as_view()),
         name='api_observation_update'),
