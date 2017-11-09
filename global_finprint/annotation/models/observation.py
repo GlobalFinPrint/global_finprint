@@ -8,7 +8,7 @@ from django.contrib.gis.db import models as geomodels
 from django.contrib.postgres.fields import JSONField
 from django.db import transaction, models
 
-from global_finprint.core.models import AuditableModel, FinprintUser
+from global_finprint.core.models import AuditableModel, FinprintUser, VersionedModel
 from .animal import Animal, ANIMAL_SEX_CHOICES, ANIMAL_STAGE_CHOICES
 from .annotation import Attribute, Project
 from .video import Assignment
@@ -86,7 +86,7 @@ class MasterRecord(AuditableModel):
         }
 
 
-class AbstractObservation(AuditableModel):
+class AbstractObservation(VersionedModel):
     type = models.CharField(max_length=1, choices=OBSERVATION_TYPE_CHOICES, default='I')
     # duration could be redundant ... at best it's an optimization:
     duration = models.PositiveIntegerField(null=True, blank=True)
@@ -353,7 +353,7 @@ class MasterAnimalObservation(AbstractAnimalObservation):
         master_animal_observation.save()
 
 
-class AbstractEvent(AuditableModel):
+class AbstractEvent(VersionedModel):
     event_time = models.IntegerField(help_text='ms', default=0)
     extent = geomodels.PolygonField(null=True)
     attribute = models.ManyToManyField(to=Attribute)

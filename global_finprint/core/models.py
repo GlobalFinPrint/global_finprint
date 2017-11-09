@@ -1,7 +1,10 @@
+import datetime
 from django.apps import apps
 from django.contrib.gis.db import models
 from django.contrib.auth.models import User
 from config.current_user import get_current_user
+from django.contrib.postgres.fields import ArrayField, JSONField
+from django.core.serializers.json import DjangoJSONEncoder
 import uuid
 
 
@@ -15,6 +18,52 @@ class TimestampedModel(models.Model):
 
 class AuditableModel(TimestampedModel):
     user = models.ForeignKey(to=User, default=get_current_user)
+
+    class Meta:
+        abstract = True
+
+class VersionedModel(AuditableModel):
+    def to_json(self):
+        return {}
+
+    def save(self, *args, **kwargs):
+        if self.pk is not None:
+            self.add_version()
+        super(VersionedModel, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        self.add_version()
+        super(VersionedModel, self).save(*args, **kwargs)
+
+    def add_version(self):
+        class_name = '.'.join([self.__module__, self.__class__.__name__])
+        history, _ = ModelHistory.objects.get_or_create(model_type=class_name, reference_id=self.pk)
+        my_json = self.serialize_datetimes(self.to_json())
+        snapshot = ModelSnapshot(create_datetime=self.last_modified_datetime,
+                                 user=self.user,
+                                 state=my_json,
+                                 history=history)
+        snapshot.save()
+
+    # The below code can be removed in django 1.11, and django.core.serializers.json.DjangoJSONEncoder
+    # can instead be passed to the JSONField definition using the new "encoder" keyword parameter.
+    @staticmethod
+    def serialize_datetimes(obj):
+        if isinstance(obj, dict):
+            result = {}
+            for key, item in obj.items():
+                result[key] = VersionedModel.serialize_datetimes(item)
+            return result
+        elif isinstance(obj, list) or isinstance(obj, tuple):
+            result = []
+            for item in obj:
+                result.append(VersionedModel.serialize_datetimes(item))
+            return result
+        elif isinstance(obj, datetime.datetime):
+            return str(obj)
+        else:
+            return obj
+
 
     class Meta:
         abstract = True
@@ -97,3 +146,17 @@ class Team(AuditableModel):
 
     def __str__(self):
         return u"{0}{1}{2}".format(self.lead.user.username, (' - ' if self.sampler_collaborator else ''), self.sampler_collaborator)
+
+class ModelHistory(models.Model):
+    model_type = models.TextField()
+    reference_id = models.IntegerField()
+
+class ModelSnapshot(models.Model):
+    create_datetime = models.DateTimeField()
+    user = models.ForeignKey(to=User)
+    state = JSONField()
+    history = models.ForeignKey(to=ModelHistory)
+
+    class Meta():
+        ordering = ['create_datetime']
+
