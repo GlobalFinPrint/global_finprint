@@ -18,6 +18,12 @@ class TimestampedModel(models.Model):
 
 class AuditableModel(TimestampedModel):
     user = models.ForeignKey(to=User, default=get_current_user)
+    last_modified_by = models.ForeignKey(to=User, default=get_current_user, null=True,
+                                         related_name='%(app_label)s_%(class)s_last_modified_by')
+
+    def save(self, *args, **kwargs):
+        self.last_modified_by = get_current_user()
+        super(AuditableModel, self).save(*args, **kwargs)
 
     class Meta:
         abstract = True
@@ -38,9 +44,11 @@ class VersionedModel(AuditableModel):
     def add_version(self):
         class_name = '.'.join([self.__module__, self.__class__.__name__])
         history, _ = ModelHistory.objects.get_or_create(model_type=class_name, reference_id=self.pk)
+
         my_json = self.serialize_datetimes(self.to_json())
+        user = self.last_modified_by or self.user
         snapshot = ModelSnapshot(create_datetime=self.last_modified_datetime,
-                                 user=self.user,
+                                 user=user,
                                  state=my_json,
                                  history=history)
         snapshot.save()
@@ -151,11 +159,18 @@ class ModelHistory(models.Model):
     model_type = models.TextField()
     reference_id = models.IntegerField()
 
+    def __str__(self):
+        return u'pk: {0}, type: {1}, ref_id: {2}'.format(self.pk, self.model_type, self.reference_id)
+
 class ModelSnapshot(models.Model):
     create_datetime = models.DateTimeField()
     user = models.ForeignKey(to=User)
     state = JSONField()
     history = models.ForeignKey(to=ModelHistory)
+
+    def __str__(self):
+        return u'pk: {0}, user: {1}, date: {2}, history_ref: {3}'.format(
+            self.pk, str(self.user), str(self.create_datetime), self.history.pk)
 
     class Meta():
         ordering = ['create_datetime']
