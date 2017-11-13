@@ -319,7 +319,7 @@ class MasterObservation(AbstractObservation):
         })
         return abstract_observation_json
 
-class AbstractAnimalObservation(AuditableModel):
+class AbstractAnimalObservation(VersionedModel):
     animal = models.ForeignKey(Animal)
     sex = models.CharField(max_length=1, choices=ANIMAL_SEX_CHOICES, default='U')
     stage = models.CharField(max_length=2, choices=ANIMAL_STAGE_CHOICES, default='U')
@@ -545,7 +545,7 @@ class MasterEvent(AbstractEvent):
         return self.mastereventmeasurable_set.filter(measurable__active=True)
 
 
-class EventMeasurable(models.Model):
+class EventMeasurable(VersionedModel):
     event = models.ForeignKey(Event)
     measurable = models.ForeignKey(Measurable)
     value = models.TextField()
@@ -566,7 +566,7 @@ class EventMeasurable(models.Model):
         unique_together = ('event', 'measurable')
 
 
-class MasterEventMeasurable(models.Model):
+class MasterEventMeasurable(VersionedModel):
     master_event = models.ForeignKey(MasterEvent)
     measurable = models.ForeignKey(Measurable)
     value = models.TextField()

@@ -17,7 +17,8 @@ class TimestampedModel(models.Model):
 
 
 class AuditableModel(TimestampedModel):
-    user = models.ForeignKey(to=User, default=get_current_user)
+    # user and last_modified_by are nullable to enable data migration (get_current_user returns None)
+    user = models.ForeignKey(to=User, default=get_current_user, null=True)
     last_modified_by = models.ForeignKey(to=User, default=get_current_user, null=True,
                                          related_name='%(app_label)s_%(class)s_last_modified_by')
 
@@ -38,13 +39,14 @@ class VersionedModel(AuditableModel):
         super(VersionedModel, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
-        self.add_version()
+        self.add_version(True)
         super(VersionedModel, self).save(*args, **kwargs)
 
-    def add_version(self):
+    def add_version(self, deleted=False):
         class_name = '.'.join([self.__module__, self.__class__.__name__])
         history, _ = ModelHistory.objects.get_or_create(model_type=class_name, reference_id=self.pk)
-
+        if deleted:
+            history.deleted = True
         my_json = self.serialize_datetimes(self.to_json())
         user = self.last_modified_by or self.user
         snapshot = ModelSnapshot(create_datetime=self.last_modified_datetime,
@@ -158,6 +160,7 @@ class Team(AuditableModel):
 class ModelHistory(models.Model):
     model_type = models.TextField()
     reference_id = models.IntegerField()
+    deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return u'pk: {0}, type: {1}, ref_id: {2}'.format(self.pk, self.model_type, self.reference_id)
