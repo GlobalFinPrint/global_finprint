@@ -96,6 +96,9 @@ class AbstractObservation(VersionedModel):
     class Meta:
         abstract = True
 
+    def __str__(self):
+        return 'Id:{}, Type:{}'.format(self.pk, str(self.get_type_display()))
+
     @property
     def initial_event(self):
         return None
@@ -129,18 +132,7 @@ class AbstractObservation(VersionedModel):
         }
 
         if self.type == 'A':
-            animal = self.get_animalobservation()
-            json.update({
-                'animal': str(animal.animal),
-                'animal_id': animal.animal_id,
-                'sex': animal.get_sex_display(),
-                'sex_choice': animal.sex,
-                'stage': animal.get_stage_display(),
-                'stage_choice': animal.stage,
-                'length': animal.length,
-                'group': animal.animal.group.id,
-                'group_name': str(animal.animal.group)
-            })
+            json.update(self.get_animalobservation().to_json())
 
         if for_web:
             json['time'] = self.initial_observation_time()
@@ -238,10 +230,6 @@ class Observation(AbstractObservation):
     def get_event_set(self):
         return self.event_set.order_by('event_time')
 
-    def __str__(self):
-        # todo:  update to first event?
-        return u"{0}".format(self.type)
-
     def annotator(self):
         return self.assignment.annotator
 
@@ -324,6 +312,22 @@ class AbstractAnimalObservation(VersionedModel):
     sex = models.CharField(max_length=1, choices=ANIMAL_SEX_CHOICES, default='U')
     stage = models.CharField(max_length=2, choices=ANIMAL_STAGE_CHOICES, default='U')
     length = models.IntegerField(null=True, help_text='centimeters')
+
+    def __str__(self):
+        return str(self.animal)
+
+    def to_json(self):
+        return {
+            'animal': str(self.animal),
+            'animal_id': self.animal_id,
+            'sex': self.get_sex_display(),
+            'sex_choice': self.sex,
+            'stage': self.get_stage_display(),
+            'stage_choice': self.stage,
+            'length': self.length,
+            'group': self.animal.group.id,
+            'group_name': str(self.animal.group)
+        }
 
     class Meta:
         abstract = True
