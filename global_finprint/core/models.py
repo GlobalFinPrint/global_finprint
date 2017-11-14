@@ -40,10 +40,10 @@ class VersionedModel(AuditableModel):
 
     def delete(self, *args, **kwargs):
         self.add_version(True)
-        super(VersionedModel, self).save(*args, **kwargs)
+        super(VersionedModel, self).delete(*args, **kwargs)
 
     def add_version(self, deleted=False):
-        class_name = '.'.join([self.__module__, self.__class__.__name__])
+        class_name = self.__class__.__name__
         history, _ = ModelHistory.objects.get_or_create(model_type=class_name, reference_id=self.pk)
         if deleted:
             history.deleted = True
