@@ -23,7 +23,12 @@ class AuditableModel(TimestampedModel):
                                          related_name='%(app_label)s_%(class)s_last_modified_by')
 
     def save(self, *args, **kwargs):
-        self.last_modified_by = get_current_user()
+        modifier = get_current_user()
+        # TODO: get_current_user fails in API context, find a better way to determine user
+        if type(modifier) == User:
+            self.last_modified_by = modifier
+        else:
+            self.last_modified_by = self.user
         super(AuditableModel, self).save(*args, **kwargs)
 
     class Meta:
