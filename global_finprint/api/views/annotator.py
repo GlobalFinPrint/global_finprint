@@ -36,9 +36,11 @@ class APIView(View):
 
         if 'set_id' in kwargs:
             try:
-                assignments = Assignment.get_all() if request.annotator.is_lead() \
-                    else Assignment.get_active_for_annotator(request.annotator)
-                request.va = assignments.get(pk=kwargs['set_id'])
+                # TODO: the following code used to incorrectly match the set_id against Assignment.pk. If we
+                # assume that this code was working, then it's likely the annotator code calling into the API
+                # is passing in the assignment id in place of the the set id. Regression testing and a code
+                # audit is needed before shipping this change.
+                request.va = Assignment.objects.get(video__set__pk=kwargs['set_id'], annotator=request.annotator)
             except Assignment.DoesNotExist:
                 return HttpResponseNotFound()
 
