@@ -194,6 +194,7 @@ class Observation(AbstractObservation):
             'sex_choice',
             'stage_choice',
             'length',
+            'generation_duration',
             # event fields
             'event_time',
             'extent',
