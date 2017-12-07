@@ -92,6 +92,7 @@ class AbstractObservation(VersionedModel):
     duration = models.PositiveIntegerField(null=True, blank=True)
     comment = models.TextField(null=True)
     observation_time = models.PositiveIntegerField(null=True, blank=True)
+    generation_duration = models.FloatField(null=True)
 
     class Meta:
         abstract = True
@@ -193,6 +194,7 @@ class Observation(AbstractObservation):
             'sex_choice',
             'stage_choice',
             'length',
+            'generation_duration',
             # event fields
             'event_time',
             'extent',
