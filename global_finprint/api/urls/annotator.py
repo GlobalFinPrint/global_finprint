@@ -15,7 +15,6 @@ urlpatterns = [
 
     # set details and list restrictions based on region / project
     url(r"^set/(?P<set_id>\d+)$", csrf_exempt(annotator.SetDetail.as_view()), name='api_set_detail'),
-    url(r"^assignment/(?P<assignment_id>\d+)$", csrf_exempt(annotator.SetDetailByAssignment.as_view()), name='api_set_detail_by_assignment'),
     url(r"^set/(?P<set_id>\d+)/attributes$", csrf_exempt(annotator.AttributeList.as_view()), name='api_attribute_list'),
     url(r"^set/(?P<set_id>\d+)/animals$", csrf_exempt(annotator.AnimalList.as_view()), name='api_animal_list'),
 
@@ -27,6 +26,9 @@ urlpatterns = [
     url(r"^set/(?P<set_id>\d+)/obs/(?P<obs_id>\d+)/event$", csrf_exempt(annotator.Events.as_view()), name='api_events'),
     url(r"^set/(?P<set_id>\d+)/obs/(?P<obs_id>\d+)/event/(?P<evt_id>\d+)$",
         csrf_exempt(annotator.EventUpdate.as_view()), name='api_event_update'),
+
+    url(r"^assignment/(?P<assignment_id>\d+)$", csrf_exempt(annotator.AssignmentDetail.as_view()),
+        name='api_set_detail_by_assignment'),
 
     url(r"^animal/(?P<animal_id>\d+)$", csrf_exempt(annotator.AnimalDetail.as_view()), name='api_animal_detail'),
     url(r"^video/(?P<file_name>[\.\w ]+)$", csrf_exempt(annotator.VideoDetail.as_view()), name='api_video_file_detail'),

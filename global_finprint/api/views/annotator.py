@@ -169,22 +169,24 @@ class SetDetail(APIView):
                                      }})
 
 
-class SetDetailByAssignment(APIView):
+class AssignmentDetail(APIView):
     """
     Set detail view
     """
+
     def get(self, request, assignment_id):
-        return JsonResponse({'set': {'id': request.va.id,
-                                     'set_code': str(request.va.set()),
-                                     'file': str(request.va.video.primary()),
-                                     'assigned_to': {'id': request.va.annotator_id,
-                                                     'user': str(request.va.annotator)},
-                                     'progress': request.va.progress,
-                                     'observations': Observation.get_for_api(request.va),
-                                     'animals': Animal.get_for_api(request.va),
-                                     'status': {'id': request.va.status_id,
-                                                'name': request.va.status.name}
-                                     }})
+        return JsonResponse({'assignment': {'id': request.va.id,
+                                            'set_code': str(request.va.set()),
+                                            'file': str(request.va.video.primary()),
+                                            'assigned_to': {'id': request.va.annotator_id,
+                                                            'user': str(request.va.annotator)},
+                                            'progress': request.va.progress,
+                                            'observations': Observation.get_for_api(request.va),
+                                            'animals': Animal.get_for_api(request.va),
+                                            'status': {'id': request.va.status_id,
+                                                       'name': request.va.status.name}
+                                            }})
+
 
 class VideoDetail(APIView):
     """
