@@ -15,7 +15,7 @@ urlpatterns = [
 
     # set details and list restrictions based on region / project
     url(r"^set/(?P<set_id>\d+)$", csrf_exempt(annotator.SetDetail.as_view()), name='api_set_detail'),
-    url(r"^assignment/(?P<assignment_id>\d+)$", csrf_exempt(annotator.SetDetail.as_view()), name='api_set_detail_by_assignment'),
+    url(r"^assignment/(?P<assignment_id>\d+)$", csrf_exempt(annotator.SetDetailByAssignment.as_view()), name='api_set_detail_by_assignment'),
     url(r"^set/(?P<set_id>\d+)/attributes$", csrf_exempt(annotator.AttributeList.as_view()), name='api_attribute_list'),
     url(r"^set/(?P<set_id>\d+)/animals$", csrf_exempt(annotator.AnimalList.as_view()), name='api_animal_list'),
 
