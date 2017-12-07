@@ -1,3 +1,5 @@
+from datetime import datetime as dt
+from datetime import time
 from builtins import set as set_utils
 
 from django.views.generic.base import View
@@ -397,6 +399,110 @@ class EventUpdate(APIView):
         evt.save()
         filename = evt.filename()
         return JsonResponse({'observations': Observation.get_for_api(request.va), 'filename': filename})
+
+
+class BulkEvents(APIView):
+    date_format = '%b %d, %Y'
+    time_format = '%H:%M'
+
+    def get(self, request):
+        result = {}
+
+        min_date, max_date = None, None
+        if 'min_date' in request.GET:
+            min_date = dt.strptime(request.GET['min_date'], self.date_format)
+
+        if 'max_date' in request.GET:
+            max_date = dt.strptime(request.GET['max_date'], self.date_format)
+
+        filter_params = {}
+        if min_date and max_date:
+            filter_params['last_modified_datetime__range'] = (min_date, max_date)
+        elif min_date:
+            filter_params['last_modified_datetime__gt'] = min_date
+        elif max_date:
+            filter_params['last_modified_datetime__lt'] = max_date
+
+        for observation in Observation.objects.filter(**filter_params):
+            assignment = observation.assignment
+            video = assignment.video
+            set_obj = video.set # named to avoid collision with python set()
+            trip = set_obj.trip
+
+            if trip.code not in result:
+                result[trip.code] = self.make_trip_json(trip)
+            trip_json = result[trip.code]
+
+            if set_obj.code not in trip_json['sets']:
+                trip_json['sets'][set_obj.code] = self.make_set_json(set_obj)
+
+            set_json = trip_json['sets'][set_obj.code]
+
+            video_name = str(video)
+            if video_name not in set_json['videos']:
+                set_json['videos'][video_name] = {
+                    'video_name': video_name,
+                    'events': []
+                }
+            video_json = set_json['videos'][video_name]
+
+            video_json['events'].append({
+                'organism': self.get_organism_json(observation),
+                'observation_time': observation.observation_time,
+                'duration': observation.duration,
+                'observations': [
+                    {
+                        'time': event.event_time,
+                        'bounding_box': event.extent.coords[0][:-1] if event.extent else None
+                    }
+                    for event in observation.event_set.all()
+                ]
+            })
+
+        return JsonResponse(result)
+
+    def make_trip_json(self, trip):
+        return {
+            'trip_code': trip.code,
+            'team': str(trip.team),
+            'location': str(trip.location),
+            'start_date': dt.strftime(trip.start_date, self.date_format),
+            'end_date': dt.strftime(trip.end_date, self.date_format),
+            'source': str(trip.source),
+            'sets': {}
+        }
+
+    def make_set_json(self, set_obj):
+        set_json = {
+            'set_code': set_obj.code,
+            'set_date': dt.strftime(set_obj.set_date, self.date_format),
+            'drop_time': time.strftime(set_obj.drop_time, self.time_format),
+            'latitude': float(set_obj.latitude),
+            'longitude': float(set_obj.longitude),
+            'depth': float(set_obj.depth),
+            'reef': set_obj.reef().name,
+            'habitat': str(set_obj.reef_habitat.habitat),
+            'videos': {}
+        }
+        if set_obj.haul_date:
+            set_json['haul_date'] = dt.strftime(set_obj.haul_date, self.date_format)
+        if set_obj.haul_time:
+            set_json['haul_time'] = time.strftime(set_obj.haul_time, self.time_format)
+
+        return set_json
+
+    def get_organism_json(self, observation):
+        if hasattr(observation, 'animalobservation'):
+            animal = observation.animal()
+            return {
+                'species': animal.species,
+                'genus': animal.genus,
+                'family': animal.family,
+                'common_name': animal.common_name
+            }
+        else:
+            return None
+            
 
 
 class AffiliationList(APIView):
