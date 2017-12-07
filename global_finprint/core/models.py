@@ -1,7 +1,10 @@
+import datetime
 from django.apps import apps
 from django.contrib.gis.db import models
 from django.contrib.auth.models import User
 from config.current_user import get_current_user
+from django.contrib.postgres.fields import ArrayField, JSONField
+from django.core.serializers.json import DjangoJSONEncoder
 import uuid
 
 
@@ -14,7 +17,68 @@ class TimestampedModel(models.Model):
 
 
 class AuditableModel(TimestampedModel):
-    user = models.ForeignKey(to=User, default=get_current_user)
+    # user and last_modified_by are nullable to enable data migration (get_current_user returns None)
+    user = models.ForeignKey(to=User, default=get_current_user, null=True)
+    last_modified_by = models.ForeignKey(to=User, default=get_current_user, null=True,
+                                         related_name='%(app_label)s_%(class)s_last_modified_by')
+
+    def save(self, *args, **kwargs):
+        modifier = get_current_user()
+        # TODO: get_current_user fails in API context, find a better way to determine user
+        if type(modifier) == User:
+            self.last_modified_by = modifier
+        else:
+            self.last_modified_by = self.user
+        super(AuditableModel, self).save(*args, **kwargs)
+
+    class Meta:
+        abstract = True
+
+class VersionedModel(AuditableModel):
+    def to_json(self):
+        return {}
+
+    def save(self, *args, **kwargs):
+        if self.pk is not None:
+            self.add_version()
+        super(VersionedModel, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        self.add_version(True)
+        super(VersionedModel, self).delete(*args, **kwargs)
+
+    def add_version(self, deleted=False):
+        class_name = self.__class__.__name__
+        history, _ = ModelHistory.objects.get_or_create(model_type=class_name, reference_id=self.pk)
+        if deleted:
+            history.deleted = True
+        my_json = self.serialize_datetimes(self.to_json())
+        user = self.last_modified_by or self.user
+        snapshot = ModelSnapshot(create_datetime=self.last_modified_datetime,
+                                 user=user,
+                                 state=my_json,
+                                 history=history)
+        snapshot.save()
+
+    # The below code can be removed in django 1.11, and django.core.serializers.json.DjangoJSONEncoder
+    # can instead be passed to the JSONField definition using the new "encoder" keyword parameter.
+    @staticmethod
+    def serialize_datetimes(obj):
+        if isinstance(obj, dict):
+            result = {}
+            for key, item in obj.items():
+                result[key] = VersionedModel.serialize_datetimes(item)
+            return result
+        elif isinstance(obj, list) or isinstance(obj, tuple):
+            result = []
+            for item in obj:
+                result.append(VersionedModel.serialize_datetimes(item))
+            return result
+        elif isinstance(obj, datetime.datetime):
+            return str(obj)
+        else:
+            return obj
+
 
     class Meta:
         abstract = True
@@ -97,3 +161,25 @@ class Team(AuditableModel):
 
     def __str__(self):
         return u"{0}{1}{2}".format(self.lead.user.username, (' - ' if self.sampler_collaborator else ''), self.sampler_collaborator)
+
+class ModelHistory(models.Model):
+    model_type = models.TextField()
+    reference_id = models.IntegerField()
+    deleted = models.BooleanField(default=False)
+
+    def __str__(self):
+        return u'pk: {0}, type: {1}, ref_id: {2}'.format(self.pk, self.model_type, self.reference_id)
+
+class ModelSnapshot(models.Model):
+    create_datetime = models.DateTimeField()
+    user = models.ForeignKey(to=User)
+    state = JSONField()
+    history = models.ForeignKey(to=ModelHistory)
+
+    def __str__(self):
+        return u'pk: {0}, user: {1}, date: {2}, history_ref: {3}'.format(
+            self.pk, str(self.user), str(self.create_datetime), self.history.pk)
+
+    class Meta():
+        ordering = ['create_datetime']
+
