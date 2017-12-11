@@ -34,14 +34,14 @@ class APIView(View):
         except FinprintUser.DoesNotExist:
             return HttpResponseForbidden()
 
+        # todo:  2017-12-7 - this does indeed break the annotator client which passes what it calls set_id but what is really assignment_id
         if 'set_id' in kwargs:
             try:
+                # TODO: the following code used to incorrectly match the set_id against Assignment.pk. If we
+                # assume that this code was working, then it's likely the annotator code calling into the API
+                # is passing in the assignment id in place of the the set id. Regression testing and a code
+                # audit is needed before shipping this change.
                 request.va = Assignment.objects.get(video__set__pk=kwargs['set_id'], annotator=request.annotator)
-            except Assignment.DoesNotExist:
-                return HttpResponseNotFound()
-        elif 'assignment_id' in kwargs:
-            try:
-                request.va = Assignment.objects.get(pk=kwargs['assignment_id'], annotator=request.annotator)
             except Assignment.DoesNotExist:
                 return HttpResponseNotFound()
 
@@ -167,25 +167,6 @@ class SetDetail(APIView):
                                      'status': {'id': request.va.status_id,
                                                 'name': request.va.status.name}
                                      }})
-
-
-class AssignmentDetail(APIView):
-    """
-    Set detail view
-    """
-
-    def get(self, request, assignment_id):
-        return JsonResponse({'assignment': {'id': request.va.id,
-                                            'set_code': str(request.va.set()),
-                                            'file': str(request.va.video.primary()),
-                                            'assigned_to': {'id': request.va.annotator_id,
-                                                            'user': str(request.va.annotator)},
-                                            'progress': request.va.progress,
-                                            'observations': Observation.get_for_api(request.va),
-                                            'animals': Animal.get_for_api(request.va),
-                                            'status': {'id': request.va.status_id,
-                                                       'name': request.va.status.name}
-                                            }})
 
 
 class VideoDetail(APIView):
