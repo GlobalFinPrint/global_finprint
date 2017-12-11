@@ -34,7 +34,8 @@ class APIView(View):
         except FinprintUser.DoesNotExist:
             return HttpResponseForbidden()
 
-        # todo:  2017-12-7 - this does indeed break the annotator client which passes what it calls set_id but what is really assignment_id
+        # todo:  2017-12-7 - this does indeed break the annotator client which passes
+        # what it calls set_id but what is really assignment_id
         if 'set_id' in kwargs:
             try:
                 # TODO: the following code used to incorrectly match the set_id against Assignment.pk. If we
