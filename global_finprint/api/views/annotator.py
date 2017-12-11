@@ -2,6 +2,7 @@ from datetime import datetime as dt
 from datetime import time
 from builtins import set as set_utils
 
+import django.core.exceptions as django_exceptions
 from django.views.generic.base import View
 from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotFound, HttpResponseBadRequest
 from django.contrib.auth import authenticate
@@ -179,6 +180,10 @@ class VideoDetail(APIView):
         video_list = []
         video_files = VideoFile.objects.filter(file=file_name)
         for video_file in video_files:
+            try:
+                assignment = video_file.video.assignment_set.get(annotator=request.annotator)
+            except django_exceptions.ObjectDoesNotExist:
+                assignment = None
             video_list.append(
                 {
                     'file': video_file.file,
@@ -188,9 +193,9 @@ class VideoDetail(APIView):
                     'primary': video_file.primary,
                     'video': {
                         'id': video_file.video.id,
-                        'set_id': video_file.video.set.id,
+                        'set_id': assignment.id if assignment else None,
                         'set_code': video_file.video.set.code,
-                        'trip_code': video_file.video.set.trip.code,
+                        'trip_code': video_file.video.set.trip.code
                     }
                 }
             )
