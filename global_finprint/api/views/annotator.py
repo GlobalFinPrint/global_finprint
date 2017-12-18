@@ -19,6 +19,8 @@ from global_finprint.habitat.models import Site
 
 MAXN_MEASURABLE_ID = 2
 
+IMAGE_URL_FORMAT = 'https://s3-us-west-2.amazonaws.com/finprint-annotator-screen-captures/prod/{trip_code}/{set_code}/{obs_id}_{event_id}.png'
+
 
 class APIView(View):
     """
@@ -450,18 +452,24 @@ class BulkEvents(APIView):
             if video_name not in set_json['videos']:
                 set_json['videos'][video_name] = {
                     'video_name': video_name,
-                    'events': []
+                    'observation': []
                 }
             video_json = set_json['videos'][video_name]
 
-            video_json['events'].append({
+            video_json['observation'].append({
                 'organism': self.get_organism_json(observation),
                 'observation_time': observation.observation_time,
                 'duration': observation.duration,
-                'observations': [
+                'events': [
                     {
                         'time': event.event_time,
-                        'bounding_box': event.extent.coords[0][:-1] if event.extent else None
+                        'bounding_box': event.extent.wkt if event.extent else None,
+                        'image_url': IMAGE_URL_FORMAT.format(
+                            trip_code=trip.code,
+                            set_code=set_obj.code,
+                            obs_id=observation.id,
+                            event_id=event.id
+                        )
                     }
                     for event in observation.event_set.all()
                 ]
@@ -506,7 +514,8 @@ class BulkEvents(APIView):
                 'species': animal.species,
                 'genus': animal.genus,
                 'family': animal.family,
-                'common_name': animal.common_name
+                'common_name': animal.common_name,
+                'group': str(animal.group)
             }
         else:
             return None
