@@ -221,7 +221,7 @@ class Observations(APIView):
         params['attribute'] = request.POST.getlist('attribute')
         params['measurables'] = request.POST.getlist('measurables')
         if 'animal_id' not in params:
-            params['animal_id'] = Animal.objects.get(common_name=request.POST['animal_name']).id
+            params['animal_id'] = Animal.objects.get(common_name__iexact=request.POST['animal_name']).id
         obs = Observation.create(**params)
         evt = obs.event_set.first()
         if request.va.status_id == 1:
@@ -521,7 +521,7 @@ class BulkEvents(APIView):
             }
         else:
             return None
-            
+
 
 
 class AffiliationList(APIView):
