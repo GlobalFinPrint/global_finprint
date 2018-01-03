@@ -3,17 +3,21 @@ SELECT
   max('https://s3-us-west-2.amazonaws.com/finprint-annotator-screen-captures/prod/' ||
       tt.code || '/' || bs.code || '/' || ao.id ||
       '_' || ae.id || '.png') AS image_url,
+
   hab.region_name,
   hab.location_name,
   hab.site_name,
   hab.reef_name,
   hab.reef_habitat_name,
+
   bs.latitude,
   bs.longitude,
   bs.depth,
   bs.visibility,
+
   bs.trip_id,
   bs.id                       AS set_id,
+
   tt.code || '_' || bs.code   AS set_code
 FROM annotation_event_attribute ea
   JOIN annotation_event ae ON ae.id = ea.event_id
