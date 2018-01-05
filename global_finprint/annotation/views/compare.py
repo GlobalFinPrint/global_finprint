@@ -2,6 +2,7 @@ from django.views.generic import View
 from django.template import Context
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, render
+from django.conf import settings
 from global_finprint.core.mixins import UserAllowedMixin
 from global_finprint.bruv.models import Set
 from global_finprint.annotation.models.video import Assignment, Project
@@ -32,7 +33,8 @@ class AssignmentCompareView(UserAllowedMixin, View):
             'animal_groups': animal_groups,
             # exclude assignments that are 'rejected' or 'disabled':
             'assignment_set': set.video.assignment_set.exclude(status__in=[5, 6]).filter(project=project),
-            'state_list': MasterRecordState.objects.all()
+            'state_list': MasterRecordState.objects.all(),
+            'anonymous': settings.HIDE_COMPARE_ANNOTATORS if settings.HIDE_COMPARE_ANNOTATORS else False
         })
         return render(request, self.template_name, context=context)
 

@@ -61,7 +61,7 @@
                  data-status-id="{{ a.status.id }}"
                  tabindex="0">
                 <p class="review-label">
-                    <span class="circle">{{ forloop.counter }}</span> {{ a.annotator }}
+                    <span class="circle">{{ forloop.counter }}</span> {% if anonymous %}xxx{% else %}{{ a.annotator }}{% endif %}
                     | <b> Status:</b> {{ a.status|lower }}
                     {% if a.status.id == 4 %}
                         <button class="select-all btn btn-primary btn-fp" disabled="disabled">Select All</button>
