@@ -1,4 +1,4 @@
-fabric==1.13.0
+fabric==1.14.0
 boto==2.46.1
 requests==2.6.0
 ebs-deploy==1.7
