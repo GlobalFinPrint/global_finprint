@@ -1,3 +1,4 @@
+CREATE VIEW public.v_report_machine_learning_corpus_from_master AS
 SELECT
   'https://s3-us-west-2.amazonaws.com/finprint-annotator-screen-captures/prod/' ||
   tt.code || '/' || bs.code || '/' || ao.id ||

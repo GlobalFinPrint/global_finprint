@@ -43,4 +43,7 @@ urlpatterns = [
     url(r"^restrict_filter_dropdown$", csrf_exempt(annotator.RestrictFilterChanges.as_view()),
         name='restrict_filter_dropdown'),
 
+    # grabbing events in bulk
+    url(r"^bulk_events$", csrf_exempt(annotator.BulkEvents.as_view()), name='bulk_events')
+
 ]

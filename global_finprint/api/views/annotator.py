@@ -1,5 +1,8 @@
+from datetime import datetime as dt
+from datetime import time
 from builtins import set as set_utils
 
+import django.core.exceptions as django_exceptions
 from django.views.generic.base import View
 from django.http import JsonResponse, HttpResponseForbidden, HttpResponseNotFound, HttpResponseBadRequest
 from django.contrib.auth import authenticate
@@ -15,6 +18,8 @@ from global_finprint.bruv.models import Set
 from global_finprint.habitat.models import Site
 
 MAXN_MEASURABLE_ID = 2
+
+IMAGE_URL_FORMAT = 'https://s3-us-west-2.amazonaws.com/finprint-annotator-screen-captures/prod/{trip_code}/{set_code}/{obs_id}_{event_id}.png'
 
 
 class APIView(View):
@@ -38,11 +43,12 @@ class APIView(View):
         # what it calls set_id but what is really assignment_id
         if 'set_id' in kwargs:
             try:
-                # TODO: the following code used to incorrectly match the set_id against Assignment.pk. If we
-                # assume that this code was working, then it's likely the annotator code calling into the API
-                # is passing in the assignment id in place of the the set id. Regression testing and a code
-                # audit is needed before shipping this change.
-                request.va = Assignment.objects.get(video__set__pk=kwargs['set_id'], annotator=request.annotator)
+                # In this context set_id is actually the id of an assignment.
+                filter_params = { 'pk': kwargs['set_id'] }
+                if not request.annotator.is_lead():
+                    # only annotators can fetch other user's assignments
+                    filter_params['annotator'] = request.annotator
+                request.va = Assignment.objects.get(**filter_params)
             except Assignment.DoesNotExist:
                 return HttpResponseNotFound()
 
@@ -178,6 +184,10 @@ class VideoDetail(APIView):
         video_list = []
         video_files = VideoFile.objects.filter(file=file_name)
         for video_file in video_files:
+            try:
+                assignment = video_file.video.assignment_set.get(annotator=request.annotator)
+            except django_exceptions.ObjectDoesNotExist:
+                assignment = None
             video_list.append(
                 {
                     'file': video_file.file,
@@ -187,9 +197,9 @@ class VideoDetail(APIView):
                     'primary': video_file.primary,
                     'video': {
                         'id': video_file.video.id,
-                        'set_id': video_file.video.set.id,
+                        'set_id': assignment.id if assignment else None,
                         'set_code': video_file.video.set.code,
-                        'trip_code': video_file.video.set.trip.code,
+                        'trip_code': video_file.video.set.trip.code
                     }
                 }
             )
@@ -210,6 +220,8 @@ class Observations(APIView):
         params['user'] = request.annotator.user
         params['attribute'] = request.POST.getlist('attribute')
         params['measurables'] = request.POST.getlist('measurables')
+        if 'animal_id' not in params:
+            params['animal_id'] = Animal.objects.get(common_name__iexact=request.POST['animal_name']).id
         obs = Observation.create(**params)
         evt = obs.event_set.first()
         if request.va.status_id == 1:
@@ -399,6 +411,117 @@ class EventUpdate(APIView):
         evt.save()
         filename = evt.filename()
         return JsonResponse({'observations': Observation.get_for_api(request.va), 'filename': filename})
+
+
+class BulkEvents(APIView):
+    date_format = '%b %d, %Y'
+    time_format = '%H:%M'
+
+    def get(self, request):
+        result = {}
+
+        min_date, max_date = None, None
+        if 'min_date' in request.GET:
+            min_date = dt.strptime(request.GET['min_date'], self.date_format)
+
+        if 'max_date' in request.GET:
+            max_date = dt.strptime(request.GET['max_date'], self.date_format)
+
+        filter_params = {}
+        if min_date and max_date:
+            filter_params['last_modified_datetime__range'] = (min_date, max_date)
+        elif min_date:
+            filter_params['last_modified_datetime__gt'] = min_date
+        elif max_date:
+            filter_params['last_modified_datetime__lt'] = max_date
+
+        for observation in Observation.objects.filter(**filter_params):
+            assignment = observation.assignment
+            video = assignment.video
+            set_obj = video.set # named to avoid collision with python set()
+            trip = set_obj.trip
+
+            if trip.code not in result:
+                result[trip.code] = self.make_trip_json(trip)
+            trip_json = result[trip.code]
+
+            if set_obj.code not in trip_json['sets']:
+                trip_json['sets'][set_obj.code] = self.make_set_json(set_obj)
+
+            set_json = trip_json['sets'][set_obj.code]
+
+            video_name = str(video)
+            if video_name not in set_json['videos']:
+                set_json['videos'][video_name] = {
+                    'video_name': video_name,
+                    'observation': []
+                }
+            video_json = set_json['videos'][video_name]
+
+            video_json['observation'].append({
+                'organism': self.get_organism_json(observation),
+                'observation_time': observation.observation_time,
+                'duration': observation.duration,
+                'events': [
+                    {
+                        'time': event.event_time,
+                        'bounding_box': event.extent.wkt if event.extent else None,
+                        'image_url': IMAGE_URL_FORMAT.format(
+                            trip_code=trip.code,
+                            set_code=set_obj.code,
+                            obs_id=observation.id,
+                            event_id=event.id
+                        )
+                    }
+                    for event in observation.event_set.all()
+                ]
+            })
+
+        return JsonResponse(result)
+
+    def make_trip_json(self, trip):
+        return {
+            'trip_code': trip.code,
+            'team': str(trip.team),
+            'location': str(trip.location),
+            'start_date': dt.strftime(trip.start_date, self.date_format),
+            'end_date': dt.strftime(trip.end_date, self.date_format),
+            'source': str(trip.source),
+            'sets': {}
+        }
+
+    def make_set_json(self, set_obj):
+        set_json = {
+            'set_code': set_obj.code,
+            'set_date': dt.strftime(set_obj.set_date, self.date_format),
+            'drop_time': time.strftime(set_obj.drop_time, self.time_format),
+            'latitude': float(set_obj.latitude),
+            'longitude': float(set_obj.longitude),
+            'depth': float(set_obj.depth),
+            'reef': set_obj.reef().name,
+            'habitat': str(set_obj.reef_habitat.habitat),
+            'videos': {}
+        }
+        if set_obj.haul_date:
+            set_json['haul_date'] = dt.strftime(set_obj.haul_date, self.date_format)
+        if set_obj.haul_time:
+            set_json['haul_time'] = time.strftime(set_obj.haul_time, self.time_format)
+
+        return set_json
+
+    def get_organism_json(self, observation):
+        if hasattr(observation, 'animalobservation'):
+            animal = observation.animal()
+            return {
+                'species': animal.species,
+                'genus': animal.genus,
+                'family': animal.family,
+                'common_name': animal.common_name,
+                'group': str(animal.group)
+            }
+        else:
+            return None
+
 
 
 class AffiliationList(APIView):
