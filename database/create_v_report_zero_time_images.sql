@@ -15,10 +15,12 @@ SELECT
   bs.depth,
   bs.visibility,
 
-  bs.trip_id,
-  bs.id                       AS set_id,
+  bs.set_date,
+  bs.drop_time,
+  tt.code || '_' || bs.code   AS set_code,
 
-  tt.code || '_' || bs.code   AS set_code
+  bs.trip_id,
+  bs.id                       AS set_id
 FROM annotation_event_attribute ea
   JOIN annotation_event ae ON ae.id = ea.event_id
   JOIN annotation_observation ao ON (ao.id = ae.observation_id)
