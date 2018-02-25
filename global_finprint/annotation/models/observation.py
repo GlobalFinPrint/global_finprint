@@ -400,7 +400,7 @@ class AbstractEvent(VersionedModel):
             _len = len(_splits)
             clip_filename = _splits[_len - 1].split(".")[0] + ".mp4"
             self.clip_filename = self.filename().strip(_splits[_len - 1]) + clip_filename
-            logger.info('{}{}'.format('8 sec clip file name: ', self.clip_filename))
+            logger.debug('{}{}'.format('8 sec clip file name: ', self.clip_filename))
 
         if verify is False:
             return '{}{}'.format(SCREEN_CAPTURE_URL, self.clip_filename)
