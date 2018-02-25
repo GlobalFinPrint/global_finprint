@@ -93,7 +93,7 @@ CREATE OR REPLACE VIEW public.v_report_reef_summary AS
           LEFT JOIN annotation_videofile vf ON (vf.video_id = v.id AND vf."primary" = TRUE)
           LEFT JOIN annotation_masterrecord mas ON (mas.set_id = S.id
                                                     AND mas.status_id = 2)
-          LEFT JOIN assignment_status_summary ON assstat.video_id = v.id
+          LEFT JOIN assignment_status_summary assstat ON assstat.video_id = v.id
         GROUP BY
           S.trip_id,
           S.id,
