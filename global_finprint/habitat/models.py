@@ -54,6 +54,9 @@ SITE_TYPE_CHOICES = {
     ('C', 'Continental'),
     ('I', 'Island'),
     ('A', 'Atoll'),
+    ('V', 'Volcanic Island'),
+    ('B', 'Barrier Reef'),
+    ('O', 'Offshore Bank'),
 }
 
 
