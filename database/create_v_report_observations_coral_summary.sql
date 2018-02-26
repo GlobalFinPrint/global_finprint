@@ -1,32 +1,32 @@
-CREATE OR REPLACE VIEW public.v_report_observations_coral_summary AS
+CREATE OR REPLACE VIEW public.v_report_observations_io_summary AS
 select
-  summary_id,
   trip_code,
   set_code,
-  full_code,
+  has_complete_master,
 
   region_name,
   location_name,
   site_name,
   reef_name,
-  reef_habitat_name,
+  reef_type,
 
   animal_id,
   family,
   genus,
   species,
+  common_name,
 
   maxn,
-  event_time_minutes_raw,
-  event_time_minutes,
+  event_time_mil,
+  event_time_mins,
 
-  trip_id,
   set_id,
-  video_id
-from public.observation_summary
+  set_lat,
+  set_long
+from public.v_report_maxn_observations
 where
   lower(region_name) = lower('coral triangle')
 order by
   location_name,
-  full_code,
-  event_time_minutes;
+  set_id,
+  event_time_mil;

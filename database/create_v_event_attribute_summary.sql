@@ -33,6 +33,8 @@ SELECT
   ELSE 0
   END                                        AS zero_time_tagged,
   CASE
+  -- selects events that have an attribute (see annotation_attribute table), and where the attribute name is HAUL 60 MIN TIME,
+  -- linking event ids in annotation event table to event ids in annotation_event_attribute table
   WHEN (EXISTS(SELECT evtat.id
                FROM annotation_event_attribute evtat
                WHERE ((evtat.attribute_id = 33) AND (evtat.event_id = evt.id))))
@@ -40,21 +42,24 @@ SELECT
   ELSE 0
   END                                        AS sixty_minute_time_tagged,
   CASE
-  WHEN (EXISTS(SELECT evtat.id
+  -- selects events that have an attribute (see annotation_attribute table), and where the attribute name is HAUL 90 MIN TIME,
+    WHEN (EXISTS(SELECT evtat.id
                FROM annotation_event_attribute evtat
                WHERE ((evtat.attribute_id = 24) AND (evtat.event_id = evt.id))))
     THEN 1
   ELSE 0
   END                                        AS ninty_minute_time_tagged,
   CASE
-  WHEN (EXISTS(SELECT evtat.id
+  -- selects events that have an attribute (see annotation_attribute table), and where the attribute name is MARK HAUL TIME,
+    WHEN (EXISTS(SELECT evtat.id
                FROM annotation_event_attribute evtat
                WHERE ((evtat.attribute_id = 23) AND (evtat.event_id = evt.id))))
     THEN 1
   ELSE 0
   END                                        AS haul_time_tagged,
   CASE
-  WHEN (EXISTS(SELECT evtat.id
+  -- selects events that have an attribute (see annotation_attribute table), and where the attribute name is MaxN Image frame,
+    WHEN (EXISTS(SELECT evtat.id
                FROM annotation_event_attribute evtat
                WHERE ((evtat.attribute_id = 13) AND (evtat.event_id = evt.id))))
     THEN 1
