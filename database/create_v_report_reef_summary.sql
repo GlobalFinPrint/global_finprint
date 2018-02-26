@@ -1,3 +1,5 @@
+/* Summary of data completeness of all reefs, including reef level metadata */
+
 CREATE OR REPLACE VIEW public.v_report_reef_summary AS
   WITH assignment_status_summary AS
   (
@@ -101,7 +103,8 @@ CREATE OR REPLACE VIEW public.v_report_reef_summary AS
           has_complete_master,
           has_all_fields,
           set_complete
-    )
+    ),
+    annotation_summary AS (
   SELECT
     extract(YEAR FROM t.start_date) :: TEXT AS trip_year,
     hab.region_name                         AS region_name,
@@ -141,7 +144,81 @@ CREATE OR REPLACE VIEW public.v_report_reef_summary AS
     hab.location_name,
     hab.site_name,
     hab.reef_name,
-    trip_year;
+    trip_year),
+
+
+reef_metadata AS (
+  /* this script makes a summary table showing all reef-level metadata, e.g. levels of fishing and compliance with MPAs */
+    SELECT
+      habitat_reef.id                                    AS reef_id,
+      /* reef_ID acts as primary key for this table*/
+      habitat_protectionstatus.type                      AS protection_status,
+      habitat_mpa.name                                   AS MPA_name,
+      habitat_mpa.area                                   AS MPA_area,
+      habitat_mpa.founded                                AS MPA_year_founded,
+      habitat_mpaisolation.type                          AS MPA_isolation,
+      habitat_mpacompliance.type                         AS MPA_compliance,
+
+      string_agg(habitat_fishingrestrictions.type,
+                 ', ')                                   AS fishing_restrictions /* each reef can have multiple types of fishing restrictions */
+    FROM habitat_reef
+      LEFT JOIN habitat_protectionstatus ON habitat_reef.protection_status_id = habitat_protectionstatus.id
+      LEFT JOIN habitat_mpa ON habitat_reef.mpa_id = habitat_mpa.id
+      LEFT JOIN habitat_mpaisolation ON habitat_mpa.mpa_isolation_id = habitat_mpaisolation.id
+      LEFT JOIN habitat_mpacompliance ON habitat_mpa.mpa_compliance_id = habitat_mpacompliance.id
+      LEFT JOIN habitat_reef_fishing_restrictions ON habitat_reef.id = habitat_reef_fishing_restrictions.reef_id
+      LEFT JOIN habitat_fishingrestrictions
+        ON habitat_reef_fishing_restrictions.fishingrestrictions_id = habitat_fishingrestrictions.id
+    GROUP BY
+      habitat_reef.id,
+      habitat_reef.name,
+      habitat_protectionstatus.type,
+      habitat_mpa.name,
+      habitat_mpa.area,
+      habitat_mpa.founded,
+      habitat_mpaisolation.type,
+      habitat_mpacompliance.type
+),
+    fishing_metadata AS (
+      SELECT
+        habitat_reef.id                               AS reef_id,
+        string_agg(habitat_sharkgearinuse.type, '; ') AS shark_fishing_gear /* each reef can have multiple fishing gears */
+      FROM habitat_reef
+        LEFT JOIN habitat_reef_shark_gear_in_use ON habitat_reef.id = habitat_reef_shark_gear_in_use.reef_id
+        LEFT JOIN habitat_sharkgearinuse ON habitat_reef_shark_gear_in_use.sharkgearinuse_id = habitat_sharkgearinuse.id
+      GROUP BY habitat_reef.id
+  )
+
+SELECT
+region_name,
+location_name,
+site_name,
+reef_name,
+trip_year,
+count_of_sets,
+with_assignments,
+have_two_complete_assignments,
+have_two_reviewed_assignments,
+have_one_assignment_and_one_reviewed,
+have_complete_master,
+have_all_set_fields,
+protection_status,
+mpa_name,
+mpa_area,
+MPA_year_founded,
+MPA_isolation,
+MPA_compliance,
+fishing_restrictions,
+shark_fishing_gear,
+region_id,
+location_id,
+site_id,
+annotation_summary.reef_id
+FROM
+annotation_summary
+LEFT JOIN reef_metadata ON annotation_summary.reef_id=reef_metadata.reef_id
+LEFT JOIN fishing_metadata ON annotation_summary.reef_id=fishing_metadata.reef_id;
+
 
 
 
