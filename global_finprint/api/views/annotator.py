@@ -438,7 +438,7 @@ class BulkEvents(APIView):
         for observation in Observation.objects.filter(**filter_params):
             assignment = observation.assignment
             video = assignment.video
-            set_obj = video.set # named to avoid collision with python set()
+            set_obj = video.set  # named to avoid collision with python set()
             trip = set_obj.trip
 
             if trip.code not in result:
@@ -459,6 +459,11 @@ class BulkEvents(APIView):
             video_json = set_json['videos'][video_name]
 
             video_json['observation'].append({
+
+                'annotator': 'auto_annotation_03',
+                'annotator_groups': ['automation'],
+                'is_master': True,
+
                 'organism': self.get_organism_json(observation),
                 'observation_time': observation.observation_time,
                 'duration': observation.duration,
