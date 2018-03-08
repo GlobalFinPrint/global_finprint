@@ -1,6 +1,6 @@
 --Create view showing maxn values for all sharks and rays, per set, and only using master observations
 
-CREATE OR REPLACE VIEW public.observation_summary AS
+CREATE OR REPLACE VIEW public.v_report_maxn_observations AS
   --Step 1: Get Reef and Location level descriptive variables
   -- Indicate which sets have completed master annotations
   WITH set_overview AS (
@@ -289,9 +289,7 @@ SELECT
   bait
 FROM set_overview
   LEFT JOIN maxn ON set_overview.set_id = maxn.set_id
-  LEFT JOIN animals ON animals.id = maxn.animal_id
-
-);
+  LEFT JOIN animals ON animals.id = maxn.animal_id;
 
 -- FIN --
 
