@@ -300,9 +300,7 @@ SELECT
   bait
 FROM set_overview
   LEFT JOIN maxnsharks ON set_overview.set_id = maxnsharks.set_id
-  LEFT JOIN animals ON animals.id = maxnsharks.animal_id
-
-);
+  LEFT JOIN animals ON animals.id = maxnsharks.animal_id;
 
 -- FIN --
 
