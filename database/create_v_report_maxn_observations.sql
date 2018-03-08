@@ -13,6 +13,7 @@ CREATE OR REPLACE VIEW public.v_report_maxn_observations AS
   habitat_reeftype.type AS reef_type,
   habitat_reef.id AS reef_id,
   trip_trip.code AS trip_code,
+  extract(YEAR FROM trip_trip.start_date) :: TEXT AS trip_year,
   bruv_set.id AS set_id,
   bruv_set.code AS set_code,
   bruv_set.latitude AS set_lat,
@@ -20,6 +21,8 @@ CREATE OR REPLACE VIEW public.v_report_maxn_observations AS
   bruv_set.visibility,
   bruv_set.depth,
   bruv_bait.description AS bait,
+   bruv_set.current_flow_estimated,
+  bruv_set.current_flow_instrumented,
   annotation_masterrecord.id AS master_set_id,
   CASE WHEN annotation_masterrecord.status_id = 2 --status=2 means annotation is complete
   THEN 1
@@ -263,18 +266,12 @@ SELECT
   region_name,
   set_overview.location_name,
   site_name,
+  trip_code,
+  trip_year,
   reef_name,
   reef_type,
-  set_overview.reef_id,
-  trip_code,
-  set_overview.set_id,
   set_overview.set_code,
-  has_complete_master,
   maxn.maxn,
-  CASE WHEN (maxn.animal_id IS NULL)
-    THEN 9999
-  ELSE maxn.animal_id
-  END                       AS animal_id,
   common_name,
   genus,
   species,
@@ -286,10 +283,24 @@ SELECT
   set_long,
   visibility,
   depth,
-  bait
+  bait,
+  current_flow_estimated,
+ current_flow_instrumented,
+  set_overview.reef_id,
+  set_overview.set_id,
+  has_complete_master,
+   CASE WHEN (maxn.animal_id IS NULL)
+    THEN 9999
+  ELSE maxn.animal_id
+  END                       AS animal_id
 FROM set_overview
   LEFT JOIN maxn ON set_overview.set_id = maxn.set_id
+<<<<<<< HEAD
+  LEFT JOIN animals ON animals.id = maxn.animal_id
+;
+=======
   LEFT JOIN animals ON animals.id = maxn.animal_id;
+>>>>>>> 74e833831435dfec67a9eb3871daf44538b7c44a
 
 -- FIN --
 
