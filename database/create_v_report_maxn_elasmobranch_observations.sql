@@ -13,6 +13,7 @@ CREATE OR REPLACE VIEW public.v_report_maxn_elasmobranch_observations AS
   habitat_reeftype.type AS reef_type,
   habitat_reef.id AS reef_id,
   trip_trip.code AS trip_code,
+  extract(YEAR FROM trip_trip.start_date) :: TEXT AS trip_year,
   bruv_set.id AS set_id,
   bruv_set.code AS set_code,
   bruv_set.latitude AS set_lat,
@@ -20,6 +21,8 @@ CREATE OR REPLACE VIEW public.v_report_maxn_elasmobranch_observations AS
   bruv_set.visibility,
   bruv_set.depth,
   bruv_bait.description AS bait,
+  bruv_set.current_flow_estimated,
+  bruv_set.current_flow_instrumented,
   annotation_masterrecord.id AS master_set_id,
   CASE WHEN annotation_masterrecord.status_id = 2 --status=2 means annotation is complete
   THEN 1
@@ -39,7 +42,6 @@ CREATE OR REPLACE VIEW public.v_report_maxn_elasmobranch_observations AS
   SELECT *
   FROM so
   WHERE set_id IS NOT NULL ), --take out sets and reefs that don't have any data
-
 
 ---------------------------------------------------------------------------------------------------------------------------
 
@@ -276,16 +278,10 @@ SELECT
   site_name,
   reef_name,
   reef_type,
-  set_overview.reef_id,
   trip_code,
-  set_overview.set_id,
+  trip_year,
   set_overview.set_code,
-  has_complete_master,
   maxnsharks.maxn,
-  CASE WHEN (maxnsharks.animal_id IS NULL)
-    THEN 9999
-  ELSE maxnsharks.animal_id
-  END                       AS animal_id,
   common_name,
   genus,
   species,
@@ -297,12 +293,26 @@ SELECT
   set_long,
   visibility,
   depth,
-  bait
+  bait,
+  current_flow_estimated,
+ current_flow_instrumented,
+   set_overview.reef_id,
+     set_overview.set_id,
+       has_complete_master,
+   CASE WHEN (maxnsharks.animal_id IS NULL)
+    THEN 9999
+  ELSE maxnsharks.animal_id
+  END                       AS animal_id
 FROM set_overview
   LEFT JOIN maxnsharks ON set_overview.set_id = maxnsharks.set_id
+<<<<<<< HEAD
+  LEFT JOIN animals ON animals.id = maxnsharks.animal_id
+;
+=======
   LEFT JOIN animals ON animals.id = maxnsharks.animal_id;
 
 -- FIN --
 
 
 
+>>>>>>> 74e833831435dfec67a9eb3871daf44538b7c44a
