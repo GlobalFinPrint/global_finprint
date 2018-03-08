@@ -1,6 +1,6 @@
 --Create view showing maxn values for all sharks and rays, per set, and only using master observations
 
-CREATE OR REPLACE VIEW public.observation_summary AS
+CREATE OR REPLACE VIEW public.v_report_maxn_elasmobranch_observations AS
   --Step 1: Get Reef and Location level descriptive variables
   -- Indicate which sets have completed master annotations
   WITH set_overview AS (
