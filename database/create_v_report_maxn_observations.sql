@@ -295,13 +295,7 @@ SELECT
   END                       AS animal_id
 FROM set_overview
   LEFT JOIN maxn ON set_overview.set_id = maxn.set_id
-<<<<<<< HEAD
-  LEFT JOIN animals ON animals.id = maxn.animal_id
-;
-=======
   LEFT JOIN animals ON animals.id = maxn.animal_id;
->>>>>>> 74e833831435dfec67a9eb3871daf44538b7c44a
-
 -- FIN --
 
 
