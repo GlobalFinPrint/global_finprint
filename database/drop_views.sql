@@ -49,6 +49,8 @@ DROP VIEW IF EXISTS public.v_report_maxn_elasmobranch_observations;
 
 -- reef completion:
 DROP VIEW IF EXISTS public.v_report_reef_summary;
+DROP VIEW IF EXISTS public.v_report_reef_annotations_summary;
+DROP VIEW IF EXISTS public.v_report_fishing_mpa_metadata;
 
 -- data QC:
 DROP VIEW IF EXISTS public.v_report_maxn_issues_report;

@@ -85,7 +85,8 @@ master_obs AS (
     LEFT JOIN annotation_masteranimalobservation
       ON annotation_masterobservation.id = annotation_masteranimalobservation.master_observation_id
   WHERE annotation_masterobservation.id IS NOT NULL
-        AND annotation_masterrecord.status_id = 2),
+        AND annotation_masterrecord.status_id = 2
+        AND type = 'A'),
 
 
 --Make another table including all observations tagged as being MaxN, and where maxn values are filled in
@@ -98,54 +99,31 @@ master_obs AS (
 ),
 
 ----------------------------------------------------------------------------------------------------------
--- PUT ANOTHER TABLE HERE CALCULATING MAXN WHERE NOT INDICATED IN EVENT MEASURABLES
---step 1 - find sets with no event measurables, but with animals
+-- Create secondary table for sets where no values given for maxn
+-- assume that we don't need to calculate maxn values for sets where at least 1 measurable id was recorded and maxn values given
+-- when a value is given, there is always a measurable id
 
- master_nomeas AS (
-  SELECT *
-  FROM master_obs
-  WHERE type = 'A' AND measurable_id IS NULL),
-
--- filter for sets where there are NO event measurables, no maxn are indicated on the video
+-- step 1 - separate out all sets from master_obs that are not in the complete_obs list
  master_obs_nomaxn AS (
-  WITH maxn_sets AS ( --find all sets that have even one maxn measured:
-      SELECT DISTINCT set_id
-      FROM complete_obs
-      WHERE measurable_id = 2),
-      no_meas_sets AS (    --find all sets that ahve even one observation with no measurable
-        SELECT DISTINCT set_id
-        FROM master_obs
-        WHERE measurable_id IS NULL
-              AND type = 'A'),
-    --take the list of sets with observations missing measurables, and remove any sets that have observations WITH measurables;
-      set_select AS (SELECT no_meas_sets.set_id
-                     FROM no_meas_sets
-                     WHERE set_id NOT IN (
-                       SELECT set_id
-                       FROM maxn_sets))
-  --take these sets with no maxn measurements, and filter all observations out of master_obs
+  WITH complete_sets AS (
+  SELECT DISTINCT set_id FROM complete_obs
+),
+  no_meas_sets AS (
+    SELECT DISTINCT set_id FROM master_obs
+    WHERE value IS NULL OR value=''
+  ),
+    set_select AS (
+  SELECT set_id FROM no_meas_sets WHERE
+    set_id NOT IN (SELECT set_id FROM complete_sets))
+
+-- step 2 - take sets where values not recorded and reconnect observations
   SELECT *
   FROM master_obs
   WHERE set_id IN (SELECT set_id
                    FROM set_select)
-        AND type = 'A'
 ),
 
-
--- make another table of observations for sets where maxn is indicated but no values given
- master_obs_nomaxn2 AS (
-  SELECT *
-  FROM master_obs
-  WHERE measurable_id = 2 AND master_obs.value = ''
-),
-
---put both tables together, then follow the next steps to calculate maxn
-  master_obs_nomaxn3 AS (
-  SELECT * FROM master_obs_nomaxn
-        UNION
-        SELECT * FROM master_obs_nomaxn2),
-
--- aggregate maxn per set per animal per time
+-- step 3 - aggregate maxn per set per animal per time for those sets where maxn values missing
  no_meas_maxn AS (
   SELECT
     count(masterobservation_id) AS "value",
@@ -159,8 +137,8 @@ master_obs AS (
 
 -- NOTE you don't have to remove duplicate set ids from event_measurable, as that table has already filtered for sets with maxn measurables
 
-  -- restructure maxn values with no measurables so they match structure of complete_obs
-  no_meas_maxn_alt AS (
+  -- step 4 - restructure maxn values with no measurables so they match structure of complete_obs
+ no_meas_maxn_alt AS (
       SELECT
       set_id,
     master_set,
@@ -174,21 +152,23 @@ master_obs AS (
       FROM no_meas_maxn
     ),
 
--- then concatenate complete_obs with new table
-complete_obs2 AS (
+-- step 5 - then concatenate complete_obs with new table
+ complete_obs3 AS (
+    WITH all_obs AS (
     SELECT * FROM no_meas_maxn_alt
     UNION
     SELECT * FROM complete_obs
-  ),
-
---insert another step where select unique entries per set per animal
- complete_obs3 AS (
+  )
+-- step 6 - get rid of false duplication
+-- select unique entries per set per animal per time
+-- this is necessary bc some sets from complete_obs entered separate observations per individual observed at time=t, but tagged all as having the same maxn
+-- eg if maxn=5, there are 5 separate observations indicating maxn=5, each with a different box in the 'image capture' field
   SELECT DISTINCT
     set_id,
     event_time,
     "value",
     animal_id
-  FROM complete_obs2),
+  FROM all_obs),
 
 --------------------------------------------------------------------------------------------------------
 -- now continue to clean maxn data
