@@ -59,7 +59,6 @@ CREATE OR REPLACE VIEW public.v_report_reef_annotations_summary AS
           S.reef_habitat_id,
           habitat_reefhabitat.reef_id,
           has_complete_master
-         has_all_set_metadata
     ),
 
    set_summary_agg AS (
@@ -70,8 +69,7 @@ CREATE OR REPLACE VIEW public.v_report_reef_annotations_summary AS
       reef_id,
       count(distinct set_id)    AS num_sets,
 sum(min_1_complete_annotation)    AS have_min_1_complete_annotation,
-sum(has_complete_master)          AS have_complete_master--,
---sum(has_all_set_metadata)         AS have_all_set_metadata
+sum(has_complete_master)          AS have_complete_master
       FROM set_summary
       GROUP BY reef_id,
       trip_id,
@@ -86,18 +84,15 @@ sum(has_complete_master)          AS have_complete_master--,
           habitat_site.name                           AS site_name,
           habitat_site.type                           AS site_type,
           habitat_reef.name                           AS reef_name,
-          habitat_reeftype.type                       AS reef_type,
           habitat_region.id                       AS region_id,
           habitat_location.id                     AS location_id,
           habitat_site.id                         AS site_id,
-          habitat_reef.id                         AS reef_id,
-          habitat_reefhabitat.id                  AS reefhabitat_id
+          habitat_reef.id                         AS reef_id
         FROM habitat_region
           LEFT JOIN habitat_location ON habitat_region.id=habitat_location.region_id
           LEFT JOIN habitat_site ON habitat_location.id=habitat_site.location_id
           LEFT JOIN habitat_reef ON habitat_site.id=habitat_reef.site_id
           LEFT JOIN habitat_reefhabitat ON habitat_reef.id=habitat_reefhabitat.reef_id
-          LEFT JOIN habitat_reeftype ON habitat_reefhabitat.habitat_id=habitat_reeftype.id
       WHERE habitat_reef.id IS NOT NULL
     )
 
@@ -105,6 +100,7 @@ SELECT DISTINCT
 region_name,
 location_name,
 site_name,
+site_type,
 reef_name,
 trip_year,
 trip_code,
@@ -124,10 +120,9 @@ region_id,
 location_id,
 set_summary_agg.trip_id,
 habitat_summary.site_id,
-habitat_summary.reef_id,
-habitat_summary.reefhabitat_id
+habitat_summary.reef_id
   FROM habitat_summary
        LEFT JOIN set_summary_agg ON set_summary_agg.reef_id=habitat_summary.reef_id
-                             AND   set_summary_agg.reef_habitat_id=habitat_summary.reefhabitat_id
  ;
+
 
