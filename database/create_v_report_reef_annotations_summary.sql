@@ -25,7 +25,6 @@ CREATE OR REPLACE VIEW public.v_report_reef_annotations_summary AS
           t.code                                  AS trip_code,
           s.trip_id,
           s.id AS set_id,
-          s.reef_habitat_id,
           habitat_reefhabitat.reef_id,
           CASE
           WHEN (
@@ -68,7 +67,6 @@ CREATE OR REPLACE VIEW public.v_report_reef_annotations_summary AS
       trip_year,
     trip_code,
     trip_id,
-    reef_habitat_id,
       reef_id,
       count(distinct set_id)    AS num_sets,
 sum(min_1_complete_annotation)    AS have_min_1_complete_annotation,
@@ -78,8 +76,7 @@ sum(has_complete_master)          AS have_complete_master--,
       GROUP BY reef_id,
       trip_id,
         trip_code,
-        trip_year,
-        reef_habitat_id
+        trip_year
     ),
 
     habitat_summary AS (
