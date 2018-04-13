@@ -3,8 +3,8 @@
   "version": "1.1.0",
   "homepage": "https://github.com/GlobalFinPrint/global_finprint/",
   "authors": [],
-  "description": "Shark and Ray Survey",
-  "license": "MIT",
+  "description": "Global Finprint Shark and Ray Survey:  globalfinprint.org",
+  "license": "Apache-2.0",
   "ignore": [
     "**/.*",
     "node_modules",

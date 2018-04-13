@@ -55,8 +55,13 @@ DROP VIEW IF EXISTS public.v_report_fishing_mpa_metadata;
 -- data QC:
 DROP VIEW IF EXISTS public.v_report_maxn_issues_report;
 
--- other useful stuff:
+-- other potetentially useful stuff:
 DROP VIEW IF EXISTS public.v_report_machine_learning_corpus;
+DROP VIEW IF EXISTS public.v_report_machine_learning_corpus_from_assignment;
+DROP VIEW IF EXISTS public.v_report_machine_learning_corpus_from_master;
+DROP VIEW IF EXISTS public.v_report_zero_time_images;
+DROP VIEW IF EXISTS public.v_report_zero_time_assignment_images;
+DROP VIEW IF EXISTS public.v_report_zero_time_master_images;
 
 -- supporting views
 DROP VIEW IF EXISTS public.event_attribute_summary;

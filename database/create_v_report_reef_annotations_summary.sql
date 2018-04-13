@@ -1,11 +1,19 @@
 /* Summary of  completeness of annotations for all reefs */
 
 CREATE OR REPLACE VIEW public.v_report_reef_annotations_summary AS
+<<<<<<< HEAD
   WITH assignment_status_summary AS
   (
       SELECT DISTINCT
         s.id         AS set_id,
         assig.video_id,
+=======
+/* Summary of  completeness of annotations for all reefs */
+    WITH assignment_status_summary AS
+  (
+      SELECT DISTINCT
+        s.id         AS set_id,
+>>>>>>> master
         assigst.id   AS assignment_status_id,
         assigst.name AS assignment_status,
         count(*)     AS status_count
@@ -15,7 +23,10 @@ CREATE OR REPLACE VIEW public.v_report_reef_annotations_summary AS
         INNER JOIN annotation_annotationstate assigst ON assigst.id = assig.status_id
       GROUP BY
         s.id,
+<<<<<<< HEAD
         assig.video_id,
+=======
+>>>>>>> master
         assigst.id,
         assigst.name
   ),
@@ -43,6 +54,7 @@ CREATE OR REPLACE VIEW public.v_report_reef_annotations_summary AS
           END  AS has_complete_master
         FROM trip_trip t
           INNER JOIN bruv_set S ON S.trip_id = t.id
+<<<<<<< HEAD
           LEFT JOIN habitat_substrate sub ON sub.id = S.substrate_id
           LEFT JOIN habitat_substratecomplexity subc ON subc.id = S.substrate_complexity_id
           LEFT JOIN annotation_video v ON v.id = S.video_id
@@ -50,6 +62,11 @@ CREATE OR REPLACE VIEW public.v_report_reef_annotations_summary AS
           LEFT JOIN annotation_masterrecord mas ON (mas.set_id = S.id
                                                     AND mas.status_id = 2)
           LEFT JOIN assignment_status_summary assstat ON assstat.video_id = v.id
+=======
+            LEFT JOIN annotation_masterrecord mas ON (mas.set_id = S.id
+                                                    AND mas.status_id = 2)
+          LEFT JOIN assignment_status_summary assstat ON assstat.set_id = S.id
+>>>>>>> master
           LEFT JOIN habitat_reefhabitat ON S.reef_habitat_id=habitat_reefhabitat.id
         GROUP BY
           S.trip_id,
@@ -59,7 +76,11 @@ CREATE OR REPLACE VIEW public.v_report_reef_annotations_summary AS
           S.reef_habitat_id,
           habitat_reefhabitat.reef_id,
           has_complete_master
+<<<<<<< HEAD
     ),
+=======
+   ),
+>>>>>>> master
 
    set_summary_agg AS (
   SELECT
@@ -75,9 +96,15 @@ sum(has_complete_master)          AS have_complete_master
       trip_id,
         trip_code,
         trip_year
+<<<<<<< HEAD
     ),
 
     habitat_summary AS (
+=======
+   ),
+
+   habitat_summary AS (
+>>>>>>> master
         SELECT DISTINCT
           habitat_region.name                         AS region_name,
           habitat_location.name                       AS location_name,
@@ -93,7 +120,11 @@ sum(has_complete_master)          AS have_complete_master
           LEFT JOIN habitat_site ON habitat_location.id=habitat_site.location_id
           LEFT JOIN habitat_reef ON habitat_site.id=habitat_reef.site_id
           LEFT JOIN habitat_reefhabitat ON habitat_reef.id=habitat_reefhabitat.reef_id
+<<<<<<< HEAD
       WHERE habitat_reef.id IS NOT NULL
+=======
+     WHERE habitat_reef.id IS NOT NULL
+>>>>>>> master
     )
 
 SELECT DISTINCT
@@ -126,3 +157,8 @@ habitat_summary.reef_id
  ;
 
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> master

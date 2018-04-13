@@ -207,7 +207,7 @@ REST_FRAMEWORK = {
 # SLUGLIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 
-LOG_DIR = '/var/log/global_finprint/gf_web.log'
+LOG_DIR = env("DJANGO_LOGGING_DIR", default=str('/var/log/global_finprint/gf_web.log'))
 
 LOGGING = {
     'version': 1,
@@ -294,6 +294,8 @@ LEAFLET_CONFIG = {
     'MIN_ZOOM': 2,
     'MAX_ZOOM': 13,
 }
+
+HIDE_COMPARE_ANNOTATORS = True
 
 # indent of child items in the admin pages for the hierarchical lists
 MPTT_ADMIN_LEVEL_INDENT = 30

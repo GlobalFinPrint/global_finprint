@@ -8,7 +8,7 @@ from django.contrib.gis.db import models as geomodels
 from django.contrib.postgres.fields import JSONField
 from django.db import transaction, models
 
-from global_finprint.core.models import AuditableModel, FinprintUser
+from global_finprint.core.models import AuditableModel, FinprintUser, VersionedModel
 from .animal import Animal, ANIMAL_SEX_CHOICES, ANIMAL_STAGE_CHOICES
 from .annotation import Attribute, Project
 from .video import Assignment
@@ -86,15 +86,19 @@ class MasterRecord(AuditableModel):
         }
 
 
-class AbstractObservation(AuditableModel):
+class AbstractObservation(VersionedModel):
     type = models.CharField(max_length=1, choices=OBSERVATION_TYPE_CHOICES, default='I')
     # duration could be redundant ... at best it's an optimization:
     duration = models.PositiveIntegerField(null=True, blank=True)
     comment = models.TextField(null=True)
     observation_time = models.PositiveIntegerField(null=True, blank=True)
+    generation_duration = models.FloatField(null=True)
 
     class Meta:
         abstract = True
+
+    def __str__(self):
+        return 'Id:{}, Type:{}'.format(self.pk, str(self.get_type_display()))
 
     @property
     def initial_event(self):
@@ -129,18 +133,7 @@ class AbstractObservation(AuditableModel):
         }
 
         if self.type == 'A':
-            animal = self.get_animalobservation()
-            json.update({
-                'animal': str(animal.animal),
-                'animal_id': animal.animal_id,
-                'sex': animal.get_sex_display(),
-                'sex_choice': animal.sex,
-                'stage': animal.get_stage_display(),
-                'stage_choice': animal.stage,
-                'length': animal.length,
-                'group': animal.animal.group.id,
-                'group_name': str(animal.animal.group)
-            })
+            json.update(self.get_animalobservation().to_json())
 
         if for_web:
             json['time'] = self.initial_observation_time()
@@ -201,6 +194,7 @@ class Observation(AbstractObservation):
             'sex_choice',
             'stage_choice',
             'length',
+            'generation_duration',
             # event fields
             'event_time',
             'extent',
@@ -237,10 +231,6 @@ class Observation(AbstractObservation):
 
     def get_event_set(self):
         return self.event_set.order_by('event_time')
-
-    def __str__(self):
-        # todo:  update to first event?
-        return u"{0}".format(self.type)
 
     def annotator(self):
         return self.assignment.annotator
@@ -319,11 +309,27 @@ class MasterObservation(AbstractObservation):
         })
         return abstract_observation_json
 
-class AbstractAnimalObservation(AuditableModel):
+class AbstractAnimalObservation(VersionedModel):
     animal = models.ForeignKey(Animal)
     sex = models.CharField(max_length=1, choices=ANIMAL_SEX_CHOICES, default='U')
     stage = models.CharField(max_length=2, choices=ANIMAL_STAGE_CHOICES, default='U')
     length = models.IntegerField(null=True, help_text='centimeters')
+
+    def __str__(self):
+        return str(self.animal)
+
+    def to_json(self):
+        return {
+            'animal': str(self.animal),
+            'animal_id': self.animal_id,
+            'sex': self.get_sex_display(),
+            'sex_choice': self.sex,
+            'stage': self.get_stage_display(),
+            'stage_choice': self.stage,
+            'length': self.length,
+            'group': self.animal.group.id,
+            'group_name': str(self.animal.group)
+        }
 
     class Meta:
         abstract = True
@@ -353,7 +359,7 @@ class MasterAnimalObservation(AbstractAnimalObservation):
         master_animal_observation.save()
 
 
-class AbstractEvent(AuditableModel):
+class AbstractEvent(VersionedModel):
     event_time = models.IntegerField(help_text='ms', default=0)
     extent = geomodels.PolygonField(null=True)
     attribute = models.ManyToManyField(to=Attribute)
@@ -545,7 +551,7 @@ class MasterEvent(AbstractEvent):
         return self.mastereventmeasurable_set.filter(measurable__active=True)
 
 
-class EventMeasurable(models.Model):
+class EventMeasurable(VersionedModel):
     event = models.ForeignKey(Event)
     measurable = models.ForeignKey(Measurable)
     value = models.TextField()
@@ -566,7 +572,7 @@ class EventMeasurable(models.Model):
         unique_together = ('event', 'measurable')
 
 
-class MasterEventMeasurable(models.Model):
+class MasterEventMeasurable(VersionedModel):
     master_event = models.ForeignKey(MasterEvent)
     measurable = models.ForeignKey(Measurable)
     value = models.TextField()
