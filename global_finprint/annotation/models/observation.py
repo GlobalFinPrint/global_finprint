@@ -86,7 +86,7 @@ class MasterRecord(AuditableModel):
         }
 
 
-class AbstractObservation(VersionedModel):
+class AbstractObservation(AuditableModel):
     type = models.CharField(max_length=1, choices=OBSERVATION_TYPE_CHOICES, default='I')
     # duration could be redundant ... at best it's an optimization:
     duration = models.PositiveIntegerField(null=True, blank=True)
@@ -309,7 +309,8 @@ class MasterObservation(AbstractObservation):
         })
         return abstract_observation_json
 
-class AbstractAnimalObservation(VersionedModel):
+
+class AbstractAnimalObservation(AuditableModel):
     animal = models.ForeignKey(Animal)
     sex = models.CharField(max_length=1, choices=ANIMAL_SEX_CHOICES, default='U')
     stage = models.CharField(max_length=2, choices=ANIMAL_STAGE_CHOICES, default='U')
@@ -359,7 +360,7 @@ class MasterAnimalObservation(AbstractAnimalObservation):
         master_animal_observation.save()
 
 
-class AbstractEvent(VersionedModel):
+class AbstractEvent(AuditableModel):
     event_time = models.IntegerField(help_text='ms', default=0)
     extent = geomodels.PolygonField(null=True)
     attribute = models.ManyToManyField(to=Attribute)
@@ -551,7 +552,7 @@ class MasterEvent(AbstractEvent):
         return self.mastereventmeasurable_set.filter(measurable__active=True)
 
 
-class EventMeasurable(VersionedModel):
+class EventMeasurable(models.Model):
     event = models.ForeignKey(Event)
     measurable = models.ForeignKey(Measurable)
     value = models.TextField()
@@ -572,7 +573,7 @@ class EventMeasurable(VersionedModel):
         unique_together = ('event', 'measurable')
 
 
-class MasterEventMeasurable(VersionedModel):
+class MasterEventMeasurable(models.Model):
     master_event = models.ForeignKey(MasterEvent)
     measurable = models.ForeignKey(Measurable)
     value = models.TextField()
