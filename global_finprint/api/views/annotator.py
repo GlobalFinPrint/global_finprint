@@ -39,16 +39,11 @@ class APIView(View):
         except FinprintUser.DoesNotExist:
             return HttpResponseForbidden()
 
-        # todo:  2017-12-7 - this does indeed break the annotator client which passes
-        # what it calls set_id but what is really assignment_id
         if 'set_id' in kwargs:
             try:
-                # In this context set_id is actually the id of an assignment.
-                filter_params = { 'pk': kwargs['set_id'] }
-                if not request.annotator.is_lead():
-                    # only annotators can fetch other user's assignments
-                    filter_params['annotator'] = request.annotator
-                request.va = Assignment.objects.get(**filter_params)
+                assignments = Assignment.get_all() if request.annotator.is_lead() \
+                    else Assignment.get_active_for_annotator(request.annotator)
+                request.va = assignments.get(pk=kwargs['set_id'])
             except Assignment.DoesNotExist:
                 return HttpResponseNotFound()
 
@@ -184,10 +179,6 @@ class VideoDetail(APIView):
         video_list = []
         video_files = VideoFile.objects.filter(file=file_name)
         for video_file in video_files:
-            try:
-                assignment = video_file.video.assignment_set.get(annotator=request.annotator)
-            except django_exceptions.ObjectDoesNotExist:
-                assignment = None
             video_list.append(
                 {
                     'file': video_file.file,
@@ -197,9 +188,9 @@ class VideoDetail(APIView):
                     'primary': video_file.primary,
                     'video': {
                         'id': video_file.video.id,
-                        'set_id': assignment.id if assignment else None,
+                        'set_id': video_file.video.set.id,
                         'set_code': video_file.video.set.code,
-                        'trip_code': video_file.video.set.trip.code
+                        'trip_code': video_file.video.set.trip.code,
                     }
                 }
             )
@@ -220,8 +211,8 @@ class Observations(APIView):
         params['user'] = request.annotator.user
         params['attribute'] = request.POST.getlist('attribute')
         params['measurables'] = request.POST.getlist('measurables')
-        if 'animal_id' not in params:
-            params['animal_id'] = Animal.objects.get(common_name__iexact=request.POST['animal_name']).id
+        # if 'animal_id' not in params:
+        #     params['animal_id'] = Animal.objects.get(common_name__iexact=request.POST['animal_name']).id
         obs = Observation.create(**params)
         evt = obs.event_set.first()
         if request.va.status_id == 1:
