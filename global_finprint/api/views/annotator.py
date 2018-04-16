@@ -224,6 +224,7 @@ class Observations(APIView):
             params['animal_id'] = Animal.objects.get(common_name__iexact=request.POST['animal_name']).id
         # if 'animal_id' not in params:
         #     params['animal_id'] = Animal.objects.get(common_name__iexact=request.POST['animal_name']).id
+>>>>>>> master
         obs = Observation.create(**params)
         evt = obs.event_set.first()
         if request.va.status_id == 1:

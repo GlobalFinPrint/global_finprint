@@ -311,6 +311,7 @@ class MasterObservation(AbstractObservation):
 
 class AbstractAnimalObservation(VersionedModel):
 class AbstractAnimalObservation(AuditableModel):
+>>>>>>> master
     animal = models.ForeignKey(Animal)
     sex = models.CharField(max_length=1, choices=ANIMAL_SEX_CHOICES, default='U')
     stage = models.CharField(max_length=2, choices=ANIMAL_STAGE_CHOICES, default='U')
