@@ -309,10 +309,7 @@ class MasterObservation(AbstractObservation):
         })
         return abstract_observation_json
 
-<<<<<<< HEAD
 class AbstractAnimalObservation(VersionedModel):
-=======
-
 class AbstractAnimalObservation(AuditableModel):
 >>>>>>> master
     animal = models.ForeignKey(Animal)

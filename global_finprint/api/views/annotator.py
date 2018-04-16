@@ -220,10 +220,8 @@ class Observations(APIView):
         params['user'] = request.annotator.user
         params['attribute'] = request.POST.getlist('attribute')
         params['measurables'] = request.POST.getlist('measurables')
-<<<<<<< HEAD
         if 'animal_id' not in params:
             params['animal_id'] = Animal.objects.get(common_name__iexact=request.POST['animal_name']).id
-=======
         # if 'animal_id' not in params:
         #     params['animal_id'] = Animal.objects.get(common_name__iexact=request.POST['animal_name']).id
 >>>>>>> master
