@@ -1,6 +1,6 @@
 /* Summary of  completeness of annotations for all reefs */
 
-CREATE OR REPLACE VIEW public.v_report_reef_annotations_summary_test AS
+CREATE OR REPLACE VIEW public.v_report_reef_annotations_summary AS
 /* Summary of  completeness of annotations for all reefs */
     WITH assignment_status_summary AS
   (
