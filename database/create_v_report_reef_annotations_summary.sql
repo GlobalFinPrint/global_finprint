@@ -1,6 +1,6 @@
 /* Summary of  completeness of annotations for all reefs */
 
-CREATE OR REPLACE VIEW public.v_report_reef_annotations_summary AS
+CREATE OR REPLACE VIEW public.v_report_reef_annotations_summary_test AS
 /* Summary of  completeness of annotations for all reefs */
     WITH assignment_status_summary AS
   (
@@ -26,12 +26,7 @@ CREATE OR REPLACE VIEW public.v_report_reef_annotations_summary AS
           s.id AS set_id,
           habitat_reefhabitat.reef_id,
           CASE
-          WHEN (
-                 SELECT sum(assstatcom.status_count)
-                 FROM assignment_status_summary assstatcom
-                 WHERE assstatcom.assignment_status_id IN (3, 4)
-                       AND assstatcom.set_id = S.id
-               ) >= 1
+          WHEN SUM(assstat.status_count) filter (where assstat.assignment_status_id = 3 OR assstat.assignment_status_id = 4) >= 1
             THEN 1
           ELSE 0
           END  AS min_1_complete_annotation,
@@ -119,7 +114,6 @@ habitat_summary.reef_id
   FROM habitat_summary
        LEFT JOIN set_summary_agg ON set_summary_agg.reef_id=habitat_summary.reef_id
  ;
-
 
 
 
