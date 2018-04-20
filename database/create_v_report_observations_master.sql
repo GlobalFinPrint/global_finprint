@@ -15,6 +15,9 @@ CREATE OR REPLACE VIEW public.v_report_observations_master AS
 
   mas.observation_comment,
   mas.event_note,
+  mas.observation_type,
+
+  meas.value                                                        AS measurable,
 
   ani.family,
   ani.genus,
@@ -45,6 +48,8 @@ FROM
   INNER JOIN habitat_summary hab on hab.reef_habitat_id = s.reef_habitat_id
 
   INNER JOIN master_attribute_summary mas on mas.set_id = s.id
+
+  LEFT JOIN annotation_mastereventmeasurable meas on mas.event_id=meas.master_event_id
 
   LEFT JOIN annotation_animal ani ON ani.id = mas.animal_id
 ORDER BY
