@@ -14,6 +14,7 @@ SELECT
 
   evt.event_time,
   evt.event_time_minutes,
+  evt.observation_type,
 
   evt.observation_comment,
   evt.event_note,
@@ -21,6 +22,7 @@ SELECT
   ani.family,
   ani.genus,
   ani.species,
+  meas.value                                              AS measurable,
 
   evt.zero_time_tagged,
   evt.sixty_minute_time_tagged,
@@ -56,6 +58,8 @@ FROM
 
   INNER JOIN core_finprintuser fu ON fu.id = evt.annotator_id
   INNER JOIN auth_user u ON u.id = fu.user_id
+
+  LEFT JOIN annotation_eventmeasurable meas on evt.event_id=meas.event_id
 
   LEFT JOIN annotation_animal ani ON ani.id = evt.animal_id
 

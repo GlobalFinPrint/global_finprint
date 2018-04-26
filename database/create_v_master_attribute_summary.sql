@@ -8,6 +8,7 @@ SELECT trip.code AS trip_code,
     mst.id AS master_status_id,
     mst.name AS master_status,
     obs.id AS observation_id,
+    obs.type   AS observation_type,
     evt.id AS event_id,
     aobs.animal_id,
     evt.event_time,
@@ -22,32 +23,32 @@ SELECT trip.code AS trip_code,
         END AS haul_time_em_note,
         CASE
             WHEN (EXISTS ( SELECT evtat.id
-               FROM annotation_event_attribute evtat
-              WHERE ((evtat.attribute_id = 16) AND (evtat.event_id = evt.id)))) THEN 1
+               FROM annotation_masterevent_attribute evtat
+              WHERE ((evtat.attribute_id = 16) AND (evtat.masterevent_id = evt.id)))) THEN 1
             ELSE 0
         END AS zero_time_tagged,
         CASE
             WHEN (EXISTS ( SELECT evtat.id
-               FROM annotation_event_attribute evtat
-              WHERE ((evtat.attribute_id = 33) AND (evtat.event_id = evt.id)))) THEN 1
+               FROM annotation_masterevent_attribute evtat
+              WHERE ((evtat.attribute_id = 33) AND (evtat.masterevent_id = evt.id)))) THEN 1
             ELSE 0
         END AS sixty_minute_time_tagged,
         CASE
             WHEN (EXISTS ( SELECT evtat.id
-               FROM annotation_event_attribute evtat
-              WHERE ((evtat.attribute_id = 24) AND (evtat.event_id = evt.id)))) THEN 1
+               FROM annotation_masterevent_attribute evtat
+              WHERE ((evtat.attribute_id = 24) AND (evtat.masterevent_id = evt.id)))) THEN 1
             ELSE 0
         END AS ninty_minute_time_tagged,
         CASE
             WHEN (EXISTS ( SELECT evtat.id
-               FROM annotation_event_attribute evtat
-              WHERE ((evtat.attribute_id = 23) AND (evtat.event_id = evt.id)))) THEN 1
+               FROM annotation_masterevent_attribute evtat
+              WHERE ((evtat.attribute_id = 23) AND (evtat.masterevent_id = evt.id)))) THEN 1
             ELSE 0
         END AS haul_time_tagged,
         CASE
             WHEN (EXISTS ( SELECT evtat.id
-               FROM annotation_event_attribute evtat
-              WHERE ((evtat.attribute_id = 13) AND (evtat.event_id = evt.id)))) THEN 1
+               FROM annotation_masterevent_attribute evtat
+              WHERE ((evtat.attribute_id = 13) AND (evtat.masterevent_id = evt.id)))) THEN 1
             ELSE 0
         END AS max_n_tagged,
     "substring"(evt.note, '[0-9]+'::text) AS numeric_value_from_event_note,

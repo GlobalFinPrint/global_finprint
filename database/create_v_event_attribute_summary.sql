@@ -10,6 +10,7 @@ SELECT
   assig.annotator_id,
   assig.status_id                            AS assignment_status_id,
   obs.id                                     AS observation_id,
+  obs.type                                   AS observation_type,
   evt.id                                     AS event_id,
   animal.id                                  AS animal_id,
   evt.event_time,
