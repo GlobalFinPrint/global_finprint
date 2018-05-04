@@ -3,7 +3,7 @@
 CREATE OR REPLACE VIEW public.v_report_maxn_elasmobranch_observations AS
   --Step 1: Get Reef and Location level descriptive variables
   -- Indicate which sets have completed master annotations
-  WITH set_overview AS (
+ WITH set_overview AS (
   WITH so AS (
   SELECT
   habitat_region.name AS region_name,
@@ -41,28 +41,16 @@ CREATE OR REPLACE VIEW public.v_report_maxn_elasmobranch_observations AS
   )
   SELECT *
   FROM so
-  WHERE set_id IS NOT NULL ), --take out sets and reefs that don't have any data
+  WHERE set_id IS NOT NULL ), --take out sets and reefs that don't have any data,
 
 ---------------------------------------------------------------------------------------------------------------------------
 
 -------------------------------------------------------------------------------------------------
---Step 2: Get MaxN per species per set
--- first make a table of zero times
- zero_times AS (
-  SELECT
-    event_attribute_summary.set_id,
-    event_attribute_summary.video_id,
-    max(
-        CASE
-        WHEN (event_attribute_summary.zero_time_tagged = 0)
-          THEN 0
-        ELSE event_attribute_summary.event_time
-        END) AS zero_time
-  FROM event_attribute_summary
-  GROUP BY event_attribute_summary.set_id, event_attribute_summary.video_id),
+--Step 2: Clean observation data to enable calculation of maxn
 
---make a table of all master animal observations
+--2.1 make a table of all master animal observations
 -- only use master annotations, and of those only complete records
+-- fill in null or empty values as 1
 
 master_obs AS (
   SELECT
@@ -72,7 +60,10 @@ master_obs AS (
     annotation_masterobservation.type,
     annotation_masterevent.id       AS masterevent_id,
     annotation_masterevent.event_time,
-    annotation_mastereventmeasurable.value,
+    CASE WHEN annotation_mastereventmeasurable.value='' OR annotation_mastereventmeasurable.value IS NULL
+      THEN '1'
+        ELSE annotation_mastereventmeasurable.value
+          END AS value,
     annotation_mastereventmeasurable.measurable_id,
     annotation_masteranimalobservation.animal_id
   FROM annotation_masterrecord
@@ -84,150 +75,153 @@ master_obs AS (
     LEFT JOIN annotation_masteranimalobservation
       ON annotation_masterobservation.id = annotation_masteranimalobservation.master_observation_id
   WHERE annotation_masterobservation.id IS NOT NULL
-        AND annotation_masterrecord.status_id = 2),
+        AND annotation_masterrecord.status_id = 2
+        AND type='A'),
 
+-------------------------------------------------------------------------------------------------------
 
---Make another table including all observations tagged as being MaxN, and where maxn values are filled in
--- only use master annotations, and of those only complete records
- complete_obs AS (
-  SELECT *
-  FROM master_obs
-  WHERE measurable_id = 2 AND
-        value NOT LIKE ''
-),
+-- Step 2.2 - deal with observations where multiple entries exist for the same measurable
+-- search for all sets where multiple entries for same species at same time, where measurable>1
+-- select greatest maxn value for each set/species/time combo
 
-----------------------------------------------------------------------------------------------------------
--- Create secondary table for sets where no values given for maxn
--- assume that we don't need to calculate maxn values for sets where at least 1 measurable id was recorded and maxn values given
--- when a value is given, there is always a measurable id
+ duplicate_records AS (
+SELECT
+  set_id,
+  master_set,
+  event_time,
+  animal_id,
+  count(masterobservation_id)   AS num_records,
+  max(value::INT)                 AS max_value,
+  sum(value::INT)/count(masterobservation_id)         AS value_per_record
+  FROm master_obs
+    GROUP BY set_id, master_set, event_time, animal_id),
 
--- step 1 - separate out all sets from master_obs that are not in the complete_obs list
- master_obs_nomaxn AS (
-  WITH complete_sets AS (
-  SELECT DISTINCT set_id FROM complete_obs
-),
-  no_meas_sets AS (
-    SELECT DISTINCT set_id FROM master_obs
-    WHERE value IS NULL OR value=''
-  ),
-    set_select AS (
-  SELECT set_id FROM no_meas_sets WHERE
-    set_id NOT IN (SELECT set_id FROM complete_sets))
-
--- step 2 - take sets where values not recorded and reconnect observations
-  SELECT *
-  FROM master_obs
-  WHERE set_id IN (SELECT set_id
-                   FROM set_select)
-),
-
--- step 3 - aggregate maxn per set per animal per time for those sets where maxn values missing
- no_meas_maxn AS (
+  dr2 AS (
   SELECT
-    count(masterobservation_id) AS "value",
-    --count number of rows per set per time per species
-    set_id,
-    master_set,
-    event_time,
-    animal_id
-  FROM master_obs_nomaxn
-  GROUP BY set_id, master_set, event_time, animal_id),
+  set_id,
+  master_set,
+  event_time,
+  animal_id,
+  max_value AS value
+  FROM duplicate_records WHERE num_records>1 AND value_per_record>1),
 
--- NOTE you don't have to remove duplicate set ids from event_measurable, as that table has already filtered for sets with maxn measurables
+  -- remove duplicate records from master_obs ...
+  master_obs_keep AS (
+SELECT
+  m.set_id,
+  m.master_set,
+  m.event_time,
+  m.animal_id,
+  m."value"::INT
+FROM master_obs m
+LEFT JOIN dr2 ON m.set_id=dr2.set_id AND m.event_time=dr2.event_time AND m.animal_id=dr2.animal_id
+WHERE dr2.value IS NULL),
 
-  -- step 4 - restructure maxn values with no measurables so they match structure of complete_obs
- no_meas_maxn_alt AS (
-      SELECT
-      set_id,
-    master_set,
-    floor(random() * (2000000 - 1000000 + 1) + 1000000) :: INT AS masterobservation_id,    --insert random numbers to fill ids - make sure they are high enough so they will not be the same as existing ids
-    ''::VARCHAR                                  AS "type",    --type
-    floor(random() * (2000000 - 1000000 + 1) + 1000000) :: INT AS masterevent_id,
-    event_time,
-    "value":: VARCHAR,
-    0:: INT                               AS measurable_id,                   -- don't need measurable id anymore
-    animal_id
-      FROM no_meas_maxn
-    ),
+-- and replace with corrected values
+  master_obs2 AS (
+SELECT * FROM master_obs_keep
+UNION ALL
+  SELECT * FROM dr2),
 
--- step 5 - then concatenate complete_obs with new table
- complete_obs3 AS (
-    WITH all_obs AS (
-    SELECT * FROM no_meas_maxn_alt
-    UNION
-    SELECT * FROM complete_obs
-  )
--- step 6 - get rid of false duplication
--- select unique entries per set per animal per time
--- this is necessary bc some sets from complete_obs entered separate observations per individual observed at time=t, but tagged all as having the same maxn
--- eg if maxn=5, there are 5 separate observations indicating maxn=5, each with a different box in the 'image capture' field
-  SELECT DISTINCT
-    set_id,
-    event_time,
-    "value",
-    animal_id
-  FROM all_obs),
+-----------------------------------------------------------------------------------------------------------------
+-- Step 2.3 - aggregate values where >1 observation for same species/time/set
+-- this is for the sets where all individuals were recorded separately without indicating a maxn value (e.g. Global Archive legacy data)
+
+master_obs3 AS (
+SELECT
+  set_id,
+  master_set,
+  event_time,
+  animal_id,
+  sum(value)  AS "value"
+FROM master_obs2
+GROUP BY set_id, master_set, event_time, animal_id),
+
 
 --------------------------------------------------------------------------------------------------------
--- now continue to clean maxn data
+-- STEP 3 - Calculate maxn
+-- make a table of zero times
+zero_times AS (
+  SELECT
+    master_attribute_summary.master_record_id,
+    master_attribute_summary.video_id,
+    max(
+        CASE
+        WHEN (master_attribute_summary.zero_time_tagged = 0)
+          THEN 0
+        ELSE master_attribute_summary.event_time
+        END) AS zero_time
+  FROM master_attribute_summary
+  GROUP BY master_attribute_summary.master_record_id, master_attribute_summary.video_id),
+
  maxn AS (
-  -- first add zero time, and calculate adjusted time for each event
-  WITH em2 AS (
+  --  add zero time, and calculate adjusted time for each event
+  WITH   em2 AS (
       SELECT
-        complete_obs3.set_id,
-        complete_obs3.value                               AS maxn,
-        complete_obs3.animal_id,
+        master_obs3.set_id,
+        master_obs3.master_set,
+        master_obs3."value",
+        master_obs3.animal_id,
         zero_times.zero_time,
-        (complete_obs3.event_time - zero_times.zero_time) AS event_time_adj
-      FROM complete_obs3
+        (master_obs3.event_time - zero_times.zero_time) AS event_time_adj
+      FROM master_obs3
         LEFT JOIN zero_times
-          ON complete_obs3.set_id = zero_times.set_id),
+          ON master_obs3.master_set = zero_times.master_record_id),
+
     -- remove events with times over 1 hour, or less than 0
       em3 AS (
         SELECT
           em2.set_id,
-          em2.maxn :: INTEGER,
+          em2.master_set,
+          em2."value",
           em2.animal_id,
           em2.event_time_adj,
           text_time(event_time_adj) AS event_time_adj_mins
         FROM em2
         WHERE em2.event_time_adj < 3600001 AND -- 3.6 million milliseconds in an hour
-              em2.event_time_adj > 0
-    ),
+              em2.event_time_adj > 0),
     --select greatest maxn per animal per set
       max_maxn AS (
         SELECT
-          max(maxn) AS maxn,
+          max(value) AS maxn,
           animal_id,
-          set_id
+          set_id,
+          master_set
         FROM em3
-        GROUP BY animal_id, set_id
-    ),
+        GROUP BY animal_id, set_id, master_set),
+
     -- select earliest observation per maxn per animal per set
       em5 AS (
         SELECT
-          maxn,
+          "value",
           animal_id,
           set_id,
+          master_set,
           min(em3.event_time_adj)      AS min_event_time_milli,
           min(em3.event_time_adj_mins) AS min_event_time_mins
         FROM em3
-        GROUP BY maxn, animal_id, set_id)
+        GROUP BY "value", animal_id, set_id, master_set)
+
   --link max maxn (em4) with times from em5
   SELECT
     max_maxn.maxn,
     max_maxn.animal_id,
     max_maxn.set_id,
+    max_maxn.master_set,
     em5.min_event_time_mins,
     em5.min_event_time_milli
   FROM max_maxn
-    LEFT JOIN em5 ON max_maxn.maxn = em5.maxn AND max_maxn.animal_id = em5.animal_id AND max_maxn.set_id = em5.set_id),
+    LEFT JOIN em5 ON max_maxn.maxn = em5."value"
+                     AND max_maxn.animal_id = em5.animal_id
+                     AND max_maxn.set_id = em5.set_id
+                    AND max_maxn.master_set=em5.master_set),
 
 maxnsharks AS (
   SELECT
     maxn,
     animal_id,
     set_id,
+    master_set,
     min_event_time_milli,
     min_event_time_mins
   FROM maxn
@@ -250,7 +244,7 @@ maxnsharks AS (
   FROM annotation_animal
     LEFT JOIN annotation_animalgroup ON annotation_animal.group_id = annotation_animalgroup.id)
 
---final output:
+  --final output:
 SELECT
   region_name,
   set_overview.location_name,
@@ -277,14 +271,15 @@ SELECT
  current_flow_instrumented,
    set_overview.reef_id,
      set_overview.set_id,
-       has_complete_master,
+  set_overview.master_set_id,
    CASE WHEN (maxnsharks.animal_id IS NULL)
     THEN 9999
   ELSE maxnsharks.animal_id
   END                       AS animal_id
 FROM set_overview
-  LEFT JOIN maxnsharks ON set_overview.set_id = maxnsharks.set_id
-  LEFT JOIN animals ON animals.id = maxnsharks.animal_id;
+  LEFT JOIN maxnsharks ON set_overview.set_id = maxnsharks.set_id AND set_overview.master_set_id=maxnsharks.master_set
+  LEFT JOIN animals ON animals.id = maxnsharks.animal_id
+WHERE has_complete_master=1;
 
 -- FIN --
 
