@@ -25,7 +25,7 @@ CREATE OR REPLACE VIEW public.v_report_observations_master AS
 
   mas.zero_time_tagged,
   mas.sixty_minute_time_tagged,
-  mas.ninty_minute_time_tagged,
+  mas.ninty_minute_time_tagged                          AS ninety_minute_time_tagged,
   mas.haul_time_tagged,
 
   mas.max_n_tagged,
