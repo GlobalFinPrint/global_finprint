@@ -7,6 +7,7 @@ Drop VIEW if exists public.v_report_assignment_status_by_file;
 Drop VIEW if exists public.v_report_assignment_status;
 
 DROP VIEW IF EXISTS public.set_summary;
+DROP VIEW IF EXISTS public.v_set_summary;
 Drop VIEW if exists public.v_report_core_set_data;
 Drop VIEW if exists public.v_report_set_environmental_data;
 
