@@ -8,6 +8,7 @@ from ..core.models import Team, FinprintUser
 from ..habitat.models import Region, Location, Site, Reef, ReefHabitat
 from ..trip.models import Trip
 from ..bruv.models import Set
+import logging
 
 REPORT_PREFIX = 'v_report_'
 
@@ -18,12 +19,45 @@ class Report:
 
     @classmethod
     def view_list(cls):
+
+        excluded_reports = {
+            "1": "annotation_status_by_annotator",
+            "2": "annotation_status_by_team",
+            "3": "assignment_status",
+            "4": "assignment_status_by_file",
+            "6": "global_set_counts",
+            "7": "global_set_counts_by_source",
+            "8": "machine_learning_corpus_from_assignment",
+            "11": "maxn_issues_report",
+            "15": "observations_coral_summary",
+            "17": "observations_io_summary",
+            "20": "observations_pac_summary",
+            "22": "observations_wa_summary",
+            "25": "reef_summary",
+            "26": "set_counts_by_location",
+            "28": "sets_without_video",
+            "29": "sitelist_summary",
+            "30": "species_observation_counts",
+            "31": "usage_metrics",
+            "32": "usage_metrics_by_affiliation",
+            "33": "weekly_video_hours",
+            "34": "zero_time_assignment_images",
+            "35": "zero_time_images"
+        }
+
         with connection.cursor() as cursor:
             query = "SELECT table_name FROM INFORMATION_SCHEMA.views " \
                     "WHERE table_name LIKE '{}%%'" \
                     "ORDER BY table_name".format(REPORT_PREFIX)
             cursor.execute(query)
-            return list(cls(row[0]) for row in cursor.fetchall())
+            returned_list = []
+            excluded_list = []
+            for row in cursor.fetchall():
+                if str(cls(row[0])) in excluded_reports.values():
+                    excluded_list.append(cls(row[0]))
+                else:
+                    returned_list.append(cls(row[0]))
+            return returned_list
 
     def results(self, limit=None):
         if not limit:

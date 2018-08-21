@@ -75,12 +75,13 @@ class SetBulkUploadView(UserAllowedMixin, View):
                 equipment_dict = dict((str(e), e.id) for e in Equipment.objects.all())
                 reef_dict = dict((u'{}|{}'.format(r.site.name, r.name), r.id) for r in Reef.objects.all())
                 habitat_dict = dict((str(h), h.id) for h in ReefType.objects.all())
+
                 set_fields = [
                     'trip_code', 'set_code', 'date',
                     'latitude', 'longitude', 'depth',
                     'drop_time', 'haul_time', 'site',
                     'reef', 'habitat', 'equipment',
-                    'bait', 'visibility',
+                    'bait', 'visibility_str',
                     'current_flow_estimated', 'current_flow_instrumented',
                     'video_file_name', 'video_source', 'video_path',
                     'comment'
@@ -168,7 +169,7 @@ class SetBulkUploadView(UserAllowedMixin, View):
                             row[set_fields_dict['bait']].value is None
                             else row[set_fields_dict['bait']].value.strip()
                         ],
-                        visibility=row[set_fields_dict['visibility']].value,
+                        visibility_str=row[set_fields_dict['visibility_str']].value,
                         current_flow_estimated=('' if row[set_fields_dict['current_flow_estimated']].value is None
                                                 else row[
                             set_fields_dict['current_flow_estimated']].value.strip().upper()),

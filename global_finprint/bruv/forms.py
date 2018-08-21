@@ -222,7 +222,7 @@ class BenthicWidget(forms.Widget):
 
                 right += '''
                 <div class="substrate-row">
-                    <a href="#" class="split">Split</a>
+                    <a href="#" class="split">Split=</a>
                     <a href="#" class="remove">Remove</a>
                 </div>
                 '''
@@ -304,17 +304,13 @@ class SetLevelDataForm(forms.ModelForm):
                                           widget=ImageSelectWidget,
                                           label='Habitat photo: splendor of the reef')
     benthic_category = BenthicField(required=False,
-                                    label='Benthos Categories & Forms')
-    substrate = forms.ModelChoiceField(required=False,
-                                       queryset=Substrate.objects.all().order_by('type'))
-    substrate_complexity = forms.ModelChoiceField(required=False,
-                                                  queryset=SubstrateComplexity.objects.all().order_by('name'))
+                                    label='Benthos Categories & Forms Test')
 
     class Meta:
         model = Set
-        fields = ['visibility', 'current_flow_instrumented', 'current_flow_estimated',
-                  'bruv_image_file', 'splendor_image_file', 'benthic_category',
-                  'substrate', 'substrate_complexity']
+        fields = ['visibility_str', 'current_flow_instrumented', 'current_flow_estimated',
+                  'bruv_image_file', 'splendor_image_file', 'benthic_category', 'field_of_view',
+                  'substrate_relief_mean', 'substrate_relief_sd']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -338,11 +334,11 @@ class SetLevelDataForm(forms.ModelForm):
                 value['substrates'].append(bcv.benthic_category)
             value['total_percent'] = sum(value['percents'])
             self.fields['benthic_category'].initial = value
-        self.fields['visibility'].required = False
+            self.fields['visibility_str'].required = False
         self.helper.layout = cfl.Layout(
-            'visibility', 'current_flow_instrumented', 'current_flow_estimated',
-            cfl.Div('bruv_image_file', 'splendor_image_file', 'benthic_category'),
-            'substrate', 'substrate_complexity'
+            'visibility_str', 'current_flow_instrumented', 'current_flow_estimated',
+            cfl.Div('bruv_image_file', 'splendor_image_file', 'benthic_category',
+                    'field_of_view', 'substrate_relief_mean', 'substrate_relief_sd')
         )
 
 

@@ -196,49 +196,49 @@
     "fields": {
       "type": "gillnet"
     },
-    "model": "habitat.sharkgearinuse",
+    "model": "habitat.fishinggear",
     "pk": 1
   },
   {
     "fields": {
       "type": "spear"
     },
-    "model": "habitat.sharkgearinuse",
+    "model": "habitat.fishinggear",
     "pk": 6
   },
   {
     "fields": {
       "type": "longline"
     },
-    "model": "habitat.sharkgearinuse",
+    "model": "habitat.fishinggear",
     "pk": 7
   },
   {
     "fields": {
       "type": "seine"
     },
-    "model": "habitat.sharkgearinuse",
+    "model": "habitat.fishinggear",
     "pk": 8
   },
   {
     "fields": {
       "type": "rod and reel"
     },
-    "model": "habitat.sharkgearinuse",
+    "model": "habitat.fishinggear",
     "pk": 9
   },
   {
     "fields": {
       "type": "poly ball / highflyer"
     },
-    "model": "habitat.sharkgearinuse",
+    "model": "habitat.fishinggear",
     "pk": 10
   },
   {
     "fields": {
       "type": "drumline"
     },
-    "model": "habitat.sharkgearinuse",
+    "model": "habitat.fishinggear",
     "pk": 11
   },
   {
