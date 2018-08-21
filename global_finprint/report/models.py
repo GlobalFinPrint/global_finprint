@@ -19,7 +19,7 @@ class Report:
 
     @classmethod
     def view_list(cls):
-
+        """ Excluded Reports """
         excluded_reports = {
             "1": "annotation_status_by_annotator",
             "2": "annotation_status_by_team",
