@@ -56,10 +56,10 @@ CREATE OR REPLACE VIEW public.v_report_mpa_fishing_metadata AS
     fishing_metadata AS (
       SELECT
         habitat_reef.id                               AS reef_id,
-        string_agg(habitat_sharkgearinuse.type, '; ') AS shark_fishing_gear /* each reef can have multiple fishing gears */
+        string_agg(habitat_fishinggear.type, '; ') AS shark_fishing_gear /* each reef can have multiple fishing gears */
       FROM habitat_reef
-        LEFT JOIN habitat_reef_shark_gear_in_use ON habitat_reef.id = habitat_reef_shark_gear_in_use.reef_id
-        LEFT JOIN habitat_sharkgearinuse ON habitat_reef_shark_gear_in_use.sharkgearinuse_id = habitat_sharkgearinuse.id
+        LEFT JOIN habitat_reef_gear_in_use ON habitat_reef.id = habitat_reef_gear_in_use.reef_id
+        LEFT JOIN habitat_fishinggear ON habitat_reef_gear_in_use.fishinggear_id = habitat_fishinggear.id
       GROUP BY habitat_reef.id
   )
 
