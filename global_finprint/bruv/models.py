@@ -226,7 +226,7 @@ class Set(AuditableModel):
     # new fields
     substrate_relief_mean = models.DecimalField(null=True, blank=True)
     substrate_relief_sd = models.DecimalField(null=True, blank=True)
-    visibility_str = models.CharField(max_length=10, null=True, blank=True, choices=VISIBILITY_CHOICES)
+    visibility = models.CharField(db_column='visibility_str', max_length=10, null=True, blank=True, choices=VISIBILITY_CHOICES)
     field_of_view = models.CharField(max_length=10, null=True, blank=True, choices=FIELD_OF_VIEW_CHOICES)
 
     # todo:  need some form changes here ...
@@ -315,7 +315,7 @@ class Set(AuditableModel):
         # 2) current flow (either)
         # 3) substrate
         # 4) substrate complexity
-        return bool(self.visibility_str
+        return bool(self.visibility
                     and (self.current_flow_estimated or self.current_flow_instrumented))
 
     def completed(self):

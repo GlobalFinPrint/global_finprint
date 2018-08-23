@@ -304,11 +304,11 @@ class SetLevelDataForm(forms.ModelForm):
                                           widget=ImageSelectWidget,
                                           label='Habitat photo: splendor of the reef')
     benthic_category = BenthicField(required=False,
-                                    label='Benthos Categories & Forms Test')
+                                    label='Benthos Categories & Forms')
 
     class Meta:
         model = Set
-        fields = ['visibility_str', 'current_flow_instrumented', 'current_flow_estimated',
+        fields = ['visibility', 'current_flow_instrumented', 'current_flow_estimated',
                   'bruv_image_file', 'splendor_image_file', 'benthic_category', 'field_of_view',
                   'substrate_relief_mean', 'substrate_relief_sd']
 
@@ -334,9 +334,9 @@ class SetLevelDataForm(forms.ModelForm):
                 value['substrates'].append(bcv.benthic_category)
             value['total_percent'] = sum(value['percents'])
             self.fields['benthic_category'].initial = value
-            self.fields['visibility_str'].required = False
+            self.fields['visibility'].required = False
         self.helper.layout = cfl.Layout(
-            'visibility_str', 'current_flow_instrumented', 'current_flow_estimated',
+            'visibility', 'current_flow_instrumented', 'current_flow_estimated',
             cfl.Div('bruv_image_file', 'splendor_image_file', 'benthic_category',
                     'field_of_view', 'substrate_relief_mean', 'substrate_relief_sd')
         )
