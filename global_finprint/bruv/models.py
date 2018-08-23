@@ -224,8 +224,8 @@ class Set(AuditableModel):
     benthic_category = models.ManyToManyField(BenthicCategory, through='BenthicCategoryValue')
 
     # new fields
-    substrate_relief_mean = models.DecimalField(null=True, blank=True)
-    substrate_relief_sd = models.DecimalField(null=True, blank=True)
+    substrate_relief_mean = models.DecimalField(null=True, blank=True, decimal_places=4, max_digits=12)
+    substrate_relief_sd = models.DecimalField(null=True, blank=True, decimal_places=4, max_digits=12)
     visibility = models.CharField(db_column='visibility_str', max_length=10, null=True, blank=True, choices=VISIBILITY_CHOICES)
     field_of_view = models.CharField(max_length=10, null=True, blank=True, choices=FIELD_OF_VIEW_CHOICES)
 
