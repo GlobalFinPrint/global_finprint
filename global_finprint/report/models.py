@@ -352,3 +352,5 @@ class Description(models.Model):
     report_name = models.CharField(max_length=50)
     report_status = models.CharField(max_length=500, null=True)
     include = models.BooleanField(default=False)
+    test_column = models.BooleanField(default=False)
+    
