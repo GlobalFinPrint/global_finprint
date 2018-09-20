@@ -82,7 +82,7 @@ def apply_migrations():
     with cd(remote_django_dir):
         sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py dropviews', user='www-data')
         sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py dropfunctions', user='www-data')
-        sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py migrate --noinput', user='www-data')
+        sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py migrate --fake --noinput', user='www-data')
         sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py createfunctions', user='www-data')
         sudo('source ./set_env.sh && cd $DJANGO_DIR && ./manage.py createviews', user='www-data')
 
