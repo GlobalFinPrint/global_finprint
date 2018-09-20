@@ -51,6 +51,90 @@ SELECT trip.code AS trip_code,
               WHERE ((evtat.attribute_id = 13) AND (evtat.masterevent_id = evt.id)))) THEN 1
             ELSE 0
         END AS max_n_tagged,
+        CASE
+        WHEN (EXISTS (SELECT evtat.id
+              FROM annotation_masterevent_attribute evtat
+              WHERE ((evtat.attribute_id=31) AND (evtat.masterevent_id=evt.id)))) THEN 1
+              ELSE 0
+            END AS bait_gone,
+    CASE
+        WHEN (EXISTS (SELECT evtat.id
+              FROM annotation_masterevent_attribute evtat
+              WHERE ((evtat.attribute_id=3) AND (evtat.masterevent_id=evt.id)))) THEN 1
+              ELSE 0
+            END AS courtship_or_mating,
+    CASE
+        WHEN (EXISTS (SELECT evtat.id
+              FROM annotation_masterevent_attribute evtat
+              WHERE ((evtat.attribute_id=18) AND (evtat.masterevent_id=evt.id)))) THEN 1
+              ELSE 0
+            END AS female_identified,
+    CASE
+        WHEN (EXISTS (SELECT evtat.id
+              FROM annotation_masterevent_attribute evtat
+              WHERE ((evtat.attribute_id=19) AND (evtat.masterevent_id=evt.id)))) THEN 1
+              ELSE 0
+            END AS male_identified,
+    CASE
+        WHEN (EXISTS (SELECT evtat.id
+              FROM annotation_masterevent_attribute evtat
+              WHERE ((evtat.attribute_id=21) AND (evtat.masterevent_id=evt.id)))) THEN 1
+              ELSE 0
+            END AS feeding,
+    CASE
+        WHEN (EXISTS (SELECT evtat.id
+              FROM annotation_masterevent_attribute evtat
+              WHERE ((evtat.attribute_id=7) AND (evtat.masterevent_id=evt.id)))) THEN 1
+              ELSE 0
+            END AS fouled,
+    CASE
+        WHEN (EXISTS (SELECT evtat.id
+              FROM annotation_masterevent_attribute evtat
+              WHERE ((evtat.attribute_id=28) AND (evtat.masterevent_id=evt.id)))) THEN 1
+              ELSE 0
+            END AS guarding_bait,
+    CASE
+        WHEN (EXISTS (SELECT evtat.id
+              FROM annotation_masterevent_attribute evtat
+              WHERE ((evtat.attribute_id=34) AND (evtat.masterevent_id=evt.id)))) THEN 1
+              ELSE 0
+            END AS human_activity,
+    CASE
+        WHEN (EXISTS (SELECT evtat.id
+              FROM annotation_masterevent_attribute evtat
+              WHERE ((evtat.attribute_id=32) AND (evtat.masterevent_id=evt.id)))) THEN 1
+              ELSE 0
+            END AS parasites,
+    CASE
+        WHEN (EXISTS (SELECT evtat.id
+              FROM annotation_masterevent_attribute evtat
+              WHERE ((evtat.attribute_id=26) AND (evtat.masterevent_id=evt.id)))) THEN 1
+              ELSE 0
+            END AS passing,
+    CASE
+        WHEN (EXISTS (SELECT evtat.id
+              FROM annotation_masterevent_attribute evtat
+              WHERE ((evtat.attribute_id=41) AND (evtat.masterevent_id=evt.id)))) THEN 1
+              ELSE 0
+            END AS reviewed_for_sharks,
+    CASE
+        WHEN (EXISTS (SELECT evtat.id
+              FROM annotation_masterevent_attribute evtat
+              WHERE ((evtat.attribute_id=22) AND (evtat.masterevent_id=evt.id)))) THEN 1
+              ELSE 0
+            END AS same_species_interaction,
+  CASE
+        WHEN (EXISTS (SELECT evtat.id
+              FROM annotation_masterevent_attribute evtat
+              WHERE ((evtat.attribute_id=30) AND (evtat.masterevent_id=evt.id)))) THEN 1
+              ELSE 0
+            END AS scavenging,
+  CASE
+        WHEN (EXISTS (SELECT evtat.id
+              FROM annotation_masterevent_attribute evtat
+              WHERE ((evtat.attribute_id=5) AND (evtat.masterevent_id=evt.id)))) THEN 1
+              ELSE 0
+            END AS wounded,
     "substring"(evt.note, '[0-9]+'::text) AS numeric_value_from_event_note,
     "substring"(obs.comment, '[0-9]+'::text) AS numeric_value_from_obs_comment,
     evt.note AS event_note,

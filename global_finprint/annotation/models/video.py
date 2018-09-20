@@ -7,14 +7,13 @@ from global_finprint.core.models import AuditableModel, FinprintUser
 from .project import Project
 
 
-
 # todo:  pull video file names into ranked list (for l & r, etc.)
 class Video(AuditableModel):
     def annotators_assigned(self, project):
         return list(a.annotator for a in self.assignment_set.filter(project=project).all())
 
     def annotators_assigned_count(self, ids):
-        return list(a.annotator for a in self.assignment_set.filter(pk__in =ids).all())
+        return list(a.annotator for a in self.assignment_set.filter(pk__in=ids).all())
 
     def length(self):
         try:
@@ -97,7 +96,7 @@ class Assignment(AuditableModel):
         return self.video.set
 
     def update_progress(self, seconds):
-        #if seconds > self.progress:
+        # if seconds > self.progress:
         self.progress = seconds
         if self.status_id == 1:
             self.status_id = 2
@@ -152,5 +151,3 @@ class Assignment(AuditableModel):
             ))
         except ValueError:
             return None
-
-

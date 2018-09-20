@@ -164,7 +164,7 @@ class ProtectionStatus(models.Model):
         verbose_name_plural = "Protection status"
 
 
-class SharkGearInUse(models.Model):
+class FishingGear(models.Model):
     """
         dominant gear in use for shark fishing
         values:  gillnet, spear, longline, seine, rod and reel, poly ball / highflyer, drumline
@@ -176,7 +176,7 @@ class SharkGearInUse(models.Model):
             return u"{0}".format(self.type)
 
     class Meta:
-        verbose_name_plural = "Shark gear in use"
+        verbose_name_plural = "Fishing Gear"
 
 
 class FishingRestrictions(models.Model):
@@ -202,7 +202,8 @@ class Reef(models.Model):
     boundary = models.MultiPolygonField(srid=4326, null=True, blank=True)
 
     protection_status = models.ForeignKey(to=ProtectionStatus)
-    shark_gear_in_use = models.ManyToManyField(to=SharkGearInUse, blank=True)
+    # shark_gear_in_use = models.ManyToManyField(to=SharkGearInUse, blank=True)
+    fishing_gear = models.ManyToManyField(to=FishingGear, blank=True)
     fishing_restrictions = models.ManyToManyField(to=FishingRestrictions, blank=True)
 
     mpa = models.ForeignKey(to=MPA, null=True, blank=True)

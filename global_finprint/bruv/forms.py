@@ -14,6 +14,9 @@ from .models import Set, EnvironmentMeasure, Bait, Equipment, SetTag, BenthicCat
 from ..trip.models import Trip
 from ..habitat.models import Reef, ReefType, Substrate, SubstrateComplexity
 from django.conf import settings
+import json
+
+# from ..bruv.views.customField import CustomField
 
 US_WEST_AWS_S3 = 'https://s3-us-west-2.amazonaws.com/'
 
@@ -222,7 +225,7 @@ class BenthicWidget(forms.Widget):
 
                 right += '''
                 <div class="substrate-row">
-                    <a href="#" class="split">Split</a>
+                    <a href="#" class="split">Split=</a>
                     <a href="#" class="remove">Remove</a>
                 </div>
                 '''
@@ -305,16 +308,12 @@ class SetLevelDataForm(forms.ModelForm):
                                           label='Habitat photo: splendor of the reef')
     benthic_category = BenthicField(required=False,
                                     label='Benthos Categories & Forms')
-    substrate = forms.ModelChoiceField(required=False,
-                                       queryset=Substrate.objects.all().order_by('type'))
-    substrate_complexity = forms.ModelChoiceField(required=False,
-                                                  queryset=SubstrateComplexity.objects.all().order_by('name'))
 
     class Meta:
         model = Set
         fields = ['visibility', 'current_flow_instrumented', 'current_flow_estimated',
-                  'bruv_image_file', 'splendor_image_file', 'benthic_category',
-                  'substrate', 'substrate_complexity']
+                  'bruv_image_file', 'splendor_image_file', 'benthic_category', 'field_of_view',
+                  'substrate_relief_mean', 'substrate_relief_sd']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -338,11 +337,11 @@ class SetLevelDataForm(forms.ModelForm):
                 value['substrates'].append(bcv.benthic_category)
             value['total_percent'] = sum(value['percents'])
             self.fields['benthic_category'].initial = value
-        self.fields['visibility'].required = False
+            self.fields['visibility'].required = False
         self.helper.layout = cfl.Layout(
             'visibility', 'current_flow_instrumented', 'current_flow_estimated',
-            cfl.Div('bruv_image_file', 'splendor_image_file', 'benthic_category'),
-            'substrate', 'substrate_complexity'
+            cfl.Div('bruv_image_file', 'splendor_image_file', 'benthic_category',
+                    'field_of_view', 'substrate_relief_mean', 'substrate_relief_sd')
         )
 
 
@@ -394,3 +393,84 @@ class SetBulkUploadForm(forms.Form):
             cfl.Field('set_file', css_class='form-control'),
         )
         self.helper.add_input(cfl.Submit('upload', 'Upload', css_class='btn-fp'))
+
+
+class RemoveWidget(forms.Widget):
+    """
+    Helper widget for video form remove link
+    """
+    template = '<div class="sub-control"><a href="#" class="remove">Remove</a></div>'
+
+    def value_from_datadict(self, data, files, name):
+        return data.getlist(name, [0])
+
+    def render(self, name, value, attrs=None):
+        html = ''
+        for _ in value:
+            html += self.template
+        return mark_safe(html)
+
+
+class MultiRowCharField(forms.CharField):
+    """
+    Helper field for video form source and path fields
+    """
+    def to_python(self, value):
+        return value
+
+
+class MultiRowTextInput(forms.Widget):
+    """
+    Helper widget for video form source and path fields
+    """
+    template = '<div class="sub-control">' \
+               '<input class="form-control textInput" name="{}" type="text" value="{}" {} />' \
+               '</div>'
+
+    def value_from_datadict(self, data, files, name):
+        return list(None if datum == '' else datum for datum in data.getlist(name, [None]))
+
+    def render(self, name, value, attrs=None):
+        file = open('instace.txt', 'w')
+        file.write(repr(value))
+        file.close()
+        html = ''
+        for val in value:
+            html += self.template.format(name, '' if val is None else val, flatatt(attrs))
+        return mark_safe(html)
+
+
+class SetCustomFieldsForm(forms.ModelForm):
+    """
+    Form for set custom fields in set form
+    """
+    jsonColumnName = MultiRowCharField(required=False, label='Custom Field Name', max_length=100, widget=MultiRowTextInput)
+    jsonColumnValue = MultiRowCharField(required=False, label='Custom Value', max_length=100, widget=MultiRowTextInput)
+    remove_row = forms.Field(required=False, label='', widget=RemoveWidget)
+
+    class Meta:
+        model = Set
+        fields = ['jsonColumnName', 'jsonColumnValue', 'remove_row']
+
+    def __init__(self, *args, **kwargs):
+        super(SetCustomFieldsForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+        self.fields['jsonColumnName'].initial = [None]
+        self.fields['jsonColumnValue'].initial = [None]
+        self.fields['remove_row'].initial = [0]
+        # when edit
+        if 'instance' in kwargs and kwargs['instance'] and kwargs['instance'].custom_field_value:
+            jsValues = json.loads(kwargs['instance'].custom_field_value)
+            js_keys, js_values = [], []
+            for idx in range(len(jsValues)):
+                for k, v in jsValues[idx].items():
+                    js_keys.append(k)
+                    js_values.append(v)
+            self.fields['jsonColumnName'].initial = js_keys
+            self.fields['jsonColumnValue'].initial = js_values
+            self.fields['remove_row'].initial = list(range(max(len(jsValues), 1)))
+
+
+
+

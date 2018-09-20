@@ -19,11 +19,14 @@ class Report:
     @classmethod
     def view_list(cls):
         with connection.cursor() as cursor:
-            query = "SELECT table_name FROM INFORMATION_SCHEMA.views " \
-                    "WHERE table_name LIKE '{}%%'" \
-                    "ORDER BY table_name".format(REPORT_PREFIX)
+            query = "SELECT * FROM public.report_description"
             cursor.execute(query)
-            return list(cls(row[0]) for row in cursor.fetchall())
+            returned_list = []
+            for row in cursor.fetchall():
+                if row[2]:
+                    report_item = {'name': row[0].replace(REPORT_PREFIX, ''), 'description': row[1]}
+                    returned_list.append(report_item)
+            return returned_list
 
     def results(self, limit=None):
         if not limit:
@@ -343,3 +346,10 @@ class PlannedSite(models.Model):
 
     def __str__(self):
         return u"{0} ({1} - {2})".format(self.location.name, self.team.name, self.planned_date)
+
+
+class Description(models.Model):
+    report_name = models.CharField(max_length=50)
+    report_status = models.CharField(max_length=500, null=True)
+    include = models.BooleanField(default=False)
+    

@@ -34,6 +34,7 @@ class AuditableModel(TimestampedModel):
     class Meta:
         abstract = True
 
+
 class VersionedModel(AuditableModel):
     def to_json(self):
         return {}
@@ -78,7 +79,6 @@ class VersionedModel(AuditableModel):
             return str(obj)
         else:
             return obj
-
 
     class Meta:
         abstract = True
@@ -160,7 +160,9 @@ class Team(AuditableModel):
         unique_together = ('lead', 'sampler_collaborator')
 
     def __str__(self):
-        return u"{0}{1}{2}".format(self.lead.user.username, (' - ' if self.sampler_collaborator else ''), self.sampler_collaborator)
+        return u"{0}{1}{2}".format(self.lead.user.username, (' - ' if self.sampler_collaborator else ''),
+                                   self.sampler_collaborator)
+
 
 class ModelHistory(models.Model):
     model_type = models.TextField()
@@ -169,6 +171,7 @@ class ModelHistory(models.Model):
 
     def __str__(self):
         return u'pk: {0}, type: {1}, ref_id: {2}'.format(self.pk, self.model_type, self.reference_id)
+
 
 class ModelSnapshot(models.Model):
     create_datetime = models.DateTimeField()
@@ -182,4 +185,3 @@ class ModelSnapshot(models.Model):
 
     class Meta():
         ordering = ['create_datetime']
-

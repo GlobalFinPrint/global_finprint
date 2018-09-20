@@ -15,6 +15,8 @@ from global_finprint.habitat.models import ReefHabitat, Substrate, SubstrateComp
 
 from mptt.models import MPTTModel, TreeForeignKey
 
+from django.contrib.postgres.fields import ArrayField, JSONField
+
 # todo:  move some of these out ot the db?
 EQUIPMENT_BAIT_CONTAINER = {
     ('B', 'Bag'),
@@ -46,6 +48,20 @@ BAIT_TYPE_CHOICES = {
     ('CHP', 'Chopped'),
     ('CRS', 'Crushed'),
     ('WHL', 'Whole'),
+}
+VISIBILITY_CHOICES = {
+    ('V0-2', 'V0-2'),
+    ('V2-4', 'V2-4'),
+    ('V4-6', 'V4-6'),
+    ('V6-8', 'V6-8'),
+    ('V8-10', 'V8-10'),
+    ('V10+', 'V10+')
+}
+FIELD_OF_VIEW_CHOICES = {
+    ('FU', 'Facing Up'),
+    ('FD', 'Facing Down'),
+    ('L', 'Limited'),
+    ('O', 'Open')
 }
 
 
@@ -195,9 +211,6 @@ class Set(AuditableModel):
     drop_time = models.TimeField()
     haul_date = models.DateField(null=True, blank=True)
     haul_time = models.TimeField(null=True, blank=True)
-    visibility = models.IntegerField(null=True, blank=True,
-                                     validators=[MinValueValidator(-1), MaxValueValidator(50)],
-                                     help_text='m')
     depth = models.DecimalField(help_text='m', decimal_places=2, max_digits=12,
                                 validators=[MinValueValidator(Decimal('0.01'))])
     comments = models.TextField(null=True, blank=True)
@@ -211,8 +224,13 @@ class Set(AuditableModel):
     splendor_image_url = models.CharField(max_length=200, null=True, blank=True)
 
     benthic_category = models.ManyToManyField(BenthicCategory, through='BenthicCategoryValue')
-    substrate = models.ForeignKey(Substrate, blank=True, null=True)
-    substrate_complexity = models.ForeignKey(SubstrateComplexity, blank=True, null=True)
+
+    # new fields
+    substrate_relief_mean = models.DecimalField(null=True, blank=True, decimal_places=4, max_digits=12)
+    substrate_relief_sd = models.DecimalField(null=True, blank=True, decimal_places=4, max_digits=12)
+    visibility = models.CharField(db_column='visibility_str', max_length=10, null=True, blank=True, choices=VISIBILITY_CHOICES)
+    field_of_view = models.CharField(max_length=10, null=True, blank=True, choices=FIELD_OF_VIEW_CHOICES)
+    custom_field_value = JSONField(db_column='custom_fields', null=True)
 
     # todo:  need some form changes here ...
     bait = models.ForeignKey(Bait, null=True)
@@ -301,8 +319,7 @@ class Set(AuditableModel):
         # 3) substrate
         # 4) substrate complexity
         return bool(self.visibility
-                    and (self.current_flow_estimated or self.current_flow_instrumented)
-                    and self.substrate and self.substrate_complexity)
+                    and (self.current_flow_estimated or self.current_flow_instrumented))
 
     def completed(self):
         # we consider the following for "completion":
@@ -322,3 +339,5 @@ class BenthicCategoryValue(models.Model):
     set = models.ForeignKey(Set)
     benthic_category = TreeForeignKey(BenthicCategory)
     value = models.IntegerField()
+
+

@@ -295,7 +295,7 @@ LEAFLET_CONFIG = {
     'MAX_ZOOM': 13,
 }
 
-HIDE_COMPARE_ANNOTATORS = True
+HIDE_COMPARE_ANNOTATORS = False
 
 # indent of child items in the admin pages for the hierarchical lists
 MPTT_ADMIN_LEVEL_INDENT = 30

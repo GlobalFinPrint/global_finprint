@@ -40,7 +40,7 @@ pytz==2017.2
 # AWS, S3
 boto==2.46.1
 
-gunicorn==19.3.0
+gunicorn==19.5.0
 
 # Bulk data import
 openpyxl==2.4.8
