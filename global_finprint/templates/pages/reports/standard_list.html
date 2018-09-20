@@ -3,11 +3,20 @@
 <div class="col-md-12">
     <div class="row">
         <h3>Standard reports</h3>
-        <ul>
-            {% for report in reports %}
-            <li><a href="{% url 'report_standard' report limit %}">{{ report | title }}</a></li>
+        <table class="table table-striped">
+            <thead>
+                <th>Name</th>
+                <th>Description</th>
+            </thead>
+            <tbody>
+            {% for report in reports|dictsort:"name"%}
+                <tr>
+                    <td><a href="{% url 'report_standard' report.name limit %}">{{ report.name | title }}</a></td>
+                    <td>{{ report.description }}</td>
+                </tr>
             {% endfor %}
-        </ul>
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}

@@ -15,6 +15,8 @@ from global_finprint.habitat.models import ReefHabitat, Substrate, SubstrateComp
 
 from mptt.models import MPTTModel, TreeForeignKey
 
+from django.contrib.postgres.fields import ArrayField, JSONField
+
 # todo:  move some of these out ot the db?
 EQUIPMENT_BAIT_CONTAINER = {
     ('B', 'Bag'),
@@ -228,6 +230,7 @@ class Set(AuditableModel):
     substrate_relief_sd = models.DecimalField(null=True, blank=True, decimal_places=4, max_digits=12)
     visibility = models.CharField(db_column='visibility_str', max_length=10, null=True, blank=True, choices=VISIBILITY_CHOICES)
     field_of_view = models.CharField(max_length=10, null=True, blank=True, choices=FIELD_OF_VIEW_CHOICES)
+    custom_field_value = JSONField(db_column='custom_fields', null=True)
 
     # todo:  need some form changes here ...
     bait = models.ForeignKey(Bait, null=True)
@@ -336,3 +339,5 @@ class BenthicCategoryValue(models.Model):
     set = models.ForeignKey(Set)
     benthic_category = TreeForeignKey(BenthicCategory)
     value = models.IntegerField()
+
+

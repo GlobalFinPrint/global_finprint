@@ -9,11 +9,13 @@ from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext
 from django.db import transaction
 
+from django.contrib.postgres.fields import ArrayField, JSONField
+
 from global_finprint.trip.models import Trip
 from global_finprint.bruv.models import Equipment
 from ..models import Set, BenthicCategoryValue, EnvironmentMeasure, Bait, Video
 from ..forms import SetForm, EnvironmentMeasureForm, \
-    SetSearchForm, SetLevelCommentsForm, SetLevelDataForm, SetBulkUploadForm
+    SetSearchForm, SetLevelCommentsForm, SetLevelDataForm, SetBulkUploadForm, SetCustomFieldsForm
 from ...annotation.forms import VideoForm
 from ...annotation.models.video import VideoFile
 from ...habitat.models import ReefHabitat, Reef, ReefType
@@ -26,7 +28,8 @@ from openpyxl import load_workbook
 from io import BytesIO
 from zipfile import BadZipFile
 from datetime import datetime
-
+import json
+import pickle
 
 # deprecated:
 @login_required
@@ -266,6 +269,7 @@ class SetBulkUploadView(UserAllowedMixin, View):
                                                'success_message': success_message})
 
 
+# Handle set post/get operations
 class SetListView(UserAllowedMixin, View):
     """
     Set list view found at /trips/<trip_id>/sets/
@@ -420,6 +424,22 @@ class SetListView(UserAllowedMixin, View):
                 bcv = BenthicCategoryValue(set=set, benthic_category_id=s_id, value=val)
                 bcv.save()
 
+    def _process_custom_fields(self, set, request):
+        """
+        Helper method saves custom fields data
+        :param set:
+        :param request:
+        :return:
+        """
+        with transaction.atomic():
+            lst = []
+            for (name, val) in zip(request.POST.getlist('jsonColumnName'), request.POST.getlist('jsonColumnValue')):
+                jsonItem = {}
+                jsonItem[name] = val
+                lst.append(jsonItem)
+            set.custom_field_value = json.dumps(lst)
+            set.save()
+
     def get(self, request, **kwargs):
         """
         Main method to return template
@@ -458,6 +478,9 @@ class SetListView(UserAllowedMixin, View):
             context['set_level_comments_form'] = SetLevelCommentsForm(
                 instance=edited_set
             )
+            context['set_custom_fields_form'] = SetCustomFieldsForm(
+                instance=edited_set
+            )
 
         # new set form
         else:
@@ -471,6 +494,7 @@ class SetListView(UserAllowedMixin, View):
             context['video_form'] = VideoForm()
             context['set_level_data_form'] = SetLevelDataForm()
             context['set_level_comments_form'] = SetLevelCommentsForm()
+            context['set_custom_fields_form'] = SetCustomFieldsForm()
 
         return render(request, self.template, context=context)
 
@@ -492,6 +516,7 @@ class SetListView(UserAllowedMixin, View):
             video_form = VideoForm(request.POST)
             set_level_data_form = SetLevelDataForm(request.POST, request.FILES)
             set_level_comments_form = SetLevelCommentsForm(request.POST)
+            set_custom_fields_form = SetCustomFieldsForm(request.POST)
         else:
             edited_set = get_object_or_404(Set, pk=set_pk)
             set_form = SetForm(request.POST, trip_pk=trip_pk, instance=edited_set)
@@ -500,6 +525,7 @@ class SetListView(UserAllowedMixin, View):
             video_form = VideoForm(request.POST, instance=edited_set.video)
             set_level_data_form = SetLevelDataForm(request.POST, request.FILES, instance=edited_set)
             set_level_comments_form = SetLevelCommentsForm(request.POST, instance=edited_set)
+            set_custom_fields_form = SetCustomFieldsForm(request.POST,  instance=edited_set)
 
         # forms are valid
         if all(form.is_valid() for form in [set_form,
@@ -507,7 +533,8 @@ class SetListView(UserAllowedMixin, View):
                                             haul_form,
                                             video_form,
                                             set_level_data_form,
-                                            set_level_comments_form]):
+                                            set_level_comments_form,
+                                            set_custom_fields_form]):
 
             # get reef_habitat from reef + habitat
             # note: "create new set" uses the .instance, "edit existing set" is using the .cleaned_data
@@ -537,6 +564,9 @@ class SetListView(UserAllowedMixin, View):
 
                 # save habitat substrate values
                 self._process_habitat_substrate(new_set, request)
+
+                # save new custom fields
+                self._process_custom_fields(new_set, request)
 
                 messages.success(self.request, 'Set created')
                 current_set = new_set
@@ -588,6 +618,9 @@ class SetListView(UserAllowedMixin, View):
                 # save habitat substrate values
                 self._process_habitat_substrate(edited_set, request)
 
+                # save habitat substrate values
+                self._process_custom_fields(edited_set, request)
+
                 messages.success(self.request, 'Set updated')
                 current_set = edited_set
 
@@ -626,6 +659,7 @@ class SetListView(UserAllowedMixin, View):
             context['video_form'] = video_form
             context['set_level_data_form'] = set_level_data_form
             context['set_level_comments_form'] = set_level_comments_form
+            context['set_custom_fields_form'] = set_custom_fields_form
 
             messages.error(self.request, 'Form errors found')
 

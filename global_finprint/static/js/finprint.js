@@ -29,6 +29,7 @@ var finprint = finprint || {};  //namespace if necessary...
         initInlineObsDelete();
         initInlineObsEdit();
         initVideoForm();
+        initCustomFieldsForm();
         initEditMeasurables();
         initMultipleAssignmentModals();
         initCheckbutton();
@@ -348,9 +349,9 @@ var finprint = finprint || {};  //namespace if necessary...
                 var setSelect = $setSelect[0].selectize;
                 setSelect.disable();
                 setSelect.clearOptions();
-                console.log('#select-reef-auto-assign', value)
+                //console.log('#select-reef-auto-assign', value)
                 $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
-                    console.log('reefs selected are: ', res["sets"])
+                    //console.log('reefs selected are: ', res["sets"])
                     var sets = res["sets"];
                     setSelect.load(function (callback) {
                         setSelect.enable();
@@ -363,7 +364,7 @@ var finprint = finprint || {};  //namespace if necessary...
 
         $auto_trip = $modalForm.find('#auto-trip').selectize($.extend({}, options, {
             onChange: function (value) {
-                console.log('#auto-trip', value)
+                //console.log('#auto-trip', value)
                 var reefSelect = $reefSelect[0].selectize;
                 reefSelect.disable();
                 reefSelect.clearOptions();
@@ -372,8 +373,8 @@ var finprint = finprint || {};  //namespace if necessary...
                 setSelect.disable();
                 setSelect.clearOptions();
                 $.post('/assignment/filter_change', $modalForm.serialize(), function (res) {
-                    console.log('/assignment/filter_change', res["sets"])
-                    console.log('/assignment/filter_change', res["reefs"])
+                    //console.log('/assignment/filter_change', res["sets"])
+                    //console.log('/assignment/filter_change', res["reefs"])
                     var reefs = res["reefs"];
                     var sets = res["sets"];
                     reefSelect.load(function (callback) {
@@ -1340,6 +1341,41 @@ var finprint = finprint || {};  //namespace if necessary...
         });
     }
 
+    function initCustomFieldsForm() {
+        var $panel = $('#collapseSeven');
+        var $jsonColumName = $panel.find('#div_id_jsonColumnName .controls');
+        var $jsonColumValue = $panel.find('#div_id_jsonColumnValue .controls');
+        var $removeCol = $panel.find('#div_id_remove_row .controls');
+        $removeCol.find('.sub-control:first').addClass('hidden');
+        $removeCol.on('click', 'a.remove', function (e) {
+            var index;
+            e.preventDefault();
+            if ($removeCol.find('a.remove').length > 1) {
+                index = $removeCol.find('a.remove').index($(this));
+                $jsonColumName.find('.sub-control').slice(index, index + 1).remove();
+                $jsonColumValue.find('.sub-control').slice(index, index + 1).remove();
+                $removeCol.find('.sub-control').slice(index, index + 1).remove();
+            }
+        });
+
+        $panel.find('p.add-custom-field span.plus').click(function () {
+            $jsonColumName.find('.sub-control:first').clone()
+                .find('input')
+                .val('')
+                .end()
+                .appendTo($jsonColumName);
+
+            $jsonColumValue.find('.sub-control:first').clone()
+                .find('input')
+                .val('')
+                .end()
+                .appendTo($jsonColumValue);
+            $removeCol.find('.sub-control:first').removeClass('hidden');
+            $removeCol.find('.sub-control:first').clone().appendTo($removeCol);
+            $removeCol.find('.sub-control:first').addClass('hidden');
+        });
+    }
+
     function initEditMeasurables() {
         var $modal = $('#edit-measurables-modal');
         var $measurablesCell = $('td.measurables');
@@ -1728,7 +1764,7 @@ var finprint = finprint || {};  //namespace if necessary...
         }
 
         video.onloadedmetadata = function () {
-            console.log("Meta data for video loaded");
+            //console.log("Meta data for video loaded");
         };
         video.onerror = function () {
             // doesn't exist or error loading
