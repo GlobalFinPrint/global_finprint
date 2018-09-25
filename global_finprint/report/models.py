@@ -23,8 +23,8 @@ class Report:
             cursor.execute(query)
             returned_list = []
             for row in cursor.fetchall():
-                if row[2]:
-                    report_item = {'name': row[0].replace(REPORT_PREFIX, ''), 'description': row[1]}
+                if row[3]:
+                    report_item = {'name': row[1].replace(REPORT_PREFIX, ''), 'description': row[2]}
                     returned_list.append(report_item)
             return returned_list
 
