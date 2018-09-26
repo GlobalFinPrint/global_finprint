@@ -202,8 +202,7 @@ class Reef(models.Model):
     boundary = models.MultiPolygonField(srid=4326, null=True, blank=True)
 
     protection_status = models.ForeignKey(to=ProtectionStatus)
-    # shark_gear_in_use = models.ManyToManyField(to=SharkGearInUse, blank=True)
-    fishing_gear = models.ManyToManyField(to=FishingGear, blank=True)
+    gear_in_use = models.ManyToManyField(to=FishingGear, blank=True)
     fishing_restrictions = models.ManyToManyField(to=FishingRestrictions, blank=True)
 
     mpa = models.ForeignKey(to=MPA, null=True, blank=True)
