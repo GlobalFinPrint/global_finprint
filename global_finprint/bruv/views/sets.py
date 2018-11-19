@@ -84,7 +84,7 @@ class SetBulkUploadView(UserAllowedMixin, View):
                     'latitude', 'longitude', 'depth',
                     'drop_time', 'haul_time', 'site',
                     'reef', 'habitat', 'equipment',
-                    'bait', 'visibility_str',
+                    'bait', 'visibility',
                     'current_flow_estimated', 'current_flow_instrumented',
                     'video_file_name', 'video_source', 'video_path',
                     'comment'
@@ -172,7 +172,7 @@ class SetBulkUploadView(UserAllowedMixin, View):
                             row[set_fields_dict['bait']].value is None
                             else row[set_fields_dict['bait']].value.strip()
                         ],
-                        visibility_str=row[set_fields_dict['visibility_str']].value,
+                        visibility=row[set_fields_dict['visibility']].value,
                         current_flow_estimated=('' if row[set_fields_dict['current_flow_estimated']].value is None
                                                 else row[
                             set_fields_dict['current_flow_estimated']].value.strip().upper()),
