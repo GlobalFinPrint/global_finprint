@@ -1,5 +1,6 @@
 
 -- report views
+DROP VIEW IF EXISTS public.v_report_benthic_cover;
 DROP VIEW IF EXISTS public.v_report_annotation_status_by_annotator;
 DROP VIEW IF EXISTS public.v_report_annotation_status_by_team;
 
