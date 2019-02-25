@@ -28,26 +28,19 @@ FROM habitat_region
   FULL OUTER JOIN habitat_reeftype ON habitat_reefhabitat.habitat_id = habitat_reeftype.id
   FULL OUTER JOIN bruv_set ON habitat_reefhabitat.id = bruv_set.reef_habitat_id
   LEFT JOIN trip_trip ON bruv_set.trip_id = trip_trip.id),
---make benthic cover table with names of benthic habitat types
- benthic AS (
-  SELECT
-  cv.id AS benthicvalue_id,
-  cv.value AS benthic_cover,
-  cv.set_id,
-  bc.name AS benthic_category
-FROM bruv_benthiccategoryvalue cv
-LEFT JOIN bruv_benthiccategory bc ON cv.benthic_category_id=bc.id),
 
+--make benthic cover table with names of benthic habitat types
 benthic_pivot AS(
-    SELECT * FROM crosstab (
-      'SELECT set_id, benthic_category, benthic_cover
-      FROM benthic
+SELECT * FROM crosstab (
+      'SELECT set_id, benthic_category_id, value
+      FROM bruv_benthiccategoryvalue
       ORDER BY 1,2'
     )
-      AS benthic(set_id int, Ascidians int,  bleached_corals int,  Bryozoa int, Consolidated int, Crinoids int,
-                  Halimeda int, hard_coral int, Hydrocoral int, Hydroids int,	invertebrate_complex int,	Macroalgae int,
-                  Mangrove int, Seagrass	int, Soft_coral int,	Sponge int,
-                  True_anemones	int, Unconsolidated int,	Zoanthids int))
+      AS (set_id int, hard_coral int, Macroalgae int, Soft_coral int, Sponge int, Consolidated int, Unconsolidated int,
+                  Ascidians int,  Bryozoa int, Crinoids int, Hydrocoral int, Hydroids int,
+                  Mangrove int, bleached_corals int, True_anemones	int, 	Zoanthids int,
+                  Halimeda int,   invertebrate_complex int, Seagrass	int
+                  ))
 
 -- put together benthic cover with set and location descriptors
 SELECT
