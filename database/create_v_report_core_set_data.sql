@@ -61,7 +61,7 @@ SELECT
   vf.source                AS video_source,
   vf.path                  AS video_path,
 
-  sub.type                 AS substrate_type,
+/*  sub.type                 AS substrate_type,
   subc.name                AS substrate_complexity_type,
   CASE WHEN (SELECT id
              FROM bruv_benthiccategoryvalue bcv
@@ -69,8 +69,7 @@ SELECT
              LIMIT 1) IS NOT NULL
     THEN TRUE
   ELSE FALSE
-  END                      AS has_bethic_categories,
-
+  END                      AS has_bethic_categories,  */
   s.comments,
   s.message_to_annotators,
   s.bruv_image_url,
