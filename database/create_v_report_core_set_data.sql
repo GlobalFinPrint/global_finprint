@@ -29,9 +29,9 @@ SELECT
 
   s.set_date,
 
-  st_asewkt(s.coordinates) AS wkt_coordinates,
-  st_y(s.coordinates)      AS latitude,
-  st_x(s.coordinates)      AS longitude,
+  st_makepoint(s.longitude, s.latitude) AS wkt_coordinates,
+  s.latitude      AS latitude,
+  s.longitude      AS longitude,
 
   s.depth,
 
