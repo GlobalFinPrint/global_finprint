@@ -1,4 +1,5 @@
 import csv
+import logging
 
 from django.contrib.auth.decorators import login_required
 from django.core.serializers import serialize
@@ -37,6 +38,8 @@ class StandardReportView(UserAllowedMixin, View):
     template = 'pages/reports/standard_report.html'
 
     def get(self, request, report, limit=None):
+        logging.error('Testing')
+        logging.error('%s', report)
         report = Report(report)
         if not limit:
             limit = 'all'
