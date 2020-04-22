@@ -38,6 +38,7 @@ class StandardReportView(UserAllowedMixin, View):
     template = 'pages/reports/standard_report.html'
 
     def get(self, request, report, limit=None):
+        logging.basicConfig(filename="test.log", level=logging.DEBUG)
         logging.error('Testing')
         logging.error('%s', report)
         report = Report(report)
