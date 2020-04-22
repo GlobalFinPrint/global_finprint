@@ -47,6 +47,7 @@ DROP VIEW IF EXISTS public.legacy_observation_summary;
 DROP VIEW IF EXISTS public.observation_summary;
 
 DROP VIEW IF EXISTS public.v_report_maxn_observations;
+DROP VIEW IF EXISTS public.v_report_maxn_observations_exclude_fiu;
 DROP VIEW IF EXISTS public.v_report_maxn_elasmobranch_observations;
 
 -- reef completion:
