@@ -49,7 +49,6 @@ class StandardReportView(UserAllowedMixin, View):
         ch.setFormatter(formatter)
         logger.addHandler(fh)
         logger.addHandler(ch)
-
         logging.info('Testing')
         logging.info('%s', report)
         report = Report(report)
