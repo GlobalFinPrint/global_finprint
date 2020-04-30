@@ -1,7 +1,4 @@
 import csv
-import sys
-sys.path.append("pydevd-pycharm.egg")
-import pydevd_pycharm
 
 from django.contrib.auth.decorators import login_required
 from django.core.serializers import serialize
@@ -40,7 +37,6 @@ class StandardReportView(UserAllowedMixin, View):
     template = 'pages/reports/standard_report.html'
 
     def get(self, request, report, limit=None):
-        pydevd_pycharm.settrace('127.0.0.1', port=9000, stdoutToServer=True, stderrToServer=True)
         report = Report(report)
         if not limit:
             limit = 'all'
