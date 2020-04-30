@@ -9,12 +9,26 @@
                 <th>Description</th>
             </thead>
             <tbody>
-            {% for report in reports|dictsort:"name"%}
-                <tr>
-                    <td><a href="{% url 'report_standard' report.name limit %}">{{ report.name | title }}</a></td>
-                    <td>{{ report.description }}</td>
-                </tr>
-            {% endfor %}
+                {% for report in reports|dictsort:"name"%}
+                    {% if report.name == "maxn_observations" %}
+                        {% if request.user.username == "MichaelH" or request.user.username == "MarkB" or request.user.username == "FrancesF" %}
+                            <tr>
+                                <td><a href="{% url 'report_standard' report.name limit %}">{{ report.name | title }}</a></td>
+                                <td>{{ report.description }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td><a href="{% url 'report_standard' 'maxn_observations_exclude_fiu' limit %}">{{ report.name | title }}</a></td>
+                                <td>{{ report.description }}</td>
+                            </tr>
+                        {% endif %}
+                    {% else %}
+                        <tr>
+                            <td><a href="{% url 'report_standard' report.name limit %}">{{ report.name | title }}</a></td>
+                            <td>{{ report.description }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
             </tbody>
         </table>
     </div>

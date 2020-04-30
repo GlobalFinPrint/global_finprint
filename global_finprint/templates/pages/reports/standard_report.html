@@ -2,7 +2,11 @@
 {% block content %}
 <div class="col-md-12">
     <div class="row">
-        <h3>{{ report | title }}{% if rows|length_is:limit %} - first {{ limit }} rows{% endif %}</h3>
+        {% if report|title == "Maxn_Observations_Exclude_Fiu"%}
+            <h3>Maxn_Observations{% if rows|length_is:limit %} - first {{ limit }} rows{% endif %}</h3>
+        {% else %}
+            <h3>{{ report | title }}{% if rows|length_is:limit %} - first {{ limit }} rows{% endif %}</h3>
+        {% endif %}
         <a href="{% url 'report_standard_csv' report 'csv' %}">Download entire report as a csv file</a>
         <table class="table table-striped">
             <thead>
