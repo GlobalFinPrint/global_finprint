@@ -24,7 +24,7 @@ django-mptt==0.8.7
 # For the persistence stores
 psycopg2==2.7.1
 
-Pillow==4.2.1
+Pillow==8.1.1
 
 # Monitoring and instrumentation
 
