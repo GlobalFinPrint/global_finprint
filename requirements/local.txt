@@ -8,7 +8,7 @@ django-test-plus==1.0.6
 
 # django-debug-toolbar and depends
 sqlparse <0.2
-django-debug-toolbar==1.4.0
+django-debug-toolbar==1.11.1
 
 # improved REPL
 ipdb==0.8.1
